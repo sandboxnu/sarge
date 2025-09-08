@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -11,5 +5,127 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("DEV_DATABASE")
+}
+
+model Organization {
+  id        String   @id @unique @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users              User[]
+  positions          Position[]
+  candidates         Candidate[]
+  AssessmentTemplate AssessmentTemplate[]
+  TaskTemplate       TaskTemplate[]
+}
+
+model User {
+  id           String       @id @unique @default(uuid())
+  name         String
+  email        String       @unique
+  orgId        String
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  organization Organization @relation(fields: [orgId], references: [id])
+  userRoles    UserRole[]
+}
+
+model Role {
+  id        String     @id @unique @default(uuid())
+  role      String     @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  userRoles UserRole[]
+}
+
+model UserRole {
+  id     String @id @default(uuid())
+  userId String
+  roleId String
+
+  user User @relation(fields: [userId], references: [id])
+  role Role @relation(fields: [roleId], references: [id])
+
+  @@unique([userId])
+  @@index([roleId])
+}
+
+model Tag {
+  id  String @id @unique
+  tag String
+}
+
+model Position {
+  id        String   @id @unique @default(uuid())
+  title     String
+  orgId     String
+  tags      String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  candidate    CandidatePoolEntry[]
+  organization Organization         @relation(fields: [orgId], references: [id])
+}
+
+model Candidate {
+  id        String   @id @unique @default(uuid())
+  name      String
+  orgId     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  positions    CandidatePoolEntry[]
+  organization Organization         @relation(fields: [orgId], references: [id])
+}
+
+model CandidatePoolEntry {
+  id          String   @id @unique @default(uuid())
+  candidateId String
+  positionId  String
+  status      String
+  tags        String[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  candidate Candidate @relation(fields: [candidateId], references: [id])
+  position  Position  @relation(fields: [positionId], references: [id])
+
+  @@unique([candidateId, positionId])
+}
+
+model AssessmentTemplate {
+  id           String       @id @unique @default(uuid())
+  title        String
+  description  String
+  orgId        String
+  organization Organization @relation(fields: [orgId], references: [id])
+}
+
+model TaskTemplate {
+  id                 String @id @unique @default(uuid())
+  title              String
+  content            String @db.VarChar(500)
+  public_test_cases  Json
+  private_test_cases Json
+
+  orgId        String
+  organization Organization @relation(fields: [orgId], references: [id])
+}
+
+model Task {
+  id                 String @id @unique @default(uuid())
+}
+
+model Assessment {
+  id                 String @id @unique @default(uuid())
+}
+
+model Review {
+  id                 String @id @unique @default(uuid())
+}
+
+model Comment {
+  id                 String @id @unique @default(uuid())
 }
