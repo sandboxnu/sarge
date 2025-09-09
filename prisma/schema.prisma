@@ -30,6 +30,8 @@ model User {
   updatedAt    DateTime     @updatedAt
   organization Organization @relation(fields: [orgId], references: [id])
   userRoles    UserRole[]
+  Review       Review[]
+  Comment      Comment[]
 }
 
 model Role {
@@ -64,20 +66,23 @@ model Position {
   tags      String[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  createdBy String
 
   candidate    CandidatePoolEntry[]
   organization Organization         @relation(fields: [orgId], references: [id])
+  Assessment   Assessment[]
 }
 
 model Candidate {
   id        String   @id @unique @default(uuid())
   name      String
+  email     String   @unique
   orgId     String
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 
   positions    CandidatePoolEntry[]
   organization Organization         @relation(fields: [orgId], references: [id])
+  Assessment   Assessment[]
 }
 
 model CandidatePoolEntry {
@@ -101,6 +106,7 @@ model AssessmentTemplate {
   description  String
   orgId        String
   organization Organization @relation(fields: [orgId], references: [id])
+  Assessment   Assessment[]
 }
 
 model TaskTemplate {
@@ -112,20 +118,56 @@ model TaskTemplate {
 
   orgId        String
   organization Organization @relation(fields: [orgId], references: [id])
+  Task         Task[]
 }
 
 model Task {
-  id                 String @id @unique @default(uuid())
+  id             String   @id @unique @default(uuid())
+  assessmentId   String
+  taskTemplateId String
+  candidateCode  String   @db.Text
+  lastUpdated    DateTime
+
+  Assessment   Assessment   @relation(fields: [assessmentId], references: [id])
+  TaskTemplate TaskTemplate @relation(fields: [taskTemplateId], references: [id])
+  Comment      Comment[]
 }
 
 model Assessment {
-  id                 String @id @unique @default(uuid())
+  id                   String   @id @unique @default(uuid())
+  candidateId          String
+  positionId           String
+  assessmentTemplateId String
+  assignedAt           DateTime
+  isSubmitted          Boolean
+  uniqueLink           String
+
+  Candidate          Candidate          @relation(fields: [candidateId], references: [id])
+  Position           Position           @relation(fields: [positionId], references: [id])
+  AssessmentTemplate AssessmentTemplate @relation(fields: [assessmentTemplateId], references: [id])
+  Task               Task[]
+  Review             Review[]
 }
 
 model Review {
-  id                 String @id @unique @default(uuid())
+  id           String   @id @unique @default(uuid())
+  assessmentId String
+  reviewerId   String
+  rating       Int
+  content      String
+  reviewedAt   DateTime @default(now())
+
+  Assessment Assessment @relation(fields: [assessmentId], references: [id])
+  Reviewer   User       @relation(fields: [reviewerId], references: [id])
 }
 
 model Comment {
-  id                 String @id @unique @default(uuid())
+  id         String   @id @unique @default(uuid())
+  taskId     String
+  content    String
+  reviewerId String
+  reviewedAt DateTime @default(now())
+
+  Task     Task @relation(fields: [taskId], references: [id])
+  Reviewer User @relation(fields: [reviewerId], references: [id])
 }
