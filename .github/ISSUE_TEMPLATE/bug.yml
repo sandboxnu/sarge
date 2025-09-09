@@ -1,0 +1,64 @@
+name: Bug Report
+description: File a bug report to help improve the app.
+title: "[BUG] <brief description>"
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: "Please provide details about the bug."
+  - type: input
+    id: summary
+    attributes:
+      label: Summary
+      description: Short description of the bug.
+      placeholder: "App crashes when clicking Submit."
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: Step-by-step instructions to replicate the issue.
+      placeholder: |
+        1. Go to '...'
+        2. Click '...'
+        3. Observe the error
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What should happen.
+      placeholder: "Form submits successfully."
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened.
+      placeholder: "Form throws a 500 error."
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots / Logs
+      description: Add screenshots, logs, or error messages if available.
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Where the bug occurred.
+      placeholder: "OS: macOS, Browser: Chrome 116, Node: 20.x"
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: Impact level of the bug.
+      options:
+        - Critical (blocks work)
+        - Major (significant impact)
+        - Minor (small issue)
+        - Trivial (cosmetic only)
