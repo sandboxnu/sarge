@@ -1,17 +1,17 @@
 name: Bug Report
 description: File a bug report to help improve the app.
-title: "[BUG] <brief description>"
-labels: ["bug"]
+title: '[BUG] <brief description>'
+labels: ['bug']
 body:
   - type: markdown
     attributes:
-      value: "Please provide details about the bug."
+      value: 'Please provide details about the bug.'
   - type: input
     id: summary
     attributes:
       label: Summary
       description: Short description of the bug.
-      placeholder: "App crashes when clicking Submit."
+      placeholder: 'App crashes when clicking Submit.'
     validations:
       required: true
   - type: textarea
@@ -30,7 +30,7 @@ body:
     attributes:
       label: Expected Behavior
       description: What should happen.
-      placeholder: "Form submits successfully."
+      placeholder: 'Form submits successfully.'
     validations:
       required: true
   - type: textarea
@@ -38,7 +38,7 @@ body:
     attributes:
       label: Actual Behavior
       description: What actually happened.
-      placeholder: "Form throws a 500 error."
+      placeholder: 'Form throws a 500 error.'
     validations:
       required: true
   - type: textarea
@@ -51,7 +51,7 @@ body:
     attributes:
       label: Environment
       description: Where the bug occurred.
-      placeholder: "OS: macOS, Browser: Chrome 116, Node: 20.x"
+      placeholder: 'OS: macOS, Browser: Chrome 116, Node: 20.x'
   - type: dropdown
     id: severity
     attributes:

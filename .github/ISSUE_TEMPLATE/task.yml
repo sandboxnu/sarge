@@ -1,6 +1,6 @@
 name: Task
 description: Create a task that a member can complete.
-title: "[Area] - Short Description"
+title: '[Area] - Short Description'
 body:
   - type: textarea
     id: description
