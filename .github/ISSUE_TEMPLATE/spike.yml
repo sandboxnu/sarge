@@ -1,7 +1,7 @@
 name: Spike
 description: Use this template for research or investigation tasks.
-title: "[SPIKE] <brief title>"
-labels: ["spike", "investigation"]
+title: '[SPIKE] <brief title>'
+labels: ['spike', 'investigation']
 body:
   - type: markdown
     attributes:
@@ -12,7 +12,7 @@ body:
     attributes:
       label: Objective
       description: What’s the main question or problem this spike is trying to answer?
-      placeholder: "We want to understand if library X can handle our use case..."
+      placeholder: 'We want to understand if library X can handle our use case...'
     validations:
       required: true
   - type: textarea
@@ -20,4 +20,4 @@ body:
     attributes:
       label: Resources / Notes
       description: Links, references, or any notes gathered during the spike.
-      placeholder: "Documentation links, small code snippets, observations..."
+      placeholder: 'Documentation links, small code snippets, observations...'

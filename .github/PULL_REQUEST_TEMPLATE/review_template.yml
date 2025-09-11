@@ -1,6 +1,6 @@
 name: Pull Request
 description: Standard pull request template for changes
-title: "[Area] - Short Description"
+title: '[Area] - Short Description'
 body:
   - type: textarea
     id: changes
@@ -53,17 +53,17 @@ body:
       label: Checklist
       description: Please go through all items before requesting reviewers
       options:
-        - label: "All commits are tagged with the ticket number"
-        - label: "No linting errors / newline warnings"
-        - label: "All code follows repository-configured formatting"
-        - label: "No merge conflicts"
-        - label: "All checks passing"
-        - label: "Screenshots included for UI changes"
-        - label: "Remove non-applicable sections of this template"
-        - label: "PR assigned to yourself"
-        - label: "Reviewers requested & Slack ping sent"
+        - label: 'All commits are tagged with the ticket number'
+        - label: 'No linting errors / newline warnings'
+        - label: 'All code follows repository-configured formatting'
+        - label: 'No merge conflicts'
+        - label: 'All checks passing'
+        - label: 'Screenshots included for UI changes'
+        - label: 'Remove non-applicable sections of this template'
+        - label: 'PR assigned to yourself'
+        - label: 'Reviewers requested & Slack ping sent'
         - label: "PR linked to the issue (fill in 'Closes #')"
-        - label: "If design-related, notify the designer in Slack"
+        - label: 'If design-related, notify the designer in Slack'
     validations:
       required: true
 
