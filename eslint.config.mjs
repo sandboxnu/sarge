@@ -21,6 +21,7 @@ const eslintConfig = [
       'out/**',
       'build/**',
       'dist/**',
+      'src/generated/**', // Ignore Prisma generated client files lolz
       'next-env.d.ts',
       'tailwind.config.ts',
       'next.config.ts',
