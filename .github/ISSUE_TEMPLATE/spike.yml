@@ -1,0 +1,23 @@
+name: Spike
+description: Use this template for research or investigation tasks.
+title: '[SPIKE] <brief title>'
+labels: ['spike', 'investigation']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A spike is a time-boxed research task to explore solutions or gather information.
+  - type: textarea
+    id: objective
+    attributes:
+      label: Objective
+      description: What’s the main question or problem this spike is trying to answer?
+      placeholder: 'We want to understand if library X can handle our use case...'
+    validations:
+      required: true
+  - type: textarea
+    id: resources
+    attributes:
+      label: Resources / Notes
+      description: Links, references, or any notes gathered during the spike.
+      placeholder: 'Documentation links, small code snippets, observations...'
