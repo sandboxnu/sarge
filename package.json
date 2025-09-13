@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "docker-compose up -d && npx prisma migrate dev && next dev",
+    "dev:db": "docker-compose up -d",
+    "dev:migrate": "npx prisma migrate dev",
+    "dev:start": "next dev",
+    "dev": "npm run dev:db && npm run dev:migrate && npm run dev:start",
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --max-warnings=0",
