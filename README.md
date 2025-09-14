@@ -14,11 +14,10 @@ DB_USER="postgres"
 DB_PASSWORD="password"
 DB_NAME="sarge"
 
-DEV_DATABASE=postgresql://${DB_USER}:${DB_PASSWORD}@localhost:5432/${DB_NAME}
+DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@localhost:5432/${DB_NAME}
 ```
 
 Run the following commands in order
 
-- `pnpm install`
-- `pnpm run dev`
+- Run `./start.sh`
 - Once you are finished run `docker-compose down`
