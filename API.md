@@ -1,4 +1,4 @@
-# HackNU API
+# SARGE API
 
 ## Organizations
 
