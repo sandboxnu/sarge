@@ -1,4 +1,17 @@
 services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+      - /app/node_modules
   db:
     image: postgres:17
     container_name: sarge_dev_db
