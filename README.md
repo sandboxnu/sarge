@@ -22,4 +22,3 @@ Run the following commands in order
 - `pnpm install`
 - `pnpm run dev`
 - Once you are finished run `docker-compose down`
-
