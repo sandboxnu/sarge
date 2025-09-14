@@ -4,7 +4,6 @@
 
 - PNPM
 - Docker
-- 
 
 ### Running in Dev Mode:
 
