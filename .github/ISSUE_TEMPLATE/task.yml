@@ -18,27 +18,6 @@ body:
     validations:
       required: true
 
-  - type: textarea
-    id: proposed-solution
-    attributes:
-      label: Proposed Solution
-      description: How will this solution be implemented? What will be changed or added?
-    validations:
-      required: true
-
-  - type: dropdown
-    id: issue-type
-    attributes:
-      label: Issue Type
-      description: Select the type of issue
-      options:
-        - Backend
-        - Frontend
-        - Design
-        - Other
-    validations:
-      required: true
-
   - type: input
     id: figma-link
     attributes:
