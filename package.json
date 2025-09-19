@@ -1,46 +1,46 @@
 {
-  "name": "sarge",
-  "version": "0.1.0",
-  "packageManager": "pnpm@9.12.2",
-  "private": true,
-  "scripts": {
-    "dev:migrate": "npx prisma migrate dev",
-    "dev:start": "next dev",
-    "dev": "npm run dev:migrate && npm run dev:start",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint . --max-warnings=0",
-    "lint:fix": "eslint . --fix",
-    "prisma:generate": "prisma generate",
-    "prettier:check": "prettier --check .",
-    "prettier:fix": "prettier --write ."
-  },
-  "engines": {
-    "node": ">= 22.0.0"
-  },
-  "dependencies": {
-    "@prisma/client": "6.15.0",
-    "next": "15.5.2",
-    "prisma": "^6.15.0",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "zod": "^4.1.9"
-  },
-  "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^22",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "@typescript-eslint/eslint-plugin": "^8.43.0",
-    "@typescript-eslint/parser": "^8.43.0",
-    "eslint": "^9",
-    "eslint-config-next": "15.5.2",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-tailwindcss": "^3.18.2",
-    "prettier": "^3.6.2",
-    "prettier-plugin-tailwindcss": "^0.6.14",
-    "tailwindcss": "^4",
-    "typescript": "^5"
-  }
+    "name": "sarge",
+    "version": "0.1.0",
+    "packageManager": "pnpm@9.12.2",
+    "private": true,
+    "scripts": {
+        "dev:migrate": "npx prisma migrate dev",
+        "dev:start": "next dev",
+        "dev": "npm run dev:migrate && npm run dev:start",
+        "build": "next build",
+        "start": "next start",
+        "lint": "eslint . --max-warnings=0",
+        "lint:fix": "eslint . --fix",
+        "prisma:generate": "prisma generate",
+        "prettier:check": "prettier --check .",
+        "prettier:fix": "prettier --write ."
+    },
+    "engines": {
+        "node": ">= 22.0.0"
+    },
+    "dependencies": {
+        "@prisma/client": "6.15.0",
+        "next": "15.5.2",
+        "prisma": "^6.15.0",
+        "react": "19.1.0",
+        "react-dom": "19.1.0",
+        "zod": "^4.1.9"
+    },
+    "devDependencies": {
+        "@eslint/eslintrc": "^3",
+        "@tailwindcss/postcss": "^4",
+        "@types/node": "^22",
+        "@types/react": "^19",
+        "@types/react-dom": "^19",
+        "@typescript-eslint/eslint-plugin": "^8.43.0",
+        "@typescript-eslint/parser": "^8.43.0",
+        "eslint": "^9",
+        "eslint-config-next": "15.5.2",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-plugin-tailwindcss": "^3.18.2",
+        "prettier": "^3.6.2",
+        "prettier-plugin-tailwindcss": "^0.6.14",
+        "tailwindcss": "^4",
+        "typescript": "^5"
+    }
 }
