@@ -25,10 +25,10 @@ model User {
   id           String       @id @unique @default(uuid())
   name         String
   email        String       @unique
-  orgId        String
+  orgId        String?
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
-  organization Organization @relation(fields: [orgId], references: [id])
+  organization Organization? @relation(fields: [orgId], references: [id])
   userRoles    UserRole[]
   Review       Review[]
   Comment      Comment[]
