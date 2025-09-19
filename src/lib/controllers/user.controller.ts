@@ -1,0 +1,20 @@
+import { User } from '@/generated/prisma';
+import { prisma } from '@/lib/prisma';
+import { CreateUserDTO, createUserSchema, ValidationError } from '../schemas/user.schema';
+import z from 'zod';
+
+export class UserController {
+    async create(user: CreateUserDTO): Promise<User> {
+        try {
+            const validatedUser = createUserSchema.parse(user);
+            return await prisma.user.create({
+                data: validatedUser,
+            });
+        } catch (error) {
+            if (error instanceof z.ZodError) {
+                throw new ValidationError(user);
+            }
+            throw error;
+        }
+    }
+}
