@@ -1,6 +1,6 @@
 import { UserController } from '@/lib/controllers/user.controller';
 import { ValidationError } from '@/lib/schemas/user.schema';
-import { NextRequest, NextResponse } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 
 const userController = new UserController();
 
