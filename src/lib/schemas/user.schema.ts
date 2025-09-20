@@ -2,9 +2,7 @@ import { z } from 'zod';
 
 export class ValidationError extends Error {
     constructor(obj: unknown) {
-        super(
-            `The request structure is invalid. The server can't even parse the data.\n received the following: ${obj}`
-        );
+        super(`The request structure is invalid. The server can't even parse the data.`);
     }
 }
 
