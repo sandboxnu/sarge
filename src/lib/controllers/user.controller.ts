@@ -12,7 +12,7 @@ export class UserController {
             });
         } catch (error) {
             if (error instanceof z.ZodError) {
-                throw new ValidationError(user);
+                throw new ValidationError();
             }
             throw error;
         }
