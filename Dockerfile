@@ -5,24 +5,26 @@ COPY package.json pnpm-lock.yaml* ./
 RUN corepack enable && pnpm install --frozen-lockfile
 
 COPY . .
+RUN pnpm prisma:generate
 RUN pnpm build
 
 FROM node:22-slim
 WORKDIR /app
+ENV NODE_ENV=production
 ENV PORT=3000
-# TODO: see if AWS needs the HOST env
+# TODO: check if AWS needs this env variable
 # ENV HOST=0.0.0.0
 ENV HOSTNAME=0.0.0.0
 EXPOSE 3000
 
 RUN apt-get update -y && apt-get install -y --no-install-recommends openssl ca-certificates \
-  && rm -rf /var/lib/apt/lists/*;
+  && rm -rf /var/lib/apt/lists/*
 
-RUN npm install -g prisma@^6.15.0
+RUN npm install -g prisma@6.15.0
 
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
-# TODO: uncomment once we add images to /public
+# TODO: uncomment when we add public directory
 # COPY --from=builder /app/public ./public
 
 COPY --from=builder /app/prisma ./prisma
