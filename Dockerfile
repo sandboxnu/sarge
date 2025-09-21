@@ -15,6 +15,7 @@ EXPOSE 3000
 
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
-COPY --from=builder /app/public ./public
+# TODO: uncomment once we add images to /public
+# COPY --from=builder /app/public ./public
 
 CMD ["node", "server.js"]
