@@ -13,8 +13,9 @@ model Organization {
   name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  users              User[]
+  createdById String @unique
+  createdBy User @relation("CreatedOrganization", fields: [createdById], references: [id])
+  users              User[] @relation("UserOrganization")
   positions          Position[]
   candidates         Candidate[]
   AssessmentTemplate AssessmentTemplate[]
@@ -28,7 +29,8 @@ model User {
   orgId        String?
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
-  organization Organization? @relation(fields: [orgId], references: [id])
+  organization Organization? @relation("UserOrganization", fields: [orgId], references: [id])
+  createdOrganization Organization? @relation("CreatedOrganization")
   userRoles    UserRole[]
   Review       Review[]
   Comment      Comment[]
