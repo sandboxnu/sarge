@@ -1,11 +1,5 @@
 import { z } from 'zod';
 
-export class ValidationError extends Error {
-    constructor() {
-        super(`The request structure is invalid. The server can't even parse the data.`);
-    }
-}
-
 export const createUserSchema = z.object({
     name: z
         .string()

@@ -1,6 +1,7 @@
 import { type User } from '@/generated/prisma';
 import { prisma } from '@/lib/prisma';
-import { type CreateUserDTO, createUserSchema, ValidationError } from '../schemas/user.schema';
+import { type CreateUserDTO, createUserSchema } from '../schemas/user.schema';
+import { ValidationError } from '../schemas/errors';
 import z from 'zod';
 
 export class UserController {
