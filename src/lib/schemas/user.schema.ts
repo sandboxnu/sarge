@@ -1,5 +1,11 @@
 import { z } from 'zod';
 
+export class UserNotFoundError extends Error {
+    constructor() {
+        super('User Not Found');
+    }
+}
+
 export const createUserSchema = z.object({
     name: z
         .string()
