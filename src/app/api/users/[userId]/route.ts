@@ -1,6 +1,6 @@
 import { UserController } from '@/lib/controllers/user.controller';
 import { UserNotFoundError } from '@/lib/schemas/user.schema';
-import { NextRequest, NextResponse } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 
 const userController = new UserController();
 
@@ -21,7 +21,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { userI
             return NextResponse.json(
                 {
                     success: false,
-                    err: err.message,
+                    error: 'User Not Found',
                 },
                 { status: 404 }
             );

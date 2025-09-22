@@ -15,18 +15,18 @@ export async function POST(request: NextRequest) {
             },
             { status: 200 }
         );
-    } catch (err) {
-        if (err instanceof ValidationError) {
+    } catch (error) {
+        if (error instanceof ValidationError) {
             return NextResponse.json(
                 {
                     success: false,
-                    err: err.message,
+                    error: error.message,
                 },
                 { status: 400 }
             );
         }
 
-        const message = err instanceof Error ? err.message : String(err);
+        const message = error instanceof Error ? error.message : String(error);
 
         return NextResponse.json(
             {
