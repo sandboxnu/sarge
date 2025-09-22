@@ -3,7 +3,6 @@ import { prisma } from '@/lib/prisma';
 import { type CreateUserDTO, createUserSchema, UserNotFoundError } from '../schemas/user.schema';
 import { ValidationError } from '../schemas/errors';
 import z from 'zod';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/binary';
 
 export class UserController {
     async create(user: CreateUserDTO): Promise<User> {
