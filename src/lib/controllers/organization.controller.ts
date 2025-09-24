@@ -17,4 +17,22 @@ export class OrganizationController {
             throw error;
         }
     }
+    async getById(id: string): Promise<Organization | null> {
+        try {
+            return await prisma.organization.findUnique({
+                where: { id },
+                select: {
+                    id: true,
+                    name: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    users: true,
+                    positions: true,
+                    candidates: true,
+                }
+            });
+        } catch (error) {
+            throw error;
+        }
+    }
 }
