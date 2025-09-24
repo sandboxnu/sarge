@@ -22,12 +22,12 @@ model Organization {
 }
 
 model User {
-  id           String       @id @unique @default(uuid())
+  id           String        @id @unique @default(uuid())
   name         String
-  email        String       @unique
+  email        String        @unique
   orgId        String?
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
   organization Organization? @relation(fields: [orgId], references: [id])
   userRoles    UserRole[]
   Review       Review[]
