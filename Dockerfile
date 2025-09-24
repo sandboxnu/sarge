@@ -1,4 +1,4 @@
-FROM node:22-slim AS builder
+FROM public.ecr.aws/docker/library/node:22-slim AS builder
 WORKDIR /app
 
 RUN apt-get update -y && apt-get install -y openssl ca-certificates libssl3 && rm -rf /var/lib/apt/lists/*
@@ -10,7 +10,7 @@ COPY . .
 RUN pnpm prisma:generate
 RUN pnpm build
 
-FROM node:22-slim
+FROM public.ecr.aws/docker/library/node:22-slim
 WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
