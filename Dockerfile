@@ -1,7 +1,7 @@
 FROM node:22-slim AS builder
 WORKDIR /app
 
-RUN apt-get update -y && apt-get install -y openssl
+RUN apt-get update -y && apt-get install -y openssl ca-certificates libssl3 && rm -rf /var/lib/apt/lists/*
 
 COPY package.json pnpm-lock.yaml* ./
 RUN corepack enable && pnpm install --frozen-lockfile
@@ -18,6 +18,8 @@ ENV PORT=3000
 # ENV HOST=0.0.0.0
 ENV HOSTNAME=0.0.0.0
 EXPOSE 3000
+
+RUN apt-get update -y && apt-get install -y openssl ca-certificates libssl3 && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
