@@ -4,7 +4,11 @@ import { type NextRequest, NextResponse } from 'next/server';
 
 const userController = new UserController();
 
-export async function DELETE(_request: NextRequest, context: { params: { userId: string } }) {
+interface RouteParams {
+    userId: string;
+}
+
+export async function DELETE(_request: NextRequest, context: { params: RouteParams }) {
     try {
         const { userId } = context.params;
         const user = await userController.delete(userId);
