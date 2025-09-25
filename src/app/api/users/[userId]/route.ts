@@ -1,6 +1,7 @@
 import { UserController } from '@/lib/controllers/user.controller';
+import { sargeApiError, sargeApiResponse } from '@/lib/responses';
 import { UserNotFoundError } from '@/lib/schemas/user.schema';
-import { type NextRequest, NextResponse } from 'next/server';
+import { type NextRequest } from 'next/server';
 
 const userController = new UserController();
 
@@ -8,33 +9,13 @@ export async function DELETE(request: NextRequest, { params }: { params: { userI
     try {
         const userId = (await params).userId;
         const user = await userController.delete(userId);
-        return NextResponse.json(
-            {
-                success: true,
-                data: user,
-                message: 'User Successfully Deleted',
-            },
-            { status: 200 }
-        );
-    } catch (err) {
-        if (err instanceof UserNotFoundError) {
-            return NextResponse.json(
-                {
-                    success: false,
-                    error: 'User Not Found',
-                },
-                { status: 404 }
-            );
+        return sargeApiResponse(user, 200);
+    } catch (error) {
+        if (error instanceof UserNotFoundError) {
+            return sargeApiError(error.message, 404);
         }
 
-        const message = err instanceof Error ? err.message : String(err);
-
-        return NextResponse.json(
-            {
-                success: false,
-                error: message,
-            },
-            { status: 500 }
-        );
+        const message = error instanceof Error ? error.message : String(error);
+        return sargeApiError(message, 500);
     }
 }
