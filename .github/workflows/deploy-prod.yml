@@ -1,8 +1,6 @@
-name: Deploy to ECS
+name: Deploy main to ECS
 
 on:
-    push:
-        branches: [main]
     workflow_dispatch: {}
 
 env:
@@ -27,6 +25,8 @@ jobs:
         steps:
             - name: Checkout Repository
               uses: actions/checkout@v4
+              with:
+                  ref: main
 
             - name: Configure AWS Credentials (OIDC)
               uses: aws-actions/configure-aws-credentials@v4
