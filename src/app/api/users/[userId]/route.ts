@@ -4,9 +4,9 @@ import { type NextRequest, NextResponse } from 'next/server';
 
 const userController = new UserController();
 
-export async function DELETE(request: NextRequest, { params }: { params: { userId: string } }) {
+export async function DELETE(_request: NextRequest, context: { params: { userId: string } }) {
     try {
-        const userId = (await params).userId;
+        const { userId } = context.params;
         const user = await userController.delete(userId);
         return NextResponse.json(
             {
