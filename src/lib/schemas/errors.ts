@@ -6,6 +6,6 @@ export class InvalidUserInputError extends Error {
 
 export class InternalServerError extends Error {
     constructor() {
-        super();
+        super('Internal server error occurred.');
     }
 }
