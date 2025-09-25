@@ -2,8 +2,8 @@
 
 ### Requirements:
 
-- PNPM
-- Docker
+- [PNPM](https://pnpm.io/installation)
+- [Docker](https://docs.docker.com/desktop/)
 
 ### Running in Dev Mode:
 
