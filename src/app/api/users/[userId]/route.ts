@@ -4,13 +4,12 @@ import { type NextRequest, NextResponse } from 'next/server';
 
 const userController = new UserController();
 
-interface RouteParams {
-    userId: string;
-}
-
-export async function DELETE(_request: NextRequest, context: { params: RouteParams }) {
+export async function DELETE(
+    _request: NextRequest,
+    { params }: { params: Promise<{ userId: string }> }
+) {
     try {
-        const { userId } = context.params;
+        const userId = (await params).userId;
         const user = await userController.delete(userId);
         return NextResponse.json(
             {
