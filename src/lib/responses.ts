@@ -1,23 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from 'next/server';
 
-type ApiResponse<T = any> = {
+type ApiResponse<T = unknown> = {
     success: boolean;
     data?: T;
     error?: {
         message: string;
-        details?: any;
+        details?: unknown;
     };
     meta?: {
         timestamp: string;
-        [key: string]: any;
+        [key: string]: unknown;
     };
 };
 
 export function sargeApiResponse<T>(
     data: T,
     status: number,
-    meta?: any
+    meta?: Record<string, unknown>
 ): NextResponse<ApiResponse<T>> {
     return NextResponse.json(
         {
@@ -36,7 +36,7 @@ export function sargeApiResponse<T>(
 export function sargeApiError(
     message: string,
     status: number,
-    details?: any
+    details?: unknown
 ): NextResponse<ApiResponse> {
     return NextResponse.json(
         {
