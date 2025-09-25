@@ -1,7 +1,7 @@
 import { Prisma, type User } from '@/generated/prisma';
 import { prisma } from '@/lib/prisma';
 import { type CreateUserDTO, createUserSchema, UserNotFoundError } from '../schemas/user.schema';
-import { ValidationError } from '../schemas/errors';
+import { InvalidUserInputError } from '../schemas/errors';
 import z from 'zod';
 
 export class UserController {
@@ -13,7 +13,7 @@ export class UserController {
             });
         } catch (error) {
             if (error instanceof z.ZodError) {
-                throw new ValidationError();
+                throw new InvalidUserInputError();
             }
             throw error;
         }
