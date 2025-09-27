@@ -23,7 +23,7 @@ model Organization {
 }
 
 model User {
-  id           String       @id @unique @default(uuid())
+  id           String        @id @unique @default(uuid())
   name         String
   email        String       @unique
   orgId        String?

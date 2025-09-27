@@ -4,3 +4,6 @@ node_modules/
 .env*
 Dockerfile*
 docker-compose*.yml
+.next/cache
+*.log
+!.env.example

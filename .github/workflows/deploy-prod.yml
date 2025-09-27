@@ -1,0 +1,65 @@
+name: Deploy main to ECS
+
+on:
+    workflow_dispatch: {}
+
+env:
+    AWS_REGION: us-east-2
+    ECR_REPOSITORY: sarge
+    ECS_CLUSTER: sarge-production
+    ECS_SERVICE: sarge-service-qxn7nkka
+    CONTAINER_NAME: web
+    TASKDEF_PATH: .aws/task-definition.json
+
+concurrency:
+    group: ecs-deploy-main
+    cancel-in-progress: true
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        permissions:
+            id-token: write
+            contents: read
+
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v4
+              with:
+                  ref: main
+
+            - name: Configure AWS Credentials (OIDC)
+              uses: aws-actions/configure-aws-credentials@v4
+              with:
+                  role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+                  aws-region: ${{ env.AWS_REGION }}
+
+            - name: Login to ECR
+              id: login-ecr
+              uses: aws-actions/amazon-ecr-login@v2
+
+            - name: Build, Tag, and Push Image to ECR
+              env:
+                  ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+                  IMAGE_TAG: ${{ github.sha }}
+              run: |
+                  set -e
+                  docker build -t $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG .
+                  docker push $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG
+                  echo "IMAGE_URI=$ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG" >> $GITHUB_ENV
+
+            - name: Render Task Definition with New Image
+              id: render-task-definition
+              uses: aws-actions/amazon-ecs-render-task-definition@v1
+              with:
+                  task-definition: ${{ env.TASKDEF_PATH }}
+                  container-name: ${{ env.CONTAINER_NAME }}
+                  image: ${{ env.IMAGE_URI }}
+
+            - name: Deploy to ECS
+              uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+              with:
+                  task-definition: ${{ steps.render-task-definition.outputs.task-definition }}
+                  service: ${{ env.ECS_SERVICE }}
+                  cluster: ${{ env.ECS_CLUSTER }}
+                  wait-for-service-stability: true
