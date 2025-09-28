@@ -1,6 +1,7 @@
 import { UserController } from '@/lib/controllers/user.controller';
-import { ValidationError } from '@/lib/schemas/user.schema';
-import { type NextRequest, NextResponse } from 'next/server';
+import { type NextRequest } from 'next/server';
+import { sargeApiError, sargeApiResponse } from '@/lib/responses';
+import { InvalidUserInputError } from '@/lib/schemas/errors';
 
 const userController = new UserController();
 
@@ -8,32 +9,13 @@ export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
         const user = await userController.create(body);
-        return NextResponse.json(
-            {
-                success: true,
-                data: user,
-            },
-            { status: 200 }
-        );
-    } catch (err) {
-        if (err instanceof ValidationError) {
-            return NextResponse.json(
-                {
-                    success: false,
-                    err: err.message,
-                },
-                { status: 400 }
-            );
+        return sargeApiResponse(user, 200);
+    } catch (error) {
+        if (error instanceof InvalidUserInputError) {
+            return sargeApiError(error.message, 400);
         }
 
-        const message = err instanceof Error ? err.message : String(err);
-
-        return NextResponse.json(
-            {
-                success: false,
-                error: message,
-            },
-            { status: 500 }
-        );
+        const message = error instanceof Error ? error.message : String(error);
+        return sargeApiError(message, 500);
     }
 }
