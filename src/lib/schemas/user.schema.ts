@@ -24,8 +24,6 @@ export const UserSchema = z.object({
     orgId: z.uuid().optional(),
     name: createUserSchema.shape.name,
     email: createUserSchema.shape.email,
-    createdAt: z.date(),
-    updatedAt: z.date(),
 });
 
 export type UserDTO = z.infer<typeof UserSchema>;
