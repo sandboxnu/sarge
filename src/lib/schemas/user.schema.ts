@@ -19,4 +19,15 @@ export const createUserSchema = z.object({
         .max(255, 'Email must be less than 255 characters'),
 });
 
+export const UserSchema = z.object({
+    id: z.uuid(),
+    orgId: z.uuid().optional(),
+    name: createUserSchema.shape.name,
+    email: createUserSchema.shape.email,
+    createdAt: z.date(),
+    updatedAt: z.date(),
+});
+
+export type UserDTO = z.infer<typeof UserSchema>;
+
 export type CreateUserDTO = z.infer<typeof createUserSchema>;
