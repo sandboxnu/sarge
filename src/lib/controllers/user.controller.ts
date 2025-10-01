@@ -10,7 +10,7 @@ import {
 import { InvalidInputError } from '../schemas/errors';
 import z from 'zod';
 
-export class UserController {
+class UserController {
     async create(user: CreateUserDTO): Promise<User> {
         try {
             const validatedUser = createUserSchema.parse(user);
@@ -73,3 +73,5 @@ export class UserController {
         }
     }
 }
+
+export const userController = new UserController();

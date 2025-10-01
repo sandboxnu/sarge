@@ -1,9 +1,7 @@
-import { UserController } from '@/lib/controllers/user.controller';
+import { userController } from '@/lib/controllers/user.controller';
 import { sargeApiError, sargeApiResponse } from '@/lib/responses';
 import { UserNotFoundError } from '@/lib/schemas/user.schema';
 import { type NextRequest } from 'next/server';
-
-const userController = new UserController();
 
 export async function DELETE(
     _request: NextRequest,

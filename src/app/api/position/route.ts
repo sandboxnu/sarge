@@ -1,9 +1,7 @@
-import { PositionController } from '@/lib/controllers/position.controller';
+import { positionController } from '@/lib/controllers/position.controller';
 import { sargeApiError, sargeApiResponse } from '@/lib/responses';
 import { InvalidUserInputError } from '@/lib/schemas/errors';
 import { type NextRequest } from 'next/server';
-
-const positionController = new PositionController();
 
 export async function POST(request: NextRequest) {
     try {

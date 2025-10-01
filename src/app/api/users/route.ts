@@ -1,9 +1,7 @@
-import { UserController } from '@/lib/controllers/user.controller';
+import { userController } from '@/lib/controllers/user.controller';
 import { type NextRequest } from 'next/server';
 import { sargeApiError, sargeApiResponse } from '@/lib/responses';
 import { InvalidInputError } from '@/lib/schemas/errors';
-
-const userController = new UserController();
 
 export async function POST(request: NextRequest) {
     try {
