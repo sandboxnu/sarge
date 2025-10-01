@@ -11,11 +11,11 @@ export async function POST(request: NextRequest) {
         const org = await organizationController.create(body);
         return sargeApiResponse(org, 200);
     } catch (error) {
-            if (error instanceof InvalidUserInputError) {
-                return sargeApiError(error.message, 400);
-            }
-    
-            const message = error instanceof Error ? error.message : String(error);
-            return sargeApiError(message, 500);
+        if (error instanceof InvalidUserInputError) {
+            return sargeApiError(error.message, 400);
+        }
+
+        const message = error instanceof Error ? error.message : String(error);
+        return sargeApiError(message, 500);
     }
 }
