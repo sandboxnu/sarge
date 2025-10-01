@@ -5,6 +5,7 @@ import {
     createUserSchema,
     type UserDTO,
     UserNotFoundError,
+    UserSchema,
 } from '../schemas/user.schema';
 import { InvalidInputError } from '../schemas/errors';
 import z from 'zod';
@@ -56,11 +57,12 @@ export class UserController {
 
     async update(userId: string, userData: Partial<UserDTO>): Promise<User> {
         try {
+            const validatedUser = UserSchema.partial().parse(userData);
             const updatedUser = await prisma.user.update({
                 where: {
                     id: userId,
                 },
-                data: userData,
+                data: { ...validatedUser, updatedAt: new Date() },
             });
             return updatedUser;
         } catch (error) {
