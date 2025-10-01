@@ -7,7 +7,7 @@ export class PositionNotFoundError extends Error {
 }
 
 export const PositionSchema = z.object({
-    title: z.uuid(),
+    title: z.string(),
     orgId: z.uuid(),
     createdBy: z.uuid(),
     tags: z.array(z.string()).optional(),

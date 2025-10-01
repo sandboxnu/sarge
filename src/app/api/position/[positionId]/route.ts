@@ -1,9 +1,7 @@
-import { PositionController } from '@/lib/controllers/position.controller';
+import { positionController } from '@/lib/controllers/position.controller';
 import { sargeApiError, sargeApiResponse } from '@/lib/responses';
 import { PositionNotFoundError } from '@/lib/schemas/position.schema';
 import { type NextRequest } from 'next/server';
-
-const positionController = new PositionController();
 
 export async function GET(
     _request: NextRequest,

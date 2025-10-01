@@ -8,7 +8,7 @@ import { type Position, Prisma } from '@/generated/prisma';
 import { InvalidUserInputError } from '../schemas/errors';
 import z from 'zod';
 
-export class PositionController {
+class PositionController {
     async create(position: CreatePositionData): Promise<Position> {
         try {
             const validatedPosition = CreatePositionSchema.parse(position);
@@ -77,3 +77,5 @@ export class PositionController {
         }
     }
 }
+
+export const positionController = new PositionController();
