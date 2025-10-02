@@ -1,7 +1,7 @@
 import { UserController } from '@/lib/controllers/user.controller';
 import { type NextRequest } from 'next/server';
 import { sargeApiError, sargeApiResponse } from '@/lib/responses';
-import { InvalidUserInputError } from '@/lib/schemas/errors';
+import { InvalidInputError } from '@/lib/schemas/errors';
 
 const userController = new UserController();
 
@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
         const user = await userController.create(body);
         return sargeApiResponse(user, 200);
     } catch (error) {
-        if (error instanceof InvalidUserInputError) {
+        if (error instanceof InvalidInputError) {
             return sargeApiError(error.message, 400);
         }
 

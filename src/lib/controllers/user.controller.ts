@@ -6,7 +6,7 @@ import {
     type UserDTO,
     UserNotFoundError,
 } from '../schemas/user.schema';
-import { InvalidUserInputError } from '../schemas/errors';
+import { InvalidInputError } from '../schemas/errors';
 import z from 'zod';
 
 export class UserController {
@@ -18,7 +18,7 @@ export class UserController {
             });
         } catch (error) {
             if (error instanceof z.ZodError) {
-                throw new InvalidUserInputError();
+                throw new InvalidInputError();
             }
             throw error;
         }
@@ -33,7 +33,6 @@ export class UserController {
             });
             return deletedUser;
         } catch (error) {
-            // P2025 is for when the where clause fails because the instance does not exist in the DB
             if (error instanceof Prisma.PrismaClientKnownRequestError && error.code == 'P2025') {
                 throw new UserNotFoundError();
             }
