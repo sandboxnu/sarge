@@ -20,5 +20,3 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
         return sargeApiError(message, 500);
     }
 }
-
-

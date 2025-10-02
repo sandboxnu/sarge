@@ -19,5 +19,3 @@ export async function POST(request: NextRequest) {
         return sargeApiError(message, 500);
     }
 }
-
-
