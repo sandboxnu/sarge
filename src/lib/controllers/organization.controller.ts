@@ -14,14 +14,30 @@ import { InvalidInputError } from '../schemas/errors';
 export class OrganizationController {
     async create(organization: CreateOrganizationDTO): Promise<Organization> {
         try {
-            const validatedOrg = createOrganizationSchema.parse(organization);
+            const { name, createdById } = createOrganizationSchema.parse(organization);
 
-            const user = await prisma.user.findUnique({ where: { id: validatedOrg.createdById } });
+            const user = await prisma.user.findUnique({
+                where: { id: createdById },
+            });
             if (!user) {
                 throw new InvalidInputError();
             }
+
+            const orgWithSameName = await prisma.organization.findFirst({
+                where: {
+                    name,
+                },
+            });
+
+            if (orgWithSameName) {
+                throw new InvalidInputError();
+            }
+
             return await prisma.organization.create({
-                data: validatedOrg,
+                data: {
+                    name,
+                    createdById,
+                },
             });
         } catch (error) {
             if (error instanceof z.ZodError) {
@@ -36,6 +52,16 @@ export class OrganizationController {
         try {
             const { name } = updateOrganizationSchema.parse(organization);
 
+            const orgWithSameName = await prisma.organization.findFirst({
+                where: {
+                    name,
+                },
+            });
+
+            if (orgWithSameName) {
+                throw new InvalidInputError();
+            }
+
             const updatedOrg = await prisma.organization.update({
                 where: {
                     id,
@@ -46,7 +72,7 @@ export class OrganizationController {
             });
 
             return updatedOrg;
-        } catch (error: unknown) {
+        } catch (error) {
             if (error instanceof z.ZodError) {
                 throw new InvalidInputError();
             }
