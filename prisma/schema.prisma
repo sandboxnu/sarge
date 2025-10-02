@@ -13,8 +13,9 @@ model Organization {
   name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  users              User[]
+  createdById String @unique
+  createdBy User @relation("CreatedOrganization", fields: [createdById], references: [id])
+  users              User[] @relation("UserOrganization")
   positions          Position[]
   candidates         Candidate[]
   AssessmentTemplate AssessmentTemplate[]
@@ -24,11 +25,12 @@ model Organization {
 model User {
   id           String        @id @unique @default(uuid())
   name         String
-  email        String        @unique
+  email        String       @unique
   orgId        String?
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  organization Organization? @relation(fields: [orgId], references: [id])
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  organization Organization? @relation("UserOrganization", fields: [orgId], references: [id])
+  createdOrganization Organization? @relation("CreatedOrganization")
   userRoles    UserRole[]
   Review       Review[]
   Comment      Comment[]
