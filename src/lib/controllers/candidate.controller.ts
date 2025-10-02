@@ -1,9 +1,6 @@
 import { type Candidate } from '@/generated/prisma';
 import { prisma } from '@/lib/prisma';
-import {
-    type CreateCandidateDTO,
-    createCandidateSchema,
-} from '../schemas/candidate.schema';
+import { type CreateCandidateDTO, createCandidateSchema } from '../schemas/candidate.schema';
 import { InvalidInputError } from '../schemas/errors';
 import z from 'zod';
 
