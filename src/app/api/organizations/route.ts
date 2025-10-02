@@ -1,22 +1,23 @@
-import { type NextRequest } from 'next/server';
 import { OrganizationController } from '@/lib/controllers/organization.controller';
+import { type NextRequest } from 'next/server';
 import { sargeApiError, sargeApiResponse } from '@/lib/responses';
-import { OrganizationNotFoundError } from '@/lib/schemas/organization.schema';
+import { InvalidInputError } from '@/lib/schemas/errors';
 
 const organizationController = new OrganizationController();
 
-export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const orgId = (await params).id;
-        const org = await organizationController.update(orgId, body);
+        const org = await organizationController.create(body);
         return sargeApiResponse(org, 200);
     } catch (error) {
-        if (error instanceof OrganizationNotFoundError) {
-            return sargeApiError(error.message, 404);
+        if (error instanceof InvalidInputError) {
+            return sargeApiError(error.message, 400);
         }
 
         const message = error instanceof Error ? error.message : String(error);
         return sargeApiError(message, 500);
     }
 }
+
+
