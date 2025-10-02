@@ -1,4 +1,4 @@
-export class InvalidUserInputError extends Error {
+export class InvalidInputError extends Error {
     constructor() {
         super(`The request structure is invalid. The server can't even parse the data.`);
     }
