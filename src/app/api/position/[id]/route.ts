@@ -40,7 +40,6 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     try {
         const positionId = (await params).id;
         const positionData = await request.json();
-        positionData.id = positionId;
 
         const updatedPosition = await positionController.update(positionId, positionData);
         return sargeApiResponse(updatedPosition, 200);
