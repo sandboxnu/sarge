@@ -22,7 +22,7 @@ class PositionController {
             });
         } catch (error) {
             if (error instanceof z.ZodError) {
-                throw new InvalidUserInputError();
+                throw new InvalidInputError();
             }
             throw error;
         }
