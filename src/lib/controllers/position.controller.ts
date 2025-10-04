@@ -5,7 +5,7 @@ import {
     type CreatePositionData,
 } from '../schemas/position.schema';
 import { type Position, Prisma } from '@/generated/prisma';
-import { InvalidUserInputError } from '../schemas/errors';
+import { InvalidInputError } from '../schemas/errors';
 import z from 'zod';
 
 class PositionController {
