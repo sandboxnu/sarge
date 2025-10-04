@@ -1,6 +1,6 @@
 import { positionController } from '@/lib/controllers/position.controller';
 import { sargeApiError, sargeApiResponse } from '@/lib/responses';
-import { InvalidUserInputError } from '@/lib/schemas/errors';
+import { InvalidInputError } from '@/lib/schemas/errors';
 import { type NextRequest } from 'next/server';
 
 export async function POST(request: NextRequest) {
@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
         const position = await positionController.create(body);
         return sargeApiResponse(position, 200);
     } catch (error) {
-        if (error instanceof InvalidUserInputError) {
+        if (error instanceof InvalidInputError) {
             return sargeApiError(error.message, 400);
         }
 
