@@ -60,7 +60,7 @@ class PositionController {
 
     async update(positionId: string, positionData: Partial<CreatePositionData>): Promise<Position> {
         try {
-            const validatedPosition = CreatePositionSchema.parse(positionData);
+            const validatedPosition = CreatePositionSchema.partial().parse(positionData);
             const updatedPosition = await prisma.position.update({
                 where: { id: positionId },
                 data: {
