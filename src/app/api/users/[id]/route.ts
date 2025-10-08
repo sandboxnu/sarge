@@ -5,11 +5,11 @@ import { type NextRequest } from 'next/server';
 
 export async function DELETE(
     _request: NextRequest,
-    { params }: { params: Promise<{ userId: string }> }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const userId = (await params).userId;
-        const user = await userController.delete(userId);
+        const id = (await params).id;
+        const user = await userController.delete(id);
         return sargeApiResponse(user, 200);
     } catch (error) {
         if (error instanceof UserNotFoundError) {
@@ -21,13 +21,10 @@ export async function DELETE(
     }
 }
 
-export async function GET(
-    _request: NextRequest,
-    { params }: { params: Promise<{ userId: string }> }
-) {
+export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const userId = (await params).userId;
-        const user = await userController.get(userId);
+        const id = (await params).id;
+        const user = await userController.get(id);
         return sargeApiResponse(user, 200);
     } catch (error) {
         if (error instanceof UserNotFoundError) {
@@ -39,14 +36,11 @@ export async function GET(
     }
 }
 
-export async function PUT(
-    request: NextRequest,
-    { params }: { params: Promise<{ userId: string }> }
-) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const userId = (await params).userId;
+        const id = (await params).id;
         const body = await request.json();
-        const user = await userController.update(userId, body);
+        const user = await userController.update(id, body);
         return sargeApiResponse(user, 200);
     } catch (error) {
         if (error instanceof UserNotFoundError) {

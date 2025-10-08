@@ -10,6 +10,7 @@ async function main() {
             update: {},
             create: {
                 id: 'e99335bd-9dd7-4260-8977-2eeaa4df799c',
+                hashedPassword: 'abcd',
                 name: 'Admin User',
                 email: 'admin@techcorp.com',
             },
@@ -20,6 +21,7 @@ async function main() {
             create: {
                 id: '68992d1e-e119-4874-b768-bf685d10194e',
                 name: 'John Doe',
+                hashedPassword: 'abcd',
                 email: 'john.doe@techcorp.com',
             },
         }),
@@ -29,6 +31,7 @@ async function main() {
             create: {
                 id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
                 name: 'Jane Smith',
+                hashedPassword: 'abcd',
                 email: 'jane.smith@startupxyz.com',
             },
         }),
@@ -38,6 +41,7 @@ async function main() {
             create: {
                 id: 'b2c3d4e5-f6g7-8901-bcde-f12345678901',
                 name: 'Bob Wilson',
+                hashedPassword: 'abcd',
                 email: 'bob.wilson@enterprise.com',
             },
         }),
