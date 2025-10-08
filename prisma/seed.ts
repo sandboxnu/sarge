@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 async function main() {
     // ----- Users (create first without orgId) -----
-    const users = await Promise.all([
+    const _users = await Promise.all([
         prisma.user.upsert({
             where: { id: 'e99335bd-9dd7-4260-8977-2eeaa4df799c' },
             update: {},
@@ -45,7 +45,7 @@ async function main() {
 
     // ----- Organizations -----
     // Each org must be "created" by a distinct user.
-    const orgs = await Promise.all([
+    const _orgs = await Promise.all([
         prisma.organization.upsert({
             where: { id: '788551fd-57e3-4854-87e5-8f7a5ff404f9' },
             update: {},
