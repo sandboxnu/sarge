@@ -9,3 +9,9 @@ export class InternalServerError extends Error {
         super('Internal server error occurred.');
     }
 }
+
+export class AuthorizationError extends Error {
+    constructor() {
+        super('Unauthorized');
+    }
+}
