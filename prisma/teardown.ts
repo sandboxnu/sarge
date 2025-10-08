@@ -1,10 +1,10 @@
 /* eslint-disable no-console */
 
-import { PrismaClient } from "../src/generated/prisma";
+import { PrismaClient } from '../src/generated/prisma';
 const prisma = new PrismaClient();
 
 async function main() {
-  await prisma.$executeRaw`
+    await prisma.$executeRaw`
   TRUNCATE TABLE
     "Comment",
     "Review",
@@ -22,14 +22,14 @@ async function main() {
     "Organization"
   RESTART IDENTITY CASCADE;
 `;
-  console.log("Development database cleared.");
+    console.log('Development database cleared.');
 }
 
 main()
-  .catch((e) => {
-    console.error("Teardown failed:", e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+    .catch((e) => {
+        console.error('Teardown failed:', e);
+        process.exit(1);
+    })
+    .finally(async () => {
+        await prisma.$disconnect();
+    });
