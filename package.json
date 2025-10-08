@@ -14,7 +14,13 @@
         "prisma:generate": "prisma generate",
         "prettier:check": "prettier --check .",
         "prettier:fix": "prettier --write .",
-        "build:check": "NEXT_TELEMETRY_DISABLED=1 next build"
+        "build:check": "NEXT_TELEMETRY_DISABLED=1 next build",
+        "db:seed": "tsx prisma/seed.ts",
+        "db:teardown": "tsx prisma/teardown.ts",
+        "prisma:seed": "prisma db seed"
+    },
+    "prisma": {
+        "seed": "tsx prisma/seed.ts"
     },
     "engines": {
         "node": ">= 22.0.0"
@@ -42,6 +48,7 @@
         "prettier": "^3.6.2",
         "prettier-plugin-tailwindcss": "^0.6.14",
         "tailwindcss": "^4",
+        "tsx": "^4.20.6",
         "typescript": "^5"
     }
 }
