@@ -48,6 +48,38 @@ export class OrganizationController {
         }
     }
 
+    async get(id: string): Promise<Organization | null> {
+        try {
+            const org = await prisma.organization.findUnique({
+                where: {
+                    id
+                },
+                select: {
+                    id: true,
+                    name: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    createdById: true,
+                    users: true,
+                    positions: true,
+                    candidates: true,
+                }
+            })
+
+            if (!org) {
+                throw new OrganizationNotFoundError();
+            }
+            
+            return org;
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
+                throw new OrganizationNotFoundError();
+            }
+
+            throw error;
+        }
+    }
+
     async update(id: string, organization: UpdateOrganizationDTO): Promise<Organization> {
         try {
             const { name } = updateOrganizationSchema.parse(organization);
@@ -81,6 +113,28 @@ export class OrganizationController {
                 throw new OrganizationNotFoundError();
             }
 
+            throw error;
+        }
+    }
+
+    async delete(id: string): Promise<Organization> {
+        try {
+            const deletedOrg = await prisma.organization.delete({
+                where: {
+                    id,
+                },
+            });
+
+            if (!deletedOrg) {
+                throw new OrganizationNotFoundError();
+            }
+
+            return deletedOrg;
+        }
+        catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
+                throw new OrganizationNotFoundError();
+            }
             throw error;
         }
     }
