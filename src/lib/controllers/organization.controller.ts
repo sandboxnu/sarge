@@ -52,7 +52,7 @@ export class OrganizationController {
         try {
             const org = await prisma.organization.findUnique({
                 where: {
-                    id
+                    id,
                 },
                 select: {
                     id: true,
@@ -63,13 +63,13 @@ export class OrganizationController {
                     users: true,
                     positions: true,
                     candidates: true,
-                }
-            })
+                },
+            });
 
             if (!org) {
                 throw new OrganizationNotFoundError();
             }
-            
+
             return org;
         } catch (error) {
             if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
@@ -130,8 +130,7 @@ export class OrganizationController {
             }
 
             return deletedOrg;
-        }
-        catch (error) {
+        } catch (error) {
             if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
                 throw new OrganizationNotFoundError();
             }
