@@ -6,16 +6,11 @@ import { userController } from '../controllers/user.controller';
 import { prisma } from '../prisma';
 import bcrypt from 'bcrypt';
 import { AuthorizationError } from '../schemas/errors';
+import { type User } from '@/generated/prisma';
 
 export interface LoginCredentials {
     email: string;
     password: string;
-}
-
-export interface User {
-    id: string;
-    email: string;
-    role?: string;
 }
 
 export async function login(_credentials: LoginCredentials): Promise<User> {

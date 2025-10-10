@@ -11,12 +11,12 @@ export const config = {
     secure: process.env.NODE_ENV === 'production',
 };
 
-const secretKey = createSecretKey(process.env.JWT_SECRET!, 'utf-8');
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+export const secretKey = createSecretKey(process.env.JWT_SECRET!, 'utf-8');
 
 export interface SessionPayload {
     userId: string;
-    email?: string;
-    exp?: number;
+    email: string;
 }
 
 export async function createSession(payload: SessionPayload) {

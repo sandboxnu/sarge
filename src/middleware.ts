@@ -1,16 +1,11 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
-import { createSecretKey } from 'node:crypto';
-import { config as authConfig } from './lib/auth/auth';
 
-const secretKey = createSecretKey(process.env.JWT_SECRET!, 'utf-8');
-
-// Define protected routes
-const protectedRoutes = ['/api'];
+const protectedRoutes = ['/dashboard'];
 
 export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
-    const sessionCookie = request.cookies.get(authConfig.cookieName)?.value;
+    const sessionCookie = request.cookies.get('sarge.session')?.value;
 
     // Check if the route requires authentication
     const isProtectedRoute = protectedRoutes.some((route) => pathname.startsWith(route));
@@ -19,8 +14,11 @@ export async function middleware(request: NextRequest) {
     let isAuthenticated = false;
     if (sessionCookie) {
         try {
-            await jwtVerify(sessionCookie, secretKey, {
-                issuer: authConfig.issuer,
+            // Create secret key directly in middleware (Edge Runtime compatible)
+            const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+
+            await jwtVerify(sessionCookie, secret, {
+                issuer: 'sargenu',
             });
             isAuthenticated = true;
         } catch {

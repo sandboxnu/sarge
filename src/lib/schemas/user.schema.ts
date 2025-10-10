@@ -17,6 +17,7 @@ export const createUserSchema = z.object({
         .toLowerCase()
         .trim()
         .max(255, 'Email must be less than 255 characters'),
+    hashedPassword: z.string(),
 });
 
 export const UserSchema = z.object({

@@ -9,8 +9,6 @@ export async function DELETE(
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const session = await requireAuth();
-
         const id = (await params).id;
         const user = await userController.delete(id);
         return sargeApiResponse(user, 200);
