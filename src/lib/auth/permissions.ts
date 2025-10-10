@@ -10,6 +10,7 @@ export async function canView(target: User, requester: User): Promise<boolean> {
     return false;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function canModify(target: User, requester: User): Promise<boolean> {
     return false;
 }

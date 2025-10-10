@@ -7,14 +7,11 @@ export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
     const sessionCookie = request.cookies.get('sarge.session')?.value;
 
-    // Check if the route requires authentication
     const isProtectedRoute = protectedRoutes.some((route) => pathname.startsWith(route));
 
-    // Verify session if cookie exists
     let isAuthenticated = false;
     if (sessionCookie) {
         try {
-            // Create secret key directly in middleware (Edge Runtime compatible)
             const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 
             await jwtVerify(sessionCookie, secret, {
@@ -26,7 +23,6 @@ export async function middleware(request: NextRequest) {
         }
     }
 
-    // Redirect logic
     if (isProtectedRoute && !isAuthenticated) {
         return NextResponse.redirect(new URL('/login', request.url));
     }

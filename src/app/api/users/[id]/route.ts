@@ -1,4 +1,3 @@
-import { requireAuth } from '@/lib/auth/auth';
 import { userController } from '@/lib/controllers/user.controller';
 import { sargeApiError, sargeApiResponse } from '@/lib/responses';
 import { UserNotFoundError } from '@/lib/schemas/user.schema';
