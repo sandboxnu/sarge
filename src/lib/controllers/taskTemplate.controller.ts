@@ -76,10 +76,9 @@ class TaskTemplateController {
 
     async delete(taskTemplate: DeleteTaskTemplateDTO): Promise<TaskTemplate> {
         try {
-            const validatedTaskTemplateDeleteParam = deleteTaskTemplateSchema.parse(
-                taskTemplate.id
-            );
+            const validatedTaskTemplateDeleteParam = deleteTaskTemplateSchema.parse(taskTemplate);
 
+            // TODO: validate the caller is an admin of the org
             return await prisma.taskTemplate.delete({
                 where: {
                     id: validatedTaskTemplateDeleteParam.id,
@@ -118,6 +117,7 @@ class TaskTemplateController {
                 throw new TaskTemplateExistsError();
             }
 
+            // TODO: validate the caller is an admin of the org
             return await prisma.taskTemplate.update({
                 where: {
                     id,
