@@ -4,7 +4,7 @@ import taskTemplateController from '@/lib/controllers/taskTemplate.controller';
 import { TaskTemplateNotFoundError } from '@/lib/schemas/taskTemplate.schema';
 import { type NextRequest } from 'next/server';
 
-export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         const foundTaskTemplate = await taskTemplateController.get(await params);
         return sargeApiResponse(foundTaskTemplate, 200);
@@ -22,7 +22,7 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
     }
 }
 
-export async function DELETE(_req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         const deletedTaskTemplate = await taskTemplateController.delete(await params);
         return sargeApiResponse(deletedTaskTemplate, 200);
@@ -40,7 +40,7 @@ export async function DELETE(_req: NextRequest, { params }: { params: { id: stri
     }
 }
 
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         const body = await request.json();
         const idWithBody = { id: (await params).id, ...body };
