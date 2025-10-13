@@ -48,13 +48,13 @@
 
 ## Task Templates
 
-| Method   | Endpoint                            | Description                      |
-| -------- | ----------------------------------- | -------------------------------- |
-| `POST`   | `/taskTemplates`                   | Create a new task template       |
-| `GET`    | `/taskTemplates/{id}`              | Get task template details        |
-| `PUT`    | `/taskTemplates/{id}`              | Update task template             |
-| `DELETE` | `/taskTemplates/{id}`              | Delete task template             |
-| `GET`    | `/taskTemplates`                   | List task templates (paginated?) |
+| Method   | Endpoint              | Description                      |
+| -------- | --------------------- | -------------------------------- |
+| `POST`   | `/taskTemplates`      | Create a new task template       |
+| `GET`    | `/taskTemplates/{id}` | Get task template details        |
+| `PUT`    | `/taskTemplates/{id}` | Update task template             |
+| `DELETE` | `/taskTemplates/{id}` | Delete task template             |
+| `GET`    | `/taskTemplates`      | List task templates (paginated?) |
 
 ## Assessment Templates
 
