@@ -86,7 +86,7 @@ class TaskTemplateController {
             });
         } catch (error) {
             if (error instanceof Prisma.PrismaClientKnownRequestError && error.code == 'P2025') {
-                throw new TaskTemplateExistsError();
+                throw new TaskTemplateNotFoundError();
             }
 
             if (error instanceof z.ZodError) {
@@ -104,16 +104,19 @@ class TaskTemplateController {
             const { id, title, content, public_test_cases, private_test_cases } =
                 validatedTaskTemplateUpdateBody;
 
-            const existingTaskTemplate = await prisma.taskTemplate.findFirst({
+            const current = await prisma.taskTemplate.findUnique({ where: { id } });
+            if (!current) throw new TaskTemplateNotFoundError();
+
+            const duplicate = await prisma.taskTemplate.findFirst({
                 where: {
-                    id: {
-                        not: id,
-                    },
+                    orgId: current.orgId,
                     title,
+                    id: { not: id },
                 },
+                select: { id: true },
             });
 
-            if (existingTaskTemplate) {
+            if (duplicate) {
                 throw new TaskTemplateExistsError();
             }
 

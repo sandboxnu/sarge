@@ -49,11 +49,13 @@ export const updateTaskTemplateSchema = z.object({
 
 export const TaskTemplateSchema = z.object({
     id: z.uuid(),
-    title: createTaskTemplateSchema.shape.title,
-    content: createTaskTemplateSchema.shape.content,
-    public_test_cases: createTaskTemplateSchema.shape.public_test_cases,
-    private_test_cases: createTaskTemplateSchema.shape.private_test_cases,
-    orgId: createTaskTemplateSchema.shape.orgId,
+    title: z.string().trim(),
+    content: z.string().min(2).max(500),
+    orgId: z.uuid(),
+    public_test_cases: z
+        .array(testCaseSchema)
+        .min(1, 'There must at least be one public test case'),
+    private_test_cases: z.array(testCaseSchema).default([]),
 });
 
 export type TaskTemplateDTO = z.infer<typeof TaskTemplateSchema>;
