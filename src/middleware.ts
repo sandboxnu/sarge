@@ -17,6 +17,7 @@ export async function middleware(request: NextRequest) {
             await jwtVerify(sessionCookie, secret, {
                 issuer: 'sargenu',
             });
+
             isAuthenticated = true;
         } catch {
             isAuthenticated = false;
