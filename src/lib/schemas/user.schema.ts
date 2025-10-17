@@ -17,7 +17,12 @@ export const createUserSchema = z.object({
         .toLowerCase()
         .trim()
         .max(255, 'Email must be less than 255 characters'),
-    hashedPassword: z.string(),
+    password: z.string().min(8),
+});
+
+export const loginUserSchema = z.object({
+    email: createUserSchema.shape.email,
+    password: z.string().min(8, 'Password is required'),
 });
 
 export const UserSchema = z.object({
@@ -30,3 +35,5 @@ export const UserSchema = z.object({
 export type UserDTO = z.infer<typeof UserSchema>;
 
 export type CreateUserDTO = z.infer<typeof createUserSchema>;
+
+export type LoginUserDTO = z.infer<typeof loginUserSchema>;

@@ -15,7 +15,11 @@ class UserController {
         try {
             const validatedUser = createUserSchema.parse(user);
             return await prisma.user.create({
-                data: validatedUser,
+                data: {
+                    name: validatedUser.name,
+                    email: validatedUser.email,
+                    hashedPassword: validatedUser.password,
+                },
             });
         } catch (error) {
             if (error instanceof z.ZodError) {
