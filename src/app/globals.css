@@ -2,8 +2,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 :root {
-    --background: #171717;
-    --foreground: #ffffff;
+    --background: #ffffff;
+    --foreground: #171717;
     --sarge-purple: #5d5bf7;
     --sarge-lightgrey: #f3f3f5;
 }
@@ -19,8 +19,8 @@
 
 @media (prefers-color-scheme: dark) {
     :root {
-        --background: #ffffff;
-        --foreground: #0a0a0a;
+        --background: #0a0a0a;
+        --foreground: #ffffff;
     }
 }
 
