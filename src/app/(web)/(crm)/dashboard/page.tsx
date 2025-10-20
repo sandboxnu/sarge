@@ -1,7 +1,13 @@
-import { getCurrentUser } from '@/lib/auth/auth-service';
+'use client';
 
-export default async function DashboardPage() {
-    const name = await getCurrentUser();
+import { useAuth } from '@/lib/auth/auth-client';
 
-    return <div className="">{name?.name}</div>;
+export default function DashboardPage() {
+    const auth = useAuth();
+
+    if (!auth.isPending && auth.user?.id !== null) {
+        return <div className="">{auth.user.name}</div>;
+    } else {
+        return <div className="">Loading...</div>;
+    }
 }
