@@ -1,8 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { signup } from '@/lib/auth/auth-service';
-import { useFormState } from 'react-dom';
-import { useEffect } from 'react';
+import { useActionState, useEffect } from 'react';
 
 export interface SignupState {
     success: boolean;
@@ -21,7 +20,7 @@ const initialState: SignupState = {
 };
 
 export default function SignupPage() {
-    const [state, formAction] = useFormState(signup, initialState);
+    const [state, formAction] = useActionState(signup, initialState);
 
     useEffect(() => {
         if (state && !state.success && Object.keys(state.errors).length === 0 && state.message) {

@@ -38,7 +38,7 @@ export async function createSession(payload: SessionPayload) {
         secure: config.secure,
         maxAge: config.expiration,
         path: '/',
-        sameSite: 'lax',
+        sameSite: 'strict',
     });
 
     return session;
