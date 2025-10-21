@@ -2,17 +2,19 @@ import { SecretsManager } from '@aws-sdk/client-secrets-manager';
 
 class SecretsService {
     private client: SecretsManager;
+    private secretName: string;
 
     constructor() {
         this.client = new SecretsManager({
             region: 'us-east-2',
         });
+        this.secretName = process.env.AWS_SECRET_NAME ?? '';
     }
 
-    async getSecretValue(secret: string) {
+    async getSecretValue(secret: string): Promise<string | null> {
         try {
             const data = await this.client.getSecretValue({
-                SecretId: process.env.AWS_SECRET_NAME,
+                SecretId: this.secretName,
             });
 
             if (!data?.SecretString && !data.SecretBinary) {
@@ -31,6 +33,8 @@ class SecretsService {
                 const secrets = JSON.parse(decodedBinarySecret);
                 return secrets[secret];
             }
+
+            return null;
         } catch (error) {
             // TODO: add a secrets parsing error
             throw error;
