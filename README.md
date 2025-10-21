@@ -14,6 +14,10 @@ DB_USER="postgres"
 DB_PASSWORD="password"
 DB_NAME="sarge"
 
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+AWS_SECRET_NAME=
+
 DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@localhost:5432/${DB_NAME}
 ```
 
