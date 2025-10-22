@@ -29,7 +29,7 @@ export default function SignupPage() {
     }, [state]);
 
     return (
-        <div className="flex min-h-screen items-center">
+        <div className="flex h-full items-center justify-center">
             <div className="border-s-lightgrey container mx-auto max-w-md rounded-lg border-2 p-9">
                 <h1 className="mb-6 text-center text-xl font-medium">Create an account</h1>
 

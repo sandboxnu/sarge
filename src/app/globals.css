@@ -1,10 +1,10 @@
 @import 'tailwindcss';
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 :root {
     --background: #171717;
     --foreground: #ffffff;
     --sarge-purple: #5d5bf7;
+    --grey-50: #f9fafe;
     --sarge-lightgrey: #f3f3f5;
 }
 
@@ -13,8 +13,10 @@
     --color-foreground: var(--foreground);
     --color-s-purple: var(--sarge-purple);
     --color-s-lightgrey: var(--sarge-lightgrey);
-    --font-sans: 'Inter', 'system-ui';
-    --font-mono: var(--font-geist-mono);
+    --color-grey-50: var(--grey-50);
+    --font-sans: var(--font-inter);
+    --font-nunito-sans: var(--font-nunito-sans);
+    --font-mono: monospace;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -27,5 +29,4 @@
 body {
     background: var(--background);
     color: var(--foreground);
-    font-family: var(--font-sans);
 }
