@@ -1,15 +1,19 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Nunito_Sans, Inter } from 'next/font/google';
 import './globals.css';
+import { Header } from '@/lib/components/Header';
+import { UserProvider } from '@/lib/auth/auth-client';
 
-const geistSans = Geist({
-    variable: '--font-geist-sans',
+const nunitoSans = Nunito_Sans({
+    variable: '--font-nunito-sans',
     subsets: ['latin'],
+    weight: ['200', '300', '400', '500', '600', '700', '800', '900'],
 });
 
-const geistMono = Geist_Mono({
-    variable: '--font-geist-mono',
+const inter = Inter({
+    variable: '--font-inter',
     subsets: ['latin'],
+    weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
 });
 
 export const metadata: Metadata = {
@@ -24,8 +28,13 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-                {children}
+            <body
+                className={`${nunitoSans.variable} ${inter.variable} grid h-dvh grid-rows-[auto_1fr] antialiased`}
+            >
+                <UserProvider>
+                    <Header />
+                    <main>{children}</main>
+                </UserProvider>
             </body>
         </html>
     );
