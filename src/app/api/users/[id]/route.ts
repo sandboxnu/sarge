@@ -1,4 +1,4 @@
-import { userController } from '@/lib/controllers/user.controller';
+import { deleteUser, getUser, updateUser } from '@/lib/services/user.service';
 import { sargeApiError, sargeApiResponse } from '@/lib/responses';
 import { UserNotFoundError } from '@/lib/schemas/user.schema';
 import { type NextRequest } from 'next/server';
@@ -9,7 +9,7 @@ export async function DELETE(
 ) {
     try {
         const id = (await params).id;
-        const user = await userController.delete(id);
+        const user = await deleteUser(id);
         return sargeApiResponse(user, 200);
     } catch (error) {
         if (error instanceof UserNotFoundError) {
@@ -24,7 +24,7 @@ export async function DELETE(
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         const id = (await params).id;
-        const user = await userController.get(id);
+        const user = await getUser(id);
         return sargeApiResponse(user, 200);
     } catch (error) {
         if (error instanceof UserNotFoundError) {
@@ -40,7 +40,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     try {
         const id = (await params).id;
         const body = await request.json();
-        const user = await userController.update(id, body);
+        const user = await updateUser(id, body);
         return sargeApiResponse(user, 200);
     } catch (error) {
         if (error instanceof UserNotFoundError) {

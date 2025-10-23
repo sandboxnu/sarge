@@ -1,14 +1,16 @@
 import { type NextRequest } from 'next/server';
-import { OrganizationController } from '@/lib/controllers/organization.controller';
+import {
+    getOrganization,
+    updateOrganization,
+    deleteOrganization,
+} from '@/lib/services/organization.service';
 import { sargeApiError, sargeApiResponse } from '@/lib/responses';
 import { OrganizationNotFoundError } from '@/lib/schemas/organization.schema';
-
-const organizationController = new OrganizationController();
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         const orgId = (await params).id;
-        const org = await organizationController.get(orgId);
+        const org = await getOrganization(orgId);
         return sargeApiResponse(org, 200);
     } catch (error) {
         if (error instanceof OrganizationNotFoundError) {
@@ -24,7 +26,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     try {
         const body = await request.json();
         const orgId = (await params).id;
-        const org = await organizationController.update(orgId, body);
+        const org = await updateOrganization(orgId, body);
         return sargeApiResponse(org, 200);
     } catch (error) {
         if (error instanceof OrganizationNotFoundError) {
@@ -42,7 +44,7 @@ export async function DELETE(
 ) {
     try {
         const orgId = (await params).id;
-        const org = await organizationController.delete(orgId);
+        const org = await deleteOrganization(orgId);
         return sargeApiResponse(org, 200);
     } catch (error) {
         if (error instanceof OrganizationNotFoundError) {
