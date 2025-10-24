@@ -12,6 +12,8 @@ on:
 jobs:
     run-linting-check:
         runs-on: ubuntu-latest
+        env:
+          NEXT_PUBLIC_CDN_BASE: ${{ secrets.NEXT_PUBLIC_CDN_BASE }}
         timeout-minutes: 10
         steps:
             - name: Checkout repository
