@@ -5,12 +5,18 @@ import { useState } from 'react';
 function useFileUpload(type: UploadType, organizationId?: string) {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
+    const [submitted, setSubmitted] = useState<boolean>(false);
+    const [imageUrl, setImageUrl] = useState<string | null>(null)
     const auth = useAuth();
 
     async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0];
 
         if (!file) return;
+
+        setError(null)
+        setSubmitted(false)
+        setImageUrl(null)
 
         if (!auth.user.id) {
             setError('User not authenticated');
@@ -38,7 +44,7 @@ function useFileUpload(type: UploadType, organizationId?: string) {
             });
 
             if (!signResponse.ok) {
-                setError(await signResponse.text());
+                setError('[GET SIGNURL] Failed to upload image. Please contact the Sarge team.');
                 setLoading(false);
                 return;
             }
@@ -52,14 +58,36 @@ function useFileUpload(type: UploadType, organizationId?: string) {
             });
 
             if (!s3Response.ok) {
-                setError(await s3Response.text());
+                setError('[PUT TO S3] Failed to upload image. Please contact the Sarge team.');
                 setLoading(false);
                 return;
             }
+
+            const confirmResponse = await fetch('/api/upload/confirm', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    type,
+                    key: data.key,
+                    userId: auth.user.id,
+                    organizationId,
+                }),
+            })
+
+            if (!confirmResponse.ok) {
+                setError('[CONFIRM URL] Failed to upload image. Please contact the Sarge team.')
+                setLoading(false);
+                return;
+            }
+
+            const { data: confirmData } = await confirmResponse.json();
+
+            setImageUrl(confirmData.imageUrl)
         } catch (error) {
             setError(`Error handling file change: ${error}`);
         } finally {
             setLoading(false);
+            setSubmitted(true);
         }
     }
 
@@ -67,6 +95,8 @@ function useFileUpload(type: UploadType, organizationId?: string) {
         handleFileChange,
         loading,
         error,
+        submitted,
+        imageUrl
     };
 }
 
