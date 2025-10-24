@@ -13,6 +13,7 @@ export default function DashboardPage() {
             <div>
                 <div className="">{auth.user.name}</div>
 
+                {/* THIS IS A SAMPLE OF HOW IMAGE UPLOAD WORKS FOR USERS / PLEASE REMOVE BEFORE WORKING ON THIS PAGE */}
                 <input
                     id="upload"
                     type="file"
