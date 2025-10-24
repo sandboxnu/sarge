@@ -27,13 +27,6 @@ function useFileUpload(type: UploadType, organizationId?: string) {
         try {
             setLoading(true)
 
-            console.log("Body: ", {
-                type,
-                mime,
-                userId: auth.user.id,
-                organizationId
-            })
-
             const signResponse = await fetch('/api/upload/sign', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
