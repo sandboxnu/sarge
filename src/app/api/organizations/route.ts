@@ -1,14 +1,12 @@
-import { OrganizationController } from '@/lib/controllers/organization.controller';
+import { createOrganization } from '@/lib/services/organization.service';
 import { type NextRequest } from 'next/server';
 import { sargeApiError, sargeApiResponse } from '@/lib/responses';
 import { InvalidInputError } from '@/lib/schemas/errors';
 
-const organizationController = new OrganizationController();
-
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const org = await organizationController.create(body);
+        const org = await createOrganization(body);
         return sargeApiResponse(org, 200);
     } catch (error) {
         if (error instanceof InvalidInputError) {

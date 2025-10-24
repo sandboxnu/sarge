@@ -1,4 +1,4 @@
-import { positionController } from '@/lib/controllers/position.controller';
+import { createPosition } from '@/lib/services/position.service';
 import { sargeApiError, sargeApiResponse } from '@/lib/responses';
 import { InvalidInputError } from '@/lib/schemas/errors';
 import { type NextRequest } from 'next/server';
@@ -6,7 +6,7 @@ import { type NextRequest } from 'next/server';
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const position = await positionController.create(body);
+        const position = await createPosition(body);
         return sargeApiResponse(position, 200);
     } catch (error) {
         if (error instanceof InvalidInputError) {

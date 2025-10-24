@@ -1,12 +1,12 @@
 import { type NextRequest } from 'next/server';
 import { sargeApiError, sargeApiResponse } from '@/lib/responses';
 import { InvalidInputError } from '@/lib/schemas/errors';
-import taskTemplateController from '@/lib/controllers/taskTemplate.controller';
+import { createTaskTemplate } from '@/lib/services/task-template.service';
 
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const taskTemplate = await taskTemplateController.create(body);
+        const taskTemplate = await createTaskTemplate(body);
         return sargeApiResponse(taskTemplate, 200);
     } catch (error) {
         if (error instanceof InvalidInputError) {
