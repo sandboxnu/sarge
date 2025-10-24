@@ -42,9 +42,11 @@ jobs:
               env:
                   ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
                   IMAGE_TAG: ${{ github.sha }}
+                  NEXT_PUBLIC_CDN_BASE: ${{ secrets.NEXT_PUBLIC_CDN_BASE }}
               run: |
                   set -e
-                  docker build -t $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG .
+                  docker build --build-arg NEXT_PUBLIC_CDN_BASE=$NEXT_PUBLIC_CDN_BASE \
+                  -t $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG .
                   docker push $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG
                   echo "IMAGE_URI=$ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG" >> $GITHUB_ENV
 

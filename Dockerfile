@@ -6,6 +6,9 @@ RUN apt-get update -y && apt-get install -y openssl ca-certificates libssl3 && r
 COPY package.json pnpm-lock.yaml* ./
 RUN corepack enable && pnpm install --frozen-lockfile
 
+ARG NEXT_PUBLIC_CDN_BASE
+ENV NEXT_PUBLIC_CDN_BASE=$NEXT_PUBLIC_CDN_BASE
+
 COPY . .
 RUN pnpm prisma:generate
 RUN pnpm build
