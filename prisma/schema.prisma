@@ -39,9 +39,15 @@ model User {
   Comment             Comment[]
 }
 
+enum RoleType {
+  ADMIN
+  RECRUITER
+  REVIWER
+}
+
 model Role {
   id        String     @id @unique @default(uuid())
-  role      String     @unique
+  role      RoleType
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
   userRoles UserRole[]
