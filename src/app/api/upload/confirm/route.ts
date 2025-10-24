@@ -4,19 +4,7 @@ import s3Service from '@/lib/services/s3.service';
 import { Prisma } from '@/generated/prisma';
 import { type NextRequest } from 'next/server';
 import { z } from 'zod';
-
-const ConfirmBodySchema = z.discriminatedUnion('type', [
-    z.object({
-        type: z.literal('user'),
-        userId: z.uuid(),
-        key: z.string(),
-    }),
-    z.object({
-        type: z.literal('organization'),
-        organizationId: z.uuid(),
-        key: z.string(),
-    }),
-]);
+import { ConfirmBodySchema } from '@/lib/schemas/upload.schema';
 
 export async function POST(request: NextRequest) {
     try {
