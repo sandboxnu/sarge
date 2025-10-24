@@ -1,14 +1,12 @@
-import { CandidateController } from '@/lib/controllers/candidate.controller';
+import { createCandidate } from '@/lib/services/candidate.service';
 import { type NextRequest } from 'next/server';
 import { sargeApiError, sargeApiResponse } from '@/lib/responses';
 import { InvalidInputError } from '@/lib/schemas/errors';
 
-const candidateController = new CandidateController();
-
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const candidate = await candidateController.create(body);
+        const candidate = await createCandidate(body);
         return sargeApiResponse(candidate, 200);
     } catch (error) {
         if (error instanceof InvalidInputError) {
