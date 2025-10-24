@@ -11,6 +11,17 @@ const EXTENSIONS: Record<string, string> = {
     'image/gif': 'gif',
     'image/avif': 'avif',
 };
+import { randomUUID } from 'node:crypto';
+
+export type UploadType = 'user' | 'organization';
+
+const EXTENSIONS: Record<string, string> = {
+    'image/jpeg': 'jpg',
+    'image/png': 'png',
+    'image/webp': 'webp',
+    'image/gif': 'gif',
+    'image/avif': 'avif',
+};
 
 class S3Service {
     private client: S3Client;
