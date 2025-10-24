@@ -1,4 +1,4 @@
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { PutObjectCommand, S3Client, NotFound, HeadObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { randomUUID } from 'node:crypto';
 
@@ -28,7 +28,7 @@ class S3Service {
         id: string,
         mime: string
     ): Promise<{ signedURL: string; mime: string; key: string }> {
-        if (!EXTENSIONS[mime]) throw new Error(`Unsupported MIME type: ${mime}`);
+        if (!EXTENSIONS[mime]) throw new Error(`Unsupported mime type: ${mime}`);
         const ext = EXTENSIONS[mime];
 
         const key = `${type}/${id}/${randomUUID()}.${ext}`;
@@ -42,6 +42,24 @@ class S3Service {
         const signedURL = await getSignedUrl(this.client, command, { expiresIn: 15 * 60 });
 
         return { signedURL, mime, key };
+    }
+
+    async doesKeyExist(key: string): Promise<boolean> {
+        try {
+            const command = new HeadObjectCommand({
+                Bucket: this.bucket,
+                Key: key,
+            });
+
+            await this.client.send(command);
+            return true;
+        } catch (error) {
+            if (error instanceof NotFound) {
+                return false;
+            }
+
+            throw error;
+        }
     }
 }
 
