@@ -30,7 +30,7 @@ function useFileUpload(type: UploadType, organizationId?: string) {
         const mime = file.type;
 
         try {
-            setLoading(true);
+            setLoading(true)
 
             const signResponse = await fetch('/api/upload/sign', {
                 method: 'POST',
