@@ -1,16 +1,16 @@
-import { type UploadType } from "@/lib/services/s3.service";
+import { type UploadType } from '@/lib/services/s3.service';
 import { useAuth } from '@/lib/auth/auth-client';
-import { useState } from "react";
+import { useState } from 'react';
 
 function useFileUpload(type: UploadType, organizationId?: string) {
     const [error, setError] = useState<string | null>(null);
-    const [loading, setLoading] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(false);
     const auth = useAuth();
 
     async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0];
 
-        if (!file) return
+        if (!file) return;
 
         if (!auth.user.id) {
             setError('User not authenticated');
@@ -21,11 +21,10 @@ function useFileUpload(type: UploadType, organizationId?: string) {
             return;
         }
 
-
-        const mime = file.type
+        const mime = file.type;
 
         try {
-            setLoading(true)
+            setLoading(true);
 
             const signResponse = await fetch('/api/upload/sign', {
                 method: 'POST',
@@ -40,7 +39,7 @@ function useFileUpload(type: UploadType, organizationId?: string) {
 
             if (!signResponse.ok) {
                 setError(await signResponse.text());
-                setLoading(false)
+                setLoading(false);
                 return;
             }
 
@@ -49,27 +48,26 @@ function useFileUpload(type: UploadType, organizationId?: string) {
             const s3Response = await fetch(data.signedURL, {
                 method: 'PUT',
                 headers: { 'Content-Type': data.mime },
-                body: file
+                body: file,
             });
 
             if (!s3Response.ok) {
                 setError(await s3Response.text());
-                setLoading(false)
+                setLoading(false);
                 return;
             }
-
         } catch (error) {
-            setError(`Error handling file change: ${error}`)
+            setError(`Error handling file change: ${error}`);
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
     }
 
     return {
         handleFileChange,
         loading,
-        error
-    }
+        error,
+    };
 }
 
-export default useFileUpload
+export default useFileUpload;
