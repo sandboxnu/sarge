@@ -1,10 +1,9 @@
-import { mime, z } from 'zod';
+import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
 import { sargeApiError, sargeApiResponse } from '@/lib/responses';
 import s3Service from '@/lib/services/s3.service';
 import { isUserAdmin } from '@/lib/utils/permissions.utils';
 import { type NextRequest } from 'next/server';
-import { S3Client } from '@aws-sdk/client-s3';
 
 const PresignBodySchema = z.discriminatedUnion('type', [
     z.object({
