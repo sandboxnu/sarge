@@ -5,7 +5,7 @@ import { Prisma } from '@/generated/prisma';
 import { type NextRequest } from 'next/server';
 import { z } from 'zod';
 
-export const ConfirmBodySchema = z.discriminatedUnion('type', [
+const ConfirmBodySchema = z.discriminatedUnion('type', [
     z.object({
         type: z.literal('user'),
         userId: z.uuid(),
