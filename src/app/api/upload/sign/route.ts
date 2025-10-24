@@ -29,8 +29,6 @@ export async function POST(request: NextRequest) {
             return sargeApiError(`${parsed.error.flatten()}`, 400);
         }
 
-        console.log('Successfully parsed');
-
         const { type, mime, userId } = parsed.data;
         if (!userId) {
             return sargeApiError('User not authenticated', 401);
@@ -57,8 +55,6 @@ export async function POST(request: NextRequest) {
             const res = await s3Service.getSignedURL(type, organizationId, mime);
             return sargeApiResponse(res, 200);
         }
-
-        console.log('About to sign');
 
         const res = await s3Service.getSignedURL(type, userId, mime);
         return sargeApiResponse(res, 200);
