@@ -1,24 +1,9 @@
-import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
 import { sargeApiError, sargeApiResponse } from '@/lib/responses';
 import s3Service from '@/lib/services/s3.service';
 import { isUserAdmin } from '@/lib/utils/permissions.utils';
 import { type NextRequest } from 'next/server';
-
-const SignBodySchema = z.discriminatedUnion('type', [
-    z.object({
-        type: z.literal('user'),
-        mime: z.string().min(3),
-        userId: z.uuid(),
-        organizationId: z.uuid().optional(),
-    }),
-    z.object({
-        type: z.literal('organization'),
-        mime: z.string().min(3),
-        organizationId: z.uuid(),
-        userId: z.uuid().optional(),
-    }),
-]);
+import { SignBodySchema } from '@/lib/schemas/upload.schema';
 
 export async function POST(request: NextRequest) {
     try {
