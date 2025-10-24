@@ -1,6 +1,16 @@
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { mime } from 'zod';
+import { randomUUID } from 'node:crypto';
+
+export type UploadType = 'user' | 'organization';
+
+const EXTENSIONS: Record<string, string> = {
+    'image/jpeg': 'jpg',
+    'image/png': 'png',
+    'image/webp': 'webp',
+    'image/gif': 'gif',
+    'image/avif': 'avif',
+};
 
 class S3Service {
     private client: S3Client;
@@ -13,36 +23,25 @@ class S3Service {
         this.bucket = process.env.AWS_BUCKET_NAME ?? '';
     }
 
-    async generateUploadUrl(
-        type: 'user' | 'organization',
-        mime: string,
-        organizationId?: string,
-        userId?: string
-    ): Promise<{ uploadURL: string; key: string }> {
-        let name;
-        if (type === 'organization') {
-            if (!organizationId) throw new Error('No organization ID provided');
-            name = organizationId;
-        } else if (type === 'user') {
-            if (!userId) throw new Error('No user ID provided');
-            name = userId;
-        }
+    async getSignedURL(
+        type: UploadType,
+        id: string,
+        mime: string
+    ): Promise<{ signedURL: string; mime: string; key: string }> {
+        if (!EXTENSIONS[mime]) throw new Error(`Unsupported MIME type: ${mime}`);
+        const ext = EXTENSIONS[mime];
 
-        const key = `${type}/${name}.${mime.split('/')[1] || 'jpg'}`;
+        const key = `${type}/${id}/${randomUUID()}.${ext}`;
 
         const command = new PutObjectCommand({
             Bucket: this.bucket,
             Key: key,
             ContentType: mime,
-            ACL: 'private',
-            ServerSideEncryption: 'AES256',
-            CacheControl: 'public, max-age=31536000, immutable',
-            ContentDisposition: 'inline',
         });
 
-        const uploadURL = await getSignedUrl(this.client, command, { expiresIn: 15 * 60 });
+        const signedURL = await getSignedUrl(this.client, command, { expiresIn: 15 * 60 });
 
-        return { uploadURL, key };
+        return { signedURL, mime, key };
     }
 }
 
