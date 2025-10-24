@@ -5,7 +5,7 @@ import s3Service from '@/lib/services/s3.service';
 import { isUserAdmin } from '@/lib/utils/permissions.utils';
 import { type NextRequest } from 'next/server';
 
-const PresignBodySchema = z.discriminatedUnion('type', [
+const SignBodySchema = z.discriminatedUnion('type', [
     z.object({
         type: z.literal('user'),
         mime: z.string().min(3),
@@ -22,7 +22,7 @@ const PresignBodySchema = z.discriminatedUnion('type', [
 
 export async function POST(request: NextRequest) {
     try {
-        const parsed = PresignBodySchema.safeParse(await request.json());
+        const parsed = SignBodySchema.safeParse(await request.json());
 
         if (!parsed.success) {
             return sargeApiError(`${parsed.error.flatten()}`, 400);
