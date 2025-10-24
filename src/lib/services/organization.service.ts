@@ -64,6 +64,7 @@ export async function getOrganization(id: string): Promise<Organization | null> 
                 users: true,
                 positions: true,
                 candidates: true,
+                imageUrl: true,
             },
         });
 
