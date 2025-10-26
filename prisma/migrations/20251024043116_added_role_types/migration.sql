@@ -5,7 +5,7 @@
 
 */
 -- CreateEnum
-CREATE TYPE "public"."RoleType" AS ENUM ('ADMIN', 'RECRUITER', 'REVIWER');
+CREATE TYPE "public"."RoleType" AS ENUM ('ADMIN', 'RECRUITER', 'REVIEWER');
 
 -- DropIndex
 DROP INDEX "public"."Role_role_key";
