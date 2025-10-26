@@ -1,4 +1,4 @@
-import { type UploadType } from '@/lib/services/s3.service';
+import { type UploadType } from '@/lib/connectors/s3.connector';
 import { useAuth } from '@/lib/auth/auth-client';
 import { useState } from 'react';
 
