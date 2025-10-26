@@ -11,9 +11,7 @@ import {
 import z from 'zod';
 import { InvalidInputError } from '../schemas/errors';
 
-export async function createOrganization(
-    organization: CreateOrganizationDTO
-): Promise<Organization> {
+async function createOrganization(organization: CreateOrganizationDTO): Promise<Organization> {
     try {
         const { name, createdById } = createOrganizationSchema.parse(organization);
 
@@ -49,7 +47,7 @@ export async function createOrganization(
     }
 }
 
-export async function getOrganization(id: string): Promise<Organization | null> {
+async function getOrganization(id: string): Promise<Organization | null> {
     try {
         const org = await prisma.organization.findUnique({
             where: {
@@ -82,7 +80,7 @@ export async function getOrganization(id: string): Promise<Organization | null> 
     }
 }
 
-export async function updateOrganization(
+async function updateOrganization(
     id: string,
     organization: UpdateOrganizationDTO
 ): Promise<Organization> {
@@ -122,7 +120,7 @@ export async function updateOrganization(
     }
 }
 
-export async function deleteOrganization(id: string): Promise<Organization> {
+async function deleteOrganization(id: string): Promise<Organization> {
     try {
         const deletedOrg = await prisma.organization.delete({
             where: {
@@ -142,3 +140,12 @@ export async function deleteOrganization(id: string): Promise<Organization> {
         throw error;
     }
 }
+
+const OrganizationService = {
+    createOrganization,
+    getOrganization,
+    updateOrganization,
+    deleteOrganization,
+};
+
+export default OrganizationService;

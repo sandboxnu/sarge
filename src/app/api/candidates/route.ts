@@ -1,4 +1,4 @@
-import { createCandidate } from '@/lib/services/candidate.service';
+import CandidateService from '@/lib/services/candidate.service';
 import { type NextRequest } from 'next/server';
 import { sargeApiError, sargeApiResponse } from '@/lib/responses';
 import { InvalidInputError } from '@/lib/schemas/errors';
@@ -6,7 +6,7 @@ import { InvalidInputError } from '@/lib/schemas/errors';
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const candidate = await createCandidate(body);
+        const candidate = await CandidateService.createCandidate(body);
         return sargeApiResponse(candidate, 200);
     } catch (error) {
         if (error instanceof InvalidInputError) {
