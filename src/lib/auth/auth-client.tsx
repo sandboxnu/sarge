@@ -12,7 +12,7 @@ interface AuthContextType {
 export const UserContext = createContext<AuthContextType | null>(null);
 export function UserProvider({ children }: { children: ReactNode }) {
     const [isPending, setIsPending] = useState(true);
-    const [user, setUser] = useState<User>({ id: null, name: null, email: null });
+    const [user, setUser] = useState<User>({ id: null, name: null, email: null, orgId: null });
 
     useEffect(() => {
         async function getUser() {

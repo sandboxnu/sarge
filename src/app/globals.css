@@ -6,6 +6,7 @@
     --sarge-purple: #5d5bf7;
     --grey-50: #f9fafe;
     --sarge-lightgrey: #f3f3f5;
+    --sarge-darkgrey: #E5E5E5;
 }
 
 @theme inline {
@@ -13,6 +14,7 @@
     --color-foreground: var(--foreground);
     --color-s-purple: var(--sarge-purple);
     --color-s-lightgrey: var(--sarge-lightgrey);
+    --color-s-darkgrey: var(--sarge-darkgrey);
     --color-grey-50: var(--grey-50);
     --font-sans: var(--font-inter);
     --font-nunito-sans: var(--font-nunito-sans);

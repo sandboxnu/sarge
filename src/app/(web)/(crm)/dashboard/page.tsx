@@ -3,14 +3,18 @@
 import { useAuth } from '@/lib/auth/auth-client';
 import useFileUpload from '../../hooks/useFileUpload';
 import Image from 'next/image';
+import WelcomeModal from './modal';
 
 export default function DashboardPage() {
     const auth = useAuth();
     const { handleFileChange, loading, error, submitted, imageUrl } = useFileUpload('user');
 
+    const showWelcomeModal = auth.user?.orgId === null;
+
     if (!auth.isPending && auth.user?.id !== null) {
         return (
             <div>
+                {showWelcomeModal && <WelcomeModal />}
                 <div className="">{auth.user.name}</div>
 
                 {/* THIS IS A SAMPLE OF HOW IMAGE UPLOAD WORKS FOR USERS / PLEASE REMOVE BEFORE WORKING ON THIS PAGE */}
