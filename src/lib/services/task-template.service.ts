@@ -16,7 +16,7 @@ import { InvalidInputError } from '../schemas/errors';
 import { prisma } from '../prisma';
 import { OrganizationNotFoundError } from '../schemas/organization.schema';
 
-export async function getTaskTemplate(taskTemplate: GetTaskTemplateDTO): Promise<TaskTemplate> {
+async function getTaskTemplate(taskTemplate: GetTaskTemplateDTO): Promise<TaskTemplate> {
     try {
         const validatedTaskTemplateGetParam = getTaskTemplateSchema.parse(taskTemplate);
 
@@ -46,9 +46,7 @@ export async function getTaskTemplate(taskTemplate: GetTaskTemplateDTO): Promise
     }
 }
 
-export async function createTaskTemplate(
-    taskTemplate: CreateTaskTemplateDTO
-): Promise<TaskTemplate> {
+async function createTaskTemplate(taskTemplate: CreateTaskTemplateDTO): Promise<TaskTemplate> {
     try {
         const validatedTaskTemplateCreateBody = createTaskTemplateSchema.parse(taskTemplate);
 
@@ -75,9 +73,7 @@ export async function createTaskTemplate(
     }
 }
 
-export async function deleteTaskTemplate(
-    taskTemplate: DeleteTaskTemplateDTO
-): Promise<TaskTemplate> {
+async function deleteTaskTemplate(taskTemplate: DeleteTaskTemplateDTO): Promise<TaskTemplate> {
     try {
         const validatedTaskTemplateDeleteParam = deleteTaskTemplateSchema.parse(taskTemplate);
 
@@ -100,9 +96,7 @@ export async function deleteTaskTemplate(
     }
 }
 
-export async function updateTaskTemplate(
-    taskTemplate: UpdateTaskTemplateDTO
-): Promise<TaskTemplate> {
+async function updateTaskTemplate(taskTemplate: UpdateTaskTemplateDTO): Promise<TaskTemplate> {
     try {
         const validatedTaskTemplateUpdateBody = updateTaskTemplateSchema.parse(taskTemplate);
 
@@ -149,3 +143,12 @@ export async function updateTaskTemplate(
         throw error;
     }
 }
+
+const TaskTemplateService = {
+    getTaskTemplate,
+    createTaskTemplate,
+    deleteTaskTemplate,
+    updateTaskTemplate,
+};
+
+export default TaskTemplateService;

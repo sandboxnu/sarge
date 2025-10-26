@@ -4,7 +4,7 @@ import { type CreateCandidateDTO, createCandidateSchema } from '../schemas/candi
 import { InvalidInputError } from '../schemas/errors';
 import z from 'zod';
 
-export async function createCandidate(candidate: CreateCandidateDTO): Promise<Candidate> {
+async function createCandidate(candidate: CreateCandidateDTO): Promise<Candidate> {
     try {
         const validatedCandidate = createCandidateSchema.parse(candidate);
         return await prisma.candidate.create({
@@ -17,3 +17,9 @@ export async function createCandidate(candidate: CreateCandidateDTO): Promise<Ca
         throw error;
     }
 }
+
+const CandidateService = {
+    createCandidate,
+};
+
+export default CandidateService;

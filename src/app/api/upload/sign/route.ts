@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { sargeApiError, sargeApiResponse } from '@/lib/responses';
-import s3Service from '@/lib/services/s3.service';
+import s3Service from '@/lib/connectors/s3.connector';
 import { isUserAdmin } from '@/lib/utils/permissions.utils';
 import { type NextRequest } from 'next/server';
 import { SignBodySchema } from '@/lib/schemas/upload.schema';

@@ -1,4 +1,4 @@
-import { getPosition, deletePosition, updatePosition } from '@/lib/services/position.service';
+import PositionService from '@/lib/services/position.service';
 import { sargeApiError, sargeApiResponse } from '@/lib/responses';
 import { PositionNotFoundError } from '@/lib/schemas/position.schema';
 import { type NextRequest } from 'next/server';
@@ -6,7 +6,7 @@ import { type NextRequest } from 'next/server';
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         const userId = (await params).id;
-        const user = await getPosition(userId);
+        const user = await PositionService.getPosition(userId);
         return sargeApiResponse(user, 200);
     } catch (error) {
         if (error instanceof PositionNotFoundError) {
@@ -24,7 +24,7 @@ export async function DELETE(
 ) {
     try {
         const positionId = (await params).id;
-        const deletedPosition = await deletePosition(positionId);
+        const deletedPosition = await PositionService.deletePosition(positionId);
         return sargeApiResponse(deletedPosition, 200);
     } catch (error) {
         if (error instanceof PositionNotFoundError) {
@@ -41,7 +41,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
         const positionId = (await params).id;
         const positionData = await request.json();
 
-        const updatedPosition = await updatePosition(positionId, positionData);
+        const updatedPosition = await PositionService.updatePosition(positionId, positionData);
         return sargeApiResponse(updatedPosition, 200);
     } catch (error) {
         if (error instanceof PositionNotFoundError) {

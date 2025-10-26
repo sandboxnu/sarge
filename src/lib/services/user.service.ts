@@ -10,7 +10,7 @@ import {
 import { InvalidInputError } from '../schemas/errors';
 import z from 'zod';
 
-export async function createUser(user: CreateUserDTO): Promise<User> {
+async function createUser(user: CreateUserDTO): Promise<User> {
     try {
         const validatedUser = createUserSchema.parse(user);
         return await prisma.user.create({
@@ -28,7 +28,7 @@ export async function createUser(user: CreateUserDTO): Promise<User> {
     }
 }
 
-export async function deleteUser(userId: string): Promise<User> {
+async function deleteUser(userId: string): Promise<User> {
     try {
         const deletedUser = await prisma.user.delete({
             where: {
@@ -44,7 +44,7 @@ export async function deleteUser(userId: string): Promise<User> {
     }
 }
 
-export async function getUser(userId: string): Promise<User> {
+async function getUser(userId: string): Promise<User> {
     const user = await prisma.user.findUnique({
         where: {
             id: userId,
@@ -58,7 +58,7 @@ export async function getUser(userId: string): Promise<User> {
     return user;
 }
 
-export async function updateUser(userId: string, userData: Partial<UserDTO>): Promise<User> {
+async function updateUser(userId: string, userData: Partial<UserDTO>): Promise<User> {
     try {
         const validatedUser = UserSchema.partial().parse(userData);
         const updatedUser = await prisma.user.update({
@@ -75,3 +75,12 @@ export async function updateUser(userId: string, userData: Partial<UserDTO>): Pr
         throw error;
     }
 }
+
+const UserService = {
+    createUser,
+    deleteUser,
+    getUser,
+    updateUser,
+};
+
+export default UserService;

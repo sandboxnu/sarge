@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { sargeApiError, sargeApiResponse } from '@/lib/responses';
-import s3Service from '@/lib/services/s3.service';
+import s3Service from '@/lib/connectors/s3.connector';
 import { Prisma } from '@/generated/prisma';
 import { type NextRequest } from 'next/server';
 import { z } from 'zod';

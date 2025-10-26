@@ -8,7 +8,7 @@ import { type Position, Prisma } from '@/generated/prisma';
 import { InvalidInputError } from '../schemas/errors';
 import z from 'zod';
 
-export async function createPosition(position: CreatePositionData): Promise<Position> {
+async function createPosition(position: CreatePositionData): Promise<Position> {
     try {
         const validatedPosition = CreatePositionSchema.parse(position);
 
@@ -27,7 +27,7 @@ export async function createPosition(position: CreatePositionData): Promise<Posi
     }
 }
 
-export async function deletePosition(positionId: string): Promise<Position> {
+async function deletePosition(positionId: string): Promise<Position> {
     try {
         const deletedPosition = await prisma.position.delete({
             where: {
@@ -43,7 +43,7 @@ export async function deletePosition(positionId: string): Promise<Position> {
     }
 }
 
-export async function getPosition(positionId: string): Promise<Position> {
+async function getPosition(positionId: string): Promise<Position> {
     const position = await prisma.position.findUnique({
         where: {
             id: positionId,
@@ -57,7 +57,7 @@ export async function getPosition(positionId: string): Promise<Position> {
     return position;
 }
 
-export async function updatePosition(
+async function updatePosition(
     positionId: string,
     positionData: Partial<CreatePositionData>
 ): Promise<Position> {
@@ -78,3 +78,12 @@ export async function updatePosition(
         throw error;
     }
 }
+
+const PositionService = {
+    createPosition,
+    deletePosition,
+    getPosition,
+    updatePosition,
+};
+
+export default PositionService;

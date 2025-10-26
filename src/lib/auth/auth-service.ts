@@ -2,7 +2,7 @@
 
 import { createSession, deleteSession, verifySession } from './auth';
 import { redirect } from 'next/navigation';
-import { getUser } from '../services/user.service';
+import UserService from '../services/user.service';
 import { prisma } from '../prisma';
 import bcrypt from 'bcrypt';
 import { AuthorizationError } from '../schemas/errors';
@@ -117,5 +117,5 @@ export async function getCurrentUser() {
         return null;
     }
 
-    return await getUser(session.userId);
+    return await UserService.getUser(session.userId);
 }
