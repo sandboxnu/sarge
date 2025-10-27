@@ -1,12 +1,12 @@
 import 'server-only';
 
-import { createSecretKey } from 'node:crypto';
+import { createSecretKey, createHash } from 'node:crypto';
 import { jwtVerify, SignJWT } from 'jose';
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 
 export const config = {
     cookieName: 'sarge.session',
-    expiration: 60 * 60 * 24 * 7,
+    expiration: 24 * 60 * 60,
     issuer: 'sargenu',
     secure: process.env.NODE_ENV === 'production',
 };
@@ -19,14 +19,26 @@ function getSecretKey() {
     return createSecretKey(jwtSecret, 'utf-8');
 }
 
+function hashUA(ua: string | null | undefined) {
+    const normalized = (ua ?? '').trim();
+    return createHash('sha256').update(normalized).digest('hex');
+}
+
 export interface SessionPayload {
     userId: string;
     email: string;
+    ua: string;
+    iat?: number;
+    exp?: number;
 }
 
 export async function createSession(payload: SessionPayload) {
-    const session = await new SignJWT({ ...payload })
-        .setProtectedHeader({ alg: 'HS256' })
+    const hders = await headers();
+    const uaHeader = hders.get('user-agent');
+    const uaHash = hashUA(uaHeader);
+
+    const session = await new SignJWT({ ...payload, ua: uaHash })
+        .setProtectedHeader({ alg: 'HS256', typ: 'JWT' })
         .setIssuedAt()
         .setIssuer(config.issuer)
         .setExpirationTime(Math.floor(Date.now() / 1000) + config.expiration)
@@ -53,9 +65,20 @@ export async function verifySession(): Promise<SessionPayload | null> {
     }
 
     try {
-        const { payload } = await jwtVerify(session, getSecretKey(), {
+        const { payload, protectedHeader } = await jwtVerify(session, getSecretKey(), {
             issuer: config.issuer,
+            algorithms: ['HS256'],
+            clockTolerance: 60,
         });
+
+        if (protectedHeader.alg !== 'HS256') return null;
+
+        const hders = await headers();
+        const uaHeader = hders.get('user-agent');
+        const uaHash = hashUA(uaHeader);
+
+        if (typeof payload.ua !== "string") return null;
+        if (payload.ua !== uaHash) return null;
 
         return payload as unknown as SessionPayload;
     } catch {
