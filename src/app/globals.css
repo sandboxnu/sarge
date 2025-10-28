@@ -16,7 +16,7 @@
     --color-s-lightgrey: var(--sarge-lightgrey);
     --color-s-darkgrey: var(--sarge-darkgrey);
     --color-grey-50: var(--grey-50);
-    --font-sans: var(--font-inter);
+    --font-sans: var(--font-satoshi);
     --font-nunito-sans: var(--font-nunito-sans);
     --font-mono: monospace;
 }
@@ -31,4 +31,5 @@
 body {
     background: var(--background);
     color: var(--foreground);
+    font-family: var(--font-sans), var(--font-inter), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
 }
