@@ -5,6 +5,7 @@
     --foreground: #ffffff;
 
     /* Primary */
+    --sarge-primary-700: #4125dc;
     --sarge-primary-600: #4d38ef;
     --sarge-primary-500: #5d5bf7;
     --sarge-primary-400: #8a90fb;
@@ -41,6 +42,8 @@
     --color-foreground: var(--foreground);
 
     /* Primary */
+    --color-sarge-primary-700: var(--sarge-primary-700);
+    --color-sarge-primary-600: var(--sarge-primary-600);
     --color-sarge-primary-500: var(--sarge-primary-500);
     --color-sarge-primary-400: var(--sarge-primary-400);
     --color-sarge-primary-300: var(--sarge-primary-300);
@@ -53,7 +56,7 @@
     --color-sarge-gray-600: var(--sarge-gray-600);
     --color-sarge-gray-300: var(--sarge-gray-300);
     --color-sarge-gray-200: var(--sarge-gray-200);
-    --color-sarge-gray-50:  var(--sarge-gray-50);
+    --color-sarge-gray-50: var(--sarge-gray-50);
 
     /* Error */
     --color-sarge-error-700: var(--sarge-error-700);
