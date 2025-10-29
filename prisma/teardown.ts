@@ -1,7 +1,4 @@
-/* eslint-disable no-console */
-
-import { PrismaClient } from '../src/generated/prisma';
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 async function main() {
     await prisma.$executeRaw`
