@@ -39,7 +39,7 @@ export async function signup(
                 hashedPassword,
             },
         });
-
+        
         await createSession({ userId: user.id, email: user.email });
     } catch (error) {
         console.error('Signup error:', error);

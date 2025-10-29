@@ -5,10 +5,12 @@ const protectedRoutes = ['/dashboard'];
 
 async function hashUAEdge(ua: string | null | undefined) {
     const encoder = new TextEncoder();
-    const data = encoder.encode((ua ?? "").trim());
-    const buffer = await crypto.subtle.digest("SHA-256", data);
+    const data = encoder.encode((ua ?? '').trim());
+    const buffer = await crypto.subtle.digest('SHA-256', data);
     const bytes = new Uint8Array(buffer);
-    return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+    return Array.from(bytes)
+        .map((b) => b.toString(16).padStart(2, '0'))
+        .join('');
 }
 
 export async function middleware(request: NextRequest) {
@@ -22,7 +24,7 @@ export async function middleware(request: NextRequest) {
         try {
             const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 
-            const {payload, protectedHeader } = await jwtVerify(sessionCookie, secret, {
+            const { payload, protectedHeader } = await jwtVerify(sessionCookie, secret, {
                 issuer: 'sargenu',
                 algorithms: ['HS256'],
                 clockTolerance: 60,
@@ -46,7 +48,7 @@ export async function middleware(request: NextRequest) {
 
     if (isProtectedRoute && !isAuthenticated) {
         const res = NextResponse.redirect(new URL('/login', request.url));
-        res.cookies.delete('sarge.session'); // Clear invalid/expired cookie
+        res.cookies.delete('sarge.session');
         return res;
     }
 

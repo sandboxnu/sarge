@@ -27,10 +27,11 @@ function hashUA(ua: string | null | undefined) {
 export interface SessionPayload {
     userId: string;
     email: string;
-    ua: string;
-    iat?: number;
-    exp?: number;
 }
+
+type JwtClaims = SessionPayload & {
+    ua: string;
+};
 
 export async function createSession(payload: SessionPayload) {
     const hders = await headers();
@@ -77,10 +78,11 @@ export async function verifySession(): Promise<SessionPayload | null> {
         const uaHeader = hders.get('user-agent');
         const uaHash = hashUA(uaHeader);
 
-        if (typeof payload.ua !== "string") return null;
-        if (payload.ua !== uaHash) return null;
+        const claims = payload as unknown as JwtClaims;
+        if (typeof claims.ua !== 'string') return null;
+        if (claims.ua !== uaHash) return null;
 
-        return payload as unknown as SessionPayload;
+        return { userId: claims.userId, email: claims.email };
     } catch {
         return null;
     }
