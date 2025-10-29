@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { loginAction } from '@/lib/auth/auth-service';
 import { useActionState, useEffect } from 'react';
 import { Button } from '@/lib/components/Button';
-import { Clipboard, ExternalLink, PersonStanding } from 'lucide-react';
 
 export interface LoginState {
     success: boolean;
