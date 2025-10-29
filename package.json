@@ -7,7 +7,7 @@
         "dev:migrate": "npx prisma migrate dev",
         "dev:start": "next dev",
         "dev": "npm run dev:migrate && npm run dev:start",
-        "build": "next build",
+        "build": "prisma generate && next build",
         "start": "next start",
         "lint": "eslint . --max-warnings=0",
         "lint:fix": "eslint . --fix",
