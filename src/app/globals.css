@@ -1,8 +1,8 @@
 @import 'tailwindcss';
 
 :root {
-    --background: #171717;
-    --foreground: #ffffff;
+    --background: #ffffff;
+    --foreground: #171717;
 
     /* Primary */
     --sarge-primary-700: #4125dc;
@@ -76,13 +76,6 @@
     --font-sans: var(--font-inter);
     --font-nunito-sans: var(--font-nunito-sans);
     --font-mono: monospace;
-}
-
-@media (prefers-color-scheme: dark) {
-    :root {
-        --background: #ffffff;
-        --foreground: #0a0a0a;
-    }
 }
 
 body {
