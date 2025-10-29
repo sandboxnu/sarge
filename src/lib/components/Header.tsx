@@ -7,9 +7,9 @@ export function Header() {
     const { user } = useAuth();
 
     return (
-        <header className="bg-grey-50 sticky top-0 flex gap-10 px-3 py-2 text-xl">
+        <header className="bg-sarge-gray-50 sticky top-0 flex gap-10 px-3 py-2 text-xl">
             <nav>
-                <Link href={'/dashboard'} className="text-s-purple font-nunito-sans font-extrabold">
+                <Link href={'/dashboard'} className="text-sarge-primary-500 font-nunito-sans font-extrabold">
                     Sarge
                 </Link>
 
