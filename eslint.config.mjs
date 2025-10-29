@@ -22,6 +22,7 @@ const eslintConfig = [
             'build/**',
             'dist/**',
             'src/generated/**', // Ignore Prisma generated client files lolz
+            'prisma/**', // Ignore Prisma seed/teardown scripts
             'next-env.d.ts',
             'tailwind.config.ts',
             'next.config.ts',
@@ -77,6 +78,38 @@ const eslintConfig = [
             'no-var': 'error',
             'object-shorthand': 'error',
             'prefer-template': 'error',
+
+            // Enforce absolute imports with @/ alias
+            // Allow CSS files and app root level files to use './' for styles and adjacent files
+            'no-restricted-imports': [
+                'error',
+                {
+                    patterns: [
+                        {
+                            group: ['../*', '../*/**'],
+                            message:
+                                'Use absolute imports with @/ alias instead of relative imports (e.g., "@/lib/utils/errors" instead of "../../utils/errors")',
+                        },
+                    ],
+                    paths: [
+                        {
+                            name: '../*',
+                            message:
+                                'Use absolute imports with @/ alias instead of relative imports.',
+                        },
+                        {
+                            name: '../../*',
+                            message:
+                                'Use absolute imports with @/ alias instead of relative imports.',
+                        },
+                        {
+                            name: '../../../*',
+                            message:
+                                'Use absolute imports with @/ alias instead of relative imports.',
+                        },
+                    ],
+                },
+            ],
         },
     },
 
