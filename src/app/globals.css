@@ -3,17 +3,73 @@
 :root {
     --background: #171717;
     --foreground: #ffffff;
-    --sarge-purple: #5d5bf7;
-    --grey-50: #f9fafe;
-    --sarge-lightgrey: #f3f3f5;
+
+    /* Primary */
+    --sarge-primary-600: #4d38ef;
+    --sarge-primary-500: #5d5bf7;
+    --sarge-primary-400: #8a90fb;
+    --sarge-primary-300: #b4b8fe;
+    --sarge-primary-200: #d6d7fe;
+    --sarge-primary-100: #ededff;
+
+    /* Gray */
+    --sarge-gray-900: #16181b;
+    --sarge-gray-800: #212429;
+    --sarge-gray-600: #5b6274;
+    --sarge-gray-300: #c1c1c8;
+    --sarge-gray-200: #e5e5e7;
+    --sarge-gray-50: #f9fafe;
+
+    /* Error */
+    --sarge-error-700: #b42318;
+    --sarge-error-400: #ef6b63;
+    --sarge-error-200: #f7c4c4;
+
+    /* Warning */
+    --sarge-warning-500: #ec8320;
+    --sarge-warning-400: #fcb499;
+    --sarge-warning-100: #f6e6d3;
+
+    /* Success */
+    --sarge-success-800: #00592e;
+    --sarge-success-500: #0f9453;
+    --sarge-success-100: #e1fee2;
 }
 
 @theme inline {
     --color-background: var(--background);
     --color-foreground: var(--foreground);
-    --color-s-purple: var(--sarge-purple);
-    --color-s-lightgrey: var(--sarge-lightgrey);
-    --color-grey-50: var(--grey-50);
+
+    /* Primary */
+    --color-sarge-primary-500: var(--sarge-primary-500);
+    --color-sarge-primary-400: var(--sarge-primary-400);
+    --color-sarge-primary-300: var(--sarge-primary-300);
+    --color-sarge-primary-200: var(--sarge-primary-200);
+    --color-sarge-primary-100: var(--sarge-primary-100);
+
+    /* Gray */
+    --color-sarge-gray-900: var(--sarge-gray-900);
+    --color-sarge-gray-800: var(--sarge-gray-800);
+    --color-sarge-gray-600: var(--sarge-gray-600);
+    --color-sarge-gray-300: var(--sarge-gray-300);
+    --color-sarge-gray-200: var(--sarge-gray-200);
+    --color-sarge-gray-50:  var(--sarge-gray-50);
+
+    /* Error */
+    --color-sarge-error-700: var(--sarge-error-700);
+    --color-sarge-error-400: var(--sarge-error-400);
+    --color-sarge-error-200: var(--sarge-error-200);
+
+    /* Warning */
+    --color-sarge-warning-500: var(--sarge-warning-500);
+    --color-sarge-warning-400: var(--sarge-warning-400);
+    --color-sarge-warning-100: var(--sarge-warning-100);
+
+    /* Success */
+    --color-sarge-success-800: var(--sarge-success-800);
+    --color-sarge-success-500: var(--sarge-success-500);
+    --color-sarge-success-100: var(--sarge-success-100);
+
     --font-sans: var(--font-inter);
     --font-nunito-sans: var(--font-nunito-sans);
     --font-mono: monospace;
