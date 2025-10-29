@@ -7,8 +7,8 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
     try {
         const orgId = (await params).id;
         const result = await OrganizationService.getOrganization(orgId);
-        if (!result.success) return error(result.message, result.status);
-        return success(result.data, 200);
+        if (!result.success) return Response.json(error(result.message, result.status));
+        return Response.json(success(result.data, 200));
     } catch (err) {
         return handleError(err);
     }
@@ -18,12 +18,13 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     try {
         const body = await request.json();
         const parsed = updateOrganizationSchema.safeParse(body);
-        if (!parsed.success) return badRequest('Invalid organization data', parsed.error);
+        if (!parsed.success)
+            return Response.json(badRequest('Invalid organization data', parsed.error));
 
         const orgId = (await params).id;
         const result = await OrganizationService.updateOrganization(orgId, parsed.data);
-        if (!result.success) return error(result.message, result.status);
-        return success(result.data, 200);
+        if (!result.success) return Response.json(error(result.message, result.status));
+        return Response.json(success(result.data, 200));
     } catch (err) {
         return handleError(err);
     }
@@ -36,8 +37,8 @@ export async function DELETE(
     try {
         const orgId = (await params).id;
         const result = await OrganizationService.deleteOrganization(orgId);
-        if (!result.success) return error(result.message, result.status);
-        return success(result.data, 200);
+        if (!result.success) return Response.json(error(result.message, result.status));
+        return Response.json(success(result.data, 200));
     } catch (err) {
         return handleError(err);
     }

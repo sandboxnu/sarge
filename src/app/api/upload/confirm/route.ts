@@ -9,21 +9,21 @@ export async function POST(request: NextRequest) {
         const parsed = ConfirmBodySchema.safeParse(await request.json());
 
         if (!parsed.success) {
-            return badRequest('Invalid confirm data', parsed.error);
+            return Response.json(badRequest('Invalid confirm data', parsed.error));
         }
 
         const { type, key } = parsed.data;
 
         const ownerId = type === 'user' ? parsed.data.userId : parsed.data.organizationId;
         if (!key.startsWith(`${type}/${ownerId}/`)) {
-            return badRequest('Key does not match the provided ID');
+            return Response.json(badRequest('Key does not match the provided ID'));
         }
 
         const exists = await s3Service.doesKeyExist(key);
-        if (!exists) return badRequest('Key does not exist');
+        if (!exists) return Response.json(badRequest('Key does not exist'));
 
         const cdnBase = process.env.NEXT_PUBLIC_CDN_BASE;
-        if (!cdnBase) return error('Could not retrieve CDN URL', 500);
+        if (!cdnBase) return Response.json(error('Could not retrieve CDN URL', 500));
 
         const imageUrl = `${cdnBase}/${key}`;
 
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
                 },
             });
 
-            return success({ imageUrl }, 200);
+            return Response.json(success({ imageUrl }, 200));
         }
 
         const { userId } = parsed.data;
@@ -53,8 +53,8 @@ export async function POST(request: NextRequest) {
             },
         });
 
-        return success({ imageUrl }, 200);
+        return Response.json(success({ imageUrl }, 200));
     } catch (error) {
-        return handleError(error);
+        return Response.json(handleError(error));
     }
 }

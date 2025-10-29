@@ -9,8 +9,8 @@ export async function DELETE(
 ) {
     try {
         const result = await UserService.deleteUser((await params).id);
-        if (!result.success) return error(result.message, result.status);
-        return success(result.data, 200);
+        if (!result.success) return Response.json(error(result.message, result.status));
+        return Response.json(success(result.data, 200));
     } catch (err) {
         return handleError(err);
     }
@@ -19,8 +19,8 @@ export async function DELETE(
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         const result = await UserService.getUser((await params).id);
-        if (!result.success) return error(result.message, result.status);
-        return success(result.data, 200);
+        if (!result.success) return Response.json(error(result.message, result.status));
+        return Response.json(success(result.data, 200));
     } catch (err) {
         return handleError(err);
     }
@@ -30,11 +30,11 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     try {
         const body = await request.json();
         const parsed = UserSchema.partial().safeParse(body);
-        if (!parsed.success) return badRequest('Invalid user data', parsed.error);
+        if (!parsed.success) return Response.json(badRequest('Invalid user data', parsed.error));
 
         const result = await UserService.updateUser((await params).id, parsed.data);
-        if (!result.success) return error(result.message, result.status);
-        return success(result.data, 200);
+        if (!result.success) return Response.json(error(result.message, result.status));
+        return Response.json(success(result.data, 200));
     } catch (err) {
         return handleError(err);
     }

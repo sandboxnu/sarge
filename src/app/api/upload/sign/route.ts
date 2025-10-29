@@ -10,12 +10,12 @@ export async function POST(request: NextRequest) {
         const parsed = SignBodySchema.safeParse(await request.json());
 
         if (!parsed.success) {
-            return badRequest('Invalid sign data', parsed.error);
+            return Response.json(badRequest('Invalid sign data', parsed.error));
         }
 
         const { type, mime, userId } = parsed.data;
         if (!userId) {
-            return unAuthenticated('User not authenticated');
+            return Response.json(unAuthenticated('User not authenticated'));
         }
 
         if (type === 'organization') {
@@ -28,21 +28,21 @@ export async function POST(request: NextRequest) {
             });
 
             if (!organization) {
-                return notFound('Organization', organizationId);
+                return Response.json(notFound('Organization', organizationId));
             }
 
             const allowed = await isUserAdmin(userId, organizationId);
             if (!allowed) {
-                return forbidden(`User ${userId} is not authorized`);
+                return Response.json(forbidden(`User ${userId} is not authorized`));
             }
 
             const res = await s3Service.getSignedURL(type, organizationId, mime);
-            return success(res, 200);
+            return Response.json(success(res, 200));
         }
 
         const res = await s3Service.getSignedURL(type, userId, mime);
-        return success(res, 200);
+        return Response.json(success(res, 200));
     } catch (err) {
-        return error(`Error retrieving signed URL: ${err}`);
+        return Response.json(error(`Error retrieving signed URL: ${err}`));
     }
 }

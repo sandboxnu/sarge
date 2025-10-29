@@ -6,8 +6,8 @@ import { updateTaskTemplateSchema } from '@/lib/schemas/taskTemplate.schema';
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         const result = await TaskTemplateService.getTaskTemplate((await params).id);
-        if (!result.success) return error(result.message, result.status);
-        return success(result.data, 200);
+        if (!result.success) return Response.json(error(result.message, result.status));
+        return Response.json(success(result.data, 200));
     } catch (err) {
         return handleError(err);
     }
@@ -16,8 +16,8 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         const result = await TaskTemplateService.deleteTaskTemplate((await params).id);
-        if (!result.success) return error(result.message, result.status);
-        return success(result.data, 200);
+        if (!result.success) return Response.json(error(result.message, result.status));
+        return Response.json(success(result.data, 200));
     } catch (err) {
         return handleError(err);
     }
@@ -27,11 +27,12 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     try {
         const body = await request.json();
         const parsed = updateTaskTemplateSchema.safeParse({ id: (await params).id, ...body });
-        if (!parsed.success) return badRequest('Invalid task template data', parsed.error);
+        if (!parsed.success)
+            return Response.json(badRequest('Invalid task template data', parsed.error));
 
         const result = await TaskTemplateService.updateTaskTemplate(parsed.data);
-        if (!result.success) return error(result.message, result.status);
-        return success(result.data, 200);
+        if (!result.success) return Response.json(error(result.message, result.status));
+        return Response.json(success(result.data, 200));
     } catch (err) {
         return handleError(err);
     }

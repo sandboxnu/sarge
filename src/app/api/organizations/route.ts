@@ -7,11 +7,12 @@ export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
         const parsed = createOrganizationSchema.safeParse(body);
-        if (!parsed.success) return badRequest('Invalid organization data', parsed.error);
+        if (!parsed.success)
+            return Response.json(badRequest('Invalid organization data', parsed.error));
 
         const result = await OrganizationService.createOrganization(parsed.data);
-        if (!result.success) return error(result.message, result.status);
-        return success(result.data, 201);
+        if (!result.success) return Response.json(error(result.message, result.status));
+        return Response.json(success(result.data, 201));
     } catch (err) {
         return handleError(err);
     }

@@ -57,11 +57,11 @@ export function handleError(err: unknown) {
     let message = 'Internal server error';
 
     if (err instanceof z.ZodError) {
-        return badRequest('Invalid data', err);
+        return Response.json(badRequest('Invalid data', err));
     }
 
     if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2025') {
-        return notFound('Resource not found', err.message);
+        return Response.json(notFound('Resource not found', err.message));
     }
 
     if (err instanceof Error) {
@@ -70,5 +70,5 @@ export function handleError(err: unknown) {
         message = err;
     }
 
-    return error(message, status);
+    return Response.json(error(message, status));
 }

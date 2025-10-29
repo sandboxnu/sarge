@@ -7,8 +7,8 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
     try {
         const positionId = (await params).id;
         const result = await PositionService.getPosition(positionId);
-        if (!result.success) return error(result.message, result.status);
-        return success(result.data, 200);
+        if (!result.success) return Response.json(error(result.message, result.status));
+        return Response.json(success(result.data, 200));
     } catch (err) {
         return handleError(err);
     }
@@ -21,8 +21,8 @@ export async function DELETE(
     try {
         const positionId = (await params).id;
         const result = await PositionService.deletePosition(positionId);
-        if (!result.success) return error(result.message, result.status);
-        return success(result.data, 200);
+        if (!result.success) return Response.json(error(result.message, result.status));
+        return Response.json(success(result.data, 200));
     } catch (err) {
         return handleError(err);
     }
@@ -33,11 +33,12 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
         const positionId = (await params).id;
         const positionData = await request.json();
         const parsed = CreatePositionSchema.partial().safeParse(positionData);
-        if (!parsed.success) return badRequest('Invalid position data', parsed.error);
+        if (!parsed.success)
+            return Response.json(badRequest('Invalid position data', parsed.error));
 
         const result = await PositionService.updatePosition(positionId, parsed.data);
-        if (!result.success) return error(result.message, result.status);
-        return success(result.data, 200);
+        if (!result.success) return Response.json(error(result.message, result.status));
+        return Response.json(success(result.data, 200));
     } catch (err) {
         return handleError(err);
     }

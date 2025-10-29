@@ -7,11 +7,12 @@ export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
         const parsed = CreatePositionSchema.safeParse(body);
-        if (!parsed.success) return badRequest('Invalid position data', parsed.error);
+        if (!parsed.success)
+            return Response.json(badRequest('Invalid position data', parsed.error));
 
         const result = await PositionService.createPosition(parsed.data);
-        if (!result.success) return error(result.message, result.status);
-        return success(result.data, 201);
+        if (!result.success) return Response.json(error(result.message, result.status));
+        return Response.json(success(result.data, 201));
     } catch (err) {
         return handleError(err);
     }
