@@ -8,7 +8,7 @@ export default function DashboardPage() {
     const auth = useAuth();
     const { handleFileChange, loading, error, submitted, imageUrl } = useFileUpload('user');
 
-    if (!auth.isPending && auth.user?.id !== null) {
+    if (!auth.isPending && auth.user?.name !== null) {
         return (
             <div>
                 <div className="">{auth.user.name}</div>
