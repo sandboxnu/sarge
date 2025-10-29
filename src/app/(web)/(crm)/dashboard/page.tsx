@@ -1,7 +1,7 @@
 'use client';
 
 import { useAuth } from '@/lib/auth/auth-client';
-import useFileUpload from '../../hooks/useFileUpload';
+import useFileUpload from '@/lib/hooks/useFileUpload';
 import Image from 'next/image';
 
 export default function DashboardPage() {
