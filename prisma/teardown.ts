@@ -19,7 +19,6 @@ async function main() {
     "Organization"
   RESTART IDENTITY CASCADE;
 `;
-    console.log('Development database cleared.');
 }
 
 main()
