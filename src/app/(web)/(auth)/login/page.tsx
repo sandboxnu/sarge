@@ -2,6 +2,8 @@
 import Link from 'next/link';
 import { loginAction } from '@/lib/auth/auth-service';
 import { useActionState, useEffect } from 'react';
+import { Button } from '@/lib/components/Button';
+import { Clipboard, ExternalLink, PersonStanding } from 'lucide-react';
 
 export interface LoginState {
     success: boolean;
@@ -42,12 +44,17 @@ export default function LoginPage() {
                                 type="email"
                                 name="email"
                                 id="email"
-                                className={`bg-sarge-gray-50 text-sarge-gray-800 placeholder:text-sarge-gray-500 rounded-lg px-2 py-3 border ${state?.errors?.password ? 'border-sarge-error-700' : 'border-sarge-gray-200'
-                                    }`}
-                                placeholder='example@gmail.com'
+                                className={`bg-sarge-gray-50 text-sarge-gray-800 placeholder:text-sarge-gray-500 rounded-lg border px-2 py-3 ${
+                                    state?.errors?.password
+                                        ? 'border-sarge-error-700'
+                                        : 'border-sarge-gray-200'
+                                }`}
+                                placeholder="example@gmail.com"
                             />
                             {state?.errors?.email && (
-                                <p className="text-sm text-sarge-error-700">{state.errors.email[0]}</p>
+                                <p className="text-sarge-error-700 text-sm">
+                                    {state.errors.email[0]}
+                                </p>
                             )}
                         </div>
 
@@ -59,34 +66,36 @@ export default function LoginPage() {
                                 type="password"
                                 name="password"
                                 id="password"
-                                className={`bg-sarge-gray-50 text-sarge-gray-800 placeholder:text-sarge-gray-500 rounded-lg px-2 py-3 border ${state?.errors?.password ? 'border-sarge-error-700' : 'border-sarge-gray-200'
-                                    }`}
-                                placeholder='********'
+                                className={`bg-sarge-gray-50 text-sarge-gray-800 placeholder:text-sarge-gray-500 rounded-lg border px-2 py-3 ${
+                                    state?.errors?.password
+                                        ? 'border-sarge-error-700'
+                                        : 'border-sarge-gray-200'
+                                }`}
+                                placeholder="********"
                             />
                             {state?.errors?.password && (
-                                <p className="text-sm text-sarge-error-700">{state.errors.password[0]}</p>
+                                <p className="text-sarge-error-700 text-sm">
+                                    {state.errors.password[0]}
+                                </p>
                             )}
                         </div>
                     </div>
 
-                    <button
-                        type="submit"
-                        className="bg-sarge-primary-500 hover:bg-sarge-primary-600 rounded-lg py-2 text-white transition-colors duration-200"
-                    >
+                    <Button type="submit" variant="primary" size="default">
                         Continue
-                    </button>
+                    </Button>
 
                     <div className="flex flex-col gap-y-1 text-sm">
                         <div className="flex gap-x-1">
                             <p className="text-sarge-gray-600">Don&apos;t have an account?</p>
-                            <Link href={"/signup"} className="text-sarge-primary-500">
+                            <Link href={'/signup'} className="text-sarge-primary-500">
                                 Create an account
                             </Link>
                         </div>
 
                         <div className="flex gap-x-1">
                             <p className="text-sarge-gray-600">Forgot your password?</p>
-                            <Link href={"/reset-password"} className="text-sarge-primary-500">
+                            <Link href={'/reset-password'} className="text-sarge-primary-500">
                                 Reset password
                             </Link>
                         </div>
