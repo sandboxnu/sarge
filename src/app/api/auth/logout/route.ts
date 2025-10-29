@@ -6,7 +6,7 @@ import { deleteSession } from '@/lib/auth/auth';
 export async function POST(_request: NextRequest) {
     try {
         await logout();
-        await deleteSession(); 
+        await deleteSession();
         return sargeApiResponse({ message: 'Logged out successfully' }, 200);
     } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
