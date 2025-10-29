@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { sargeApiError, sargeApiResponse } from '@/lib/responses';
+import { badRequest, error, forbidden, notFound, success, unAuthenticated } from '@/lib/responses';
 import s3Service from '@/lib/connectors/s3.connector';
 import { isUserAdmin } from '@/lib/utils/permissions.utils';
 import { type NextRequest } from 'next/server';
@@ -10,12 +10,12 @@ export async function POST(request: NextRequest) {
         const parsed = SignBodySchema.safeParse(await request.json());
 
         if (!parsed.success) {
-            return sargeApiError(`${parsed.error.flatten()}`, 400);
+            return badRequest('Invalid sign data', parsed.error);
         }
 
         const { type, mime, userId } = parsed.data;
         if (!userId) {
-            return sargeApiError('User not authenticated', 401);
+            return unAuthenticated('User not authenticated');
         }
 
         if (type === 'organization') {
@@ -28,21 +28,21 @@ export async function POST(request: NextRequest) {
             });
 
             if (!organization) {
-                return sargeApiError(`Organization with ID ${organizationId} does not exist`, 400);
+                return notFound('Organization', organizationId);
             }
 
             const allowed = await isUserAdmin(userId, organizationId);
             if (!allowed) {
-                return sargeApiError(`User ${userId} is not authorized`, 403);
+                return forbidden(`User ${userId} is not authorized`);
             }
 
             const res = await s3Service.getSignedURL(type, organizationId, mime);
-            return sargeApiResponse(res, 200);
+            return success(res, 200);
         }
 
         const res = await s3Service.getSignedURL(type, userId, mime);
-        return sargeApiResponse(res, 200);
-    } catch (error) {
-        return sargeApiError(`Error retrieving signed URL: ${error}`, 500);
+        return success(res, 200);
+    } catch (err) {
+        return error(`Error retrieving signed URL: ${err}`);
     }
 }

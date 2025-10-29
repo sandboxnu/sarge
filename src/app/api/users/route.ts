@@ -1,19 +1,18 @@
 import UserService from '@/lib/services/user.service';
 import { type NextRequest } from 'next/server';
-import { sargeApiError, sargeApiResponse } from '@/lib/responses';
-import { InvalidInputError } from '@/lib/schemas/errors';
+import { badRequest, error, handleError, success } from '@/lib/responses';
+import { createUserSchema } from '@/lib/schemas/user.schema';
 
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const user = await UserService.createUser(body);
-        return sargeApiResponse(user, 200);
-    } catch (error) {
-        if (error instanceof InvalidInputError) {
-            return sargeApiError(error.message, 400);
-        }
+        const parsed = createUserSchema.safeParse(body);
+        if (!parsed.success) return badRequest('Invalid user data', parsed.error);
 
-        const message = error instanceof Error ? error.message : String(error);
-        return sargeApiError(message, 500);
+        const result = await UserService.createUser(parsed.data);
+        if (!result.success) return error(result.message, result.status);
+        return success(result.data, 201);
+    } catch (err) {
+        return handleError(err);
     }
 }

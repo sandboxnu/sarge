@@ -1,11 +1,5 @@
 import { z } from 'zod';
 
-export class PositionNotFoundError extends Error {
-    constructor() {
-        super('Position Not Found');
-    }
-}
-
 export const PositionSchema = z.object({
     title: z.string(),
     orgId: z.uuid(),

@@ -1,19 +1,18 @@
 import PositionService from '@/lib/services/position.service';
-import { sargeApiError, sargeApiResponse } from '@/lib/responses';
-import { InvalidInputError } from '@/lib/schemas/errors';
+import { badRequest, error, handleError, success } from '@/lib/responses';
 import { type NextRequest } from 'next/server';
+import { CreatePositionSchema } from '@/lib/schemas/position.schema';
 
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const position = await PositionService.createPosition(body);
-        return sargeApiResponse(position, 200);
-    } catch (error) {
-        if (error instanceof InvalidInputError) {
-            return sargeApiError(error.message, 400);
-        }
+        const parsed = CreatePositionSchema.safeParse(body);
+        if (!parsed.success) return badRequest('Invalid position data', parsed.error);
 
-        const message = error instanceof Error ? error.message : String(error);
-        return sargeApiError(message, 500);
+        const result = await PositionService.createPosition(parsed.data);
+        if (!result.success) return error(result.message, result.status);
+        return success(result.data, 201);
+    } catch (err) {
+        return handleError(err);
     }
 }

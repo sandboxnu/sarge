@@ -1,50 +1,37 @@
-import { Prisma, type User } from '@/generated/prisma';
+import { type User } from '@/generated/prisma';
 import { prisma } from '@/lib/prisma';
-import {
-    type CreateUserDTO,
-    createUserSchema,
-    type UserDTO,
-    UserNotFoundError,
-    UserSchema,
-} from '../schemas/user.schema';
-import { InvalidInputError } from '../schemas/errors';
-import z from 'zod';
+import { type CreateUserDTO, type UserDTO } from '@/lib/schemas/user.schema';
+import { type Result, notFound, success } from '@/lib/responses';
 
-async function createUser(user: CreateUserDTO): Promise<User> {
-    try {
-        const validatedUser = createUserSchema.parse(user);
-        return await prisma.user.create({
-            data: {
-                name: validatedUser.name,
-                email: validatedUser.email,
-                hashedPassword: validatedUser.password,
-            },
-        });
-    } catch (error) {
-        if (error instanceof z.ZodError) {
-            throw new InvalidInputError();
-        }
-        throw error;
-    }
+async function createUser(user: CreateUserDTO): Promise<Result<User>> {
+    const created = await prisma.user.create({
+        data: {
+            name: user.name,
+            email: user.email,
+            hashedPassword: user.password,
+        },
+    });
+    return success(created, 201);
 }
 
-async function deleteUser(userId: string): Promise<User> {
-    try {
-        const deletedUser = await prisma.user.delete({
-            where: {
-                id: userId,
-            },
-        });
-        return deletedUser;
-    } catch (error) {
-        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code == 'P2025') {
-            throw new UserNotFoundError();
-        }
-        throw error;
+async function deleteUser(userId: string): Promise<Result<User>> {
+    const existingUser = await prisma.user.findUnique({
+        where: { id: userId },
+    });
+
+    if (!existingUser) {
+        return notFound('User', userId);
     }
+
+    const deleted = await prisma.user.delete({
+        where: {
+            id: userId,
+        },
+    });
+    return success(deleted, 200);
 }
 
-async function getUser(userId: string): Promise<User> {
+async function getUser(userId: string): Promise<Result<User>> {
     const user = await prisma.user.findUnique({
         where: {
             id: userId,
@@ -52,28 +39,28 @@ async function getUser(userId: string): Promise<User> {
     });
 
     if (!user) {
-        throw new UserNotFoundError();
+        return notFound('User', userId);
     }
 
-    return user;
+    return success(user, 200);
 }
 
-async function updateUser(userId: string, userData: Partial<UserDTO>): Promise<User> {
-    try {
-        const validatedUser = UserSchema.partial().parse(userData);
-        const updatedUser = await prisma.user.update({
-            where: {
-                id: userId,
-            },
-            data: { ...validatedUser, updatedAt: new Date() },
-        });
-        return updatedUser;
-    } catch (error) {
-        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code == 'P2025') {
-            throw new UserNotFoundError();
-        }
-        throw error;
+async function updateUser(userId: string, userData: Partial<UserDTO>): Promise<Result<User>> {
+    const existingUser = await prisma.user.findUnique({
+        where: { id: userId },
+    });
+
+    if (!existingUser) {
+        return notFound('User', userId);
     }
+
+    const updated = await prisma.user.update({
+        where: {
+            id: userId,
+        },
+        data: { ...userData, updatedAt: new Date() },
+    });
+    return success(updated, 200);
 }
 
 const UserService = {

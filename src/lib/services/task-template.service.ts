@@ -1,147 +1,94 @@
-import { type TaskTemplate, Prisma } from '@/generated/prisma';
+import { type TaskTemplate } from '@/generated/prisma';
 import {
-    createTaskTemplateSchema,
-    deleteTaskTemplateSchema,
-    updateTaskTemplateSchema,
     type UpdateTaskTemplateDTO,
     type CreateTaskTemplateDTO,
-    type DeleteTaskTemplateDTO,
-    type GetTaskTemplateDTO,
-    TaskTemplateExistsError,
-    TaskTemplateNotFoundError,
-    getTaskTemplateSchema,
-} from '../schemas/taskTemplate.schema';
-import z from 'zod';
-import { InvalidInputError } from '../schemas/errors';
-import { prisma } from '../prisma';
-import { OrganizationNotFoundError } from '../schemas/organization.schema';
+} from '@/lib/schemas/taskTemplate.schema';
+import { prisma } from '@/lib/prisma';
+import { type Result, notFound, conflict, success } from '@/lib/responses';
 
-async function getTaskTemplate(taskTemplate: GetTaskTemplateDTO): Promise<TaskTemplate> {
-    try {
-        const validatedTaskTemplateGetParam = getTaskTemplateSchema.parse(taskTemplate);
+async function getTaskTemplate(id: string): Promise<Result<TaskTemplate>> {
+    const foundTaskTemplate = await prisma.taskTemplate.findFirst({
+        where: {
+            id,
+        },
+    });
 
-        console.warn(validatedTaskTemplateGetParam);
-
-        const foundTaskTemplate = await prisma.taskTemplate.findFirst({
-            where: {
-                id: validatedTaskTemplateGetParam.id,
-            },
-        });
-
-        if (!foundTaskTemplate) {
-            throw new TaskTemplateNotFoundError();
-        }
-
-        return foundTaskTemplate;
-    } catch (error) {
-        if (error instanceof z.ZodError) {
-            throw new InvalidInputError();
-        }
-
-        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-            throw new TaskTemplateNotFoundError();
-        }
-
-        throw error;
+    if (!foundTaskTemplate) {
+        return notFound('Task Template', id);
     }
+
+    return success(foundTaskTemplate, 200);
 }
 
-async function createTaskTemplate(taskTemplate: CreateTaskTemplateDTO): Promise<TaskTemplate> {
-    try {
-        const validatedTaskTemplateCreateBody = createTaskTemplateSchema.parse(taskTemplate);
+async function createTaskTemplate(
+    taskTemplate: CreateTaskTemplateDTO
+): Promise<Result<TaskTemplate>> {
+    const org = await prisma.organization.findFirst({
+        where: {
+            id: taskTemplate.orgId,
+        },
+    });
 
-        const org = await prisma.organization.findFirst({
-            where: {
-                id: validatedTaskTemplateCreateBody.orgId,
-            },
-        });
-
-        if (!org) {
-            throw new OrganizationNotFoundError();
-        }
-
-        // TODO: validate the caller is an admin of the org
-        return await prisma.taskTemplate.create({
-            data: validatedTaskTemplateCreateBody,
-        });
-    } catch (error) {
-        if (error instanceof z.ZodError) {
-            throw new InvalidInputError();
-        }
-
-        throw error;
+    if (!org) {
+        return notFound('Organization', taskTemplate.orgId);
     }
+
+    const created = await prisma.taskTemplate.create({
+        data: taskTemplate,
+    });
+    return success(created, 201);
 }
 
-async function deleteTaskTemplate(taskTemplate: DeleteTaskTemplateDTO): Promise<TaskTemplate> {
-    try {
-        const validatedTaskTemplateDeleteParam = deleteTaskTemplateSchema.parse(taskTemplate);
+async function deleteTaskTemplate(id: string): Promise<Result<TaskTemplate>> {
+    const existingTemplate = await prisma.taskTemplate.findUnique({
+        where: { id },
+    });
 
-        // TODO: validate the caller is an admin of the org
-        return await prisma.taskTemplate.delete({
-            where: {
-                id: validatedTaskTemplateDeleteParam.id,
-            },
-        });
-    } catch (error) {
-        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code == 'P2025') {
-            throw new TaskTemplateNotFoundError();
-        }
-
-        if (error instanceof z.ZodError) {
-            throw new InvalidInputError();
-        }
-
-        throw error;
+    if (!existingTemplate) {
+        return notFound('Task Template', id);
     }
+
+    const deleted = await prisma.taskTemplate.delete({
+        where: {
+            id,
+        },
+    });
+    return success(deleted, 200);
 }
 
-async function updateTaskTemplate(taskTemplate: UpdateTaskTemplateDTO): Promise<TaskTemplate> {
-    try {
-        const validatedTaskTemplateUpdateBody = updateTaskTemplateSchema.parse(taskTemplate);
+async function updateTaskTemplate(
+    taskTemplate: UpdateTaskTemplateDTO
+): Promise<Result<TaskTemplate>> {
+    const { id, title, content, public_test_cases, private_test_cases } = taskTemplate;
 
-        const { id, title, content, public_test_cases, private_test_cases } =
-            validatedTaskTemplateUpdateBody;
+    const current = await prisma.taskTemplate.findUnique({ where: { id } });
+    if (!current) return notFound('Task Template', id);
 
-        const current = await prisma.taskTemplate.findUnique({ where: { id } });
-        if (!current) throw new TaskTemplateNotFoundError();
+    const hasDuplicateName = await prisma.taskTemplate.findFirst({
+        where: {
+            orgId: current.orgId,
+            title,
+            id: { not: id },
+        },
+        select: { id: true },
+    });
 
-        const duplicate = await prisma.taskTemplate.findFirst({
-            where: {
-                orgId: current.orgId,
-                title,
-                id: { not: id },
-            },
-            select: { id: true },
-        });
-
-        if (duplicate) {
-            throw new TaskTemplateExistsError();
-        }
-
-        // TODO: validate the caller is an admin of the org
-        return await prisma.taskTemplate.update({
-            where: {
-                id,
-            },
-            data: {
-                title,
-                content,
-                public_test_cases,
-                private_test_cases,
-            },
-        });
-    } catch (error) {
-        if (error instanceof z.ZodError) {
-            throw new InvalidInputError();
-        }
-
-        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-            throw new TaskTemplateNotFoundError();
-        }
-
-        throw error;
+    if (hasDuplicateName) {
+        return conflict('Task Template', 'with that name');
     }
+
+    const updated = await prisma.taskTemplate.update({
+        where: {
+            id,
+        },
+        data: {
+            title,
+            content,
+            public_test_cases,
+            private_test_cases,
+        },
+    });
+    return success(updated, 200);
 }
 
 const TaskTemplateService = {

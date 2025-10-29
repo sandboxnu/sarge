@@ -1,21 +1,13 @@
 import { type Candidate } from '@/generated/prisma';
 import { prisma } from '@/lib/prisma';
-import { type CreateCandidateDTO, createCandidateSchema } from '../schemas/candidate.schema';
-import { InvalidInputError } from '../schemas/errors';
-import z from 'zod';
+import { type CreateCandidateDTO } from '@/lib/schemas/candidate.schema';
+import { success, type Result } from '@/lib/responses';
 
-async function createCandidate(candidate: CreateCandidateDTO): Promise<Candidate> {
-    try {
-        const validatedCandidate = createCandidateSchema.parse(candidate);
-        return await prisma.candidate.create({
-            data: validatedCandidate,
-        });
-    } catch (error) {
-        if (error instanceof z.ZodError) {
-            throw new InvalidInputError();
-        }
-        throw error;
-    }
+async function createCandidate(candidate: CreateCandidateDTO): Promise<Result<Candidate>> {
+    const created = await prisma.candidate.create({
+        data: candidate,
+    });
+    return success(created, 201);
 }
 
 const CandidateService = {

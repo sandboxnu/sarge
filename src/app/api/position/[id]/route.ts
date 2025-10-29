@@ -1,20 +1,16 @@
 import PositionService from '@/lib/services/position.service';
-import { sargeApiError, sargeApiResponse } from '@/lib/responses';
-import { PositionNotFoundError } from '@/lib/schemas/position.schema';
+import { badRequest, error, handleError, success } from '@/lib/responses';
 import { type NextRequest } from 'next/server';
+import { CreatePositionSchema } from '@/lib/schemas/position.schema';
 
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const userId = (await params).id;
-        const user = await PositionService.getPosition(userId);
-        return sargeApiResponse(user, 200);
-    } catch (error) {
-        if (error instanceof PositionNotFoundError) {
-            return sargeApiError(error.message, 404);
-        }
-
-        const message = error instanceof Error ? error.message : String(error);
-        return sargeApiError(message, 500);
+        const positionId = (await params).id;
+        const result = await PositionService.getPosition(positionId);
+        if (!result.success) return error(result.message, result.status);
+        return success(result.data, 200);
+    } catch (err) {
+        return handleError(err);
     }
 }
 
@@ -24,15 +20,11 @@ export async function DELETE(
 ) {
     try {
         const positionId = (await params).id;
-        const deletedPosition = await PositionService.deletePosition(positionId);
-        return sargeApiResponse(deletedPosition, 200);
-    } catch (error) {
-        if (error instanceof PositionNotFoundError) {
-            return sargeApiError(error.message, 404);
-        }
-
-        const message = error instanceof Error ? error.message : String(error);
-        return sargeApiError(message, 500);
+        const result = await PositionService.deletePosition(positionId);
+        if (!result.success) return error(result.message, result.status);
+        return success(result.data, 200);
+    } catch (err) {
+        return handleError(err);
     }
 }
 
@@ -40,15 +32,13 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     try {
         const positionId = (await params).id;
         const positionData = await request.json();
+        const parsed = CreatePositionSchema.partial().safeParse(positionData);
+        if (!parsed.success) return badRequest('Invalid position data', parsed.error);
 
-        const updatedPosition = await PositionService.updatePosition(positionId, positionData);
-        return sargeApiResponse(updatedPosition, 200);
-    } catch (error) {
-        if (error instanceof PositionNotFoundError) {
-            return sargeApiError(error.message, 404);
-        }
-
-        const message = error instanceof Error ? error.message : String(error);
-        return sargeApiError(message, 500);
+        const result = await PositionService.updatePosition(positionId, parsed.data);
+        if (!result.success) return error(result.message, result.status);
+        return success(result.data, 200);
+    } catch (err) {
+        return handleError(err);
     }
 }

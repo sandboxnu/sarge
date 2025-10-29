@@ -1,11 +1,5 @@
 import { z } from 'zod';
 
-export class CandidateNotFoundError extends Error {
-    constructor() {
-        super('Candidate Not Found');
-    }
-}
-
 export const createCandidateSchema = z.object({
     name: z
         .string()

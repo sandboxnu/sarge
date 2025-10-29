@@ -1,53 +1,41 @@
 import UserService from '@/lib/services/user.service';
-import { sargeApiError, sargeApiResponse } from '@/lib/responses';
-import { UserNotFoundError } from '@/lib/schemas/user.schema';
+import { badRequest, error, handleError, success } from '@/lib/responses';
 import { type NextRequest } from 'next/server';
+import { UserSchema } from '@/lib/schemas/user.schema';
 
 export async function DELETE(
     _request: NextRequest,
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const id = (await params).id;
-        const user = await UserService.deleteUser(id);
-        return sargeApiResponse(user, 200);
-    } catch (error) {
-        if (error instanceof UserNotFoundError) {
-            return sargeApiError(error.message, 404);
-        }
-
-        const message = error instanceof Error ? error.message : String(error);
-        return sargeApiError(message, 500);
+        const result = await UserService.deleteUser((await params).id);
+        if (!result.success) return error(result.message, result.status);
+        return success(result.data, 200);
+    } catch (err) {
+        return handleError(err);
     }
 }
 
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const id = (await params).id;
-        const user = await UserService.getUser(id);
-        return sargeApiResponse(user, 200);
-    } catch (error) {
-        if (error instanceof UserNotFoundError) {
-            return sargeApiError(error.message, 404);
-        }
-
-        const message = error instanceof Error ? error.message : String(error);
-        return sargeApiError(message, 500);
+        const result = await UserService.getUser((await params).id);
+        if (!result.success) return error(result.message, result.status);
+        return success(result.data, 200);
+    } catch (err) {
+        return handleError(err);
     }
 }
 
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const id = (await params).id;
         const body = await request.json();
-        const user = await UserService.updateUser(id, body);
-        return sargeApiResponse(user, 200);
-    } catch (error) {
-        if (error instanceof UserNotFoundError) {
-            return sargeApiError(error.message, 404);
-        }
+        const parsed = UserSchema.partial().safeParse(body);
+        if (!parsed.success) return badRequest('Invalid user data', parsed.error);
 
-        const message = error instanceof Error ? error.message : String(error);
-        return sargeApiError(message, 500);
+        const result = await UserService.updateUser((await params).id, parsed.data);
+        if (!result.success) return error(result.message, result.status);
+        return success(result.data, 200);
+    } catch (err) {
+        return handleError(err);
     }
 }
