@@ -1,13 +1,14 @@
 import type { NextConfig } from 'next';
 
-const base = new URL(process.env.NEXT_PUBLIC_CDN_BASE!);
+const base = process.env.NEXT_PUBLIC_CDN_BASE;
 
 const nextConfig: NextConfig = {
   /* config options here */
   output: 'standalone',
-  images: {
-    remotePatterns: [{ protocol: 'https', hostname: base.hostname, }]
+  images: base ? {
+    remotePatterns: [{ protocol: 'https', hostname: new URL(base).hostname, }]
   }
+    : {},
 };
 
 export default nextConfig;
