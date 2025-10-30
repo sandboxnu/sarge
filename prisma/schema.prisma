@@ -42,7 +42,7 @@ model User {
 enum RoleType {
   ADMIN
   RECRUITER
-  REVIWER
+  REVIEWER
 }
 
 model Role {
