@@ -1,19 +1,19 @@
 import CandidateService from '@/lib/services/candidate.service';
 import { type NextRequest } from 'next/server';
-import { sargeApiError, sargeApiResponse } from '@/lib/responses';
-import { InvalidInputError } from '@/lib/schemas/errors';
+import { badRequest, error, handleError, success } from '@/lib/responses';
+import { createCandidateSchema } from '@/lib/schemas/candidate.schema';
 
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const candidate = await CandidateService.createCandidate(body);
-        return sargeApiResponse(candidate, 200);
-    } catch (error) {
-        if (error instanceof InvalidInputError) {
-            return sargeApiError(error.message, 400);
-        }
+        const parsed = createCandidateSchema.safeParse(body);
+        if (!parsed.success)
+            return Response.json(badRequest('Invalid candidate data', parsed.error));
 
-        const message = error instanceof Error ? error.message : String(error);
-        return sargeApiError(message, 500);
+        const result = await CandidateService.createCandidate(parsed.data);
+        if (!result.success) return Response.json(error(result.message, result.status));
+        return Response.json(success(result.data, 201));
+    } catch (err) {
+        return handleError(err);
     }
 }

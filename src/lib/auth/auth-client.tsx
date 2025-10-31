@@ -1,8 +1,7 @@
 'use client';
 
 import { createContext, type ReactNode, useContext, useEffect, useState } from 'react';
-import { AuthorizationError } from '../schemas/errors';
-import { type User } from '../types';
+import { type User } from '@/lib/types';
 
 interface AuthContextType {
     user: User;
@@ -32,7 +31,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
 export function useAuth() {
     const context = useContext(UserContext);
     if (!context) {
-        throw new AuthorizationError();
+        throw Error('User context not found');
     }
     return context;
 }

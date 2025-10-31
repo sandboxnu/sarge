@@ -1,49 +1,31 @@
 import { prisma } from '@/lib/prisma';
-import {
-    CreatePositionSchema,
-    PositionNotFoundError,
-    type CreatePositionData,
-} from '../schemas/position.schema';
-import { type Position, Prisma } from '@/generated/prisma';
-import { InvalidInputError } from '../schemas/errors';
-import z from 'zod';
+import { type CreatePositionData } from '@/lib/schemas/position.schema';
+import { type Position } from '@/generated/prisma';
+import { type Result, notFound, success } from '@/lib/responses';
 
-async function createPosition(position: CreatePositionData): Promise<Position> {
-    try {
-        const validatedPosition = CreatePositionSchema.parse(position);
+async function createPosition(position: CreatePositionData): Promise<Result<Position>> {
+    const created = await prisma.position.create({
+        data: {
+            title: position.title,
+            createdBy: position.createdBy,
+            orgId: position.orgId,
+        },
+    });
 
-        return await prisma.position.create({
-            data: {
-                title: validatedPosition.title,
-                createdBy: validatedPosition.createdBy,
-                orgId: validatedPosition.orgId,
-            },
-        });
-    } catch (error) {
-        if (error instanceof z.ZodError) {
-            throw new InvalidInputError();
-        }
-        throw error;
-    }
+    return success(created, 201);
 }
 
-async function deletePosition(positionId: string): Promise<Position> {
-    try {
-        const deletedPosition = await prisma.position.delete({
-            where: {
-                id: positionId,
-            },
-        });
-        return deletedPosition;
-    } catch (error) {
-        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code == 'P2025') {
-            throw new PositionNotFoundError();
-        }
-        throw error;
+async function deletePosition(positionId: string): Promise<Result<Position>> {
+    const existingPosition = await prisma.position.findUnique({ where: { id: positionId } });
+    if (!existingPosition) {
+        return notFound('Position', positionId);
     }
+
+    const deleted = await prisma.position.delete({ where: { id: positionId } });
+    return success(deleted, 200);
 }
 
-async function getPosition(positionId: string): Promise<Position> {
+async function getPosition(positionId: string): Promise<Result<Position>> {
     const position = await prisma.position.findUnique({
         where: {
             id: positionId,
@@ -51,32 +33,29 @@ async function getPosition(positionId: string): Promise<Position> {
     });
 
     if (!position) {
-        throw new PositionNotFoundError();
+        return notFound('Position', positionId);
     }
 
-    return position;
+    return success(position, 200);
 }
 
 async function updatePosition(
     positionId: string,
     positionData: Partial<CreatePositionData>
-): Promise<Position> {
-    try {
-        const validatedPosition = CreatePositionSchema.partial().parse(positionData);
-        const updatedPosition = await prisma.position.update({
-            where: { id: positionId },
-            data: {
-                ...validatedPosition,
-                updatedAt: new Date(),
-            },
-        });
-        return updatedPosition;
-    } catch (error) {
-        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code == 'P2025') {
-            throw new PositionNotFoundError();
-        }
-        throw error;
+): Promise<Result<Position>> {
+    const existingPosition = await prisma.position.findUnique({ where: { id: positionId } });
+    if (!existingPosition) {
+        return notFound('Position', positionId);
     }
+
+    const updated = await prisma.position.update({
+        where: { id: positionId },
+        data: {
+            ...positionData,
+            updatedAt: new Date(),
+        },
+    });
+    return success(updated, 200);
 }
 
 const PositionService = {

@@ -1,5 +1,5 @@
 import { type NextRequest } from 'next/server';
-import { sargeApiResponse, sargeApiError } from '@/lib/responses';
+import { success, handleError, unAuthenticated } from '@/lib/responses';
 import { getCurrentUser } from '@/lib/auth/auth-service';
 
 export async function GET(_request: NextRequest) {
@@ -7,12 +7,11 @@ export async function GET(_request: NextRequest) {
         const user = await getCurrentUser();
 
         if (!user) {
-            return sargeApiError('Not authenticated', 401);
+            return Response.json(unAuthenticated('Not authenticated'));
         }
 
-        return sargeApiResponse(user, 200);
-    } catch (error) {
-        const message = error instanceof Error ? error.message : String(error);
-        return sargeApiError(message, 500);
+        return Response.json(success(user, 200));
+    } catch (err) {
+        return handleError(err);
     }
 }

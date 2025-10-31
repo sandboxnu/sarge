@@ -1,15 +1,15 @@
 'use server';
 
-import { createSession, deleteSession, verifySession } from './auth';
+import { createSession, deleteSession, verifySession } from '@/lib/auth/auth';
 import { redirect } from 'next/navigation';
-import UserService from '../services/user.service';
-import { prisma } from '../prisma';
+import UserService from '@/lib/services/user.service';
+import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcrypt';
-import { AuthorizationError } from '../schemas/errors';
 import { type User } from '@/generated/prisma';
-import { createUserSchema, loginUserSchema } from '../schemas/user.schema';
+import { createUserSchema, loginUserSchema } from '@/lib/schemas/user.schema';
 import { type SignupState } from '@/app/(web)/(auth)/signup/page';
 import { type LoginState } from '@/app/(web)/(auth)/login/page';
+import { z } from 'zod';
 
 export async function signup(
     prevState: SignupState | null,
@@ -24,7 +24,7 @@ export async function signup(
     if (!parsedCreds.success) {
         return {
             success: false,
-            errors: parsedCreds.error.flatten().fieldErrors,
+            errors: z.flattenError(parsedCreds.error).fieldErrors,
             message: 'Please check your input and try again.',
         };
     }
@@ -65,7 +65,7 @@ export async function loginAction(
     if (!parsedCreds.success) {
         return {
             success: false,
-            errors: parsedCreds.error.flatten().fieldErrors,
+            errors: z.flattenError(parsedCreds.error).fieldErrors,
             message: 'Please check your input and try again.',
         };
     }
@@ -92,13 +92,13 @@ export async function login(_credentials: { email: string; password: string }): 
     });
 
     if (!user) {
-        throw new AuthorizationError();
+        throw new Error('Invalid email or password');
     }
 
     const isValidPassword = await bcrypt.compare(_credentials.password, user.hashedPassword);
 
     if (!isValidPassword) {
-        throw new AuthorizationError();
+        throw new Error('Invalid password');
     }
 
     await createSession({ userId: user.id, email: user.email });

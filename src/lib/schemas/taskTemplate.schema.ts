@@ -1,17 +1,5 @@
 import { z } from 'zod';
 
-export class TaskTemplateNotFoundError extends Error {
-    constructor() {
-        super('Task Template Not Found');
-    }
-}
-
-export class TaskTemplateExistsError extends Error {
-    constructor() {
-        super('Task Template with that name already exists');
-    }
-}
-
 const testCaseSchema = z.object({
     input: z.string().min(1, 'Expected input required'),
     output: z.string().min(1, 'Expected output required'),

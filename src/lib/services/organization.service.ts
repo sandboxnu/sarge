@@ -1,144 +1,118 @@
 import { type Organization } from '@/generated/prisma';
 import { prisma } from '@/lib/prisma';
-import { Prisma } from '@/generated/prisma';
 import {
     type CreateOrganizationDTO,
     type UpdateOrganizationDTO,
-    createOrganizationSchema,
-    updateOrganizationSchema,
-    OrganizationNotFoundError,
-} from '../schemas/organization.schema';
-import z from 'zod';
-import { InvalidInputError } from '../schemas/errors';
+} from '@/lib/schemas/organization.schema';
+import { type Result, notFound, conflict, success } from '@/lib/responses';
 
-async function createOrganization(organization: CreateOrganizationDTO): Promise<Organization> {
-    try {
-        const { name, createdById } = createOrganizationSchema.parse(organization);
+async function createOrganization(
+    organization: CreateOrganizationDTO
+): Promise<Result<Organization>> {
+    const { name, createdById } = organization;
 
-        const user = await prisma.user.findUnique({
-            where: { id: createdById },
-        });
-        if (!user) {
-            throw new InvalidInputError();
-        }
-
-        const orgWithSameName = await prisma.organization.findFirst({
-            where: {
-                name,
-            },
-        });
-
-        if (orgWithSameName) {
-            throw new InvalidInputError();
-        }
-
-        return await prisma.organization.create({
-            data: {
-                name,
-                createdById,
-            },
-        });
-    } catch (error) {
-        if (error instanceof z.ZodError) {
-            throw new InvalidInputError();
-        }
-
-        throw error;
+    const user = await prisma.user.findUnique({
+        where: { id: createdById },
+    });
+    if (!user) {
+        return notFound('User', createdById);
     }
+
+    const orgWithSameName = await prisma.organization.findFirst({
+        where: {
+            name,
+        },
+    });
+
+    if (orgWithSameName) {
+        return conflict('Organization', 'with that name');
+    }
+
+    const created = await prisma.organization.create({
+        data: {
+            name,
+            createdById,
+        },
+    });
+    return success(created, 201);
 }
 
-async function getOrganization(id: string): Promise<Organization | null> {
-    try {
-        const org = await prisma.organization.findUnique({
-            where: {
-                id,
-            },
-            select: {
-                id: true,
-                name: true,
-                createdAt: true,
-                updatedAt: true,
-                createdById: true,
-                users: true,
-                positions: true,
-                candidates: true,
-                imageUrl: true,
-            },
-        });
+async function getOrganization(id: string): Promise<Result<Organization>> {
+    const org = await prisma.organization.findUnique({
+        where: {
+            id,
+        },
+        select: {
+            id: true,
+            name: true,
+            createdAt: true,
+            updatedAt: true,
+            createdById: true,
+            users: true,
+            positions: true,
+            candidates: true,
+            imageUrl: true,
+        },
+    });
 
-        if (!org) {
-            throw new OrganizationNotFoundError();
-        }
-
-        return org;
-    } catch (error) {
-        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-            throw new OrganizationNotFoundError();
-        }
-
-        throw error;
+    if (!org) {
+        return notFound('Organization', id);
     }
+
+    return success(org, 200);
 }
 
 async function updateOrganization(
     id: string,
     organization: UpdateOrganizationDTO
-): Promise<Organization> {
-    try {
-        const { name } = updateOrganizationSchema.parse(organization);
+): Promise<Result<Organization>> {
+    const { name } = organization;
 
-        const orgWithSameName = await prisma.organization.findFirst({
-            where: {
-                name,
-            },
-        });
+    const existingOrg = await prisma.organization.findUnique({
+        where: { id },
+    });
 
-        if (orgWithSameName) {
-            throw new InvalidInputError();
-        }
-
-        const updatedOrg = await prisma.organization.update({
-            where: {
-                id,
-            },
-            data: {
-                name,
-            },
-        });
-
-        return updatedOrg;
-    } catch (error) {
-        if (error instanceof z.ZodError) {
-            throw new InvalidInputError();
-        }
-
-        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-            throw new OrganizationNotFoundError();
-        }
-
-        throw error;
+    if (!existingOrg) {
+        return notFound('Organization', id);
     }
+
+    const orgWithSameName = await prisma.organization.findFirst({
+        where: {
+            name,
+            id: { not: id },
+        },
+    });
+
+    if (orgWithSameName) {
+        return conflict('Organization', 'with that name');
+    }
+
+    const updated = await prisma.organization.update({
+        where: {
+            id,
+        },
+        data: {
+            name,
+        },
+    });
+    return success(updated, 200);
 }
 
-async function deleteOrganization(id: string): Promise<Organization> {
-    try {
-        const deletedOrg = await prisma.organization.delete({
-            where: {
-                id,
-            },
-        });
+async function deleteOrganization(id: string): Promise<Result<Organization>> {
+    const existingOrg = await prisma.organization.findUnique({
+        where: { id },
+    });
 
-        if (!deletedOrg) {
-            throw new OrganizationNotFoundError();
-        }
-
-        return deletedOrg;
-    } catch (error) {
-        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-            throw new OrganizationNotFoundError();
-        }
-        throw error;
+    if (!existingOrg) {
+        return notFound('Organization', id);
     }
+
+    const deleted = await prisma.organization.delete({
+        where: {
+            id,
+        },
+    });
+    return success(deleted, 200);
 }
 
 const OrganizationService = {

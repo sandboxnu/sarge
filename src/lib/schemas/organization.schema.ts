@@ -1,11 +1,5 @@
 import { z } from 'zod';
 
-export class OrganizationNotFoundError extends Error {
-    constructor() {
-        super('Organization Not Found');
-    }
-}
-
 export const createOrganizationSchema = z.object({
     name: z
         .string()
