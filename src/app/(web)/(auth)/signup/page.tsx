@@ -12,8 +12,8 @@ import {
     FieldGroup,
     FieldLabel,
     FieldDescription,
-} from '@/lib/components/shadcn/Field';
-import { Input } from '@/lib/components/shadcn/Input';
+} from '@/lib/components/Field';
+import { Input } from '@/lib/components/Input';
 import { createUserSchema } from '@/lib/schemas/user.schema';
 import type { z } from 'zod';
 
