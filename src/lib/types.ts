@@ -3,4 +3,5 @@ export interface User {
     name: string | null;
     email: string | null;
     orgId: string | null;
+    orgName?: string | null;
 }

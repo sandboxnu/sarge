@@ -36,6 +36,14 @@ async function getUser(userId: string): Promise<Result<User>> {
         where: {
             id: userId,
         },
+        include: {
+            organization: {
+                select: {
+                    id: true,
+                    name: true,
+                },
+            },
+        },
     });
 
     if (!user) {
