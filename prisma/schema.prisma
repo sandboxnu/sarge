@@ -120,9 +120,9 @@ model AssessmentTemplate {
 model TaskTemplate {
   id                 String @id @unique @default(uuid())
   title              String
-  content            String @db.VarChar(500)
-  public_test_cases  Json
-  private_test_cases Json
+  content            String
+  public_test_cases  Json[]
+  private_test_cases Json[]
 
   orgId        String
   organization Organization @relation(fields: [orgId], references: [id])
