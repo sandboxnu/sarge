@@ -381,6 +381,124 @@ Output a single integer representing the GCD of \`a\` and \`b\`.
             },
         }),
     ]);
+
+    // ----- TaskTemplates -----
+    await Promise.all([
+        prisma.taskTemplate.upsert({
+            where: { id: 'tasktemplate-1' },
+            update: {},
+            create: {
+                id: 'tasktemplate-1',
+                title: 'Add Two Numbers',
+                content: `# Add Two Numbers
+
+## Problem Description
+
+Write a function that takes two integers as input and returns their sum.
+
+## Input Format
+
+The input consists of two lines:
+- First line: an integer \`a\`
+- Second line: an integer \`b\`
+
+## Output Format
+
+Output a single integer representing the sum of \`a\` and \`b\`.
+
+## Constraints
+
+- \`-1000 ≤ a, b ≤ 1000\`
+
+## Example
+
+### Input
+\`\`\`
+2
+3
+\`\`\`
+
+### Output
+\`\`\`
+5
+\`\`\`
+
+## Implementation Notes
+
+- Read two integers from standard input
+- Calculate their sum
+- Print the result to standard output`,
+                orgId: '788551fd-57e3-4854-87e5-8f7a5ff404f9',
+                public_test_cases: [
+                    { input: '2\n3\n', output: '5\n' },
+                    { input: '10\n20\n', output: '30\n' },
+                ],
+                private_test_cases: [
+                    { input: '1\n1\n', output: '2\n' },
+                    { input: '5\n5\n', output: '10\n' },
+                    { input: '-5\n3\n', output: '-2\n' },
+                    { input: '0\n0\n', output: '0\n' },
+                ],
+            },
+        }),
+        prisma.taskTemplate.upsert({
+            where: { id: 'tasktemplate-2' },
+            update: {},
+            create: {
+                id: 'tasktemplate-2',
+                title: 'Find GCD of Two Numbers',
+                content: `# Find GCD of Two Numbers
+
+## Problem Description
+
+Write a function that takes two integers as input and returns their greatest common divisor (GCD).
+
+## Input Format
+
+The input consists of two lines:
+- First line: an integer \`a\`
+- Second line: an integer \`b\`
+
+## Output Format
+
+Output a single integer representing the GCD of \`a\` and \`b\`.
+
+## Constraints
+
+- \`1 ≤ a, b ≤ 10^6\`
+
+## Example
+
+### Input
+\`\`\`
+12
+15
+\`\`\`
+
+### Output
+\`\`\`
+3
+\`\`\`
+
+## Implementation Notes
+
+- Read two integers from standard input
+- Calculate their GCD
+- Print the result to standard output`,
+                orgId: '123e4567-e89b-12d3-a456-426614174000',
+                public_test_cases: [
+                    { input: '12\n15\n', output: '3\n' },
+                    { input: '100\n80\n', output: '20\n' },
+                ],
+                private_test_cases: [
+                    { input: '7\n5\n', output: '1\n' },
+                    { input: '20\n30\n', output: '10\n' },
+                    { input: '81\n27\n', output: '27\n' },
+                    { input: '17\n19\n', output: '1\n' },
+                ],
+            },
+        }),
+    ]);
 }
 
 main()
