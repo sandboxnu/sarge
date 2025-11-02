@@ -8,9 +8,8 @@ import WelcomeModal from './modal';
 export default function DashboardPage() {
     const auth = useAuth();
     const { handleFileChange, loading, error, submitted, imageUrl } = useFileUpload('user');
-    console.log('Auth user:', auth.user);
 
-    const showWelcomeModal = auth.user?.orgId === null || !auth.user;
+    const showWelcomeModal = auth.user?.orgId === null;
 
     if (!auth.isPending && auth.user?.id !== null) {
         return (
