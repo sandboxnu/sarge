@@ -11,7 +11,7 @@ export default function DashboardPage() {
 
     const showWelcomeModal = auth.user?.orgId === null;
 
-    if (!auth.isPending && auth.user?.id !== null) {
+    if (!auth.isPending && auth.user?.name !== null) {
         return (
             <div>
                 {showWelcomeModal && <WelcomeModal />}

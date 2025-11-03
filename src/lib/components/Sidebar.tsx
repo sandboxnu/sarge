@@ -61,7 +61,7 @@ function OrgDropdown() {
                         </div>
                     </TooltipTrigger>
                     <TooltipContent side="right">
-                        <p>{auth.user.orgName}</p>
+                        <p>{auth.user.orgName ?? 'Organization Name'}</p>
                     </TooltipContent>
                 </Tooltip>
             </TooltipProvider>
@@ -80,10 +80,10 @@ function OrgDropdown() {
                             <div className="bg-sarge-gray-200 h-8 w-8 rounded-xl" />
                             <div className="flex flex-col items-start">
                                 <span className="text-sarge-gray-800 text-sm font-semibold">
-                                    {auth.user.orgName}
+                                    {auth.user.orgName ?? 'Organization Name'}
                                 </span>
                                 <span className="text-sarge-gray-600 text-xs">
-                                    {auth.user.orgId}
+                                    {auth.user.orgId ?? 'Org Id'}
                                 </span>
                             </div>
                         </div>
