@@ -21,6 +21,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { useAuth } from '@/lib/auth/auth-client';
 
 export type NavItem = {
     title: string;
@@ -48,6 +49,7 @@ const useSidebar = () => {
 // Organization Dropdown Component
 function OrgDropdown() {
     const { isCollapsed } = useSidebar();
+    const auth = useAuth();
 
     if (isCollapsed) {
         return (
@@ -59,7 +61,7 @@ function OrgDropdown() {
                         </div>
                     </TooltipTrigger>
                     <TooltipContent side="right">
-                        <p>Organization Name</p>
+                        <p>{auth.user.orgName}</p>
                     </TooltipContent>
                 </Tooltip>
             </TooltipProvider>
@@ -78,9 +80,11 @@ function OrgDropdown() {
                             <div className="bg-sarge-gray-200 h-8 w-8 rounded-xl" />
                             <div className="flex flex-col items-start">
                                 <span className="text-sarge-gray-800 text-sm font-semibold">
-                                    Organization Name
+                                    {auth.user.orgName}
                                 </span>
-                                <span className="text-sarge-gray-600 text-xs">org code</span>
+                                <span className="text-sarge-gray-600 text-xs">
+                                    {auth.user.orgId}
+                                </span>
                             </div>
                         </div>
                         <ChevronDown className="text-sarge-gray-600 h-4 w-4" />
