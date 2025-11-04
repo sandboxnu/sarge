@@ -18,7 +18,7 @@ function useFileUpload(type: UploadType, organizationId?: string) {
         setSubmitted(false);
         setImageUrl(null);
 
-        if (!auth.user.id) {
+        if (!auth.user?.id) {
             setError('User not authenticated');
             return;
         }

@@ -1,35 +1,26 @@
 'use client';
 
-import { createContext, type ReactNode, useContext, useEffect, useState } from 'react';
+import { createContext, type ReactNode, useContext } from 'react';
+import { useSession } from '@/lib/auth/better-auth-client';
 import { type User } from '@/lib/types';
 
 interface AuthContextType {
-    user: User;
+    user: User | null;
     isPending: boolean;
 }
 
 export const UserContext = createContext<AuthContextType | null>(null);
-export function UserProvider({ children }: { children: ReactNode }) {
-    const [isPending, setIsPending] = useState(true);
-    const [user, setUser] = useState<User>({
-        id: null,
-        name: null,
-        email: null,
-        orgId: null,
-        orgName: null,
-    });
 
-    useEffect(() => {
-        async function getUser() {
-            try {
-                const res = await fetch('/api/auth/me').then((r) => r.json());
-                setUser(res.data);
-            } finally {
-                setIsPending(false);
-            }
-        }
-        getUser();
-    }, []);
+export function UserProvider({ children }: { children: ReactNode }) {
+    const { data: session, isPending } = useSession();
+
+    const user = session?.user
+        ? {
+              id: session.user.id,
+              name: session.user.name || null,
+              email: session.user.email || null,
+          }
+        : null;
 
     return <UserContext.Provider value={{ user, isPending }}>{children}</UserContext.Provider>;
 }

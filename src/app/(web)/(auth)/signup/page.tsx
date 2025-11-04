@@ -1,114 +1,159 @@
 'use client';
+
 import Link from 'next/link';
-import { signup } from '@/lib/auth/auth-service';
-import { useActionState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Controller, useForm } from 'react-hook-form';
+import { signUp } from '@/lib/auth/better-auth-client';
 import { Button } from '@/lib/components/Button';
+import {
+    Field,
+    FieldError,
+    FieldGroup,
+    FieldLabel,
+    FieldDescription,
+    Input,
+} from '@/lib/components/shadcn/field';
+import { createUserSchema } from '@/lib/schemas/user.schema';
+import type { z } from 'zod';
 
-export interface SignupState {
-    success: boolean;
-    errors: {
-        name?: string[];
-        email?: string[];
-        password?: string[];
-    };
-    message: string;
-}
-
-const initialState: SignupState = {
-    success: true,
-    errors: {},
-    message: '',
-};
+type FormData = z.infer<typeof createUserSchema>;
 
 export default function SignupPage() {
-    const [state, formAction] = useActionState(signup, initialState);
+    const router = useRouter();
+    const form = useForm<FormData>({
+        resolver: zodResolver(createUserSchema),
+        defaultValues: {
+            name: '',
+            email: '',
+            password: '',
+        },
+    });
 
-    useEffect(() => {
-        if (state && !state.success && Object.keys(state.errors).length === 0 && state.message) {
-            alert(state.message);
+    const onSubmit = async (data: FormData) => {
+        const result = await signUp.email({
+            name: data.name.trim(),
+            email: data.email.trim().toLowerCase(),
+            password: data.password,
+        });
+
+        if (result.error) {
+            const message = result.error.message ?? 'An error occurred creating your account';
+            const lowerMessage = message.toLowerCase();
+
+            if (lowerMessage.includes('email') || lowerMessage.includes('already exists')) {
+                form.setError('email', { message });
+            } else if (lowerMessage.includes('password')) {
+                form.setError('password', { message });
+            } else if (lowerMessage.includes('name')) {
+                form.setError('name', { message });
+            } else {
+                form.setError('root', { message });
+            }
+            return;
         }
-    }, [state]);
+
+        router.push('/dashboard');
+        router.refresh();
+    };
 
     return (
         <div className="flex h-full items-center justify-center">
-            <div className="border-sarge-gray-200 container mx-auto max-w-md rounded-lg border-1 p-9">
+            <div className="border-sarge-gray-200 container mx-auto max-w-md rounded-lg border p-9">
                 <h1 className="mb-6 text-center text-xl font-medium">Create an account</h1>
 
-                <form action={formAction} className="flex flex-col gap-y-4">
-                    <div className="flex flex-col gap-y-4">
-                        <div className="flex flex-col gap-0.5">
-                            <label htmlFor="fullName" className="font-semibold">
-                                Full Name
-                            </label>
-                            <input
-                                type="text"
-                                name="fullName"
-                                id="fullName"
-                                className={`bg-sarge-gray-50 text-sarge-gray-800 placeholder:text-sarge-gray-500 rounded-lg border px-2 py-3 ${
-                                    state?.errors?.password
-                                        ? 'border-sarge-error-700'
-                                        : 'border-sarge-gray-200'
-                                }`}
-                                placeholder="First Last"
-                            />
-                            {state?.errors?.name && (
-                                <p className="text-sm text-red-500">{state.errors.name[0]}</p>
-                            )}
-                        </div>
-
-                        <div className="flex flex-col gap-0.5">
-                            <label htmlFor="email" className="font-semibold">
-                                Email
-                            </label>
-                            <input
-                                type="email"
-                                name="email"
-                                id="email"
-                                className={`bg-sarge-gray-50 text-sarge-gray-800 placeholder:text-sarge-gray-500 rounded-lg border px-2 py-3 ${
-                                    state?.errors?.password
-                                        ? 'border-sarge-error-700'
-                                        : 'border-sarge-gray-200'
-                                }`}
-                                placeholder="example@gmail.com"
-                            />
-                            {state?.errors?.email && (
-                                <p className="text-sarge-error-700 text-sm">
-                                    {state.errors.email[0]}
-                                </p>
-                            )}
-                        </div>
-
-                        <div className="flex flex-col gap-0.5">
-                            <label htmlFor="password" className="font-semibold">
-                                Password
-                            </label>
-                            <input
-                                type="password"
-                                name="password"
-                                id="password"
-                                className={`bg-sarge-gray-50 text-sarge-gray-800 placeholder:text-sarge-gray-500 rounded-lg border px-2 py-3 ${
-                                    state?.errors?.password
-                                        ? 'border-sarge-error-700'
-                                        : 'border-sarge-gray-200'
-                                }`}
-                                placeholder="********"
-                            />
-                            {state?.errors?.password && (
-                                <p className="text-sarge-error-700 text-sm">
-                                    {state.errors.password[0]}
-                                </p>
-                            )}
-                        </div>
+                {form.formState.errors.root && (
+                    <div className="border-sarge-error-700 bg-sarge-error-200 mb-4 rounded-lg border p-3">
+                        <p className="text-sarge-error-700 text-sm">
+                            {form.formState.errors.root.message}
+                        </p>
                     </div>
+                )}
 
-                    <Button type="submit" variant="primary" size="default">
-                        Continue
+                <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-y-4">
+                    <FieldGroup>
+                        <Controller
+                            name="name"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor="fullName">Full Name</FieldLabel>
+                                    <Input
+                                        {...field}
+                                        id="fullName"
+                                        type="text"
+                                        placeholder="First Last"
+                                        aria-invalid={fieldState.invalid}
+                                        disabled={form.formState.isSubmitting}
+                                    />
+                                    <FieldError
+                                        errors={fieldState.error ? [fieldState.error] : undefined}
+                                    />
+                                </Field>
+                            )}
+                        />
+
+                        <Controller
+                            name="email"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor="email">Email</FieldLabel>
+                                    <Input
+                                        {...field}
+                                        id="email"
+                                        type="email"
+                                        placeholder="example@gmail.com"
+                                        aria-invalid={fieldState.invalid}
+                                        disabled={form.formState.isSubmitting}
+                                    />
+                                    <FieldError
+                                        errors={fieldState.error ? [fieldState.error] : undefined}
+                                    />
+                                </Field>
+                            )}
+                        />
+
+                        <Controller
+                            name="password"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor="password">Password</FieldLabel>
+                                    <Input
+                                        {...field}
+                                        id="password"
+                                        type="password"
+                                        placeholder="********"
+                                        aria-invalid={fieldState.invalid}
+                                        disabled={form.formState.isSubmitting}
+                                    />
+                                    {!fieldState.error && (
+                                        <FieldDescription>
+                                            Password must be at least 8 characters
+                                        </FieldDescription>
+                                    )}
+                                    <FieldError
+                                        errors={fieldState.error ? [fieldState.error] : undefined}
+                                    />
+                                </Field>
+                            )}
+                        />
+                    </FieldGroup>
+
+                    <Button
+                        type="submit"
+                        variant="primary"
+                        size="default"
+                        disabled={form.formState.isSubmitting}
+                    >
+                        {form.formState.isSubmitting ? 'Creating account...' : 'Continue'}
                     </Button>
 
                     <div className="flex gap-x-1 text-sm">
                         <p className="text-sarge-gray-600">Already have an account?</p>
-                        <Link href={'/login'} className="text-sarge-primary-500">
-                            Sign In
+                        <Link href="/signin" className="text-sarge-primary-500">
+                            Log In
                         </Link>
                     </div>
                 </form>

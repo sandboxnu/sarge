@@ -10,8 +10,7 @@ export default function DashboardPage() {
     const { handleFileChange, loading, error, submitted, imageUrl } = useFileUpload('user');
 
     const showWelcomeModal = auth.user?.orgId === null;
-
-    if (!auth.isPending && auth.user?.id !== null) {
+    if (!auth.isPending && auth.user) {
         return (
             <div>
                 {showWelcomeModal && <WelcomeModal />}
