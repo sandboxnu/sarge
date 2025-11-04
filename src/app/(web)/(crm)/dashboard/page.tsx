@@ -9,7 +9,8 @@ export default function DashboardPage() {
     const auth = useAuth();
     const { handleFileChange, loading, error, submitted, imageUrl } = useFileUpload('user');
 
-    const showWelcomeModal = auth.user?.orgId === null;
+    const showWelcomeModal = auth.user?.orgId === null || auth.user?.orgId === undefined;
+
     if (!auth.isPending && auth.user) {
         return (
             <div>
