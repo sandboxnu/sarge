@@ -28,8 +28,7 @@ model User {
   name                String
   email               String         @unique
   orgId               String?
-  password            String
-  emailVerified       DateTime?
+  emailVerified       Boolean        @default(false)
   imageUrl            String?
   createdAt           DateTime       @default(now())
   updatedAt           DateTime       @updatedAt
