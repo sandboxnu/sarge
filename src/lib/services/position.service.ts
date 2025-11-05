@@ -39,6 +39,25 @@ async function getPosition(positionId: string): Promise<Result<Position>> {
     return success(position, 200);
 }
 
+type PositionLite = Pick<Position, "id" | "title" | "tags" | "createdAt" | "createdBy">;
+
+async function getPositionByOrgId(orgId: string): Promise<Result<PositionLite[]>> {
+    const positions = await prisma.position.findMany({
+        where: {
+            orgId
+        },
+        select: {
+            id: true,
+            title: true,
+            tags: true,
+            createdAt: true,
+            createdBy: true,
+        },
+    });
+
+    return success(positions, 200);
+}
+
 async function updatePosition(
     positionId: string,
     positionData: Partial<CreatePositionData>
@@ -62,6 +81,7 @@ const PositionService = {
     createPosition,
     deletePosition,
     getPosition,
+    getPositionByOrgId,
     updatePosition,
 };
 
