@@ -13,12 +13,12 @@ const inter = Inter({
 const satoshi = localFont({
     src: [
         {
-            path: '../lib/fonts/WEB/fonts/Satoshi-Variable.woff2',
+            path: '../lib/fonts/Satoshi-Variable.woff2',
             weight: '300 900',
             style: 'normal',
         },
         {
-            path: '../lib/fonts/WEB/fonts/Satoshi-VariableItalic.woff2',
+            path: '../lib/fonts/Satoshi-VariableItalic.woff2',
             weight: '300 900',
             style: 'italic',
         },
