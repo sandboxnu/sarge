@@ -39,12 +39,12 @@ async function getPosition(positionId: string): Promise<Result<Position>> {
     return success(position, 200);
 }
 
-type PositionLite = Pick<Position, "id" | "title" | "tags" | "createdAt" | "createdBy">;
+type PositionLite = Pick<Position, 'id' | 'title' | 'tags' | 'createdAt' | 'createdBy'>;
 
 async function getPositionByOrgId(orgId: string): Promise<Result<PositionLite[]>> {
     const positions = await prisma.position.findMany({
         where: {
-            orgId
+            orgId,
         },
         select: {
             id: true,

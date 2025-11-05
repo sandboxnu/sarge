@@ -7,15 +7,15 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
     try {
         const orgId = (await params).id;
         const org = await prisma.organization.findUnique({
-                where: {
-                    id: orgId,
-                }
-            });
+            where: {
+                id: orgId,
+            },
+        });
         if (!org) {
             return Response.json(notFound('Organization', orgId));
         }
         const positionsResult = await PositionService.getPositionByOrgId(orgId);
-        return Response.json(positionsResult)
+        return Response.json(positionsResult);
     } catch (err) {
         return handleError(err);
     }
