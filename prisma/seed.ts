@@ -1,49 +1,65 @@
 import { prisma } from '@/lib/prisma';
+import { auth } from '@/lib/auth/better-auth';
 
 async function main() {
-    // ----- Users (create first without orgId) -----
-    const _users = await Promise.all([
-        prisma.user.upsert({
-            where: { id: 'e99335bd-9dd7-4260-8977-2eeaa4df799c' },
-            update: {},
-            create: {
-                id: 'e99335bd-9dd7-4260-8977-2eeaa4df799c',
-                hashedPassword: 'abcd',
-                name: 'Admin User',
-                email: 'admin@techcorp.com',
-            },
-        }),
-        prisma.user.upsert({
-            where: { id: '68992d1e-e119-4874-b768-bf685d10194e' },
-            update: {},
-            create: {
-                id: '68992d1e-e119-4874-b768-bf685d10194e',
-                name: 'John Doe',
-                hashedPassword: 'abcd',
-                email: 'john.doe@techcorp.com',
-            },
-        }),
-        prisma.user.upsert({
-            where: { id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890' },
-            update: {},
-            create: {
-                id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
-                name: 'Jane Smith',
-                hashedPassword: 'abcd',
-                email: 'jane.smith@startupxyz.com',
-            },
-        }),
-        prisma.user.upsert({
-            where: { id: 'b2c3d4e5-f6g7-8901-bcde-f12345678901' },
-            update: {},
-            create: {
-                id: 'b2c3d4e5-f6g7-8901-bcde-f12345678901',
-                name: 'Bob Wilson',
-                hashedPassword: 'abcd',
-                email: 'bob.wilson@enterprise.com',
-            },
-        }),
-    ]);
+    const seedUsers = [
+        {
+            id: 'e99335bd-9dd7-4260-8977-2eeaa4df799c',
+            name: 'Admin User',
+            email: 'admin@techcorp.com',
+            password: 'password123',
+        },
+        {
+            id: '68992d1e-e119-4874-b768-bf685d10194e',
+            name: 'John Doe',
+            email: 'john.doe@techcorp.com',
+            password: 'password123',
+        },
+        {
+            id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+            name: 'Jane Smith',
+            email: 'jane.smith@startupxyz.com',
+            password: 'password123',
+        },
+        {
+            id: 'b2c3d4e5-f6g7-8901-bcde-f12345678901',
+            name: 'Bob Wilson',
+            email: 'bob.wilson@enterprise.com',
+            password: 'password123',
+        },
+    ];
+
+    // might have to update the session and account records to reference the new user ID (since better auth generates its own ID)
+
+    const _users = await Promise.all(
+        seedUsers.map(async (userData) => {
+            const existingUser = await prisma.user.findUnique({
+                where: { id: userData.id },
+            });
+
+            if (existingUser) {
+                return existingUser;
+            }
+
+            await auth.api.signUpEmail({
+                body: {
+                    name: userData.name,
+                    email: userData.email,
+                    password: userData.password,
+                },
+            });
+
+            const updatedUser = await prisma.user.update({
+                where: { email: userData.email },
+                data: {
+                    id: userData.id,
+                    emailVerified: true,
+                },
+            });
+
+            return updatedUser;
+        })
+    );
 
     // ----- Organizations -----
     // Each org must be "created" by a distinct user.

@@ -4,49 +4,39 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
-import { signUp } from '@/lib/auth/better-auth-client';
+import { signIn } from '@/lib/auth/better-auth-client';
 import { Button } from '@/lib/components/Button';
-import {
-    Field,
-    FieldError,
-    FieldGroup,
-    FieldLabel,
-    FieldDescription,
-} from '@/lib/components/shadcn/Field';
+import { Field, FieldError, FieldGroup, FieldLabel } from '@/lib/components/shadcn/Field';
 import { Input } from '@/lib/components/shadcn/Input';
-import { createUserSchema } from '@/lib/schemas/user.schema';
+import { loginUserSchema } from '@/lib/schemas/user.schema';
 import type { z } from 'zod';
 
-type FormData = z.infer<typeof createUserSchema>;
+type FormData = z.infer<typeof loginUserSchema>;
 
-export default function SignupPage() {
+export default function SignInPage() {
     const router = useRouter();
     const form = useForm<FormData>({
-        resolver: zodResolver(createUserSchema),
+        resolver: zodResolver(loginUserSchema),
         defaultValues: {
-            name: '',
             email: '',
             password: '',
         },
     });
 
     const onSubmit = async (data: FormData) => {
-        const result = await signUp.email({
-            name: data.name.trim(),
+        const result = await signIn.email({
             email: data.email.trim().toLowerCase(),
             password: data.password,
         });
 
         if (result.error) {
-            const message = result.error.message ?? 'An error occurred creating your account';
+            const message = result.error.message ?? 'Invalid email or password';
             const lowerMessage = message.toLowerCase();
 
-            if (lowerMessage.includes('email') || lowerMessage.includes('already exists')) {
+            if (lowerMessage.includes('email') || lowerMessage.includes('not found')) {
                 form.setError('email', { message });
-            } else if (lowerMessage.includes('password')) {
+            } else if (lowerMessage.includes('password') || lowerMessage.includes('invalid')) {
                 form.setError('password', { message });
-            } else if (lowerMessage.includes('name')) {
-                form.setError('name', { message });
             } else {
                 form.setError('root', { message });
             }
@@ -80,7 +70,7 @@ export default function SignupPage() {
             <div className="flex w-full items-center justify-center bg-white px-4 py-8 sm:px-8 lg:w-1/2 lg:px-16">
                 <div className="w-full max-w-sm">
                     <div className="mb-8 flex justify-center">
-                        <h1 className="text-display-xs text-sarge-gray-800">Create an account</h1>
+                        <h1 className="text-display-xs text-sarge-gray-800">Login to Sarge</h1>
                     </div>
 
                     {form.formState.errors.root && (
@@ -93,35 +83,6 @@ export default function SignupPage() {
 
                     <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
                         <FieldGroup className="gap-4">
-                            <Controller
-                                name="name"
-                                control={form.control}
-                                render={({ field, fieldState }) => (
-                                    <Field data-invalid={fieldState.invalid} className="gap-2">
-                                        <FieldLabel
-                                            htmlFor="fullName"
-                                            className="text-label-s text-sarge-gray-800"
-                                        >
-                                            Full Name
-                                        </FieldLabel>
-                                        <Input
-                                            {...field}
-                                            id="fullName"
-                                            type="text"
-                                            placeholder="Enter Your Full Name"
-                                            aria-invalid={fieldState.invalid}
-                                            disabled={form.formState.isSubmitting}
-                                            className="text-body-s border-sarge-gray-200 bg-sarge-gray-50 text-sarge-gray-800 placeholder:text-sarge-gray-800 h-11 rounded-lg border px-3 py-1"
-                                        />
-                                        <FieldError
-                                            errors={
-                                                fieldState.error ? [fieldState.error] : undefined
-                                            }
-                                        />
-                                    </Field>
-                                )}
-                            />
-
                             <Controller
                                 name="email"
                                 control={form.control}
@@ -156,12 +117,20 @@ export default function SignupPage() {
                                 control={form.control}
                                 render={({ field, fieldState }) => (
                                     <Field data-invalid={fieldState.invalid} className="gap-2">
-                                        <FieldLabel
-                                            htmlFor="password"
-                                            className="text-label-s text-sarge-gray-800"
-                                        >
-                                            Password
-                                        </FieldLabel>
+                                        <div className="flex items-center justify-between">
+                                            <FieldLabel
+                                                htmlFor="password"
+                                                className="text-label-s text-sarge-gray-800"
+                                            >
+                                                Password
+                                            </FieldLabel>
+                                            <Link
+                                                href="/reset-password"
+                                                className="text-label-xs text-sarge-primary-500 hover:underline"
+                                            >
+                                                Forgot password?
+                                            </Link>
+                                        </div>
                                         <Input
                                             {...field}
                                             id="password"
@@ -171,11 +140,6 @@ export default function SignupPage() {
                                             disabled={form.formState.isSubmitting}
                                             className="text-body-s border-sarge-gray-200 bg-sarge-gray-50 text-sarge-gray-800 placeholder:text-sarge-gray-800 h-11 rounded-lg border px-3 py-1"
                                         />
-                                        {!fieldState.error && (
-                                            <FieldDescription className="text-body-xs text-sarge-gray-500">
-                                                Password must be at least 8 characters
-                                            </FieldDescription>
-                                        )}
                                         <FieldError
                                             errors={
                                                 fieldState.error ? [fieldState.error] : undefined
@@ -193,18 +157,18 @@ export default function SignupPage() {
                             disabled={form.formState.isSubmitting}
                             className="text-label-s bg-sarge-primary-500 text-sarge-gray-50 hover:bg-sarge-primary-600 h-11 w-full rounded-lg px-4 py-2 transition-colors disabled:opacity-50"
                         >
-                            {form.formState.isSubmitting ? 'Creating account...' : 'Continue'}
+                            {form.formState.isSubmitting ? 'Logging in...' : 'Continue'}
                         </Button>
 
                         <div className="flex items-center gap-1 py-1">
                             <p className="text-label-xs text-sarge-gray-600">
-                                Already have an account?
+                                Don&apos;t have an account?
                             </p>
                             <Link
-                                href="/signin"
+                                href="/signup"
                                 className="text-label-xs text-sarge-primary-500 hover:underline"
                             >
-                                Log In
+                                Sign up
                             </Link>
                         </div>
                     </form>

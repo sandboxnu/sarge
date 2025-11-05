@@ -1,15 +1,8 @@
 import type { Metadata } from 'next';
-import { Nunito_Sans, Inter } from 'next/font/google';
+import { Inter } from 'next/font/google';
 import localFont from 'next/font/local';
 import './globals.css';
-import { Header } from '@/lib/components/Header';
 import { UserProvider } from '@/lib/auth/auth-client';
-
-const nunitoSans = Nunito_Sans({
-    variable: '--font-nunito-sans',
-    subsets: ['latin'],
-    weight: ['200', '300', '400', '500', '600', '700', '800', '900'],
-});
 
 const inter = Inter({
     variable: '--font-inter',
@@ -18,11 +11,21 @@ const inter = Inter({
 });
 
 const satoshi = localFont({
-    variable: '--font-satoshi',
     src: [
-        { path: '../public/fonts/Satoshi-Variable.ttf', style: 'normal' },
-        { path: '../public/fonts/Satoshi-VariableItalic.ttf', style: 'italic' },
+        {
+            path: '../lib/fonts/WEB/fonts/Satoshi-Variable.woff2',
+            weight: '300 900',
+            style: 'normal',
+        },
+        {
+            path: '../lib/fonts/WEB/fonts/Satoshi-VariableItalic.woff2',
+            weight: '300 900',
+            style: 'italic',
+        },
     ],
+    variable: '--font-satoshi',
+    display: 'swap',
+    fallback: ['inter'],
 });
 
 export const metadata: Metadata = {
@@ -38,10 +41,9 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body
-                className={`${satoshi.variable} ${nunitoSans.variable} ${inter.variable} grid h-dvh grid-rows-[auto_1fr] antialiased`}
+                className={`${inter.variable} ${satoshi.variable} grid h-dvh grid-rows-[auto_1fr] antialiased`}
             >
                 <UserProvider>
-                    <Header />
                     <main>{children}</main>
                 </UserProvider>
             </body>

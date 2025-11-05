@@ -1,18 +1,7 @@
 import { type User } from '@/generated/prisma';
 import { prisma } from '@/lib/prisma';
-import { type CreateUserDTO, type UserDTO } from '@/lib/schemas/user.schema';
+import { type UserDTO } from '@/lib/schemas/user.schema';
 import { type Result, notFound, success } from '@/lib/responses';
-
-async function createUser(user: CreateUserDTO): Promise<Result<User>> {
-    const created = await prisma.user.create({
-        data: {
-            name: user.name,
-            email: user.email,
-            hashedPassword: user.password,
-        },
-    });
-    return success(created, 201);
-}
 
 async function deleteUser(userId: string): Promise<Result<User>> {
     const existingUser = await prisma.user.findUnique({
@@ -72,7 +61,6 @@ async function updateUser(userId: string, userData: Partial<UserDTO>): Promise<R
 }
 
 const UserService = {
-    createUser,
     deleteUser,
     getUser,
     updateUser,

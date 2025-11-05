@@ -1,9 +1,6 @@
 @import 'tailwindcss';
 
 :root {
-    --background: #ffffff;
-    --foreground: #171717;
-
     /* Primary */
     --sarge-primary-700: #4125dc;
     --sarge-primary-600: #4d38ef;
@@ -17,9 +14,11 @@
     --sarge-gray-900: #16181b;
     --sarge-gray-800: #212429;
     --sarge-gray-600: #5b6274;
+    --sarge-gray-500: #858c9c;
     --sarge-gray-300: #c1c1c8;
     --sarge-gray-200: #e5e5e7;
     --sarge-gray-50: #f9fafe;
+    --sarge-gray-0: #ffffff;
 
     /* Error */
     --sarge-error-700: #b42318;
@@ -35,6 +34,63 @@
     --sarge-success-800: #00592e;
     --sarge-success-500: #0f9453;
     --sarge-success-100: #e1fee2;
+
+    /* Shadcn style variables  */
+    --background: var(--sarge-gray-0);
+    --foreground: var(--sarge-gray-800);
+
+    /* Surface colors */
+    --card: var(--sarge-gray-50);
+    --card-foreground: var(--sarge-gray-800);
+    --popover: var(--sarge-gray-50);
+    --popover-foreground: var(--sarge-gray-800);
+
+    /* Primary interactive colors */
+    --primary: var(--sarge-primary-500);
+    --primary-foreground: var(--sarge-gray-50);
+
+    /* Secondary interactive colors */
+    --secondary: var(--sarge-primary-100);
+    --secondary-foreground: var(--sarge-primary-700);
+
+    /* Muted/subtle colors */
+    --muted: var(--sarge-gray-200);
+    --muted-foreground: var(--sarge-gray-500);
+
+    /* Accent colors (for highlights/selections) */
+    --accent: var(--sarge-primary-100);
+    --accent-foreground: var(--sarge-gray-800);
+
+    /* Destructive/error colors */
+    --destructive: var(--sarge-error-700);
+    --destructive-foreground: var(--sarge-gray-50);
+
+    /* Border colors */
+    --border: var(--sarge-gray-200); /* Default borders */
+    --input: var(--sarge-gray-200); /* Input borders */
+    --ring: var(--sarge-primary-500); /* Focus rings */
+
+    /* Chart colors  */
+    --chart-1: oklch(0.646 0.222 41.116);
+    --chart-2: oklch(0.6 0.118 184.704);
+    --chart-3: oklch(0.398 0.07 227.392);
+    --chart-4: oklch(0.828 0.189 84.429);
+    --chart-5: oklch(0.769 0.188 70.08);
+
+    /* Sidebar colors */
+    --sidebar: var(--sarge-gray-50);
+    --sidebar-foreground: var(--sarge-gray-800);
+    --sidebar-primary: var(--sarge-gray-800);
+    --sidebar-primary-foreground: var(--sarge-gray-50);
+    --sidebar-accent: var(--sarge-primary-100);
+    --sidebar-accent-foreground: var(--sarge-gray-800);
+    --sidebar-border: var(--sarge-gray-200);
+    --sidebar-ring: var(--sarge-primary-500);
+
+    /* Spacing and Radius */
+    --radius: 0.5rem; /* 8px - from Figma button radius */
+
+    --letter-spacing-design: 0.025rem;
 }
 
 @theme inline {
@@ -54,9 +110,11 @@
     --color-sarge-gray-900: var(--sarge-gray-900);
     --color-sarge-gray-800: var(--sarge-gray-800);
     --color-sarge-gray-600: var(--sarge-gray-600);
+    --color-sarge-gray-500: var(--sarge-gray-500);
     --color-sarge-gray-300: var(--sarge-gray-300);
     --color-sarge-gray-200: var(--sarge-gray-200);
     --color-sarge-gray-50: var(--sarge-gray-50);
+    --color-sarge-gray-0: var(--sarge-gray-0);
 
     /* Error */
     --color-sarge-error-700: var(--sarge-error-700);
@@ -73,22 +131,115 @@
     --color-sarge-success-500: var(--sarge-success-500);
     --color-sarge-success-100: var(--sarge-success-100);
 
-    --font-sans: var(--font-inter);
-    --font-nunito-sans: var(--font-nunito-sans);
-    --font-mono: monospace;
+    /* Shadcn semantic tokens - mapped to Tailwind */
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+    --color-chart-1: var(--chart-1);
+    --color-chart-2: var(--chart-2);
+    --color-chart-3: var(--chart-3);
+    --color-chart-4: var(--chart-4);
+    --color-chart-5: var(--chart-5);
+    --color-sidebar: var(--sidebar);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-ring: var(--sidebar-ring);
+
+    /* Radius system */
+    --radius-sm: calc(var(--radius) - 4px); /* 4px */
+    --radius-md: var(--radius); /* 8px */
+    --radius-lg: calc(var(--radius) + 4px); /* 12px */
+    --radius-xl: calc(var(--radius) + 8px); /* 16px */
+
+    --font-sans: var(--font-satoshi);
+    --font-inter: var(--font-inter);
+
+    --tracking-design: var(--letter-spacing-design);
 }
 
-body {
-    background: var(--background);
-    color: var(--foreground);
-    font-family:
-        var(--font-sans),
-        var(--font-inter),
-        ui-sans-serif,
-        system-ui,
-        -apple-system,
-        'Segoe UI',
-        Roboto,
-        'Helvetica Neue',
-        Arial;
+@layer base {
+    * {
+        @apply border-border;
+    }
+    body {
+        @apply bg-background text-foreground font-sans;
+        @apply text-base leading-normal;
+    }
 }
+
+@layer components {
+    /* Display Styles */
+    .text-display-l {
+        @apply text-foreground tracking-design font-sans text-5xl leading-16 font-bold;
+    }
+
+    .text-display-m {
+        @apply text-foreground tracking-design font-sans text-4xl leading-12 font-bold;
+    }
+
+    .text-display-s {
+        @apply text-foreground tracking-design font-sans text-[1.75rem] leading-8 font-bold;
+    }
+
+    .text-display-xs {
+        @apply text-foreground tracking-design font-sans text-xl leading-7 font-bold;
+    }
+
+    /* Body Styles */
+    .text-body-xl {
+        @apply text-foreground tracking-design font-sans text-xl leading-7 font-normal;
+    }
+
+    .text-body-l {
+        @apply text-foreground tracking-design font-sans text-lg leading-6 font-normal;
+    }
+
+    .text-body-m {
+        @apply text-foreground tracking-design font-sans text-base leading-4.5 font-normal;
+    }
+
+    .text-body-s {
+        @apply text-foreground tracking-design font-sans text-sm leading-4.5 font-normal;
+    }
+
+    .text-body-xs {
+        @apply text-foreground tracking-design font-sans text-xs leading-4 font-normal;
+    }
+
+    /* Label Styles */
+    .text-label-l {
+        @apply text-foreground tracking-design font-sans text-xl leading-7 font-medium;
+    }
+
+    .text-label-m {
+        @apply text-foreground tracking-design font-sans text-lg leading-6 font-medium;
+    }
+
+    .text-label-s {
+        @apply text-foreground tracking-design font-sans text-sm leading-4.5 font-medium;
+    }
+
+    .text-label-xs {
+        @apply text-foreground tracking-design font-sans text-xs leading-4 font-medium;
+    }
+}
+
+/* https://www.joshwcomeau.com/css/surprising-truth-about-pixels-and-accessibility/ */

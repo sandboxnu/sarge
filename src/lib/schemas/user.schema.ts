@@ -7,16 +7,30 @@ export const createUserSchema = z.object({
         .max(100, 'Name must be less than 100 characters')
         .trim(),
     email: z
+        .string()
+        .min(1, 'Email is required')
         .email('Invalid email format')
         .toLowerCase()
         .trim()
         .max(255, 'Email must be less than 255 characters'),
-    password: z.string().min(8),
+    password: z
+        .string()
+        .min(8, 'Password must be at least 8 characters')
+        .max(128, 'Password must be less than 128 characters'),
 });
 
 export const loginUserSchema = z.object({
-    email: createUserSchema.shape.email,
-    password: z.string().min(8, 'Password is required'),
+    email: z
+        .string()
+        .min(1, 'Email is required')
+        .email('Invalid email format')
+        .toLowerCase()
+        .trim()
+        .max(255, 'Email must be less than 255 characters'),
+    password: z
+        .string()
+        .min(1, 'Password is required')
+        .min(8, 'Password must be at least 8 characters'),
 });
 
 export const UserSchema = z.object({
