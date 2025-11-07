@@ -2,12 +2,21 @@ import { Prisma } from '@/generated/prisma';
 import { type ZodError } from 'zod';
 import { z } from 'zod';
 
-export interface Result<T> {
-    success: boolean;
+type SuccessResult<T> = {
+    success: true;
     message: string;
-    data: T | null;
+    data: T;
     status: number;
-}
+};
+
+type ErrorResult = {
+    success: false;
+    message: string;
+    data: null;
+    status: number;
+};
+
+export type Result<T> = SuccessResult<T> | ErrorResult;
 
 export function success<T>(data: T, status = 200, message?: string) {
     return { success: true, message: message ?? 'Success', data, status };

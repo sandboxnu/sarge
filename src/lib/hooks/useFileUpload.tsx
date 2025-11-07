@@ -1,11 +1,11 @@
 import { type UploadType } from '@/lib/connectors/s3.connector';
-import { useAuth } from '@/lib/auth/auth-client';
+import { useAuth } from '@/lib/auth/user-context';
 import { useState } from 'react';
 
 function useFileUpload(type: UploadType, organizationId?: string) {
     const [error, setError] = useState<string | null>(null);
-    const [loading, setLoading] = useState<boolean>(false);
-    const [submitted, setSubmitted] = useState<boolean>(false);
+    const [loading, setLoading] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
     const [imageUrl, setImageUrl] = useState<string | null>(null);
     const auth = useAuth();
 

@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { auth } from '@/lib/auth/better-auth';
+import { auth } from '@/lib/auth/auth';
 
 async function main() {
     const seedUsers = [
