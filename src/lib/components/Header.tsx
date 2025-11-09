@@ -1,10 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { useAuth } from '@/lib/auth/user-context';
+import { useSession } from '@/lib/auth/auth-client';
 
 export function Header() {
-    const { user } = useAuth();
+    const { data: session } = useSession();
 
     return (
         <header className="bg-sarge-gray-50 sticky top-0 flex gap-10 px-3 py-2 text-xl">
@@ -17,7 +17,7 @@ export function Header() {
                 </Link>
 
                 {/** Placeholder for more info if user is signed in */}
-                {user && <div className=""></div>}
+                {session?.user && <div className=""></div>}
             </nav>
         </header>
     );

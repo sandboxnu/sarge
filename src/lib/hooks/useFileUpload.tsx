@@ -1,5 +1,5 @@
 import { type UploadType } from '@/lib/connectors/s3.connector';
-import { useAuth } from '@/lib/auth/user-context';
+import { useSession } from '@/lib/auth/auth-client';
 import { useState } from 'react';
 
 function useFileUpload(type: UploadType, organizationId?: string) {
@@ -7,7 +7,7 @@ function useFileUpload(type: UploadType, organizationId?: string) {
     const [loading, setLoading] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [imageUrl, setImageUrl] = useState<string | null>(null);
-    const auth = useAuth();
+    const { data: session } = useSession();
 
     async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0];
@@ -18,10 +18,11 @@ function useFileUpload(type: UploadType, organizationId?: string) {
         setSubmitted(false);
         setImageUrl(null);
 
-        if (!auth.user?.id) {
+        if (!session?.user?.id) {
             setError('User not authenticated');
             return;
         }
+
         if (type === 'organization' && !organizationId) {
             setError('Organization ID is required for organization uploads');
             return;
@@ -38,7 +39,7 @@ function useFileUpload(type: UploadType, organizationId?: string) {
                 body: JSON.stringify({
                     type,
                     mime,
-                    userId: auth.user.id,
+                    userId: session.user.id,
                     organizationId,
                 }),
             });
@@ -69,7 +70,7 @@ function useFileUpload(type: UploadType, organizationId?: string) {
                 body: JSON.stringify({
                     type,
                     key: data.key,
-                    userId: auth.user.id,
+                    userId: session.user.id,
                     organizationId,
                 }),
             });

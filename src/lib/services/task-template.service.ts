@@ -4,9 +4,9 @@ import {
     type CreateTaskTemplateDTO,
 } from '@/lib/schemas/taskTemplate.schema';
 import { prisma } from '@/lib/prisma';
-import { type Result, notFound, conflict, success } from '@/lib/responses';
+import { NotFoundException, ConflictException } from '@/lib/utils/errors.utils';
 
-async function getTaskTemplate(id: string): Promise<Result<TaskTemplate>> {
+async function getTaskTemplate(id: string): Promise<TaskTemplate> {
     const foundTaskTemplate = await prisma.taskTemplate.findFirst({
         where: {
             id,
@@ -14,15 +14,13 @@ async function getTaskTemplate(id: string): Promise<Result<TaskTemplate>> {
     });
 
     if (!foundTaskTemplate) {
-        return notFound('Task Template', id);
+        throw new NotFoundException('Task Template', id);
     }
 
-    return success(foundTaskTemplate, 200);
+    return foundTaskTemplate;
 }
 
-async function createTaskTemplate(
-    taskTemplate: CreateTaskTemplateDTO
-): Promise<Result<TaskTemplate>> {
+async function createTaskTemplate(taskTemplate: CreateTaskTemplateDTO): Promise<TaskTemplate> {
     const org = await prisma.organization.findFirst({
         where: {
             id: taskTemplate.orgId,
@@ -30,39 +28,37 @@ async function createTaskTemplate(
     });
 
     if (!org) {
-        return notFound('Organization', taskTemplate.orgId);
+        throw new NotFoundException('Organization', taskTemplate.orgId);
     }
 
-    const created = await prisma.taskTemplate.create({
+    const createdTaskTemplate = await prisma.taskTemplate.create({
         data: taskTemplate,
     });
-    return success(created, 201);
+    return createdTaskTemplate;
 }
 
-async function deleteTaskTemplate(id: string): Promise<Result<TaskTemplate>> {
+async function deleteTaskTemplate(id: string): Promise<TaskTemplate> {
     const existingTemplate = await prisma.taskTemplate.findUnique({
         where: { id },
     });
 
     if (!existingTemplate) {
-        return notFound('Task Template', id);
+        throw new NotFoundException('Task Template', id);
     }
 
-    const deleted = await prisma.taskTemplate.delete({
+    const deletedTaskTemplate = await prisma.taskTemplate.delete({
         where: {
             id,
         },
     });
-    return success(deleted, 200);
+    return deletedTaskTemplate;
 }
 
-async function updateTaskTemplate(
-    taskTemplate: UpdateTaskTemplateDTO
-): Promise<Result<TaskTemplate>> {
+async function updateTaskTemplate(taskTemplate: UpdateTaskTemplateDTO): Promise<TaskTemplate> {
     const { id, title, content, public_test_cases, private_test_cases } = taskTemplate;
 
     const current = await prisma.taskTemplate.findUnique({ where: { id } });
-    if (!current) return notFound('Task Template', id);
+    if (!current) throw new NotFoundException('Task Template', id);
 
     const hasDuplicateName = await prisma.taskTemplate.findFirst({
         where: {
@@ -74,10 +70,10 @@ async function updateTaskTemplate(
     });
 
     if (hasDuplicateName) {
-        return conflict('Task Template', 'with that name');
+        throw new ConflictException('Task Template', 'with that name');
     }
 
-    const updated = await prisma.taskTemplate.update({
+    const updatedTaskTemplate = await prisma.taskTemplate.update({
         where: {
             id,
         },
@@ -88,7 +84,7 @@ async function updateTaskTemplate(
             private_test_cases,
         },
     });
-    return success(updated, 200);
+    return updatedTaskTemplate;
 }
 
 const TaskTemplateService = {

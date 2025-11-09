@@ -2,32 +2,36 @@ import { prisma } from '@/lib/prisma';
 import { type CreatePositionData } from '@/lib/schemas/position.schema';
 import { type Position } from '@/generated/prisma';
 import { Status } from '@/generated/prisma';
-import { type Result, notFound, success } from '@/lib/responses';
+import { NotFoundException } from '@/lib/utils/errors.utils';
 import { type PositionWithCounts } from '@/lib/types/position-types';
 
-async function createPosition(position: CreatePositionData): Promise<Result<Position>> {
-    const created = await prisma.position.create({
+async function createPosition(
+    positionRequest: CreatePositionData,
+    userId: string,
+    orgId: string
+): Promise<Position> {
+    const position = await prisma.position.create({
         data: {
-            title: position.title,
-            createdBy: position.createdBy,
-            orgId: position.orgId,
+            title: positionRequest.title,
+            createdById: userId,
+            orgId,
         },
     });
 
-    return success(created, 201);
+    return position;
 }
 
-async function deletePosition(positionId: string): Promise<Result<Position>> {
+async function deletePosition(positionId: string): Promise<Position> {
     const existingPosition = await prisma.position.findUnique({ where: { id: positionId } });
     if (!existingPosition) {
-        return notFound('Position', positionId);
+        throw new NotFoundException('Position', positionId);
     }
 
     const deleted = await prisma.position.delete({ where: { id: positionId } });
-    return success(deleted, 200);
+    return deleted;
 }
 
-async function getPosition(positionId: string): Promise<Result<Position>> {
+async function getPosition(positionId: string): Promise<Position> {
     const position = await prisma.position.findUnique({
         where: {
             id: positionId,
@@ -35,13 +39,13 @@ async function getPosition(positionId: string): Promise<Result<Position>> {
     });
 
     if (!position) {
-        return notFound('Position', positionId);
+        throw new NotFoundException('Position', positionId);
     }
 
-    return success(position, 200);
+    return position;
 }
 
-async function getPositionByOrgId(orgId: string): Promise<Result<PositionWithCounts[]>> {
+async function getPositionByOrgId(orgId: string): Promise<PositionWithCounts[]> {
     const positions = await prisma.position.findMany({
         where: {
             orgId,
@@ -59,26 +63,26 @@ async function getPositionByOrgId(orgId: string): Promise<Result<PositionWithCou
         return { id: p.id, title: p.title, numCandidates, numAssigned };
     });
 
-    return success(positionsWithCounts, 200);
+    return positionsWithCounts;
 }
 
 async function updatePosition(
     positionId: string,
     positionData: Partial<CreatePositionData>
-): Promise<Result<Position>> {
+): Promise<Position> {
     const existingPosition = await prisma.position.findUnique({ where: { id: positionId } });
     if (!existingPosition) {
-        return notFound('Position', positionId);
+        throw new NotFoundException('Position', positionId);
     }
 
-    const updated = await prisma.position.update({
+    const updatedPosition = await prisma.position.update({
         where: { id: positionId },
         data: {
             ...positionData,
             updatedAt: new Date(),
         },
     });
-    return success(updated, 200);
+    return updatedPosition;
 }
 
 const PositionService = {

@@ -1,26 +1,19 @@
 import { prisma } from '@/lib/prisma';
-import { badRequest, error, forbidden, notFound, success, unAuthenticated } from '@/lib/responses';
 import s3Service from '@/lib/connectors/s3.connector';
-import { isUserAdmin } from '@/lib/utils/permissions.utils';
 import { type NextRequest } from 'next/server';
 import { SignBodySchema } from '@/lib/schemas/upload.schema';
+import { handleError, NotFoundException, UnauthorizedException } from '@/lib/utils/errors.utils';
 
 export async function POST(request: NextRequest) {
     try {
-        const parsed = SignBodySchema.safeParse(await request.json());
+        const parsed = SignBodySchema.parse(await request.json());
 
-        if (!parsed.success) {
-            return Response.json(badRequest('Invalid sign data', parsed.error));
-        }
-
-        const { type, mime, userId } = parsed.data;
+        const { type, mime, userId, organizationId } = parsed;
         if (!userId) {
-            return Response.json(unAuthenticated('User not authenticated'));
+            throw new UnauthorizedException('User not authenticated');
         }
 
         if (type === 'organization') {
-            const { organizationId } = parsed.data;
-
             const organization = await prisma.organization.findFirst({
                 where: {
                     id: organizationId,
@@ -28,21 +21,21 @@ export async function POST(request: NextRequest) {
             });
 
             if (!organization) {
-                return Response.json(notFound('Organization', organizationId));
+                throw new NotFoundException('Organization', organizationId);
             }
 
-            const allowed = await isUserAdmin(userId, organizationId);
-            if (!allowed) {
-                return Response.json(forbidden(`User ${userId} is not authorized`));
-            }
+            // const allowed = await isUserAdmin(userId, organizationId); TODO: revist with new permissions system
+            // if (!allowed) {
+            //     return Response.json(forbidden(`User ${userId} is not authorized`));
+            // }
 
             const res = await s3Service.getSignedURL(type, organizationId, mime);
-            return Response.json(success(res, 200));
+            return Response.json({ success: true, data: res }, { status: 200 });
         }
 
         const res = await s3Service.getSignedURL(type, userId, mime);
-        return Response.json(success(res, 200));
+        return Response.json({ success: true, data: res }, { status: 200 });
     } catch (err) {
-        return Response.json(error(`Error retrieving signed URL: ${err}`));
+        return handleError(err);
     }
 }

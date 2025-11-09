@@ -1,43 +1,49 @@
 import { type Organization } from '@/generated/prisma';
+import { type Organization as AuthOrganization } from 'better-auth/plugins';
 import { prisma } from '@/lib/prisma';
 import {
     type CreateOrganizationDTO,
     type UpdateOrganizationDTO,
 } from '@/lib/schemas/organization.schema';
-import { type Result, notFound, conflict, success } from '@/lib/responses';
+import {
+    ConflictException,
+    NotFoundException,
+    InternalServerException,
+} from '@/lib/utils/errors.utils';
+import { auth } from '@/lib/auth/auth';
 
 async function createOrganization(
-    organization: CreateOrganizationDTO
-): Promise<Result<Organization>> {
-    const { name, createdById } = organization;
-
-    const user = await prisma.user.findUnique({
-        where: { id: createdById },
-    });
-    if (!user) {
-        return notFound('User', createdById);
-    }
-
+    createOrgRequest: CreateOrganizationDTO,
+    userId: string,
+    headers: Headers
+): Promise<AuthOrganization> {
     const orgWithSameName = await prisma.organization.findFirst({
         where: {
-            name,
+            name: createOrgRequest.name,
         },
     });
 
     if (orgWithSameName) {
-        return conflict('Organization', 'with that name');
+        throw new ConflictException('Organization', 'with that name');
     }
 
-    const created = await prisma.organization.create({
-        data: {
-            name,
-            createdById,
+    const organization = await auth.api.createOrganization({
+        body: {
+            name: createOrgRequest.name,
+            slug: '',
+            userId,
         },
+        headers,
     });
-    return success(created, 201);
+
+    if (!organization) {
+        throw new InternalServerException('Failed to create organization');
+    }
+
+    return organization;
 }
 
-async function getOrganization(id: string): Promise<Result<Organization>> {
+async function getOrganization(id: string): Promise<Organization> {
     const org = await prisma.organization.findUnique({
         where: {
             id,
@@ -47,25 +53,24 @@ async function getOrganization(id: string): Promise<Result<Organization>> {
             name: true,
             createdAt: true,
             updatedAt: true,
-            createdById: true,
-            users: true,
+            slug: true,
+            logo: true,
             positions: true,
             candidates: true,
-            imageUrl: true,
         },
     });
 
     if (!org) {
-        return notFound('Organization', id);
+        throw new NotFoundException('Organization', id);
     }
 
-    return success(org, 200);
+    return org;
 }
 
 async function updateOrganization(
     id: string,
     organization: UpdateOrganizationDTO
-): Promise<Result<Organization>> {
+): Promise<Organization> {
     const { name } = organization;
 
     const existingOrg = await prisma.organization.findUnique({
@@ -73,7 +78,7 @@ async function updateOrganization(
     });
 
     if (!existingOrg) {
-        return notFound('Organization', id);
+        throw new NotFoundException('Organization', id);
     }
 
     const orgWithSameName = await prisma.organization.findFirst({
@@ -84,7 +89,7 @@ async function updateOrganization(
     });
 
     if (orgWithSameName) {
-        return conflict('Organization', 'with that name');
+        throw new ConflictException('Organization', 'with that name');
     }
 
     const updated = await prisma.organization.update({
@@ -93,18 +98,19 @@ async function updateOrganization(
         },
         data: {
             name,
+            updatedAt: new Date(),
         },
     });
-    return success(updated, 200);
+    return updated;
 }
 
-async function deleteOrganization(id: string): Promise<Result<Organization>> {
+async function deleteOrganization(id: string): Promise<Organization> {
     const existingOrg = await prisma.organization.findUnique({
         where: { id },
     });
 
     if (!existingOrg) {
-        return notFound('Organization', id);
+        throw new NotFoundException('Organization', id);
     }
 
     const deleted = await prisma.organization.delete({
@@ -112,7 +118,7 @@ async function deleteOrganization(id: string): Promise<Result<Organization>> {
             id,
         },
     });
-    return success(deleted, 200);
+    return deleted;
 }
 
 const OrganizationService = {

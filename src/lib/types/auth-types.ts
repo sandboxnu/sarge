@@ -1,0 +1,6 @@
+import type { Session } from '@/generated/prisma';
+
+export type AuthSession = Pick<Session, 'id' | 'userId'> & {
+    activeOrganizationId: string;
+    headers: Headers;
+};

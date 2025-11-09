@@ -1,15 +1,15 @@
 import { type User } from '@/generated/prisma';
 import { prisma } from '@/lib/prisma';
 import { type UserDTO } from '@/lib/schemas/user.schema';
-import { type Result, notFound, success } from '@/lib/responses';
+import { NotFoundException } from '@/lib/utils/errors.utils';
 
-async function deleteUser(userId: string): Promise<Result<User>> {
+async function deleteUser(userId: string): Promise<User> {
     const existingUser = await prisma.user.findUnique({
         where: { id: userId },
     });
 
     if (!existingUser) {
-        return notFound('User', userId);
+        throw new NotFoundException('User', userId);
     }
 
     const deleted = await prisma.user.delete({
@@ -17,38 +17,30 @@ async function deleteUser(userId: string): Promise<Result<User>> {
             id: userId,
         },
     });
-    return success(deleted, 200);
+    return deleted;
 }
 
-async function getUser(userId: string): Promise<Result<User>> {
+async function getUser(userId: string): Promise<User> {
     const user = await prisma.user.findUnique({
         where: {
             id: userId,
         },
-        include: {
-            organization: {
-                select: {
-                    id: true,
-                    name: true,
-                },
-            },
-        },
     });
 
     if (!user) {
-        return notFound('User', userId);
+        throw new NotFoundException('User', userId);
     }
 
-    return success(user, 200);
+    return user;
 }
 
-async function updateUser(userId: string, userData: Partial<UserDTO>): Promise<Result<User>> {
+async function updateUser(userId: string, userData: Partial<UserDTO>): Promise<User> {
     const existingUser = await prisma.user.findUnique({
         where: { id: userId },
     });
 
     if (!existingUser) {
-        return notFound('User', userId);
+        throw new NotFoundException('User', userId);
     }
 
     const updated = await prisma.user.update({
@@ -57,7 +49,7 @@ async function updateUser(userId: string, userData: Partial<UserDTO>): Promise<R
         },
         data: { ...userData, updatedAt: new Date() },
     });
-    return success(updated, 200);
+    return updated;
 }
 
 const UserService = {

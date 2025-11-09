@@ -1,13 +1,13 @@
-import { badRequest, error, handleError, success } from '@/lib/responses';
+import { handleError } from '@/lib/utils/errors.utils';
 import TaskTemplateService from '@/lib/services/task-template.service';
 import { type NextRequest } from 'next/server';
 import { updateTaskTemplateSchema } from '@/lib/schemas/taskTemplate.schema';
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const result = await TaskTemplateService.getTaskTemplate((await params).id);
-        if (!result.success) return Response.json(error(result.message, result.status));
-        return Response.json(success(result.data, 200));
+        const id = (await params).id;
+        const result = await TaskTemplateService.getTaskTemplate(id);
+        return Response.json({ success: true, data: result }, { status: 200 });
     } catch (err) {
         return handleError(err);
     }
@@ -15,9 +15,9 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 
 export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const result = await TaskTemplateService.deleteTaskTemplate((await params).id);
-        if (!result.success) return Response.json(error(result.message, result.status));
-        return Response.json(success(result.data, 200));
+        const id = (await params).id;
+        const result = await TaskTemplateService.deleteTaskTemplate(id);
+        return Response.json({ success: true, data: result }, { status: 200 });
     } catch (err) {
         return handleError(err);
     }
@@ -25,14 +25,11 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
 
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
+        const id = (await params).id;
         const body = await request.json();
-        const parsed = updateTaskTemplateSchema.safeParse({ id: (await params).id, ...body });
-        if (!parsed.success)
-            return Response.json(badRequest('Invalid task template data', parsed.error));
-
-        const result = await TaskTemplateService.updateTaskTemplate(parsed.data);
-        if (!result.success) return Response.json(error(result.message, result.status));
-        return Response.json(success(result.data, 200));
+        const parsed = updateTaskTemplateSchema.parse({ id, ...body });
+        const result = await TaskTemplateService.updateTaskTemplate(parsed);
+        return Response.json({ success: true, data: result }, { status: 200 });
     } catch (err) {
         return handleError(err);
     }

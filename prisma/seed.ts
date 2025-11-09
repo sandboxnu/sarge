@@ -4,32 +4,30 @@ import { auth } from '@/lib/auth/auth';
 async function main() {
     const seedUsers = [
         {
-            id: 'e99335bd-9dd7-4260-8977-2eeaa4df799c',
+            id: 'clx00000000000000000000001',
             name: 'Admin User',
             email: 'admin@techcorp.com',
             password: 'password123',
         },
         {
-            id: '68992d1e-e119-4874-b768-bf685d10194e',
+            id: 'clx00000000000000000000002',
             name: 'John Doe',
             email: 'john.doe@techcorp.com',
             password: 'password123',
         },
         {
-            id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+            id: 'clx00000000000000000000003',
             name: 'Jane Smith',
             email: 'jane.smith@startupxyz.com',
             password: 'password123',
         },
         {
-            id: 'b2c3d4e5-f6g7-8901-bcde-f12345678901',
+            id: 'clx00000000000000000000004',
             name: 'Bob Wilson',
             email: 'bob.wilson@enterprise.com',
             password: 'password123',
         },
     ];
-
-    // might have to update the session and account records to reference the new user ID (since better auth generates its own ID)
 
     const _users = await Promise.all(
         seedUsers.map(async (userData) => {
@@ -61,102 +59,167 @@ async function main() {
         })
     );
 
-    // ----- Organizations -----
-    // Each org must be "created" by a distinct user.
-    const _orgs = await Promise.all([
-        prisma.organization.upsert({
-            where: { id: '788551fd-57e3-4854-87e5-8f7a5ff404f9' },
-            update: {},
-            create: {
-                id: '788551fd-57e3-4854-87e5-8f7a5ff404f9',
-                name: 'Tech Corp',
-                createdById: 'e99335bd-9dd7-4260-8977-2eeaa4df799c',
-            },
-        }),
-        prisma.organization.upsert({
-            where: { id: '123e4567-e89b-12d3-a456-426614174000' },
-            update: {},
-            create: {
-                id: '123e4567-e89b-12d3-a456-426614174000',
-                name: 'StartupXYZ',
-                createdById: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
-            },
-        }),
-        prisma.organization.upsert({
-            where: { id: '987fcdeb-51a2-43d1-9f12-0123456789ab' },
-            update: {},
-            create: {
-                id: '987fcdeb-51a2-43d1-9f12-0123456789ab',
-                name: 'Enterprise Solutions',
-                createdById: 'b2c3d4e5-f6g7-8901-bcde-f12345678901',
-            },
-        }),
-    ]);
+    const orgConfigs = [
+        {
+            id: 'clx00000000000000000000011',
+            name: 'Tech Corp',
+            creatorId: 'clx00000000000000000000001',
+            slug: 'tech-corp',
+        },
+        {
+            id: 'clx00000000000000000000012',
+            name: 'StartupXYZ',
+            creatorId: 'clx00000000000000000000003',
+            slug: 'startupxyz',
+        },
+        {
+            id: 'clx00000000000000000000013',
+            name: 'Enterprise Solutions',
+            creatorId: 'clx00000000000000000000004',
+            slug: 'enterprise-solutions',
+        },
+    ];
 
-    // ----- Assign users to orgs (set orgId now that orgs exist) -----
-    await Promise.all([
-        prisma.user.update({
-            where: { id: 'e99335bd-9dd7-4260-8977-2eeaa4df799c' },
-            data: { orgId: '788551fd-57e3-4854-87e5-8f7a5ff404f9' },
-        }),
-        prisma.user.update({
-            where: { id: '68992d1e-e119-4874-b768-bf685d10194e' },
-            data: { orgId: '788551fd-57e3-4854-87e5-8f7a5ff404f9' },
-        }),
-        prisma.user.update({
-            where: { id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890' },
-            data: { orgId: '123e4567-e89b-12d3-a456-426614174000' },
-        }),
-        prisma.user.update({
-            where: { id: 'b2c3d4e5-f6g7-8901-bcde-f12345678901' },
-            data: { orgId: '987fcdeb-51a2-43d1-9f12-0123456789ab' },
-        }),
-    ]);
+    const _orgs = await Promise.all(
+        orgConfigs.map(async (orgConfig) => {
+            const existingOrg = await prisma.organization.findUnique({
+                where: { id: orgConfig.id },
+            });
+
+            if (existingOrg) {
+                return existingOrg;
+            }
+
+            const createdOrg = await auth.api.createOrganization({
+                body: {
+                    name: orgConfig.name,
+                    slug: orgConfig.slug,
+                    userId: orgConfig.creatorId,
+                },
+            });
+
+            if (!createdOrg) {
+                throw new Error(`Failed to create organization: ${orgConfig.name}`);
+            }
+
+            // Update organization ID to match seed data (for consistent references)
+            const updatedOrg = await prisma.organization.update({
+                where: { id: createdOrg.id },
+                data: {
+                    id: orgConfig.id,
+                },
+            });
+
+            return updatedOrg;
+        })
+    );
+
+    try {
+        await auth.api.addMember({
+            body: {
+                userId: 'clx00000000000000000000002',
+                organizationId: 'clx00000000000000000000011',
+                role: 'recruiter',
+            },
+        });
+    } catch (error) {
+        console.warn('Failed to add member (may already exist):', error);
+    }
+
+    const codingConcepts = [
+        {
+            id: 'clx00000000000000000000041',
+            name: 'Frontend',
+            colorHexCode: '#3B82F6',
+        },
+        {
+            id: 'clx00000000000000000000042',
+            name: 'Backend',
+            colorHexCode: '#10B981',
+        },
+        {
+            id: 'clx00000000000000000000043',
+            name: 'Full Stack',
+            colorHexCode: '#8B5CF6',
+        },
+    ];
+
+    const _codingConcepts = await Promise.all(
+        codingConcepts.map(async (codingConcept) => {
+            return prisma.codingConcept.upsert({
+                where: { id: codingConcept.id },
+                update: {},
+                create: {
+                    id: codingConcept.id,
+                    name: codingConcept.name,
+                    colorHexCode: codingConcept.colorHexCode,
+                },
+            });
+        })
+    );
 
     // ----- Positions -----
     await Promise.all([
         prisma.position.upsert({
-            where: { id: 'pos-frontend-uuid-1234567890abcd' },
+            where: { id: 'clx00000000000000000000021' },
             update: {},
             create: {
-                id: 'pos-frontend-uuid-1234567890abcd',
+                id: 'clx00000000000000000000021',
                 title: 'Frontend Developer',
-                orgId: '788551fd-57e3-4854-87e5-8f7a5ff404f9',
-                tags: ['JavaScript', 'React', 'TypeScript'],
-                createdBy: 'e99335bd-9dd7-4260-8977-2eeaa4df799c',
+                orgId: 'clx00000000000000000000011',
+                createdById: 'clx00000000000000000000001',
+                codingConcepts: {
+                    connect: {
+                        id: 'clx00000000000000000000041',
+                    },
+                },
             },
         }),
         prisma.position.upsert({
-            where: { id: 'pos-backend-uuid-1234567890abcde' },
+            where: { id: 'clx00000000000000000000022' },
             update: {},
             create: {
-                id: 'pos-backend-uuid-1234567890abcde',
+                id: 'clx00000000000000000000022',
                 title: 'Backend Developer',
-                orgId: '788551fd-57e3-4854-87e5-8f7a5ff404f9',
-                tags: ['Node.js', 'TypeScript', 'Database'],
-                createdBy: 'e99335bd-9dd7-4260-8977-2eeaa4df799c',
+                orgId: 'clx00000000000000000000011',
+                createdById: 'clx00000000000000000000001',
+                codingConcepts: {
+                    connect: {
+                        id: 'clx00000000000000000000042',
+                    },
+                },
             },
         }),
         prisma.position.upsert({
-            where: { id: 'pos-fullstack-uuid-123456789abcd' },
+            where: { id: 'clx00000000000000000000023' },
             update: {},
             create: {
-                id: 'pos-fullstack-uuid-123456789abcd',
+                id: 'clx00000000000000000000023',
                 title: 'Full Stack Engineer',
-                orgId: '123e4567-e89b-12d3-a456-426614174000',
-                tags: ['JavaScript', 'Python', 'React', 'Node.js'],
-                createdBy: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+                orgId: 'clx00000000000000000000012',
+                createdById: 'clx00000000000000000000003',
+                codingConcepts: {
+                    connect: {
+                        id: 'clx00000000000000000000043',
+                    },
+                },
             },
         }),
         prisma.position.upsert({
-            where: { id: 'pos-senior-uuid-1234567890abcdef' },
+            where: { id: 'clx00000000000000000000024' },
             update: {},
             create: {
-                id: 'pos-senior-uuid-1234567890abcdef',
+                id: 'clx00000000000000000000024',
                 title: 'Senior Software Engineer',
-                orgId: '987fcdeb-51a2-43d1-9f12-0123456789ab',
-                tags: ['Python', 'Senior', 'Remote'],
-                createdBy: 'b2c3d4e5-f6g7-8901-bcde-f12345678901',
+                orgId: 'clx00000000000000000000013',
+                createdById: 'clx00000000000000000000004',
+                codingConcepts: {
+                    connect: [
+                        { id: 'clx00000000000000000000041' },
+                        { id: 'clx00000000000000000000042' },
+                        { id: 'clx00000000000000000000043' },
+                    ],
+                },
             },
         }),
     ]);
@@ -164,23 +227,23 @@ async function main() {
     // ----- Candidates -----
     await Promise.all([
         prisma.candidate.upsert({
-            where: { id: 'cand-1' },
+            where: { id: 'clx00000000000000000000031' },
             update: {},
             create: {
-                id: 'cand-1',
+                id: 'clx00000000000000000000031',
                 name: 'Alice Candidate',
                 email: 'alice@example.com',
-                orgId: '788551fd-57e3-4854-87e5-8f7a5ff404f9',
+                orgId: 'clx00000000000000000000011',
             },
         }),
         prisma.candidate.upsert({
-            where: { id: 'cand-2' },
+            where: { id: 'clx00000000000000000000032' },
             update: {},
             create: {
-                id: 'cand-2',
+                id: 'clx00000000000000000000032',
                 name: 'Evan Applicant',
                 email: 'evan@example.com',
-                orgId: '123e4567-e89b-12d3-a456-426614174000',
+                orgId: 'clx00000000000000000000012',
             },
         }),
     ]);
