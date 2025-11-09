@@ -32,9 +32,10 @@ model User {
   imageUrl            String?
   createdAt           DateTime       @default(now())
   updatedAt           DateTime       @updatedAt
+  roleId              String
+  userRole            Role           @relation("UserRole", fields: [roleId], references: [id])
   organization        Organization?  @relation("UserOrganization", fields: [orgId], references: [id])
   createdOrganization Organization?  @relation("CreatedOrganization")
-  userRoles           UserRole[]
   Review              Review[]
   Comment             Comment[]
   sessions            Session[]
@@ -53,19 +54,7 @@ model Role {
   role      RoleType
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
-  userRoles UserRole[]
-}
-
-model UserRole {
-  id     String @id @default(uuid())
-  userId String
-  roleId String
-
-  user User @relation(fields: [userId], references: [id])
-  role Role @relation(fields: [roleId], references: [id])
-
-  @@unique([userId])
-  @@index([roleId])
+  users     User[]     @relation("UserRole")
 }
 
 model Tag {
