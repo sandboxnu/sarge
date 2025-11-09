@@ -99,11 +99,16 @@ model Candidate {
   Assessment   Assessment[]
 }
 
+enum Status {
+  ASSIGNED
+  SUBMITTED
+}
+
 model CandidatePoolEntry {
   id          String   @id @unique @default(uuid())
   candidateId String
   positionId  String
-  status      String
+  status      Status   @default(ASSIGNED)
   tags        String[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

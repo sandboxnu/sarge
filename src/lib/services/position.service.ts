@@ -1,7 +1,9 @@
 import { prisma } from '@/lib/prisma';
 import { type CreatePositionData } from '@/lib/schemas/position.schema';
 import { type Position } from '@/generated/prisma';
+import { Status } from '@/generated/prisma';
 import { type Result, notFound, success } from '@/lib/responses';
+import { type PositionWithCounts } from '@/lib/types/position-types';
 
 async function createPosition(position: CreatePositionData): Promise<Result<Position>> {
     const created = await prisma.position.create({
@@ -39,6 +41,27 @@ async function getPosition(positionId: string): Promise<Result<Position>> {
     return success(position, 200);
 }
 
+async function getPositionByOrgId(orgId: string): Promise<Result<PositionWithCounts[]>> {
+    const positions = await prisma.position.findMany({
+        where: {
+            orgId,
+        },
+        select: {
+            id: true,
+            title: true,
+            candidate: { select: { status: true } },
+        },
+    });
+
+    const positionsWithCounts: PositionWithCounts[] = positions.map((p) => {
+        const numCandidates = p.candidate.length;
+        const numAssigned = p.candidate.filter((c) => c.status === Status.ASSIGNED).length;
+        return { id: p.id, title: p.title, numCandidates, numAssigned };
+    });
+
+    return success(positionsWithCounts, 200);
+}
+
 async function updatePosition(
     positionId: string,
     positionData: Partial<CreatePositionData>
@@ -62,6 +85,7 @@ const PositionService = {
     createPosition,
     deletePosition,
     getPosition,
+    getPositionByOrgId,
     updatePosition,
 };
 
