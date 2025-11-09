@@ -6,12 +6,8 @@ export const isUserAdmin = async (userId: string, organizationId: string): Promi
         where: {
             id: userId,
             orgId: organizationId,
-            userRoles: {
-                some: {
-                    role: {
-                        role: RoleType.ADMIN,
-                    },
-                },
+            userRole: {
+                role: RoleType.ADMIN,
             },
         },
     });
