@@ -1,7 +1,7 @@
-import { useRef, useState, useEffect, useCallback } from "react";
+import { useRef, useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/lib/auth/auth-client';
 
-type Step = "welcome" | "create" | "join" | null;
+type Step = 'welcome' | 'create' | 'join' | null;
 
 function useSignInFlow() {
     const [organizationName, setOrganizationName] = useState<string>('');
@@ -9,16 +9,15 @@ function useSignInFlow() {
 
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
-    const [submitted, setSubmitted] = useState<boolean>(false);
 
-    const [file, setFile] = useState<File | null>(null)
+    const [file, setFile] = useState<File | null>(null);
 
-    const [preview, setPreview] = useState<string>('')
-    const fileInputRef = useRef<null | HTMLInputElement>(null)
+    const [preview, setPreview] = useState<string>('');
+    const fileInputRef = useRef<null | HTMLInputElement>(null);
     const auth = useAuth();
 
     const onboarding = auth.user?.orgId == null;
-    const [step, setStep] = useState<Step>(onboarding ? "welcome" : null);
+    const [step, setStep] = useState<Step>(onboarding ? 'welcome' : null);
     const open = step !== null;
 
     const onOpenChange = useCallback((o: boolean) => {
@@ -33,7 +32,7 @@ function useSignInFlow() {
     }, []);
 
     useEffect(() => {
-        if (onboarding && step === null) setStep("welcome");
+        if (onboarding && step === null) setStep('welcome');
         if (!onboarding && step !== null) setStep(null);
     }, [onboarding, step]);
 
@@ -47,20 +46,20 @@ function useSignInFlow() {
         if (fileInputRef.current) {
             fileInputRef.current.click();
         }
-    }
+    };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (preview) URL.revokeObjectURL(preview)
+        if (preview) URL.revokeObjectURL(preview);
 
-        const file = e.target.files?.[0]
+        const file = e.target.files?.[0];
 
         if (!file) return;
 
         const url = URL.createObjectURL(file);
 
-        setFile(file)
+        setFile(file);
         setPreview(url);
-    }
+    };
 
     const submitOrganization = async () => {
         try {
@@ -69,16 +68,16 @@ function useSignInFlow() {
                 return;
             }
 
-            setLoading(true)
+            setLoading(true);
 
             const createResponse = await fetch('/api/organizations', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     name: organizationName,
-                    createdById: auth.user.id
-                })
-            })
+                    createdById: auth.user.id,
+                }),
+            });
 
             if (!createResponse.ok) {
                 setError('Failed to create organization. Please contact the Sarge team.');
@@ -86,17 +85,17 @@ function useSignInFlow() {
                 return;
             }
 
-            const createOrganizationBody = await createResponse.json()
-            const organizationId = createOrganizationBody.data.id
+            const createOrganizationBody = await createResponse.json();
+            const organizationId = createOrganizationBody.data.id;
 
             const signResponse = await fetch('/api/upload/sign', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    type: "organization",
+                    type: 'organization',
                     mime: file?.type,
                     userId: auth.user.id,
-                    organizationId
+                    organizationId,
                 }),
             });
 
@@ -127,7 +126,7 @@ function useSignInFlow() {
                     type: 'organization',
                     key: data.key,
                     userId: auth.user.id,
-                    organizationId
+                    organizationId,
                 }),
             });
 
@@ -144,7 +143,7 @@ function useSignInFlow() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     name: organizationName,
-                    imageUrl: confirmData.imageUrl
+                    imageUrl: confirmData.imageUrl,
                 }),
             });
 
@@ -153,13 +152,14 @@ function useSignInFlow() {
                 setLoading(false);
                 return;
             }
+
+            return organizationId;
         } catch (error) {
-            setError(`Error creating organization: ${error} `)
+            setError(`Error creating organization: ${error} `);
         } finally {
             setLoading(false);
-            setSubmitted(true);
         }
-    }
+    };
 
     return {
         step,
@@ -167,9 +167,9 @@ function useSignInFlow() {
         open,
         onOpenChange,
         goTo: goToStep,
-        toWelcome: () => goToStep("welcome"),
-        toCreate: () => goToStep("create"),
-        toJoin: () => goToStep("join"),
+        toWelcome: () => goToStep('welcome'),
+        toCreate: () => goToStep('create'),
+        toJoin: () => goToStep('join'),
         close: () => goToStep(null),
         organizationName,
         setOrganizationName,
@@ -180,10 +180,9 @@ function useSignInFlow() {
         fileInputRef,
         handleProfileImageClick,
         submitOrganization,
-        submitted,
         error,
         loading,
-    }
+    };
 }
 
 export default useSignInFlow;
