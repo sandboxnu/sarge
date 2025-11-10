@@ -1,76 +1,51 @@
 'use client';
 
 import { useAuth } from '@/lib/auth/auth-client';
-import useFileUpload from '@/lib/hooks/useFileUpload';
-import Image from 'next/image';
-import WelcomeModal from './modal';
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-} from "@/lib/components/Modal"
-import { SquarePen } from 'lucide-react';
-import { Button } from '@/lib/components/Button';
+import WelcomeModal from '@/lib/components/modal/WelcomeModal';
+import CreateOrganizationModal from '@/lib/components/modal/CreateOrganizationModal';
+import useSignInFlow from '@/lib/hooks/useSignInFlow';
 
 export default function DashboardPage() {
     const auth = useAuth();
-    const { handleFileChange, loading, error, submitted, imageUrl } = useFileUpload('user');
+    const {
+        step, open, onOpenChange, goTo,
+        organizationName, setOrganizationName,
+        organizationCode, setOrganizationCode,
+        handleFileChange, preview, fileInputRef, handleProfileImageClick,
+        submitOrganization, submitted, error, loading,
+    } = useSignInFlow();
 
-    const showWelcomeModal = auth.user?.orgId === null || auth.user?.orgId === undefined;
+    const onboarding = auth.user?.orgId === null || auth.user?.orgId === undefined;
 
-    if (!auth.isPending && auth.user) {
-        return (
-            <div>
-                {showWelcomeModal && <WelcomeModal />}
-                <Dialog open={true}>
-                    <DialogHeader className='sr-only'>Modal</DialogHeader>
-                    <DialogContent className="sm:max-w-[425px]" showCloseButton={false}>
-                        <div className='flex flex-col justify-center'>
-                            <h1 className='font-bold'>Create an organization</h1>
-                            <div className='flex mt-4 mb-2 content-center justify-center w-full'>
-                                <div className="w-[65px] h-[65px] rounded-full bg-sarge-gray-200 flex justify-center items-center">
-                                    <SquarePen className='text-sarge-gray-500' />
-                                </div>
-                            </div>
-                            <div className='pt-2 pb-1 font-bold'>Organization name</div>
-                            <input
-                                type="text"
-                                name="Enter a name for your organization"
-                                id="Name"
-                                className={`bg-sarge-gray-50 text-sarge-gray-800 placeholder:text-sarge-gray-500 border-sarge-gray-200 rounded-lg border px-3 py-1 h-[44px]`}
-                                placeholder="Enter a name for your organization"
-                            />
-                            <div className='justify-between flex mt-4 items-center'>
-                                {/*TODO: make this a back button*/}
-                                <p className='text-sarge-primary-700'>Back</p>
-                                <Button variant='primary' size='default' className='w-[125px]'>Continue</Button>
-                            </div>
-                        </div>
-                    </DialogContent>
-                </Dialog>
+    if (auth.isPending) return <div>Loading...</div>;
+    if (!auth.user) return <div>Not signed in</div>;
 
-                <div className="">{auth.user.name}</div>
+    return (
+        <div>
+            <WelcomeModal
+                open={open && step === 'welcome'}
+                onOpenChange={onOpenChange}
+                onCreate={() => goTo('create')}
+                onJoin={() => goTo('join')}
+            />
 
-                {/* THIS IS A SAMPLE OF HOW IMAGE UPLOAD WORKS FOR USERS / PLEASE REMOVE BEFORE WORKING ON THIS PAGE */}
-                <input
-                    id="upload"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    disabled={loading}
-                    className="mt-2"
-                />
-
-                {loading && <p className="mt-2 text-sm text-gray-500">Uploading...</p>}
-                {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
-                {submitted && !error && !loading && (
-                    <p className="mt-2 text-sm text-green-600">Success!</p>
-                )}
-
-                {imageUrl && <Image src={imageUrl} height={50} width={50} alt="image" />}
-            </div>
-        );
-    } else {
-        return <div className="">Loading...</div>;
-    }
+            <CreateOrganizationModal
+                open={open && step === 'create'}
+                onOpenChange={onOpenChange}
+                onBack={() => goTo('welcome')}
+                onSubmit={async () => {
+                    await submitOrganization();
+                    goTo(null);
+                }}
+                setOrganizationName={setOrganizationName}
+                organizationName={organizationName}
+                preview={preview}
+                fileInputRef={fileInputRef}
+                handleFileChange={handleFileChange}
+                handleProfileImageClick={handleProfileImageClick}
+                loading={loading}
+                error={error}
+            />
+        </div>
+    )
 }

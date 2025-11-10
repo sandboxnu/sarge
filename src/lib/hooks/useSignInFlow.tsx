@@ -1,9 +1,9 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { useAuth } from '@/lib/auth/auth-client';
 
+type Step = "welcome" | "create" | "join" | null;
+
 function useSignInFlow() {
-    const [createOrganization, setCreateOrganization] = useState<boolean>(false);
-    const [joinOrganization, setJoinOrganization] = useState<boolean>(false);
     const [organizationName, setOrganizationName] = useState<string>('');
     const [organizationCode, setOrganizationCode] = useState<string>('');
 
@@ -16,6 +16,26 @@ function useSignInFlow() {
     const [preview, setPreview] = useState<string>('')
     const fileInputRef = useRef<null | HTMLInputElement>(null)
     const auth = useAuth();
+
+    const onboarding = auth.user?.orgId == null;
+    const [step, setStep] = useState<Step>(onboarding ? "welcome" : null);
+    const open = step !== null;
+
+    const onOpenChange = useCallback((o: boolean) => {
+        if (!o) {
+            setStep(null);
+        }
+    }, []);
+
+    const goToStep = useCallback((next: Step) => {
+        setStep(null);
+        requestAnimationFrame(() => setStep(next));
+    }, []);
+
+    useEffect(() => {
+        if (onboarding && step === null) setStep("welcome");
+        if (!onboarding && step !== null) setStep(null);
+    }, [onboarding, step]);
 
     useEffect(() => {
         return () => {
@@ -51,7 +71,7 @@ function useSignInFlow() {
 
             setLoading(true)
 
-            const createResponse = await fetch('/api/organization', {
+            const createResponse = await fetch('/api/organizations', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -73,7 +93,7 @@ function useSignInFlow() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    organization: "organization",
+                    type: "organization",
                     mime: file?.type,
                     userId: auth.user.id,
                     organizationId
@@ -107,6 +127,7 @@ function useSignInFlow() {
                     type: 'organization',
                     key: data.key,
                     userId: auth.user.id,
+                    organizationId
                 }),
             });
 
@@ -118,7 +139,7 @@ function useSignInFlow() {
 
             const { data: confirmData } = await confirmResponse.json();
 
-            const updateResponse = await fetch(`/api/organization/${organizationId}`, {
+            const updateResponse = await fetch(`/api/organizations/${organizationId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -133,7 +154,7 @@ function useSignInFlow() {
                 return;
             }
         } catch (error) {
-            setError(`Error creating organization: ${error}`)
+            setError(`Error creating organization: ${error} `)
         } finally {
             setLoading(false);
             setSubmitted(true);
@@ -141,10 +162,15 @@ function useSignInFlow() {
     }
 
     return {
-        createOrganization,
-        setCreateOrganization,
-        joinOrganization,
-        setJoinOrganization,
+        step,
+        setStep,
+        open,
+        onOpenChange,
+        goTo: goToStep,
+        toWelcome: () => goToStep("welcome"),
+        toCreate: () => goToStep("create"),
+        toJoin: () => goToStep("join"),
+        close: () => goToStep(null),
         organizationName,
         setOrganizationName,
         organizationCode,
@@ -156,7 +182,7 @@ function useSignInFlow() {
         submitOrganization,
         submitted,
         error,
-        loading
+        loading,
     }
 }
 
