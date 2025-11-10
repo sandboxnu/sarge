@@ -161,11 +161,18 @@ function useSignInFlow() {
         }
     };
 
+    const onCreateSubmit = async () => {
+        const orgId = await submitOrganization();
+        if (orgId && auth.user) auth.user.orgId = orgId;
+        if (!error && !loading) goToStep(null);
+    }
+
     return {
         step,
         setStep,
         open,
         onOpenChange,
+        onCreateSubmit,
         goTo: goToStep,
         toWelcome: () => goToStep('welcome'),
         toCreate: () => goToStep('create'),
