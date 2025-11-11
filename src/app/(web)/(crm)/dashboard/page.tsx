@@ -1,23 +1,21 @@
 'use client';
 
-import { useSession, useActiveOrganization } from '@/lib/auth/auth-client';
+import { useAuth } from '@/lib/auth/auth-context';
 import useFileUpload from '@/lib/hooks/useFileUpload';
 import Image from 'next/image';
 import WelcomeModal from './modal';
 
 export default function DashboardPage() {
-    const { data: session, isPending: sessionPending } = useSession();
-    const { data: activeOrganization, isPending: orgPending } = useActiveOrganization();
+    const { user, isPending, hasActiveOrganization } = useAuth();
     const { handleFileChange, loading, error, submitted, imageUrl } = useFileUpload('user');
 
-    const isPending = sessionPending || orgPending;
-    const showWelcomeModal = !activeOrganization?.id;
+    const showWelcomeModal = !hasActiveOrganization;
 
-    if (!isPending && session?.user) {
+    if (!isPending && user) {
         return (
             <div>
                 {showWelcomeModal && <WelcomeModal />}
-                <div className="">{session.user.name}</div>
+                <div className="">{user.name}</div>
 
                 {/* THIS IS A SAMPLE OF HOW IMAGE UPLOAD WORKS FOR USERS / PLEASE REMOVE BEFORE WORKING ON THIS PAGE */}
                 <input

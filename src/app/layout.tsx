@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import localFont from 'next/font/local';
 import './globals.css';
+import { AuthProvider } from '@/lib/auth/auth-context';
 
 const inter = Inter({
     variable: '--font-inter',
@@ -42,7 +43,9 @@ export default function RootLayout({
             <body
                 className={`${inter.variable} ${satoshi.variable} grid h-dvh grid-rows-[auto_1fr] antialiased`}
             >
-                <main>{children}</main>
+                <AuthProvider>
+                    <main>{children}</main>
+                </AuthProvider>
             </body>
         </html>
     );

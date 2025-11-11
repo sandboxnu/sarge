@@ -1,12 +1,12 @@
 import { prisma } from '@/lib/prisma';
-import { type CreatePositionData } from '@/lib/schemas/position.schema';
+import { type CreatePositionDTO, type UpdatePositionDTO } from '@/lib/schemas/position.schema';
 import { type Position } from '@/generated/prisma';
 import { Status } from '@/generated/prisma';
 import { NotFoundException } from '@/lib/utils/errors.utils';
 import { type PositionWithCounts } from '@/lib/types/position-types';
 
 async function createPosition(
-    positionRequest: CreatePositionData,
+    positionRequest: CreatePositionDTO,
     userId: string,
     orgId: string
 ): Promise<Position> {
@@ -68,7 +68,7 @@ async function getPositionByOrgId(orgId: string): Promise<PositionWithCounts[]> 
 
 async function updatePosition(
     positionId: string,
-    positionData: Partial<CreatePositionData>
+    positionData: UpdatePositionDTO
 ): Promise<Position> {
     const existingPosition = await prisma.position.findUnique({ where: { id: positionId } });
     if (!existingPosition) {
@@ -77,10 +77,7 @@ async function updatePosition(
 
     const updatedPosition = await prisma.position.update({
         where: { id: positionId },
-        data: {
-            ...positionData,
-            updatedAt: new Date(),
-        },
+        data: positionData,
     });
     return updatedPosition;
 }

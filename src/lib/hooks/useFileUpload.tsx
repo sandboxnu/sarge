@@ -1,5 +1,5 @@
 import { type UploadType } from '@/lib/connectors/s3.connector';
-import { useSession } from '@/lib/auth/auth-client';
+import { useAuth } from '@/lib/auth/auth-context';
 import { useState } from 'react';
 
 function useFileUpload(type: UploadType, organizationId?: string) {
@@ -7,7 +7,7 @@ function useFileUpload(type: UploadType, organizationId?: string) {
     const [loading, setLoading] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [imageUrl, setImageUrl] = useState<string | null>(null);
-    const { data: session } = useSession();
+    const { userId } = useAuth();
 
     async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0];
@@ -18,7 +18,7 @@ function useFileUpload(type: UploadType, organizationId?: string) {
         setSubmitted(false);
         setImageUrl(null);
 
-        if (!session?.user?.id) {
+        if (!userId) {
             setError('User not authenticated');
             return;
         }
@@ -39,7 +39,7 @@ function useFileUpload(type: UploadType, organizationId?: string) {
                 body: JSON.stringify({
                     type,
                     mime,
-                    userId: session.user.id,
+                    userId,
                     organizationId,
                 }),
             });
@@ -70,7 +70,7 @@ function useFileUpload(type: UploadType, organizationId?: string) {
                 body: JSON.stringify({
                     type,
                     key: data.key,
-                    userId: session.user.id,
+                    userId,
                     organizationId,
                 }),
             });

@@ -18,6 +18,7 @@ export const createTaskTemplateSchema = z
             .array(testCaseSchema)
             .min(1, 'There must at least be one public test case'),
         private_test_cases: z.array(testCaseSchema).default([]),
+        tagIds: z.array(z.cuid()).default([]),
     })
     .strict();
 
@@ -33,6 +34,7 @@ export const updateTaskTemplateSchema = z.object({
         .array(testCaseSchema)
         .min(1, 'There must at least be one public test case'),
     private_test_cases: z.array(testCaseSchema).default([]),
+    tagIds: z.array(z.cuid()).default([]),
 });
 
 export const TaskTemplateSchema = z.object({
@@ -44,6 +46,7 @@ export const TaskTemplateSchema = z.object({
         .array(testCaseSchema)
         .min(1, 'There must at least be one public test case'),
     private_test_cases: z.array(testCaseSchema).default([]),
+    tagIds: z.array(z.cuid()).optional(),
 });
 
 export type TaskTemplateDTO = z.infer<typeof TaskTemplateSchema>;

@@ -22,6 +22,7 @@ model Organization {
   taskTemplates       TaskTemplate[]
   members             Member[]
   invitations         Invitation[]
+  tags                Tag[]
 
   @@map("organization")
 }
@@ -47,14 +48,6 @@ model User {
   @@map("user")
 }
 
-model CodingConcept {
-  id           String @id @unique @default(cuid())
-  name         String @db.VarChar(40)
-  colorHexCode String
-
-  positions Position[] @relation("PositionCodingConcepts")
-}
-
 model Position {
   id          String   @id @unique @default(cuid())
   title       String
@@ -63,11 +56,10 @@ model Position {
   updatedAt   DateTime @updatedAt
   createdById String
 
-  codingConcepts CodingConcept[]      @relation("PositionCodingConcepts")
-  candidate      CandidatePoolEntry[]
-  organization   Organization         @relation(fields: [orgId], references: [id])
-  assessments    Assessment[]
-  creator        User                 @relation("CreatedPositions", fields: [createdById], references: [id])
+  candidate    CandidatePoolEntry[]
+  organization Organization         @relation(fields: [orgId], references: [id])
+  assessments  Assessment[]
+  creator      User                 @relation("CreatedPositions", fields: [createdById], references: [id])
 }
 
 model Candidate {
@@ -94,7 +86,6 @@ model CandidatePoolEntry {
   candidateId String
   positionId  String
   status      Status   @default(ASSIGNED)
-  tags        String[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -124,6 +115,7 @@ model TaskTemplate {
   orgId        String
   organization Organization @relation(fields: [orgId], references: [id])
   tasks        Task[]       @relation("derivedFromTaskTemplate")
+  tags         Tag[]        @relation("TaskTemplateTags")
 }
 
 model Task {
@@ -267,4 +259,20 @@ model Invitation {
   @@index([email])
   @@index([organizationId])
   @@map("invitation")
+}
+
+model Tag {
+  id           String   @id @unique @default(cuid())
+  name         String
+  orgId        String
+  colorHexCode String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  organization  Organization   @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  taskTemplates TaskTemplate[] @relation("TaskTemplateTags")
+
+  @@unique([name, orgId])
+  @@index([orgId])
+  @@map("tag")
 }
