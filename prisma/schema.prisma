@@ -23,8 +23,6 @@ model Organization {
   members             Member[]
   invitations         Invitation[]
   tags                Tag[]
-
-  @@map("organization")
 }
 
 model User {
@@ -44,8 +42,6 @@ model User {
   members       Member[]
   invitations   Invitation[]   @relation("Inviter")
   positions     Position[]     @relation("CreatedPositions")
-
-  @@map("user")
 }
 
 model Position {
@@ -185,7 +181,6 @@ model Session {
 
   @@index([userId])
   @@index([token])
-  @@map("session")
 }
 
 model Account {
@@ -207,7 +202,6 @@ model Account {
 
   @@unique([providerId, accountId])
   @@index([userId])
-  @@map("account")
 }
 
 model Verification {
@@ -222,7 +216,6 @@ model Verification {
   user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([identifier, value])
-  @@map("verification")
 }
 
 model Member {
@@ -238,7 +231,6 @@ model Member {
   @@unique([userId, organizationId])
   @@index([userId])
   @@index([organizationId])
-  @@map("member")
 }
 
 model Invitation {
@@ -258,7 +250,6 @@ model Invitation {
   @@unique([email, organizationId])
   @@index([email])
   @@index([organizationId])
-  @@map("invitation")
 }
 
 model Tag {
@@ -274,5 +265,4 @@ model Tag {
 
   @@unique([name, orgId])
   @@index([orgId])
-  @@map("tag")
 }
