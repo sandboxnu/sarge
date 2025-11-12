@@ -78,8 +78,8 @@ export function useTask(id: string) {
 
     function handleLanguageChange(lang: string) {
         if (!editorRef.current || !monacoRef.current) return;
-        setLanguage(lang);
         const model = editorRef.current.getModel();
+        setLanguage(lang);
         if (model) {
             monacoRef.current.editor.setModelLanguage(model, lang);
             editorRef.current.setValue('');

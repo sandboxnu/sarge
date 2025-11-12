@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { getCookieCache } from 'better-auth/cookies';
 
-const protectedRoutes = ['/dashboard'];
+const protectedRoutes = ['/sf'];
 
 export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
