@@ -382,13 +382,61 @@ Output a single integer representing the GCD of \`a\` and \`b\`.
         }),
     ]);
 
+    // ----- Tags -----
+    const tags = [
+        {
+            id: 'clx00000000000000000000041',
+            name: 'React.js',
+            orgId: 'clx00000000000000000000011', // Tech Corp
+            colorHexCode: '#3B82F6',
+        },
+        {
+            id: 'clx00000000000000000000042',
+            name: 'JavaScript',
+            orgId: 'clx00000000000000000000011', // Tech Corp
+            colorHexCode: '#10B981',
+        },
+        {
+            id: 'clx00000000000000000000043',
+            name: 'Python',
+            orgId: 'clx00000000000000000000012', // StartupXYZ
+            colorHexCode: '#8B5CF6',
+        },
+        {
+            id: 'clx00000000000000000000044',
+            name: 'Data Structures',
+            orgId: 'clx00000000000000000000012', // StartupXYZ
+            colorHexCode: '#F59E0B',
+        },
+    ];
+
+    const _tags = await Promise.all(
+        tags.map(async (tag) => {
+            return prisma.tag.upsert({
+                where: {
+                    name_orgId: {
+                        name: tag.name,
+                        orgId: tag.orgId,
+                    },
+                },
+                update: {},
+                create: {
+                    id: tag.id,
+                    name: tag.name,
+                    orgId: tag.orgId,
+                    colorHexCode: tag.colorHexCode,
+                },
+            });
+        })
+    );
+
     // ----- TaskTemplates -----
     await Promise.all([
         prisma.taskTemplate.upsert({
-            where: { id: 'tasktemplate-1' },
+            where: { id: 'clx00000000000000000000051' },
             update: {},
             create: {
-                id: 'tasktemplate-1',
+                id: 'clx00000000000000000000051',
                 title: 'Add Two Numbers',
                 content: `# Add Two Numbers
 
@@ -428,7 +476,7 @@ Output a single integer representing the sum of \`a\` and \`b\`.
 - Read two integers from standard input
 - Calculate their sum
 - Print the result to standard output`,
-                orgId: '788551fd-57e3-4854-87e5-8f7a5ff404f9',
+                orgId: 'clx00000000000000000000011', // Tech Corp
                 public_test_cases: [
                     { input: '2\n3\n', output: '5\n' },
                     { input: '10\n20\n', output: '30\n' },
@@ -439,13 +487,19 @@ Output a single integer representing the sum of \`a\` and \`b\`.
                     { input: '-5\n3\n', output: '-2\n' },
                     { input: '0\n0\n', output: '0\n' },
                 ],
+                tags: {
+                    connect: [
+                        { id: 'clx00000000000000000000041' }, // React.js
+                        { id: 'clx00000000000000000000042' }, // JavaScript
+                    ],
+                },
             },
         }),
         prisma.taskTemplate.upsert({
-            where: { id: 'tasktemplate-2' },
+            where: { id: 'clx00000000000000000000052' },
             update: {},
             create: {
-                id: 'tasktemplate-2',
+                id: 'clx00000000000000000000052',
                 title: 'Find GCD of Two Numbers',
                 content: `# Find GCD of Two Numbers
 
@@ -485,7 +539,7 @@ Output a single integer representing the GCD of \`a\` and \`b\`.
 - Read two integers from standard input
 - Calculate their GCD
 - Print the result to standard output`,
-                orgId: '123e4567-e89b-12d3-a456-426614174000',
+                orgId: 'clx00000000000000000000012', // StartupXYZ
                 public_test_cases: [
                     { input: '12\n15\n', output: '3\n' },
                     { input: '100\n80\n', output: '20\n' },
@@ -496,6 +550,12 @@ Output a single integer representing the GCD of \`a\` and \`b\`.
                     { input: '81\n27\n', output: '27\n' },
                     { input: '17\n19\n', output: '1\n' },
                 ],
+                tags: {
+                    connect: [
+                        { id: 'clx00000000000000000000043' }, // Python
+                        { id: 'clx00000000000000000000044' }, // Data Structures
+                    ],
+                },
             },
         }),
     ]);

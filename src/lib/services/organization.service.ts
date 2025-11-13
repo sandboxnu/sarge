@@ -72,8 +72,8 @@ async function getOrganization(id: string): Promise<Organization> {
 async function updateOrganization(
     id: string,
     organization: UpdateOrganizationDTO
-): Promise<Result<Organization>> {
-    const { name, imageUrl } = organization;
+): Promise<Organization> {
+    const { name } = organization;
 
     const existingOrg = await prisma.organization.findUnique({
         where: { id },
@@ -100,7 +100,7 @@ async function updateOrganization(
         },
         data: {
             name,
-            imageUrl,
+            updatedAt: new Date(),
         },
     });
     return updated;
