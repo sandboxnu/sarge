@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
         const body = await request.json();
         const parsed = createTaskTemplateSchema.parse(body);
         const result = await TaskTemplateService.createTaskTemplate(parsed);
-        return Response.json({ success: true, data: result }, { status: 201 });
+        return Response.json({ data: result }, { status: 201 });
     } catch (err) {
         return handleError(err);
     }

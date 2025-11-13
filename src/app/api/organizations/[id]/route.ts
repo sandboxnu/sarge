@@ -7,7 +7,7 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
     try {
         const orgId = (await params).id;
         const result = await OrganizationService.getOrganization(orgId);
-        return Response.json({ success: true, data: result }, { status: 200 });
+        return Response.json({ data: result }, { status: 200 });
     } catch (err) {
         return handleError(err);
     }
@@ -19,7 +19,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
         const parsed = updateOrganizationSchema.parse(body);
         const orgId = (await params).id;
         const result = await OrganizationService.updateOrganization(orgId, parsed);
-        return Response.json({ success: true, data: result }, { status: 200 });
+        return Response.json({ data: result }, { status: 200 });
     } catch (err) {
         return handleError(err);
     }
@@ -32,7 +32,7 @@ export async function DELETE(
     try {
         const orgId = (await params).id;
         const result = await OrganizationService.deleteOrganization(orgId);
-        return Response.json({ success: true, data: result }, { status: 200 });
+        return Response.json({ data: result }, { status: 200 });
     } catch (err) {
         return handleError(err);
     }

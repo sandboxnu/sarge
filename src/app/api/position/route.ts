@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
             session.userId,
             session.activeOrganizationId
         );
-        return Response.json({ success: true, data: result }, { status: 201 });
+        return Response.json({ data: result }, { status: 201 });
     } catch (err) {
         return handleError(err);
     }
