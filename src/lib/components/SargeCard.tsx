@@ -1,6 +1,4 @@
 'use client';
-
-import * as React from 'react';
 import { FileText, MoreVertical } from 'lucide-react';
 
 type SargeCardProps = {
@@ -22,6 +20,7 @@ export default function SargeCard({
     totalAssigned = 0,
     className = '',
 }: SargeCardProps) {
+  const submissionVariant = getSubmissionVariant(submittedCount, totalAssigned);
     return (
         <div
             role="region"
@@ -62,8 +61,8 @@ export default function SargeCard({
                     </div>
 
                     <div className="flex flex-wrap items-center gap-2">
-                        <Chip>{assignedCount} assigned</Chip>
-                        <Chip>
+                        <Chip variant="neutral">{assignedCount} assigned</Chip>
+                        <Chip variant={submissionVariant}>
                             {submittedCount}/{totalAssigned} submissions
                         </Chip>
                     </div>
@@ -73,10 +72,33 @@ export default function SargeCard({
     );
 }
 
-function Chip({ children }: { children: React.ReactNode }) {
-    return (
-        <span className="inline-flex items-center rounded-[6px] bg-[var(--sarge-gray-200)] px-2 py-1 text-[14px] leading-[18px] tracking-[0.406px] text-[var(--sarge-gray-600)]">
-            {children}
-        </span>
-    );
+type ChipVariant = "neutral" | "error" | "warning" | "success";
+
+function getSubmissionVariant(submitted: number, total: number): ChipVariant {
+  if (total <= 0 || submitted <= 0) return "neutral";
+  const r = submitted / total;
+  if (r <= 1 / 3) return "error";
+  if (r <= 2 / 3) return "warning";
+  return "success";
+}
+
+function Chip({
+  children,
+  variant = "neutral",
+}: {
+  children: React.ReactNode;
+  variant?: ChipVariant;
+}) {
+  const base =
+    "inline-flex items-center px-2 py-1 rounded-[6px] text-[12px] leading-[16px] font-medium tracking-[0.406px]";
+  const styles =
+    variant === "neutral"
+      ? "bg-[var(--sarge-gray-200)] text-[var(--sarge-gray-600)]"
+      : variant === "error"
+      ? "bg-[var(--sarge-error-200)] text-[var(--sarge-error-700)]"
+      : variant === "warning"
+      ? "bg-[var(--sarge-warning-100)] text-[var(--sarge-warning-700)]"
+      : "bg-[var(--sarge-success-100)] text-[var(--sarge-success-800)]";
+
+  return <span className={`${base} ${styles}`}>{children}</span>;
 }
