@@ -6,7 +6,7 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
     try {
         const orgId = (await params).id;
         const positionsResult = await PositionService.getPositionByOrgId(orgId);
-        return Response.json(positionsResult);
+        return Response.json({ data: positionsResult }, { status: 200 });
     } catch (err) {
         return handleError(err);
     }
