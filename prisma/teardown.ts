@@ -12,14 +12,14 @@ async function main() {
     "CandidatePoolEntry",
     "Candidate",
     "Position",
-    "tag",
-    "user",
-    "organization",
-    "session",
-    "account",
-    "verification",
-    "member",
-    "invitation",
+    "Tag",
+    "User",
+    "Organization",
+    "Session",
+    "Account",
+    "Verification",
+    "Member",
+    "Invitation",
     "_TaskTemplateTags"
   RESTART IDENTITY CASCADE;
 `;
