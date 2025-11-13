@@ -1,4 +1,4 @@
-import { type Result, success } from '@/lib/responses';
+import { BadRequestException, InternalServerException } from '@/lib/utils/errors.utils';
 
 const headers: HeadersInit = {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -24,9 +24,11 @@ export interface JudgeResultRequestBody {
     token: string;
 }
 
-export async function createBatchSubmission(
-    body: JudgeSubmissionRequestBody[]
-): Promise<Result<string[]>> {
+export async function createBatchSubmission(body: JudgeSubmissionRequestBody[]): Promise<string[]> {
+    if (!body || body.length === 0) {
+        throw new BadRequestException('At least one submission is required');
+    }
+
     const url = `${process.env.JUDGE_URL}/submissions/batch?fields=${fields.join(',')}`;
     const requestBody = { submissions: [...body] };
     const response = await fetch(url, {
@@ -37,31 +39,30 @@ export async function createBatchSubmission(
         },
         body: JSON.stringify(requestBody),
     });
-
+    const jsonResponse = await response.json();
     if (!response.ok) {
-        throw new Error(await response.json());
+        throw new InternalServerException(`Judge0 API error: ${jsonResponse.error}`);
     }
 
-    const result = await response.json();
-    const tokens = result.map((submission: { token: string }) => submission.token);
-    return success(tokens);
+    const tokens = jsonResponse.map((submission: { token: string }) => submission.token);
+    return tokens;
 }
 
-export async function getBatchSubmission(
-    tokens: string[]
-): Promise<Result<JudgeResultRequestBody[]>> {
+export async function getBatchSubmission(tokens: string[]): Promise<JudgeResultRequestBody[]> {
+    if (!tokens || tokens.length === 0) {
+        throw new BadRequestException('At least one token is required');
+    }
+
     const url = `${process.env.JUDGE_URL}/submissions/batch?tokens=${tokens.join(',')}&fields=${fields.join(',')}`;
     const response = await fetch(url, {
         headers: {
             ...headers,
         },
     });
-
+    const jsonResponse = await response.json();
     if (!response.ok) {
-        throw new Error(await response.json());
+        throw new InternalServerException(`Judge0 API error: ${jsonResponse.error}`);
     }
 
-    const result = await response.json();
-
-    return success(result);
+    return jsonResponse;
 }

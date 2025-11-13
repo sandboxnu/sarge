@@ -15,13 +15,7 @@ export async function POST(request: NextRequest) {
             session.userId,
             session.headers
         );
-        return Response.json(
-            {
-                success: true,
-                data: organization,
-            },
-            { status: 201 }
-        );
+        return Response.json({ data: organization }, { status: 201 });
     } catch (err) {
         return handleError(err);
     }

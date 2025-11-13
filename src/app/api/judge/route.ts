@@ -1,13 +1,12 @@
 import { createBatchSubmission, getBatchSubmission } from '@/lib/connectors/judge0.connector';
-import { error, handleError, success } from '@/lib/responses';
+import { handleError } from '@/lib/utils/errors.utils';
 import { type NextRequest } from 'next/server';
 
 export async function POST(request: NextRequest) {
     try {
-        const response = await request.json();
-        const run = await createBatchSubmission(response);
-        if (!run.success) return Response.json(error(run.message, run.status));
-        return Response.json(success(run.data, 201));
+        const body = await request.json();
+        const tokens = await createBatchSubmission(body);
+        return Response.json({ data: tokens }, { status: 201 });
     } catch (err) {
         return handleError(err);
     }
@@ -16,9 +15,8 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
     try {
         const tokens = request.nextUrl.searchParams.getAll('tokens');
-        const run = await getBatchSubmission(tokens);
-        if (!run.success) return Response.json(error(run.message, run.status));
-        return Response.json(success(run.data, 200));
+        const results = await getBatchSubmission(tokens);
+        return Response.json({ data: results }, { status: 200 });
     } catch (err) {
         return handleError(err);
     }

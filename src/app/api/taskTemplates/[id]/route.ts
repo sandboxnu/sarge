@@ -1,13 +1,13 @@
 import { handleError } from '@/lib/utils/errors.utils';
 import TaskTemplateService from '@/lib/services/task-template.service';
 import { type NextRequest } from 'next/server';
-import { updateTaskTemplateSchema } from '@/lib/schemas/taskTemplate.schema';
+import { updateTaskTemplateSchema } from '@/lib/schemas/task-template.schema';
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         const id = (await params).id;
         const result = await TaskTemplateService.getTaskTemplate(id);
-        return Response.json({ success: true, data: result }, { status: 200 });
+        return Response.json({ data: result }, { status: 200 });
     } catch (err) {
         return handleError(err);
     }
@@ -17,7 +17,7 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
     try {
         const id = (await params).id;
         const result = await TaskTemplateService.deleteTaskTemplate(id);
-        return Response.json({ success: true, data: result }, { status: 200 });
+        return Response.json({ data: result }, { status: 200 });
     } catch (err) {
         return handleError(err);
     }
@@ -29,7 +29,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
         const body = await request.json();
         const parsed = updateTaskTemplateSchema.parse({ id, ...body });
         const result = await TaskTemplateService.updateTaskTemplate(parsed);
-        return Response.json({ success: true, data: result }, { status: 200 });
+        return Response.json({ data: result }, { status: 200 });
     } catch (err) {
         return handleError(err);
     }

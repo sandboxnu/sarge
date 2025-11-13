@@ -29,7 +29,7 @@ export const getPositionsByOrgSchema = z.object({
     orgId: z.cuid('Invalid organization ID'),
 });
 
-export const PositionSchema = z.object({
+export const positionSchema = z.object({
     id: z.cuid(),
     title: z.string(),
     orgId: z.cuid(),
@@ -38,7 +38,7 @@ export const PositionSchema = z.object({
     createdById: z.cuid(),
 });
 
-export type PositionDTO = z.infer<typeof PositionSchema>;
+export type PositionDTO = z.infer<typeof positionSchema>;
 export type CreatePositionDTO = z.infer<typeof createPositionSchema>;
 export type UpdatePositionDTO = z.infer<typeof updatePositionSchema>;
 export type GetPositionDTO = z.infer<typeof getPositionSchema>;

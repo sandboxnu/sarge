@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
         const body = await request.json();
         const parsed = createCandidateSchema.parse(body);
         const result = await CandidateService.createCandidate(parsed);
-        return Response.json({ success: true, data: result }, { status: 201 });
+        return Response.json({ data: result }, { status: 201 });
     } catch (err) {
         return handleError(err);
     }

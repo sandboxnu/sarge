@@ -2,7 +2,7 @@ import { type TaskTemplate } from '@/generated/prisma';
 import {
     type UpdateTaskTemplateDTO,
     type CreateTaskTemplateDTO,
-} from '@/lib/schemas/taskTemplate.schema';
+} from '@/lib/schemas/task-template.schema';
 import { prisma } from '@/lib/prisma';
 import { NotFoundException, ConflictException } from '@/lib/utils/errors.utils';
 

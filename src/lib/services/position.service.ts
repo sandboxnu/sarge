@@ -3,7 +3,7 @@ import { type CreatePositionDTO, type UpdatePositionDTO } from '@/lib/schemas/po
 import { type Position } from '@/generated/prisma';
 import { Status } from '@/generated/prisma';
 import { NotFoundException } from '@/lib/utils/errors.utils';
-import { type PositionWithCounts } from '@/lib/types/position-types';
+import { type PositionWithCounts } from '@/lib/types/position.types';
 
 async function createPosition(
     positionRequest: CreatePositionDTO,
@@ -46,6 +46,11 @@ async function getPosition(positionId: string): Promise<Position> {
 }
 
 async function getPositionByOrgId(orgId: string): Promise<PositionWithCounts[]> {
+    const org = await prisma.organization.findUnique({ where: { id: orgId } });
+    if (!org) {
+        throw new NotFoundException('Organization', orgId);
+    }
+
     const positions = await prisma.position.findMany({
         where: {
             orgId,

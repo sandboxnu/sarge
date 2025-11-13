@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
                 },
             });
 
-            return Response.json({ success: true, data: { imageUrl } }, { status: 200 });
+            return Response.json({ data: { imageUrl } }, { status: 200 });
         }
 
         await prisma.user.update({
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
             },
         });
 
-        return Response.json({ success: true, data: { imageUrl } }, { status: 200 });
+        return Response.json({ data: { imageUrl } }, { status: 200 });
     } catch (error) {
         return handleError(error);
     }

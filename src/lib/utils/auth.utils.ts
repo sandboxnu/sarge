@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-
 import { headers } from 'next/headers';
 import { auth } from '@/lib/auth/auth';
 import { UnauthorizedException } from '@/lib/utils/errors.utils';
-import type { AuthSession } from '@/lib/types/auth-types';
+import type { AuthSession } from '@/lib/types/auth.types';
 
 // Since organization names are unique, we can safely generate slugs without uniqueness checks.
 export const generateSlugFromName = (name: string): string => {
@@ -22,10 +20,16 @@ export const getSession = async (): Promise<AuthSession> => {
     }
     const response = session.response.session;
 
+    if (!response.activeOrganizationId) {
+        throw new UnauthorizedException(
+            'No active organization found. Please select an organization to continue.'
+        );
+    }
+
     return {
         headers: session.headers,
         id: response.id,
         userId: response.userId,
-        activeOrganizationId: response.activeOrganizationId!,
+        activeOrganizationId: response.activeOrganizationId,
     };
 };

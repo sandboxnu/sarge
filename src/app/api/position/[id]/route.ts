@@ -1,7 +1,7 @@
 import PositionService from '@/lib/services/position.service';
 import { handleError } from '@/lib/utils/errors.utils';
 import { type NextRequest } from 'next/server';
-import { UpdatePositionSchema } from '@/lib/schemas/position.schema';
+import { updatePositionSchema } from '@/lib/schemas/position.schema';
 
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
@@ -30,7 +30,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     try {
         const positionId = (await params).id;
         const body = await request.json();
-        const parsed = UpdatePositionSchema.parse(body);
+        const parsed = updatePositionSchema.parse(body);
         const result = await PositionService.updatePosition(positionId, parsed);
         return Response.json({ success: true, data: result }, { status: 200 });
     } catch (err) {

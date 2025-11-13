@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useMemo } from 'react';
-import { useSession, useActiveOrganization } from '@/lib/auth/auth-client';
+import { useSession, useActiveOrganization, useActiveMember } from '@/lib/auth/auth-client';
 
 type SessionData = {
     user: {
@@ -34,6 +34,11 @@ type UserData = {
     name: string;
 };
 
+type MemberData = {
+    id: string;
+    role: string;
+};
+
 interface AuthContextValue {
     session: SessionData | null; // when user is not signed in, session is null
     user: UserData | null; // when user is not signed in, user is null
@@ -41,6 +46,9 @@ interface AuthContextValue {
 
     activeOrganization: OrganizationData | null;
     activeOrganizationId: string | null;
+
+    activeMember: MemberData | null;
+    activeMemberId: string | null;
 
     isPending: boolean;
     sessionPending: boolean;
@@ -59,11 +67,13 @@ interface AuthProviderProps {
 export function AuthProvider({ children }: AuthProviderProps) {
     const { data: session, isPending: sessionPending } = useSession();
     const { data: activeOrganization, isPending: orgPending } = useActiveOrganization();
+    const { data: activeMember, isPending: memberPending } = useActiveMember();
 
     const value = useMemo<AuthContextValue>(() => {
         const user = session?.user ?? null;
         const userId = user?.id ?? null;
         const activeOrganizationId = activeOrganization?.id ?? null;
+        const activeMemberId = activeMember?.id ?? null;
 
         return {
             session,
@@ -73,20 +83,24 @@ export function AuthProvider({ children }: AuthProviderProps) {
             activeOrganization,
             activeOrganizationId,
 
-            isPending: sessionPending || orgPending,
+            activeMember,
+            activeMemberId,
+
+            isPending: sessionPending || orgPending || memberPending,
             sessionPending,
             orgPending,
+            memberPending,
 
             isAuthenticated: !!session?.user,
             hasActiveOrganization: !!session?.session?.activeOrganizationId,
         };
-    }, [session, activeOrganization, sessionPending, orgPending]);
+    }, [session, activeOrganization, activeMember, sessionPending, orgPending, memberPending]);
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 /**
- * Custom hook to access auth context
+ *  hook to access auth context
  * @throws Error if used outside AuthProvider
  */
 export function useAuth(): AuthContextValue {
@@ -111,10 +125,24 @@ export function useAuthSession() {
  * Hook to get only organization data (for components that don't need session data)
  */
 export function useAuthOrganization() {
-    const { activeOrganizationId, hasActiveOrganization, orgPending } = useAuth();
+    const { activeOrganization, activeOrganizationId, hasActiveOrganization, orgPending } =
+        useAuth();
     return {
+        activeOrganization,
         activeOrganizationId,
         hasActiveOrganization,
         isPending: orgPending,
+    };
+}
+
+/**
+ * Hook to get only member data (for components that don't need session or organization data)
+ */
+export function useAuthMember() {
+    const { activeMember, activeMemberId, isPending: memberPending } = useAuth();
+    return {
+        activeMember,
+        activeMemberId,
+        isPending: memberPending,
     };
 }

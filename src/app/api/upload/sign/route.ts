@@ -30,11 +30,11 @@ export async function POST(request: NextRequest) {
             // }
 
             const res = await s3Service.getSignedURL(type, organizationId, mime);
-            return Response.json({ success: true, data: res }, { status: 200 });
+            return Response.json({ data: res }, { status: 200 });
         }
 
         const res = await s3Service.getSignedURL(type, userId, mime);
-        return Response.json({ success: true, data: res }, { status: 200 });
+        return Response.json({ data: res }, { status: 200 });
     } catch (err) {
         return handleError(err);
     }

@@ -73,7 +73,6 @@ export function handleError(err: unknown): Response {
     if (err instanceof HttpException) {
         return Response.json(
             {
-                success: false,
                 message: err.message,
                 data: null,
             },
@@ -85,7 +84,6 @@ export function handleError(err: unknown): Response {
         const { fieldErrors }: { fieldErrors: Record<string, string[]> } = z.flattenError(err);
         return Response.json(
             {
-                success: false,
                 message: fieldErrors,
                 data: null,
             },
@@ -95,8 +93,7 @@ export function handleError(err: unknown): Response {
 
     return Response.json(
         {
-            success: false,
-            message: 'Ermm... wtf happened?',
+            message: 'Ermm... I think Winston ate your request?',
             data: null,
         },
         { status: 500 }
