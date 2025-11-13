@@ -13,10 +13,14 @@ async function main() {
     "Candidate",
     "Position",
     "Tag",
-    "UserRole",
-    "Role",
     "User",
-    "Organization"
+    "Organization",
+    "Session",
+    "Account",
+    "Verification",
+    "Member",
+    "Invitation",
+    "_TaskTemplateTags"
   RESTART IDENTITY CASCADE;
 `;
 }

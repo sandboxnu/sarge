@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
-import { signUp } from '@/lib/auth/better-auth-client';
+import { signUp } from '@/lib/auth/auth-client';
 import { Button } from '@/lib/components/Button';
 import {
     Field,

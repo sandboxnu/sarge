@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useAuth } from '@/lib/auth/auth-client';
+import { useAuth } from '@/lib/auth/auth-context';
 
 export function Header() {
     const { user } = useAuth();

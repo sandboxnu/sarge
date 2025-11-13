@@ -6,11 +6,10 @@ export const createOrganizationSchema = z.object({
         .min(2, 'Name must be at least 2 characters')
         .max(100, 'Name must be less than 100 characters')
         .trim(),
-    createdById: z.uuid('createdById must be a valid UUID'),
 });
 
 export const getOrganizationSchema = z.object({
-    id: z.uuid('ID is 36 characters'),
+    id: z.cuid('Invalid organization ID'),
 });
 
 export const updateOrganizationSchema = z.object({

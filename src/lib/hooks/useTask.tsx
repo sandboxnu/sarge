@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { type TaskTemplateDTO } from '@/lib/schemas/taskTemplate.schema';
+import { type TaskTemplateDTO } from '@/lib/schemas/task-template.schema';
 import { type editor } from 'monaco-editor';
 import { type Monaco } from '@monaco-editor/react';
 import {
@@ -58,11 +58,9 @@ export function useTask(id: string) {
                 if (!response.ok) {
                     throw new Error('Failed to fetch task template');
                 }
-                const data = await response.json();
-                if (!data.success) {
-                    throw new Error(data.message);
-                }
-                setTask(data.data);
+                const responseBody = await response.json();
+
+                setTask(responseBody.data);
             } catch (err) {
                 setError(err as Error);
             } finally {

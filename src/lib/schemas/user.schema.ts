@@ -34,8 +34,7 @@ export const loginUserSchema = z.object({
 });
 
 export const UserSchema = z.object({
-    id: z.uuid(),
-    orgId: z.uuid().optional(),
+    id: z.cuid(),
     name: createUserSchema.shape.name,
     email: createUserSchema.shape.email,
 });

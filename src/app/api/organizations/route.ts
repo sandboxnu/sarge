@@ -1,18 +1,21 @@
 import OrganizationService from '@/lib/services/organization.service';
 import { type NextRequest } from 'next/server';
-import { badRequest, error, handleError, success } from '@/lib/responses';
+import { handleError } from '@/lib/utils/errors.utils';
 import { createOrganizationSchema } from '@/lib/schemas/organization.schema';
+import { getSession } from '@/lib/utils/auth.utils';
 
 export async function POST(request: NextRequest) {
     try {
-        const body = await request.json();
-        const parsed = createOrganizationSchema.safeParse(body);
-        if (!parsed.success)
-            return Response.json(badRequest('Invalid organization data', parsed.error));
+        const session = await getSession();
 
-        const result = await OrganizationService.createOrganization(parsed.data);
-        if (!result.success) return Response.json(error(result.message, result.status));
-        return Response.json(success(result.data, 201));
+        const body = await request.json();
+        const createOrgRequest = createOrganizationSchema.parse(body);
+        const organization = await OrganizationService.createOrganization(
+            createOrgRequest,
+            session.userId,
+            session.headers
+        );
+        return Response.json({ data: organization }, { status: 201 });
     } catch (err) {
         return handleError(err);
     }

@@ -11,11 +11,11 @@ export const createCandidateSchema = z.object({
         .toLowerCase()
         .trim()
         .max(255, 'Email must be less than 255 characters'),
-    orgId: z.uuid('Invalid orgId'),
+    orgId: z.cuid('Invalid orgId'),
 });
 
 export const CandidateSchema = z.object({
-    id: z.uuid(),
+    id: z.cuid(),
     name: createCandidateSchema.shape.name,
     email: createCandidateSchema.shape.email,
     orgId: createCandidateSchema.shape.orgId,
