@@ -16,8 +16,9 @@ export const createTaskTemplateSchema = z
         orgId: z.cuid(),
         public_test_cases: z
             .array(testCaseSchema)
-            .min(1, 'There must at least be one public test case'), // Might not have to be required
-        private_test_cases: z.array(testCaseSchema).default([]),
+            .min(1, 'There must at least be one public test case')
+            .optional(),
+        private_test_cases: z.array(testCaseSchema),
         tagIds: z.array(z.cuid()).default([]),
     })
     .strict();
