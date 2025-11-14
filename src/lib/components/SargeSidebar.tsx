@@ -11,6 +11,7 @@ import {
     SidebarRail,
 } from '@/lib/components/Sidebar';
 import { Home, File, ListChecks, Users, Book, Archive, Settings, Copy } from 'lucide-react';
+import { useAuth } from '@/lib/auth/auth-context';
 
 const sidebarMenuItems = [
     {
@@ -46,6 +47,8 @@ const sidebarMenuItems = [
 ];
 
 export function SargeSidebar() {
+    const auth = useAuth();
+
     return (
         <Sidebar
             className="border-sarge-primary-100 bg-sarge-primary-100 border-r-[16px]"
@@ -59,9 +62,11 @@ export function SargeSidebar() {
                     {/* Organization Details */}
                     <div className="flex min-w-0 flex-1 flex-col">
                         <div className="truncate font-semibold text-gray-900">
-                            Organization Name
+                            {auth.activeOrganization?.name ?? 'Organization Name'}
                         </div>
-                        <div className="truncate text-sm text-gray-500">org-code</div>
+                        <div className="truncate text-sm text-gray-500">
+                            {auth.activeOrganization?.id ?? 'org-code'}
+                        </div>
                     </div>
                 </div>
             </SidebarHeader>
