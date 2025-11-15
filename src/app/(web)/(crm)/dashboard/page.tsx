@@ -6,37 +6,37 @@ import Image from 'next/image';
 import WelcomeModal from './modal';
 
 export default function DashboardPage() {
-    //const { user, isPending, hasActiveOrganization } = useAuth();
-    //const { handleFileChange, loading, error, submitted, imageUrl } = useFileUpload('user');
+    const { user, isPending, hasActiveOrganization } = useAuth();
+    const { handleFileChange, loading, error, submitted, imageUrl } = useFileUpload('user');
 
-    //const showWelcomeModal = !hasActiveOrganization;
+    const showWelcomeModal = !hasActiveOrganization;
 
-    // if (!isPending && user) {
-    //     return (
-    //         <div>
-    //             {showWelcomeModal && <WelcomeModal />}
-    //             <div className="">{user.name}</div>
+    if (!isPending && user) {
+        return (
+            <div>
+                {showWelcomeModal && <WelcomeModal />}
+                <div className="">{user.name}</div>
 
-    //             {/* THIS IS A SAMPLE OF HOW IMAGE UPLOAD WORKS FOR USERS / PLEASE REMOVE BEFORE WORKING ON THIS PAGE */}
-    //             <input
-    //                 id="upload"
-    //                 type="file"
-    //                 accept="image/*"
-    //                 onChange={handleFileChange}
-    //                 disabled={loading}
-    //                 className="mt-2"
-    //             />
+                {/* THIS IS A SAMPLE OF HOW IMAGE UPLOAD WORKS FOR USERS / PLEASE REMOVE BEFORE WORKING ON THIS PAGE */}
+                <input
+                    id="upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    disabled={loading}
+                    className="mt-2"
+                />
 
-    //             {loading && <p className="mt-2 text-sm text-gray-500">Uploading...</p>}
-    //             {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
-    //             {submitted && !error && !loading && (
-    //                 <p className="mt-2 text-sm text-green-600">Success!</p>
-    //             )}
+                {loading && <p className="mt-2 text-sm text-gray-500">Uploading...</p>}
+                {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+                {submitted && !error && !loading && (
+                    <p className="mt-2 text-sm text-green-600">Success!</p>
+                )}
 
-    //             {imageUrl && <Image src={imageUrl} height={50} width={50} alt="image" />}
-    //         </div>
-    //     );
-    // } else {
-    return <div className="">Loading...</div>;
-    // }
+                {imageUrl && <Image src={imageUrl} height={50} width={50} alt="image" />}
+            </div>
+        );
+    } else {
+        return <div className="">Loading...</div>;
+    }
 }

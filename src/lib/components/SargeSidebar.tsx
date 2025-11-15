@@ -12,7 +12,7 @@ import {
     SidebarMenuItem,
     SidebarRail,
 } from '@/lib/components/Sidebar';
-import { Home, File, ListChecks, Users, Book, Archive, Settings, Copy } from 'lucide-react';
+import { Home, File, ListChecks, Users, Book, Archive, Settings } from 'lucide-react';
 import { useAuth } from '@/lib/auth/auth-context';
 
 const sidebarMenuItems = [
