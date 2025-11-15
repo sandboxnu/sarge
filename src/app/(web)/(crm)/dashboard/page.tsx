@@ -1,9 +1,11 @@
 'use client';
 
-import { useAuth } from '@/lib/auth/auth-client';
+import { useActiveMember, useActiveOrganization } from '@/lib/auth/auth-client';
+import { authClient } from '@/lib/auth/auth-client';
 import WelcomeModal from '@/lib/components/modal/WelcomeModal';
 import CreateOrganizationModal from '@/lib/components/modal/CreateOrganizationModal';
 import useSignInFlow from '@/lib/hooks/useSignInFlow';
+import { useAuth, useAuthMember, useAuthOrganization } from '@/lib/auth/auth-context';
 
 export default function DashboardPage() {
     const auth = useAuth();
@@ -11,6 +13,7 @@ export default function DashboardPage() {
         step,
         open,
         onOpenChange,
+        onCreateSubmit,
         goTo,
         organizationName,
         setOrganizationName,
@@ -25,14 +28,16 @@ export default function DashboardPage() {
         loading,
     } = useSignInFlow();
 
-    if (auth.isPending) return <div>Loading...</div>;
-    if (!auth.user) return <div>Not signed in</div>;
+    const isUserLoading = auth.sessionPending;
+    const isSignedOut = !auth.isAuthenticated && !auth.sessionPending;
+    const isOnboarding = auth.isAuthenticated && !auth.hasActiveOrganization && !auth.isPending;
 
-    const onboarding = auth.user.orgId == null;
+    if (isUserLoading) return <div>Loading...</div>;
+    if (isSignedOut) return <div>You must be signed in...</div>
 
     return (
         <div>
-            {onboarding && (
+            {isOnboarding && (
                 <div>
                     <WelcomeModal
                         open={open && step === 'welcome'}
@@ -45,11 +50,7 @@ export default function DashboardPage() {
                         open={open && step === 'create'}
                         onOpenChange={onOpenChange}
                         onBack={() => goTo('welcome')}
-                        onSubmit={async () => {
-                            const orgId = await submitOrganization();
-                            if (orgId && auth.user) auth.user.orgId = orgId;
-                            if (!error && !loading) goTo(null);
-                        }}
+                        onSubmit={onCreateSubmit}
                         setOrganizationName={setOrganizationName}
                         organizationName={organizationName}
                         preview={preview}
@@ -62,10 +63,10 @@ export default function DashboardPage() {
                 </div>
             )}
 
-            {!onboarding && (
+            {!isOnboarding && (
                 <div>
                     This is the normal dashboard content! You are apart of an organization! Its ID
-                    is {auth.user.orgId}
+                    is {auth.activeOrganizationId}
                 </div>
             )}
         </div>

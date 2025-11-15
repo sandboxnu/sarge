@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
-import { useAuth } from '@/lib/auth/auth-client';
+import { useActiveMember, useSession, authClient } from '@/lib/auth/auth-client';
 
 type Step = 'welcome' | 'create' | 'join' | null;
 
@@ -14,9 +14,13 @@ function useSignInFlow() {
 
     const [preview, setPreview] = useState<string>('');
     const fileInputRef = useRef<null | HTMLInputElement>(null);
-    const auth = useAuth();
 
-    const onboarding = auth.user?.orgId == null;
+    const { data: session } = useSession();
+    const member = useActiveMember();
+
+    const userId = session?.user?.id ?? null;
+    const onboarding = !member.isPending && member.data?.organizationId == null;
+
     const [step, setStep] = useState<Step>(onboarding ? 'welcome' : null);
     const open = step !== null;
 
@@ -63,7 +67,7 @@ function useSignInFlow() {
 
     const submitOrganization = async () => {
         try {
-            if (!auth.user?.id) {
+            if (!userId) {
                 setError('User not authenticated');
                 return;
             }
@@ -75,7 +79,7 @@ function useSignInFlow() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     name: organizationName,
-                    createdById: auth.user.id,
+                    createdById: userId,
                 }),
             });
 
@@ -88,13 +92,17 @@ function useSignInFlow() {
             const createOrganizationBody = await createResponse.json();
             const organizationId = createOrganizationBody.data.id;
 
+            if (!file) {
+                return organizationId;
+            }
+
             const signResponse = await fetch('/api/upload/sign', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     type: 'organization',
                     mime: file?.type,
-                    userId: auth.user.id,
+                    userId: userId,
                     organizationId,
                 }),
             });
@@ -125,7 +133,7 @@ function useSignInFlow() {
                 body: JSON.stringify({
                     type: 'organization',
                     key: data.key,
-                    userId: auth.user.id,
+                    userId: userId,
                     organizationId,
                 }),
             });
@@ -162,10 +170,12 @@ function useSignInFlow() {
     };
 
     const onCreateSubmit = async () => {
+        setError(null);
         const orgId = await submitOrganization();
-        if (orgId && auth.user) auth.user.orgId = orgId;
-        if (!error && !loading) goToStep(null);
-    }
+        if (!orgId) return;
+        await authClient.organization.setActive({ organizationId: orgId });
+        goToStep(null);
+    };
 
     return {
         step,
