@@ -30,7 +30,7 @@ export default function SargeCard({
             <div className="flex items-start justify-between gap-2">
                 <div className="flex min-w-0 flex-[1_0_0] flex-col items-start gap-1 px-1">
                     <h3
-                        className="font-sans text-[14px] leading-[18px] font-medium tracking-[0.406px] text-[var(--sarge-gray-800)]"
+                        className="text-label-s text-[var(--sarge-gray-800)]"
                         style={{
                             display: '-webkit-box',
                             WebkitLineClamp: 2,
@@ -42,7 +42,7 @@ export default function SargeCard({
                         {title}
                     </h3>
 
-                    <p className="font-sans text-[14px] leading-[18px] font-normal tracking-[0.406px] text-[var(--sarge-gray-600)]">
+                    <p className="text-body-s text-[var(--sarge-gray-600)]">
                         {candidateCount} {candidateCount === 1 ? 'candidate' : 'candidates'}
                     </p>
                 </div>
@@ -63,7 +63,7 @@ export default function SargeCard({
                         />
                         <div className="min-w-0 flex-1">
                             <div
-                                className="overflow-hidden font-sans text-[14px] leading-[18px] font-medium tracking-[0.406px] text-ellipsis whitespace-nowrap text-[var(--sarge-gray-800)]"
+                                className="text-label-s truncate text-[var(--sarge-gray-800)]"
                                 title={assessmentName}
                             >
                                 {assessmentName}
@@ -100,8 +100,7 @@ function Chip({
     children: React.ReactNode;
     variant?: ChipVariant;
 }) {
-    const base =
-        'inline-flex items-center px-2 py-1 rounded-[6px] text-[12px] leading-[16px] font-medium tracking-[0.406px]';
+    const base = 'inline-flex items-center px-2 py-1 rounded-[6px] text-label-xs';
     const styles =
         variant === 'neutral'
             ? 'bg-[var(--sarge-gray-200)] text-[var(--sarge-gray-600)]'
