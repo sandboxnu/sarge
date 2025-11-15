@@ -22,18 +22,19 @@
 
     /* Error */
     --sarge-error-700: #b42318;
-    --sarge-error-400: #ef6b63;
+    --sarge-error-400: #d24343;
     --sarge-error-200: #f7c4c4;
 
     /* Warning */
+    --sarge-warning-700: #ba4400;
     --sarge-warning-500: #ec8320;
     --sarge-warning-400: #fcb499;
-    --sarge-warning-100: #f6e6d3;
+    --sarge-warning-100: #ffe9bb;
 
     /* Success */
     --sarge-success-800: #00592e;
     --sarge-success-500: #0f9453;
-    --sarge-success-100: #e1fee2;
+    --sarge-success-100: #d8f4d4;
 
     /* Shadcn style variables  */
     --background: var(--sarge-gray-0);
