@@ -53,6 +53,7 @@ interface AuthContextValue {
     isPending: boolean;
     sessionPending: boolean;
     orgPending: boolean;
+    memberPending: boolean;
 
     isAuthenticated: boolean;
     hasActiveOrganization: boolean;
