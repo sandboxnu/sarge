@@ -40,7 +40,7 @@ export const updateCandidateSchema = z.object({
 });
 
 export const CandidateSchema = z.object({
-    id: z.cuid(),
+    id: z.string(),
     name: createCandidateSchema.shape.name,
     email: createCandidateSchema.shape.email,
     orgId: createCandidateSchema.shape.orgId,
