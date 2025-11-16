@@ -10,7 +10,7 @@ export default function CRMLayout({
         <SidebarProvider>
             <SargeSidebar />
             <SidebarInset>
-                <main>{children}</main>
+                {children}
             </SidebarInset>
         </SidebarProvider>
     );
