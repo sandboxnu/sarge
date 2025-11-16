@@ -18,24 +18,24 @@ export const updatePositionSchema = z.object({
 });
 
 export const getPositionSchema = z.object({
-    id: z.cuid('Invalid position ID'),
+    id: z.string('Invalid position ID'),
 });
 
 export const deletePositionSchema = z.object({
-    id: z.cuid('Invalid position ID'),
+    id: z.string('Invalid position ID'),
 });
 
 export const getPositionsByOrgSchema = z.object({
-    orgId: z.cuid('Invalid organization ID'),
+    orgId: z.string('Invalid organization ID'),
 });
 
 export const positionSchema = z.object({
-    id: z.cuid(),
+    id: z.string(),
     title: z.string(),
-    orgId: z.cuid(),
+    orgId: z.string(),
     createdAt: z.date(),
     updatedAt: z.date(),
-    createdById: z.cuid(),
+    createdById: z.string(),
 });
 
 export type PositionDTO = z.infer<typeof positionSchema>;

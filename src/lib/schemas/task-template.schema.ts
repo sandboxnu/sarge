@@ -6,48 +6,48 @@ const testCaseSchema = z.object({
 });
 
 export const getTaskTemplateSchema = z.object({
-    id: z.cuid(),
+    id: z.string(),
 });
 
 export const createTaskTemplateSchema = z
     .object({
         title: z.string().trim(),
         content: z.string().min(2).max(500),
-        orgId: z.cuid(),
+        orgId: z.string(),
         public_test_cases: z
             .array(testCaseSchema)
             .min(1, 'There must at least be one public test case')
             .optional(),
         private_test_cases: z.array(testCaseSchema),
-        tagIds: z.array(z.cuid()).default([]),
+        tagIds: z.array(z.string()).default([]),
     })
     .strict();
 
 export const deleteTaskTemplateSchema = z.object({
-    id: z.cuid(),
+    id: z.string(),
 });
 
 export const updateTaskTemplateSchema = z.object({
-    id: z.cuid(),
+    id: z.string(),
     title: z.string().trim(),
     content: z.string().min(2).max(500),
     public_test_cases: z
         .array(testCaseSchema)
         .min(1, 'There must at least be one public test case'), // Might not have to be required
     private_test_cases: z.array(testCaseSchema).default([]),
-    tagIds: z.array(z.cuid()).default([]),
+    tagIds: z.array(z.string()).default([]),
 });
 
 export const TaskTemplateSchema = z.object({
-    id: z.cuid(),
+    id: z.string(),
     title: z.string().trim(),
     content: z.string().min(2).max(500),
-    orgId: z.cuid(),
+    orgId: z.string(),
     public_test_cases: z
         .array(testCaseSchema)
         .min(1, 'There must at least be one public test case'), // Might not have to be required
     private_test_cases: z.array(testCaseSchema).default([]),
-    tagIds: z.array(z.cuid()).optional(),
+    tagIds: z.array(z.string()).optional(),
 });
 
 export type TaskTemplateDTO = z.infer<typeof TaskTemplateSchema>;

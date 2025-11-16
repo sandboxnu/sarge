@@ -6,10 +6,11 @@ export const createOrganizationSchema = z.object({
         .min(2, 'Name must be at least 2 characters')
         .max(100, 'Name must be less than 100 characters')
         .trim(),
+    createdById: z.string(),
 });
 
 export const getOrganizationSchema = z.object({
-    id: z.cuid('Invalid organization ID'),
+    id: z.string('Invalid organization ID'),
 });
 
 export const updateOrganizationSchema = z.object({
@@ -18,7 +19,7 @@ export const updateOrganizationSchema = z.object({
         .min(2, 'Name must be at least 2 characters')
         .max(100, 'Name must be less than 100 characters')
         .trim(),
-    imageUrl: z.url(),
+    logo: z.url(),
 });
 
 export type CreateOrganizationDTO = z.infer<typeof createOrganizationSchema>;
