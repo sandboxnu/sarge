@@ -1,4 +1,4 @@
-import { SargeSidebar } from '@/lib/components/SargeSidebar';
+import { AppSidebar } from '@/lib/components/AppSidebar';
 import { SidebarInset, SidebarProvider } from '@/lib/components/Sidebar';
 
 export default function CRMLayout({
@@ -8,10 +8,8 @@ export default function CRMLayout({
 }>) {
     return (
         <SidebarProvider>
-            <SargeSidebar />
-            <SidebarInset>
-                {children}
-            </SidebarInset>
+            <AppSidebar />
+            <SidebarInset>{children}</SidebarInset>
         </SidebarProvider>
     );
 }

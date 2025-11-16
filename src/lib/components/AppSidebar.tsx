@@ -48,7 +48,7 @@ const sidebarMenuItems = [
     },
 ];
 
-export function SargeSidebar() {
+export function AppSidebar() {
     const auth = useAuth();
 
     return (
