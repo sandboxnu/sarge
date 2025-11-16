@@ -87,7 +87,7 @@ export function SargeSidebar() {
                                             href={item.url}
                                             className="flex items-center gap-3 group-data-[collapsible=icon]:justify-center"
                                         >
-                                            <item.icon className="h-10 w-10" />
+                                            <item.icon className="h-6 w-6" />
                                             <span className="text-md font-medium">
                                                 {item.title}
                                             </span>
