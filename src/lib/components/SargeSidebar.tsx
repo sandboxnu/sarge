@@ -100,7 +100,7 @@ export function SargeSidebar() {
                 </SidebarGroup>
             </SidebarContent>
             <SidebarFooter>
-                <SidebarMenu className="">
+                <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton
                             tooltip="Organization Settings"
