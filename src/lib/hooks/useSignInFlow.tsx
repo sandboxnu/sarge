@@ -72,6 +72,11 @@ function useSignInFlow() {
                 return;
             }
 
+            if (organizationName === '') {
+                setError('Organization must have a name')
+                return;
+            }
+
             setLoading(true);
 
             const createResponse = await fetch('/api/organizations', {
@@ -102,7 +107,7 @@ function useSignInFlow() {
                 body: JSON.stringify({
                     type: 'organization',
                     mime: file?.type,
-                    userId: userId,
+                    userId,
                     organizationId,
                 }),
             });
@@ -133,7 +138,7 @@ function useSignInFlow() {
                 body: JSON.stringify({
                     type: 'organization',
                     key: data.key,
-                    userId: userId,
+                    userId,
                     organizationId,
                 }),
             });
@@ -151,7 +156,7 @@ function useSignInFlow() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     name: organizationName,
-                    imageUrl: confirmData.imageUrl,
+                    logo: confirmData.imageUrl,
                 }),
             });
 
