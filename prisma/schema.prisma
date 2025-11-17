@@ -34,14 +34,15 @@ model User {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  Review        Review[]
-  Comment       Comment[]
-  sessions      Session[]
-  accounts      Account[]
-  verifications Verification[]
-  members       Member[]
-  invitations   Invitation[]   @relation("Inviter")
-  positions     Position[]     @relation("CreatedPositions")
+  Review               Review[]
+  Comment              Comment[]
+  sessions             Session[]
+  accounts             Account[]
+  verifications        Verification[]
+  members              Member[]
+  invitations          Invitation[]         @relation("Inviter")
+  positions            Position[]           @relation("CreatedPositions")
+  candidatePoolEntries CandidatePoolEntry[] @relation("DecisionMaker")
 }
 
 model Position {
@@ -52,43 +53,65 @@ model Position {
   updatedAt   DateTime @updatedAt
   createdById String
 
-  candidate    CandidatePoolEntry[]
-  organization Organization         @relation(fields: [orgId], references: [id])
-  assessments  Assessment[]
-  creator      User                 @relation("CreatedPositions", fields: [createdById], references: [id])
+  poolCandidates CandidatePoolEntry[] // list of candidates in the position (candidate pool)
+  organization   Organization         @relation(fields: [orgId], references: [id])
+  creator        User                 @relation("CreatedPositions", fields: [createdById], references: [id])
 }
 
 model Candidate {
-  id        String   @id @unique @default(cuid())
-  name      String
-  email     String
+  id    String @id @unique @default(cuid())
+  name  String
+  email String
+
+  linkedinUrl    String? // these are unlikely to change from application to application, so we can store them here
+  githubUrl      String?
+  major          String?
+  graduationDate String? // May 2026 for example
+  resumeUrl      String?
+
   orgId     String
   createdAt DateTime @default(now())
 
-  positions    CandidatePoolEntry[]
-  organization Organization         @relation(fields: [orgId], references: [id])
-  Assessment   Assessment[]
+  appliedPositions CandidatePoolEntry[] // list of positions the candidate has applied to
+  organization     Organization         @relation(fields: [orgId], references: [id])
 
   @@unique([email, orgId])
 }
 
-enum Status {
-  ASSIGNED
-  SUBMITTED
+enum AssessmentStatus {
+  NOT_ASSIGNED // In pool, no assessment assigned yet
+  ASSIGNED // Assessment created and link sent to candidate
+  SUBMITTED // Candidate completed and submitted assessment
+  EXPIRED // Assessment deadline passed without submission
+  GRADED // Assessment graded by reviewer
+}
+
+enum DecisionStatus {
+  PENDING // No decision made yet (default)
+  ACCEPTED // Candidate passed and accepted for position (or next interview in Next's case)
+  REJECTED // Candidate did not meet requirements
 }
 
 model CandidatePoolEntry {
-  id          String   @id @unique @default(cuid())
-  candidateId String
-  positionId  String
-  status      Status   @default(ASSIGNED)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id               String           @id @unique @default(cuid())
+  candidateId      String
+  positionId       String
+  assessmentStatus AssessmentStatus @default(NOT_ASSIGNED)
+  decisionStatus   DecisionStatus   @default(PENDING)
+  decidedBy        String?
 
-  candidate Candidate @relation(fields: [candidateId], references: [id])
-  position  Position  @relation(fields: [positionId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  candidate     Candidate   @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  position      Position    @relation(fields: [positionId], references: [id], onDelete: Cascade)
+  assessment    Assessment?
+  // We store the assessment here bc in the position view we want to have an easy way to access the assessment
+  decisionMaker User?       @relation("DecisionMaker", fields: [decidedBy], references: [id], onDelete: SetNull)
 
   @@unique([candidateId, positionId])
+  @@index([positionId, assessmentStatus]) // For position stats queries
+  @@index([positionId, decisionStatus]) // For filtering by decision
 }
 
 model AssessmentTemplate {
@@ -107,8 +130,8 @@ model TaskTemplate {
   content            String @db.Text
   public_test_cases  Json[]
   private_test_cases Json[]
+  orgId              String
 
-  orgId        String
   organization Organization @relation(fields: [orgId], references: [id])
   tasks        Task[]       @relation("derivedFromTaskTemplate")
   tags         Tag[]        @relation("TaskTemplateTags")
@@ -127,16 +150,15 @@ model Task {
 }
 
 model Assessment {
-  id                   String   @id @unique @default(cuid())
-  candidateId          String
-  positionId           String
+  id                   String    @id @unique @default(cuid())
+  candidatePoolEntryId String    @unique
   assessmentTemplateId String
-  assignedAt           DateTime
-  isSubmitted          Boolean
-  uniqueLink           String   @unique
+  assignedAt           DateTime  @default(now())
+  submittedAt          DateTime?
+  uniqueLink           String    @unique
+  deadline             DateTime?
 
-  candidate          Candidate          @relation(fields: [candidateId], references: [id])
-  position           Position           @relation(fields: [positionId], references: [id])
+  candidatePoolEntry CandidatePoolEntry @relation(fields: [candidatePoolEntryId], references: [id], onDelete: Cascade)
   assessmentTemplate AssessmentTemplate @relation("derivedFromAssessmentTemplate", fields: [assessmentTemplateId], references: [id])
   tasks              Task[]             @relation("combineToFormAssessment")
   reviews            Review[]

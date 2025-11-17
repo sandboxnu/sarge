@@ -2,17 +2,15 @@ import type { Member } from '@/lib/types/member.types';
 import { prisma } from '@/lib/prisma';
 import { ForbiddenException, NotFoundException } from '@/lib/utils/errors.utils';
 import { auth } from '@/lib/auth/auth';
-import { getSession } from '@/lib/utils/auth.utils';
 
 async function updateMemberRole(
     memberIdToUpdate: string,
     role: string,
-    organizationId: string
+    organizationId: string,
+    headers: Headers
 ): Promise<Member> {
-    const session = await getSession();
-
     const hasPermissionsToUpdate = await auth.api.hasPermission({
-        headers: session.headers,
+        headers,
         body: {
             permissions: {
                 member: ['update'],

@@ -1,19 +1,26 @@
-import CandidatePoolEntryService from '@/lib/services/candidate-pool-entry.service';
-import { error, handleError, success } from '@/lib/responses';
+import CandidatePoolService from '@/lib/services/candidate-pool.service';
+import { handleError } from '@/lib/utils/errors.utils';
 import { type NextRequest } from 'next/server';
+import { getSession } from '@/lib/utils/auth.utils';
 
+/**
+ * DELETE /api/position/[id]/candidates/[candidateId]
+ * Remove a single candidate from a position's pool
+ * This will cascade delete their assessment if one exists
+ */
 export async function DELETE(
     _request: NextRequest,
     { params }: { params: Promise<{ id: string; candidateId: string }> }
 ) {
     try {
+        const session = await getSession();
         const { id: positionId, candidateId } = await params;
-        const result = await CandidatePoolEntryService.deleteCandidatePoolEntry(
+        const result = await CandidatePoolService.removeCandidateFromPosition(
             candidateId,
-            positionId
+            positionId,
+            session.activeOrganizationId
         );
-        if (!result.success) return Response.json(error(result.message, result.status));
-        return Response.json(success(result.data, 200));
+        return Response.json({ data: result }, { status: 200 });
     } catch (err) {
         return handleError(err);
     }

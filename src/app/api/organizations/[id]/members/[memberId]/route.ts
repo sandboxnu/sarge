@@ -13,7 +13,12 @@ export async function PATCH(
         const body = await request.json();
         const { role } = updateRoleSchema.parse(body);
 
-        const updatedMember = await MemberService.updateMemberRole(memberIdToUpdate, role, orgId);
+        const updatedMember = await MemberService.updateMemberRole(
+            memberIdToUpdate,
+            role,
+            orgId,
+            request.headers
+        );
 
         return Response.json({ data: updatedMember }, { status: 200 });
     } catch (err) {
