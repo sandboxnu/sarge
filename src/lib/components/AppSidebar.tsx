@@ -20,7 +20,7 @@ import useOnboardingState from '@/lib/hooks/useOnboardingState';
 const sidebarMenuItems = [
     {
         title: 'Overview',
-        url: '#',
+        url: '/dashboard',
         icon: Home,
     },
     {
@@ -35,7 +35,7 @@ const sidebarMenuItems = [
     },
     {
         title: 'Positions',
-        url: '#',
+        url: '/positions',
         icon: Users,
     },
     {

@@ -47,7 +47,20 @@ export default function usePosition() {
         }
     }
 
-    const archived: PositionDTO[] = [];
+    // The frontend flow to sort positions does not exist yet a ticket has been created to add it.
+    async function SortPositions() {
+        positions.sort((a, b) => {
+            if (sort === 'createdAt') {
+                return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+            }
+            if (sort === 'title') {
+                return a.title.localeCompare(b.title);
+            }
+            return 0;
+        });
+    }
 
-    return { positions, loading, error, archived, createPosition };
+    const archived: PositionWithCounts[] = [];
+
+    return { positions, loading, error, archived, createPosition, SortPositions };
 }
