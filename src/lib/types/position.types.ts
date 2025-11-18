@@ -7,7 +7,6 @@ export type PositionWithCounts = {
     numAssigned: number;
 };
 
-// the naming isn't exactly right :/ - but we are selecting for information we need to display the candidate pool
 export interface CandidatePoolDisplayInfo {
     assessmentStatus: AssessmentStatus;
     decisionStatus: DecisionStatus;
