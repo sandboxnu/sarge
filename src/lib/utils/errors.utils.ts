@@ -91,6 +91,23 @@ export function handleError(err: unknown): Response {
         );
     }
 
+    if (err instanceof Error) {
+        return Response.json(
+            {
+                message: err.message,
+                data: null,
+                debug:
+                    process.env.NODE_ENV === 'development'
+                        ? {
+                              errorName: err.name,
+                              errorStack: err.stack,
+                          }
+                        : undefined,
+            },
+            { status: 500 }
+        );
+    }
+
     return Response.json(
         {
             message: 'Ermm... I think Winston ate your request?',

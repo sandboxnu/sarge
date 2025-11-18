@@ -180,6 +180,11 @@ async function main() {
                 name: 'Alice Candidate',
                 email: 'alice@example.com',
                 orgId: 'clx00000000000000000000011',
+                linkedinUrl: 'https://linkedin.com/in/alice-candidate',
+                githubUrl: 'https://github.com/alicecandidate',
+                major: 'Computer Science',
+                graduationDate: 'May 2024',
+                resumeUrl: 'https://example.com/resumes/alice-candidate.pdf',
             },
         }),
         prisma.candidate.upsert({
@@ -190,6 +195,11 @@ async function main() {
                 name: 'Evan Applicant',
                 email: 'evan@example.com',
                 orgId: 'clx00000000000000000000012',
+                linkedinUrl: 'https://linkedin.com/in/evan-applicant',
+                githubUrl: null,
+                major: 'Software Engineering',
+                graduationDate: 'December 2023',
+                resumeUrl: null,
             },
         }),
     ]);

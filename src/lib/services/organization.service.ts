@@ -11,6 +11,7 @@ import {
     InternalServerException,
 } from '@/lib/utils/errors.utils';
 import { auth } from '@/lib/auth/auth';
+import { generateSlugFromName } from '@/lib/utils/auth.utils';
 
 async function createOrganization(
     createOrgRequest: CreateOrganizationDTO,
@@ -30,8 +31,9 @@ async function createOrganization(
     const organization = await auth.api.createOrganization({
         body: {
             name: createOrgRequest.name,
-            slug: '',
+            slug: generateSlugFromName(createOrgRequest.name),
             userId,
+            keepCurrentActiveOrganization: false,
         },
         headers,
     });

@@ -1,7 +1,7 @@
 import { headers } from 'next/headers';
 import { auth } from '@/lib/auth/auth';
 import { UnauthorizedException } from '@/lib/utils/errors.utils';
-import type { AuthSession } from '@/lib/types/auth.types';
+import type { AuthSession, GetSessionOptions } from '@/lib/types/auth.types';
 
 // Since organization names are unique, we can safely generate slugs without uniqueness checks.
 export const generateSlugFromName = (name: string): string => {
@@ -12,24 +12,40 @@ export const generateSlugFromName = (name: string): string => {
         .replace(/^-+|-+$/g, '');
 };
 
-export const getSession = async (): Promise<AuthSession> => {
-    const session = await auth.api.getSession({ headers: await headers(), returnHeaders: true });
+async function getSessionBase(options: GetSessionOptions) {
+    const session = await auth.api.getSession({ headers: await headers() });
 
-    if (!session?.response?.session) {
+    if (!session?.session) {
         throw new UnauthorizedException('Unauthorized to access this resource');
     }
-    const response = session.response.session;
 
-    if (!response.activeOrganizationId) {
+    const response = session.session;
+
+    if (options.requireActiveOrg && !response.activeOrganizationId) {
         throw new UnauthorizedException(
-            'No active organization found. Please select an organization to continue.'
+            'No active organization found. You should have an active organization to access this resource.'
         );
     }
 
     return {
-        headers: session.headers,
         id: response.id,
         userId: response.userId,
         activeOrganizationId: response.activeOrganizationId,
+    };
+}
+
+// gets the session and requires an active organization
+export const getSession = async (): Promise<AuthSession> => {
+    return (await getSessionBase({ requireActiveOrg: true })) as AuthSession; // might have to revisit this later
+};
+
+// needed for when we're creating an org and the user doesn't have any orgs since the getSession method requires an active organization
+export const getSessionWithoutOrg = async (): Promise<
+    Omit<AuthSession, 'activeOrganizationId'> & { activeOrganizationId?: string }
+> => {
+    const result = await getSessionBase({ requireActiveOrg: false });
+    return {
+        ...result,
+        activeOrganizationId: result.activeOrganizationId ?? undefined,
     };
 };

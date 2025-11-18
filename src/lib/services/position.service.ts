@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { type CreatePositionDTO, type UpdatePositionDTO } from '@/lib/schemas/position.schema';
 import { type Position } from '@/generated/prisma';
-import { Status } from '@/generated/prisma';
+import { AssessmentStatus } from '@/generated/prisma';
 import { NotFoundException } from '@/lib/utils/errors.utils';
 import { type PositionWithCounts } from '@/lib/types/position.types';
 
@@ -46,29 +46,29 @@ async function getPosition(positionId: string): Promise<Position> {
 }
 
 async function getPositionByOrgId(orgId: string): Promise<PositionWithCounts[]> {
-    const org = await prisma.organization.findUnique({ where: { id: orgId } });
-    if (!org) {
-        throw new NotFoundException('Organization', orgId);
-    }
-
     const positions = await prisma.position.findMany({
-        where: {
-            orgId,
-        },
+        where: { orgId },
         select: {
             id: true,
             title: true,
-            candidate: { select: { status: true } },
+            _count: {
+                select: {
+                    poolCandidates: true,
+                },
+            },
+            poolCandidates: {
+                where: { assessmentStatus: AssessmentStatus.ASSIGNED },
+                select: { id: true },
+            },
         },
     });
 
-    const positionsWithCounts: PositionWithCounts[] = positions.map((p) => {
-        const numCandidates = p.candidate.length;
-        const numAssigned = p.candidate.filter((c) => c.status === Status.ASSIGNED).length;
-        return { id: p.id, title: p.title, numCandidates, numAssigned };
-    });
-
-    return positionsWithCounts;
+    return positions.map((p) => ({
+        id: p.id,
+        title: p.title,
+        numCandidates: p._count.poolCandidates,
+        numAssigned: p.poolCandidates.length,
+    }));
 }
 
 async function updatePosition(

@@ -3,7 +3,6 @@ import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { organization } from 'better-auth/plugins';
 import { prisma } from '@/lib/prisma';
 import { ac, owner, admin, recruiter, reviewer, member } from '@/lib/auth/permissions';
-import { generateSlugFromName } from '@/lib/utils/auth.utils';
 
 export const auth = betterAuth({
     secret: process.env.BETTER_AUTH_SECRET,
@@ -47,20 +46,6 @@ export const auth = betterAuth({
             invitationExpiresIn: 60 * 60 * 48,
             invitationLimit: 100,
             cancelPendingInvitationsOnReInvite: false,
-
-            organizationHooks: {
-                beforeCreateOrganization: async ({ organization }) => {
-                    if (!organization.slug && organization.name) {
-                        return {
-                            data: {
-                                ...organization,
-                                slug: generateSlugFromName(organization.name),
-                            },
-                        };
-                    }
-                    return { data: organization };
-                },
-            },
         }),
     ],
 });
