@@ -14,6 +14,7 @@ import {
 } from '@/lib/components/Sidebar';
 import { Home, File, ListChecks, Users, Book, Archive, Settings } from 'lucide-react';
 import { useAuth } from '@/lib/auth/auth-context';
+import Image from 'next/image';
 
 const sidebarMenuItems = [
     {
@@ -59,7 +60,17 @@ export function AppSidebar() {
             <SidebarHeader>
                 <div className="flex items-center gap-3">
                     {/* Avatar/Logo */}
-                    <div className="h-8 w-8 flex-shrink-0 rounded-md bg-gray-200"></div>
+                    {auth.activeOrganization?.logo ? (
+                        <Image
+                            src={auth.activeOrganization.logo}
+                            alt="Organization Logo"
+                            width={32}
+                            height={32}
+                            className="rounded-md object-cover"
+                        />
+                    ) : (
+                        <div className="h-8 w-8 flex-shrink-0 rounded-md bg-gray-200"></div>
+                    )}
 
                     {/* Organization Details */}
                     <div className="flex min-w-0 flex-1 flex-col">

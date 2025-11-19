@@ -1,14 +1,10 @@
 'use client';
 
-import { useActiveMember, useActiveOrganization } from '@/lib/auth/auth-client';
-import { authClient } from '@/lib/auth/auth-client';
 import WelcomeModal from '@/lib/components/modal/WelcomeModal';
 import CreateOrganizationModal from '@/lib/components/modal/CreateOrganizationModal';
-import useSignInFlow from '@/lib/hooks/useSignInFlow';
-import { useAuth, useAuthMember, useAuthOrganization } from '@/lib/auth/auth-context';
+import useDashboard from '@/lib/hooks/useDashboard';
 
 export default function DashboardPage() {
-    const auth = useAuth();
     const {
         step,
         open,
@@ -17,20 +13,16 @@ export default function DashboardPage() {
         goTo,
         organizationName,
         setOrganizationName,
-        organizationCode,
-        setOrganizationCode,
         handleFileChange,
         preview,
         fileInputRef,
         handleProfileImageClick,
-        submitOrganization,
+        isOnboarding,
+        isSignedOut,
+        isUserLoading,
         error,
         loading,
-    } = useSignInFlow();
-
-    const isUserLoading = auth.sessionPending;
-    const isSignedOut = !auth.isAuthenticated && !auth.sessionPending;
-    const isOnboarding = auth.isAuthenticated && !auth.hasActiveOrganization && !auth.isPending;
+    } = useDashboard();
 
     if (isUserLoading) return <div>Loading...</div>;
     if (isSignedOut) return <div>You must be signed in...</div>
@@ -65,8 +57,7 @@ export default function DashboardPage() {
 
             {!isOnboarding && (
                 <div>
-                    This is the normal dashboard content! You are apart of an organization! Its ID
-                    is {auth.activeOrganizationId}
+                    This is the normal dashboard content!
                 </div>
             )}
         </div>
