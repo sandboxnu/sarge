@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogTitle } from '@/lib/components/Modal';
+import { Dialog, DialogContent, DialogTitle } from '@/lib/components/modal/Modal';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { SquarePen } from 'lucide-react';
 import { Button } from '@/lib/components/Button';
@@ -84,7 +84,7 @@ export default function CreateOrganizationModal({
                         onChange={(e) => setOrganizationName(e.target.value)}
                     />
                     <div className="mt-4 flex items-center justify-between">
-                        <p className="text-sarge-primary-700 hover:cursor-pointer" onClick={onBack}>
+                        <p className="text-sarge-primary-500 hover:text-sarge-primary-600 hover:cursor-pointer" onClick={onBack}>
                             Back
                         </p>
                         <Button

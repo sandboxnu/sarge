@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/lib/components/Button';
-import { Dialog, DialogContent, DialogTitle } from '@/lib/components/Modal';
+import { Dialog, DialogContent, DialogTitle } from '@/lib/components/modal/Modal';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
 interface WelcomeModalProps {
