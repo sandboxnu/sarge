@@ -19,16 +19,12 @@ export function parseCandidateCsv(csv: string): AddCandidateWithDataDTO[] {
         .filter((line) => line.length > 0);
 
     if (rows.length < 2) {
-        throw new BadRequestException(
-            'CSV must contain a header row and at least one data row'
-        );
+        throw new BadRequestException('CSV must contain a header row and at least one data row');
     }
 
     const [headers, ...data] = rows;
 
-    const header = headers
-        .split(',')
-        .map((h) => normalizeHeader(h));
+    const header = headers.split(',').map((h) => normalizeHeader(h));
 
     const expectedHeader = [
         'name',
