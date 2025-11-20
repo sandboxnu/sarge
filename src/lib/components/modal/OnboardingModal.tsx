@@ -54,9 +54,7 @@ export default function OnboardingModal({
                     event.preventDefault();
                 }}
             >
-                {step === 'welcome' && (
-                    <WelcomeContent onCreate={() => goTo('create')} onJoin={() => goTo('join')} />
-                )}
+                {step === 'welcome' && <WelcomeContent onCreate={() => goTo('create')} />}
 
                 {step === 'create' && (
                     <CreateOrganizationContent
