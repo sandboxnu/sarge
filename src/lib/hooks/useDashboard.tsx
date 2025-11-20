@@ -4,16 +4,8 @@ import { useOnboarding } from '@/lib/hooks/useOnboarding';
 import { useOrganizationCreation } from '@/lib/hooks/useOrganizationCreation';
 
 function useDashboard() {
-    const {
-        userId,
-        step,
-        open,
-        goTo,
-        onOpenChange,
-        isOnboarding,
-        isSignedOut,
-        isUserLoading,
-    } = useOnboarding();
+    const { userId, step, open, goTo, onOpenChange, isOnboarding, isSignedOut, isUserLoading } =
+        useOnboarding();
 
     const {
         organizationName,

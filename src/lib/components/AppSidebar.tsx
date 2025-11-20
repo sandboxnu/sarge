@@ -53,12 +53,13 @@ const sidebarMenuItems = [
 export function AppSidebar() {
     const auth = useAuth();
 
-    const { isOnboarding } = useOnboarding()
+    const { isOnboarding } = useOnboarding();
 
     return (
         <Sidebar
-            className={`border-sarge-primary-100 bg-sarge-primary-100 border-r-[16px] ${isOnboarding ? 'opacity-30' : ''
-                }`}
+            className={`border-sarge-primary-100 bg-sarge-primary-100 border-r-[16px] ${
+                isOnboarding ? 'opacity-30' : ''
+            }`}
             collapsible="icon"
         >
             <SidebarHeader>
