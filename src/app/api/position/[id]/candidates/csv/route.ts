@@ -1,5 +1,4 @@
 import { type NextRequest } from 'next/server';
-import { getSession } from '@/lib/utils/auth.utils';
 import { handleError, BadRequestException } from '@/lib/utils/errors.utils';
 import { parseCandidateCsv } from '@/lib/utils/csv.utils';
 
