@@ -32,7 +32,7 @@ export default function CreateOrganizationModal({
     setOrganizationName,
     organizationName,
     loading,
-    error,
+    // error,
 }: CreateOrganizationModalProps) {
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -84,7 +84,10 @@ export default function CreateOrganizationModal({
                         onChange={(e) => setOrganizationName(e.target.value)}
                     />
                     <div className="mt-4 flex items-center justify-between">
-                        <p className="text-sarge-primary-500 hover:text-sarge-primary-600 hover:cursor-pointer" onClick={onBack}>
+                        <p
+                            className="text-sarge-primary-500 hover:text-sarge-primary-600 hover:cursor-pointer"
+                            onClick={onBack}
+                        >
                             Back
                         </p>
                         <Button

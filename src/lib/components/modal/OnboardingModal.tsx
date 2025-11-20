@@ -48,17 +48,14 @@ export default function OnboardingModal({
 
             {/* You can vary size based on step if you want */}
             <DialogContent
-                className='h-[292px] w-[544px]'
+                className="h-[292px] w-[544px]"
                 showCloseButton={false}
                 onInteractOutside={(event) => {
                     event.preventDefault();
                 }}
             >
                 {step === 'welcome' && (
-                    <WelcomeContent
-                        onCreate={() => goTo('create')}
-                        onJoin={() => goTo('join')}
-                    />
+                    <WelcomeContent onCreate={() => goTo('create')} onJoin={() => goTo('join')} />
                 )}
 
                 {step === 'create' && (
@@ -80,19 +77,13 @@ export default function OnboardingModal({
     );
 }
 
-function WelcomeContent({
-    onCreate,
-    onJoin,
-}: {
-    onCreate: () => void;
-    onJoin: () => void;
-}) {
+function WelcomeContent({ onCreate, onJoin }: { onCreate: () => void; onJoin: () => void }) {
     return (
         <div className="flex flex-col items-center justify-center text-center">
             <h2 className="mb-[12px] text-center text-xl font-bold text-black">Welcome!</h2>
             <p className="text-[14px] leading-[18px] font-normal tracking-[0.406px] not-italic">
-                Get started by creating or joining an organization. You&apos;ll be able to
-                manage tasks, assessments, and candidates all in one place.
+                Get started by creating or joining an organization. You&apos;ll be able to manage
+                tasks, assessments, and candidates all in one place.
             </p>
             <div className="mt-[24px] h-[72px] w-[415px]">
                 <Button
@@ -124,7 +115,7 @@ function CreateOrganizationContent({
     setOrganizationName,
     organizationName,
     loading,
-    error,
+    // error,
     onBack,
     onSubmit,
 }: {
@@ -139,8 +130,7 @@ function CreateOrganizationContent({
     onBack: () => void;
     onSubmit: () => Promise<void> | void;
 }) {
-
-    if (loading) return <LoadingContent />
+    if (loading) return <LoadingContent />;
 
     return (
         <div className="flex flex-col justify-center">
@@ -183,11 +173,12 @@ function CreateOrganizationContent({
                 onChange={(e) => setOrganizationName(e.target.value)}
             />
 
-            {error && (
-                <p className="mt-2 text-sm text-red-500">
-                    {error}
-                </p>
-            )}
+            {/* Error state will come in toasts */}
+            {/* {error && ( */}
+            {/*     <p className="mt-2 text-sm text-red-500"> */}
+            {/*         {error} */}
+            {/*     </p> */}
+            {/* )} */}
 
             <div className="mt-4 flex items-center justify-between">
                 <p
@@ -212,17 +203,12 @@ function CreateOrganizationContent({
 
 function LoadingContent() {
     return (
-        <div className="flex flex-col justify-center items-center gap-[4px] self-stretch">
-            <Image
-                src="/CreateOrgLoading.gif"
-                alt="Loading GIF"
-                width={66}
-                height={66}
-            />
+        <div className="flex flex-col items-center justify-center gap-[4px] self-stretch">
+            <Image src="/CreateOrgLoading.gif" alt="Loading GIF" width={66} height={66} />
 
             <p className="text-sarge-gray-800 leading-[18px] font-medium tracking-[0.406px]">
                 Creating organization...
             </p>
         </div>
-    )
+    );
 }
