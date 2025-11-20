@@ -2,7 +2,6 @@
 
 import OnboardingModal from '@/lib/components/modal/OnboardingModal';
 import useDashboard from '@/lib/hooks/useDashboard';
-import Image from 'next/image';
 
 export default function DashboardPage() {
     const {
