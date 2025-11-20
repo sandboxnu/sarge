@@ -77,7 +77,7 @@ export default function OnboardingModal({
     );
 }
 
-function WelcomeContent({ onCreate, onJoin }: { onCreate: () => void; onJoin: () => void }) {
+function WelcomeContent({ onCreate }: { onCreate: () => void }) {
     return (
         <div className="flex flex-col items-center justify-center text-center">
             <h2 className="mb-[12px] text-center text-xl font-bold text-black">Welcome!</h2>
@@ -94,12 +94,7 @@ function WelcomeContent({ onCreate, onJoin }: { onCreate: () => void; onJoin: ()
                 >
                     Create Organization
                 </Button>
-                <Button
-                    className="flex w-106 justify-center"
-                    size="default"
-                    variant="tertiary"
-                    onClick={onJoin}
-                >
+                <Button className="flex w-106 justify-center" size="default" variant="tertiary">
                     Join Organization
                 </Button>
             </div>
