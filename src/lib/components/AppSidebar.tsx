@@ -15,6 +15,7 @@ import {
 import { Home, File, ListChecks, Users, Book, Archive, Settings } from 'lucide-react';
 import { useAuth } from '@/lib/auth/auth-context';
 import Image from 'next/image';
+import { useOnboarding } from '@/lib/hooks/useOnboarding';
 
 const sidebarMenuItems = [
     {
@@ -52,25 +53,30 @@ const sidebarMenuItems = [
 export function AppSidebar() {
     const auth = useAuth();
 
+    const { isOnboarding } = useOnboarding()
+
     return (
         <Sidebar
-            className="border-sarge-primary-100 bg-sarge-primary-100 border-r-[16px]"
+            className={`border-sarge-primary-100 bg-sarge-primary-100 border-r-[16px] ${isOnboarding ? 'opacity-30' : ''
+                }`}
             collapsible="icon"
         >
             <SidebarHeader>
                 <div className="flex items-center gap-3">
                     {/* Avatar/Logo */}
-                    {auth.activeOrganization?.logo ? (
-                        <Image
-                            src={auth.activeOrganization.logo}
-                            alt="Organization Logo"
-                            width={32}
-                            height={32}
-                            className="rounded-md object-cover"
-                        />
-                    ) : (
-                        <div className="h-8 w-8 flex-shrink-0 rounded-md bg-gray-200"></div>
-                    )}
+                    <div className="overflow-hidden rounded-full">
+                        {auth.activeOrganization?.logo ? (
+                            <Image
+                                src={auth.activeOrganization.logo}
+                                alt="Organization Logo"
+                                width={32}
+                                height={32}
+                                className="h-[45px] w-[45px] rounded-md object-cover object-center"
+                            />
+                        ) : (
+                            <div className="h-[45px] w-[45px] flex-shrink-0 rounded-full bg-gray-200"></div>
+                        )}
+                    </div>
 
                     {/* Organization Details */}
                     <div className="flex min-w-0 flex-1 flex-col">
