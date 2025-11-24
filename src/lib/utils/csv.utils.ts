@@ -68,11 +68,11 @@ export function parseCandidateCsv(csv: string): AddCandidateWithDataDTO[] {
         return {
             name,
             email,
-            major: major || null,
-            graduationDate: graduationDate || null,
-            resumeUrl: resumeUrl || null,
-            linkedinUrl: linkedinUrl || null,
-            githubUrl: githubUrl || null,
+            major: major || '-',
+            graduationDate: graduationDate || '-',
+            resumeUrl: resumeUrl || '-',
+            linkedinUrl: linkedinUrl || '-',
+            githubUrl: githubUrl || '-',
         };
     });
 
