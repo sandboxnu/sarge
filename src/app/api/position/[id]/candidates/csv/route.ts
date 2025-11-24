@@ -11,6 +11,13 @@ export async function POST(request: NextRequest) {
             throw new BadRequestException('CSV file is required.');
         }
 
+        const filename = file.name?.toLowerCase() ?? '';
+        const mimeType = file.type?.toLowerCase() ?? '';
+
+        if (!(filename.endsWith('.csv') || mimeType.includes('csv'))) {
+            throw new BadRequestException('File must be a CSV.');
+        }
+
         const text = await file.text();
         const candidates = parseCandidateCsv(text);
 
