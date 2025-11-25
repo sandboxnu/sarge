@@ -1,0 +1,84 @@
+import {
+    type CreateAssessmentTemplateDTO,
+    type AssessmentTemplate,
+    type UpdateAssessmentTemplateDTO,
+} from '@/lib/schemas/assessment-template.schema';
+import { NotFoundException } from '@/lib/utils/errors.utils';
+import { prisma } from '@/lib/prisma';
+
+async function getAssessmentTemplate(id: string): Promise<AssessmentTemplate> {
+    const foundAssessmentTemplate = await prisma.assessmentTemplate.findFirst({
+        where: {
+            id,
+        },
+    });
+
+    if (!foundAssessmentTemplate) {
+        throw new NotFoundException('Assessment Template', id);
+    }
+
+    return foundAssessmentTemplate;
+}
+
+async function createAssessmentTemplate(
+    asessment: CreateAssessmentTemplateDTO
+): Promise<AssessmentTemplate> {
+    const org = await prisma.organization.findFirst({
+        where: {
+            id: asessment.orgId,
+        },
+    });
+
+    if (!org) {
+        throw new NotFoundException('Organization', asessment.orgId);
+    }
+
+    return prisma.assessmentTemplate.create({
+        data: asessment,
+    });
+}
+
+async function deleteAssessmentTemplate(id: string): Promise<AssessmentTemplate> {
+    const existingTemplate = await prisma.assessmentTemplate.findUnique({
+        where: { id },
+    });
+
+    if (!existingTemplate) {
+        throw new NotFoundException('Assessment Template', id);
+    }
+
+    const deletedAssessmentTemplate = await prisma.assessmentTemplate.delete({
+        where: {
+            id,
+        },
+    });
+    return deletedAssessmentTemplate;
+}
+
+async function updateAssessmentTemplate(
+    assessmentTemplate: UpdateAssessmentTemplateDTO
+): Promise<AssessmentTemplate> {
+    const existingTemplate = await prisma.assessmentTemplate.findUnique({
+        where: { id: assessmentTemplate.id },
+    });
+
+    if (!existingTemplate) {
+        throw new NotFoundException('Assessment Template', assessmentTemplate.id);
+    }
+
+    return prisma.assessmentTemplate.update({
+        where: { id: assessmentTemplate.id },
+        data: {
+            ...assessmentTemplate,
+        },
+    });
+}
+
+const AssessmentTemplateService = {
+    getAssessmentTemplate,
+    createAssessmentTemplate,
+    deleteAssessmentTemplate,
+    updateAssessmentTemplate,
+};
+
+export default AssessmentTemplateService;

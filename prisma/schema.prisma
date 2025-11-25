@@ -115,10 +115,11 @@ model CandidatePoolEntry {
 }
 
 model AssessmentTemplate {
-  id          String @id @unique @default(cuid())
-  title       String
-  description String
-  orgId       String
+  id            String   @id @unique @default(cuid())
+  title         String
+  description   String
+  orgId         String
+  taskTemplates String[]
 
   organization Organization @relation(fields: [orgId], references: [id])
   assessments  Assessment[] @relation("derivedFromAssessmentTemplate")
@@ -138,11 +139,11 @@ model TaskTemplate {
 }
 
 model Task {
-  id             String   @id @unique @default(cuid())
+  id             String    @id @unique @default(cuid())
   assessmentId   String
   taskTemplateId String
-  candidateCode  String   @db.Text
-  lastUpdated    DateTime
+  candidateCode  String    @db.Text
+  lastUpdated    DateTime? @updatedAt
 
   assessment   Assessment   @relation("combineToFormAssessment", fields: [assessmentId], references: [id])
   taskTemplate TaskTemplate @relation("derivedFromTaskTemplate", fields: [taskTemplateId], references: [id])

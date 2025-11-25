@@ -11,7 +11,6 @@ export const createCandidateSchema = z.object({
         .toLowerCase()
         .trim()
         .max(255, 'Email must be less than 255 characters'),
-    orgId: z.cuid('Invalid orgId'),
     linkedinUrl: z.url('Invalid LinkedIn URL').optional().nullable(),
     githubUrl: z.url('Invalid GitHub URL').optional().nullable(),
     major: z.string().optional().nullable(),
@@ -43,7 +42,6 @@ export const CandidateSchema = z.object({
     id: z.string(),
     name: createCandidateSchema.shape.name,
     email: createCandidateSchema.shape.email,
-    orgId: createCandidateSchema.shape.orgId,
     linkedinUrl: createCandidateSchema.shape.linkedinUrl,
     githubUrl: createCandidateSchema.shape.githubUrl,
     major: createCandidateSchema.shape.major,
@@ -52,7 +50,7 @@ export const CandidateSchema = z.object({
     createdAt: z.date(),
 });
 
-export type CandidateDTO = z.infer<typeof CandidateSchema>;
+export type Candidate = z.infer<typeof CandidateSchema>;
 
 export type CreateCandidateDTO = z.infer<typeof createCandidateSchema>;
 
