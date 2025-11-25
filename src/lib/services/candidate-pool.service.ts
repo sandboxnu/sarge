@@ -2,7 +2,7 @@ import { prisma } from '@/lib/prisma';
 import { NotFoundException, ForbiddenException } from '@/lib/utils/errors.utils';
 import { type AddCandidateWithDataDTO } from '@/lib/schemas/candidate-pool.schema';
 import type { BatchAddResult, CandidatePoolDisplayInfo } from '@/lib/types/position.types';
-import type { CandidatePoolEntry } from '@/generated/prisma';
+import type { CandidatePoolEntry, AssessmentStatus } from '@/generated/prisma';
 
 async function validatePositionAccess(positionId: string, orgId: string) {
     const position = await prisma.position.findUnique({
@@ -191,12 +191,42 @@ async function removeAllCandidatesFromPosition(positionId: string, orgId: string
     await prisma.candidatePoolEntry.deleteMany({ where: { positionId } });
 }
 
+async function getCandidatePoolEntry(id: string): Promise<CandidatePoolEntry | null> {
+    return prisma.candidatePoolEntry.findUnique({ where: { id } });
+}
+
+async function getAssessmentStatus(candidatePoolEntryId: string): Promise<AssessmentStatus> {
+    const entry = await prisma.candidatePoolEntry.findUnique({
+        where: { id: candidatePoolEntryId },
+        select: { assessmentStatus: true },
+    });
+    if (!entry) {
+        throw new NotFoundException('Candidate Pool Entry', candidatePoolEntryId);
+    }
+    return entry.assessmentStatus;
+}
+
+async function updateAssessmentStatus(params: {
+    id: string;
+    assessmentStatus: AssessmentStatus;
+}): Promise<CandidatePoolEntry> {
+    const { id, assessmentStatus } = params;
+    const entry = await prisma.candidatePoolEntry.update({
+        where: { id },
+        data: { assessmentStatus },
+    });
+    return entry;
+}
+
 const CandidatePoolService = {
     addCandidateToPosition,
     batchAddCandidatesToPosition,
     getPositionCandidates,
     removeCandidateFromPosition,
     removeAllCandidatesFromPosition,
+    getCandidatePoolEntry,
+    getAssessmentStatus,
+    updateAssessmentStatus,
 };
 
 export default CandidatePoolService;
