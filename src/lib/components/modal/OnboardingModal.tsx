@@ -25,7 +25,6 @@ export default function OnboardingModal() {
         loading,
     } = useOnboardingModal();
 
-
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <VisuallyHidden>

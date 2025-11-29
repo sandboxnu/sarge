@@ -133,4 +133,4 @@ function useOrganizationCreation(userId: string | null) {
     };
 }
 
-export default useOrganizationCreation
+export default useOrganizationCreation;

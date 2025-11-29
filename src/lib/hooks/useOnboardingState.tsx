@@ -46,4 +46,4 @@ function useOnboardingState() {
     };
 }
 
-export default useOnboardingState
+export default useOnboardingState;
