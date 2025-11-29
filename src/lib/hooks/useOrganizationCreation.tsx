@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useAvatarUpload } from '@/lib/hooks/useAvatarUpload';
 
-export function useOrganizationCreation(userId: string | null) {
+function useOrganizationCreation(userId: string | null) {
     const [organizationName, setOrganizationName] = useState<string>('');
     const [organizationCode, setOrganizationCode] = useState<string>('');
     const [error, setError] = useState<string | null>(null);
@@ -132,3 +132,5 @@ export function useOrganizationCreation(userId: string | null) {
         handleProfileImageClick,
     };
 }
+
+export default useOrganizationCreation

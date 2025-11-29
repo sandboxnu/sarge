@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
 import { authClient } from '@/lib/auth/auth-client';
-import { useOnboarding } from '@/lib/hooks/useOnboarding';
-import { useOrganizationCreation } from '@/lib/hooks/useOrganizationCreation';
+import useOnboardingState from '@/lib/hooks/useOnboardingState';
+import useOrganizationCreation from '@/lib/hooks/useOrganizationCreation';
 
-function useDashboard() {
+function useOnboardingModal() {
     const { userId, step, open, goTo, onOpenChange, isOnboarding, isSignedOut, isUserLoading } =
-        useOnboarding();
+        useOnboardingState();
 
     const {
         organizationName,
@@ -55,4 +55,4 @@ function useDashboard() {
     };
 }
 
-export default useDashboard;
+export default useOnboardingModal;
