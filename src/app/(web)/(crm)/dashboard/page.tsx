@@ -11,11 +11,13 @@ export default function DashboardPage() {
 
     return (
         <div>
-            {isOnboarding ? <OnboardingModal /> :
+            {isOnboarding ? (
+                <OnboardingModal />
+            ) : (
                 <div>
                     <p>This is the normal dashboard content!</p>
                 </div>
-            }
+            )}
         </div>
     );
 }

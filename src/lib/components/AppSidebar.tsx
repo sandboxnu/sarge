@@ -57,8 +57,9 @@ export function AppSidebar() {
 
     return (
         <Sidebar
-            className={`border-sarge-primary-100 bg-sarge-primary-100 border-r-[16px] ${isOnboarding ? 'opacity-0' : ''
-                }`}
+            className={`border-sarge-primary-100 bg-sarge-primary-100 border-r-[16px] ${
+                isOnboarding ? 'opacity-0' : ''
+            }`}
             collapsible="icon"
         >
             <SidebarHeader>
