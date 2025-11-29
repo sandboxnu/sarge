@@ -15,7 +15,7 @@ import {
 import { Home, File, ListChecks, Users, Book, Archive, Settings } from 'lucide-react';
 import { useAuth } from '@/lib/auth/auth-context';
 import Image from 'next/image';
-import { useOnboarding } from '@/lib/hooks/useOnboarding';
+import useOnboardingState from '@/lib/hooks/useOnboardingState';
 
 const sidebarMenuItems = [
     {
@@ -53,13 +53,12 @@ const sidebarMenuItems = [
 export function AppSidebar() {
     const auth = useAuth();
 
-    const { isOnboarding } = useOnboarding();
+    const { isOnboarding } = useOnboardingState();
 
     return (
         <Sidebar
-            className={`border-sarge-primary-100 bg-sarge-primary-100 border-r-[16px] ${
-                isOnboarding ? 'opacity-30' : ''
-            }`}
+            className={`border-sarge-primary-100 bg-sarge-primary-100 border-r-[16px] ${isOnboarding ? 'opacity-0' : ''
+                }`}
             collapsible="icon"
         >
             <SidebarHeader>
@@ -72,7 +71,7 @@ export function AppSidebar() {
                                 alt="Organization Logo"
                                 width={32}
                                 height={32}
-                                className="h-[45px] w-[45px] rounded-md object-cover object-center"
+                                className="rounded-md object-cover object-center"
                             />
                         ) : (
                             <div className="h-[45px] w-[45px] flex-shrink-0 rounded-full bg-gray-200"></div>

@@ -6,47 +6,32 @@ import { type RefObject } from 'react';
 import { Button } from '@/lib/components/Button';
 import Image from 'next/image';
 import { SquarePen } from 'lucide-react';
+import useOnboardingModal from '@/lib/hooks/useOnboardingModal';
 
-type OnboardingStep = 'welcome' | 'create' | 'join' | null;
+export default function OnboardingModal() {
+    const {
+        open,
+        step,
+        goTo,
+        onOpenChange,
+        onCreateSubmit,
+        organizationName,
+        setOrganizationName,
+        handleFileChange,
+        preview,
+        fileInputRef,
+        handleProfileImageClick,
+        error,
+        loading,
+    } = useOnboardingModal();
 
-interface OnboardingModalProps {
-    open: boolean;
-    onOpenChange: (o: boolean) => void;
-    step: OnboardingStep;
-    goTo: (step: OnboardingStep) => void;
-    fileInputRef: RefObject<HTMLInputElement | null>;
-    handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    handleProfileImageClick: () => void;
-    preview: string;
-    setOrganizationName: React.Dispatch<React.SetStateAction<string>>;
-    organizationName: string;
-    loading: boolean;
-    error: string | null;
-    onCreateSubmit: () => Promise<void> | void;
-}
 
-export default function OnboardingModal({
-    open,
-    onOpenChange,
-    step,
-    goTo,
-    fileInputRef,
-    handleFileChange,
-    handleProfileImageClick,
-    preview,
-    setOrganizationName,
-    organizationName,
-    loading,
-    error,
-    onCreateSubmit,
-}: OnboardingModalProps) {
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <VisuallyHidden>
                 <DialogTitle>Onboarding</DialogTitle>
             </VisuallyHidden>
 
-            {/* You can vary size based on step if you want */}
             <DialogContent
                 className="h-[292px] w-[544px]"
                 showCloseButton={false}
@@ -138,7 +123,7 @@ function CreateOrganizationContent({
 
             <div className="mt-4 mb-2 flex w-full content-center justify-center">
                 <div
-                    className="bg-sarge-gray-200 flex h-[65px] w-[65px] items-center justify-center overflow-hidden rounded-full hover:cursor-pointer"
+                    className="bg-sarge-gray-200 flex h-[65px] w-[65px] items-center justify-center overflow-hidden rounded-full hover:cursor-pointer hover:ring-2 hover:ring-black/40"
                     onClick={handleProfileImageClick}
                 >
                     {preview ? (
@@ -166,7 +151,7 @@ function CreateOrganizationContent({
                 onChange={(e) => setOrganizationName(e.target.value)}
             />
 
-            {/* Error state will come in toasts */}
+            {/* Error state will come in toasts https://github.com/sandboxnu/sarge/issues/118 */}
             {/* {error && ( */}
             {/*     <p className="mt-2 text-sm text-red-500"> */}
             {/*         {error} */}
@@ -196,7 +181,7 @@ function CreateOrganizationContent({
 
 function LoadingContent() {
     return (
-        <div className="flex flex-col items-center justify-center gap-[4px] self-stretch">
+        <div className="flex flex-col items-center justify-center gap-1 self-stretch">
             <Image src="/CreateOrgLoading.gif" alt="Loading GIF" width={66} height={66} />
 
             <p className="text-sarge-gray-800 leading-[18px] font-medium tracking-[0.406px]">

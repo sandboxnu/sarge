@@ -2,9 +2,9 @@ import { useCallback, useEffect, useState } from 'react';
 import { useActiveMember, useSession } from '@/lib/auth/auth-client';
 import { useAuth } from '@/lib/auth/auth-context';
 
-export type Step = 'welcome' | 'create' | 'join' | null;
+type Step = 'welcome' | 'create' | 'join' | null;
 
-export function useOnboarding() {
+function useOnboardingState() {
     const auth = useAuth();
     const { data: session } = useSession();
     const member = useActiveMember();
@@ -45,3 +45,5 @@ export function useOnboarding() {
         isUserLoading,
     };
 }
+
+export default useOnboardingState
