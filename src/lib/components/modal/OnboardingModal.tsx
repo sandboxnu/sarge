@@ -21,7 +21,7 @@ export default function OnboardingModal() {
         preview,
         fileInputRef,
         handleProfileImageClick,
-        error,
+        // error,
         loading,
     } = useOnboardingModal();
 
@@ -49,7 +49,6 @@ export default function OnboardingModal() {
                         setOrganizationName={setOrganizationName}
                         organizationName={organizationName}
                         loading={loading}
-                        error={error}
                         onBack={() => goTo('welcome')}
                         onSubmit={onCreateSubmit}
                     />
