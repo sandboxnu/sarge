@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from 'react';
 import { type PositionDTO } from '@/lib/schemas/position.schema';
 import { type PositionWithCounts } from '@/lib/types/position.types';
@@ -6,7 +7,7 @@ export default function usePosition() {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [positions, setPositions] = useState<PositionWithCounts[]>([]);
-    const [filter, setFilter] = useState<string>('');
+    const [filter, setFilter] = useState<string>(''); // https://github.com/sandboxnu/sarge/issues/122
     const [sort, setSort] = useState<string>('createdAt');
 
     useEffect(() => {
@@ -48,6 +49,7 @@ export default function usePosition() {
     }
 
     // The frontend flow to sort positions does not exist yet a ticket has been created to add it.
+    // https://github.com/sandboxnu/sarge/issues/122
     async function SortPositions() {
         positions.sort((a, b) => {
             if (sort === 'createdAt') {
