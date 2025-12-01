@@ -6,7 +6,7 @@ import { Plus, ArrowDownUpIcon, SlidersHorizontal } from 'lucide-react';
 import SargeCard from '@/lib/components/SargeCard';
 import { Search } from '@/lib/components/Search';
 import { type PositionWithCounts } from '@/lib/types/position.types';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/lib/components/tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/lib/components/Tabs';
 
 export default function PositionsPage() {
     const { positions, loading, error, archived } = usePosition();
@@ -85,8 +85,8 @@ function PositionCardGrid({ positions }: { positions: PositionWithCounts[] }) {
                 <SargeCard
                     key={position.id}
                     title={position.title}
-                    candidateCount={0}
-                    assessmentName={''}
+                    candidateCount={position.numCandidates}
+                    assessmentName={'TBD'}
                 />
             ))}
         </div>
