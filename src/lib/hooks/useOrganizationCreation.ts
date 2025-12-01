@@ -41,7 +41,7 @@ function useOrganizationCreation(userId: string | null) {
             }
 
             const createOrganizationBody = await createResponse.json();
-            const organizationId = createOrganizationBody.data.id as string;
+            const organizationId = createOrganizationBody.data.id;
 
             if (!file) {
                 return organizationId;
