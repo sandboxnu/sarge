@@ -62,8 +62,8 @@ export default function OnboardingModal() {
 function WelcomeContent({ onCreate }: { onCreate: () => void }) {
     return (
         <div className="flex flex-col items-center justify-center text-center">
-            <h2 className="mb-[12px] text-center text-xl font-bold text-black">Welcome!</h2>
-            <p className="text-[14px] leading-[18px] font-normal tracking-[0.406px] not-italic">
+            <h2 className="mb-3 text-center text-xl font-bold">Welcome!</h2>
+            <p className="text-sm leading-5 font-normal tracking-normal">
                 Get started by creating or joining an organization. You&apos;ll be able to manage
                 tasks, assessments, and candidates all in one place.
             </p>
@@ -103,7 +103,7 @@ function CreateOrganizationContent({
     setOrganizationName: React.Dispatch<React.SetStateAction<string>>;
     organizationName: string;
     loading: boolean;
-    error: string | null;
+    // error: string | null;
     onBack: () => void;
     onSubmit: () => Promise<void> | void;
 }) {
@@ -183,7 +183,7 @@ function LoadingContent() {
         <div className="flex flex-col items-center justify-center gap-1 self-stretch">
             <Image src="/CreateOrgLoading.gif" alt="Loading GIF" width={66} height={66} />
 
-            <p className="text-sarge-gray-800 leading-[18px] font-medium tracking-[0.406px]">
+            <p className="text-sarge-gray-800 text-base leading-tight font-medium tracking-wide">
                 Creating organization...
             </p>
         </div>
