@@ -3,11 +3,14 @@ import { prisma } from '@/lib/prisma';
 import { type CreateCandidateDTO, type UpdateCandidateDTO } from '@/lib/schemas/candidate.schema';
 import { ConflictException, NotFoundException } from '@/lib/utils/errors.utils';
 
-async function createCandidate(candidate: CreateCandidateDTO): Promise<Candidate> {
+async function createCandidate(
+    candidate: CreateCandidateDTO,
+    organizationId: string
+): Promise<Candidate> {
     const existingCandidate = await prisma.candidate.findFirst({
         where: {
             email: candidate.email,
-            orgId: candidate.orgId,
+            orgId: organizationId,
         },
     });
 
@@ -16,7 +19,10 @@ async function createCandidate(candidate: CreateCandidateDTO): Promise<Candidate
     }
 
     const createdCandidate = await prisma.candidate.create({
-        data: candidate,
+        data: {
+            ...candidate,
+            orgId: organizationId,
+        },
     });
     return createdCandidate;
 }

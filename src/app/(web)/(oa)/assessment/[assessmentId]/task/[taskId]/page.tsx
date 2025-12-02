@@ -13,11 +13,16 @@ import {
 } from '@/lib/components/Dropdown';
 import { DropdownMenu } from '@radix-ui/react-dropdown-menu';
 import MarkdownViewer from '@/lib/components/Markdown';
+import useAssessment from '@/lib/hooks/useAssessment';
 
-export default function TaskPage({ params }: { params: Promise<{ id: string }> }) {
-    const { id } = use(params);
+export default function TaskPage({
+    params,
+}: {
+    params: Promise<{ taskId: string; assessmentId: string }>;
+}) {
+    const { taskId, assessmentId } = use(params);
     const {
-        task,
+        taskTemplate,
         isLoading,
         error,
         language,
@@ -27,12 +32,14 @@ export default function TaskPage({ params }: { params: Promise<{ id: string }> }
         handleRunButton,
         handleSubmitButton,
         languageIds,
-    } = useTask(id);
+    } = useTask(taskId, assessmentId);
+    const { goToNextTask } = useAssessment(assessmentId, taskId);
 
     if (isLoading) {
         return <div className="flex h-screen w-full items-center justify-center">Loading...</div>;
     }
-    if (error || !task) {
+
+    if (error || !taskTemplate) {
         return (
             <div className="flex h-screen w-full items-center justify-center">
                 Error: {error?.message ?? 'Task not found'}
@@ -45,7 +52,7 @@ export default function TaskPage({ params }: { params: Promise<{ id: string }> }
             <ResizablePanelGroup direction="horizontal" className="min-h-screen">
                 <ResizablePanel defaultSize={20} minSize={20}>
                     <div className="flex h-full max-h-screen flex-col overflow-y-auto border-1 p-4">
-                        <MarkdownViewer content={task.content ?? 'Loading problem...'} />
+                        <MarkdownViewer content={taskTemplate.content ?? 'Loading problem...'} />
                     </div>
                 </ResizablePanel>
                 <ResizableHandle />
@@ -53,24 +60,40 @@ export default function TaskPage({ params }: { params: Promise<{ id: string }> }
                     <ResizablePanelGroup direction="vertical" className="min-h-screen">
                         <ResizablePanel defaultSize={70} minSize={20}>
                             <div className="bg-sarge-gray-50 border-sarge-gray-200 w-full items-center border-b p-3">
-                                <DropdownMenu>
-                                    Language:
-                                    <DropdownMenuTrigger className="border-1 px-4">
-                                        {language}
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent>
-                                        <DropdownMenuRadioGroup
-                                            value={language}
-                                            onValueChange={handleLanguageChange}
-                                        >
-                                            {Object.keys(languageIds).map((lang) => (
-                                                <DropdownMenuRadioItem key={lang} value={lang}>
-                                                    {lang}
-                                                </DropdownMenuRadioItem>
-                                            ))}
-                                        </DropdownMenuRadioGroup>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
+                                <div className="flex justify-between">
+                                    <div>
+                                        <DropdownMenu>
+                                            Language:
+                                            <DropdownMenuTrigger className="border-1 px-4">
+                                                {language}
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent>
+                                                <DropdownMenuRadioGroup
+                                                    value={language}
+                                                    onValueChange={handleLanguageChange}
+                                                >
+                                                    {Object.keys(languageIds).map((lang) => (
+                                                        <DropdownMenuRadioItem
+                                                            key={lang}
+                                                            value={lang}
+                                                        >
+                                                            {lang}
+                                                        </DropdownMenuRadioItem>
+                                                    ))}
+                                                </DropdownMenuRadioGroup>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </div>
+                                    <Button
+                                        type="button"
+                                        variant="tertiary"
+                                        size="default"
+                                        className="min-w-20"
+                                        onClick={goToNextTask}
+                                    >
+                                        Next
+                                    </Button>
+                                </div>
                             </div>
                             <Editor
                                 className="h-full"
