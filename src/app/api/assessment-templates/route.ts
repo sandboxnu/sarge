@@ -7,9 +7,10 @@ import { type NextRequest } from 'next/server';
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        // const session = await getSession(); SWITCH BACK TO THIS AFTER TESTING
+        const session = await getSession();
         const parsed = CreateAssessmentTemplateSchema.parse({
             ...body,
+            orgId: session.activeOrganizationId,
         });
         const result = await AssessmentTemplateService.createAssessmentTemplate(parsed);
         return Response.json({ data: result }, { status: 201 });

@@ -3,7 +3,7 @@ import type { CreateTaskDTO, Task, UpdateTaskDTO } from '@/lib/schemas/task.sche
 import { NotFoundException } from '@/lib/utils/errors.utils';
 
 async function getTask(id: string): Promise<Task> {
-    const foundTask = await prisma.task.findFirst({
+    const foundTask = await prisma.task.findUnique({
         where: {
             id,
         },
@@ -17,7 +17,7 @@ async function getTask(id: string): Promise<Task> {
 }
 
 async function createTask(task: CreateTaskDTO): Promise<Task> {
-    const assessment = await prisma.assessment.findFirst({
+    const assessment = await prisma.assessment.findUnique({
         where: {
             id: task.assessmentId,
         },
