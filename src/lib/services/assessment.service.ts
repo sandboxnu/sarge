@@ -44,15 +44,15 @@ async function createAssessment(assessment: CreateAssessmentDTO): Promise<Assess
         },
     });
 
-    if (!assessmentTemplate) {
-        throw new NotFoundException(
-            `Assessment Template with id ${assessment.assessmentTemplateId} not found`
-        );
-    }
-
     if (!candidatePoolEntry) {
         throw new NotFoundException(
             `Candidate Pool Entry with id ${assessment.candidatePoolEntryId} not found`
+        );
+    }
+
+    if (!assessmentTemplate) {
+        throw new NotFoundException(
+            `Assessment Template with id ${assessment.assessmentTemplateId} not found`
         );
     }
 
