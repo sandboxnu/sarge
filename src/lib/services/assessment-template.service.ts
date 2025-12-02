@@ -23,7 +23,7 @@ async function getAssessmentTemplate(id: string): Promise<AssessmentTemplate> {
 async function createAssessmentTemplate(
     asessment: CreateAssessmentTemplateDTO
 ): Promise<AssessmentTemplate> {
-    const org = await prisma.organization.findFirst({
+    const org = await prisma.organization.findUnique({
         where: {
             id: asessment.orgId,
         },
