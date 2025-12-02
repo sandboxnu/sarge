@@ -31,12 +31,12 @@ export default function useAssessment(id: string, currentTaskId?: string) {
         fetchAssessment();
     }, [id]);
 
-    async function startAssessment() {
+    function startAssessment() {
         // Setting this up in case we want to add future logic
-        await goToNextTask();
+        goToNextTask();
     }
 
-    async function goToNextTask() {
+    function goToNextTask() {
         const currentTaskIndex = getCurrentTaskIndex();
         const nextTaskIndex = currentTaskIndex + 1;
         const taskList = assessment?.assessmentTemplate.taskTemplates ?? [];

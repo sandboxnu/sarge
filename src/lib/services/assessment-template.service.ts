@@ -21,20 +21,20 @@ async function getAssessmentTemplate(id: string): Promise<AssessmentTemplate> {
 }
 
 async function createAssessmentTemplate(
-    asessment: CreateAssessmentTemplateDTO
+    assessment: CreateAssessmentTemplateDTO
 ): Promise<AssessmentTemplate> {
     const org = await prisma.organization.findUnique({
         where: {
-            id: asessment.orgId,
+            id: assessment.orgId,
         },
     });
 
     if (!org) {
-        throw new NotFoundException('Organization', asessment.orgId);
+        throw new NotFoundException('Organization', assessment.orgId);
     }
 
     return prisma.assessmentTemplate.create({
-        data: asessment,
+        data: assessment,
     });
 }
 
