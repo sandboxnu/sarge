@@ -33,7 +33,7 @@ export default function useAssessment(id: string, currentTaskId?: string) {
 
     async function startAssessment() {
         // Setting this up in case we want to add future logic
-        goToNextTask();
+        await goToNextTask();
     }
 
     async function goToNextTask() {
