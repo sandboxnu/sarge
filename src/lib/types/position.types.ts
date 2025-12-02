@@ -5,7 +5,7 @@ export type PositionWithCounts = {
     id: string;
     numCandidates: number;
     numAssigned: number;
-    createdAt: string;
+    createdAt: Date;
 };
 
 export interface CandidatePoolDisplayInfo {
