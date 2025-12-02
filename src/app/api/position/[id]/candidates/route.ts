@@ -2,7 +2,7 @@ import CandidatePoolService from '@/lib/services/candidate-pool.service';
 import { handleError } from '@/lib/utils/errors.utils';
 import { type NextRequest } from 'next/server';
 import { getSession } from '@/lib/utils/auth.utils';
-import { createCandidateSchema } from '@/lib/schemas/candidate.schema';
+import { addCandidateWithDataSchema } from '@/lib/schemas/candidate-pool.schema';
 
 /**
  * POST /api/position/[id]/candidates
@@ -13,7 +13,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
         const session = await getSession();
         const positionId = (await params).id;
         const body = await request.json();
-        const parsed = createCandidateSchema.parse(body);
+        const parsed = addCandidateWithDataSchema.parse(body);
 
         const result = await CandidatePoolService.addCandidateToPosition(
             parsed,
