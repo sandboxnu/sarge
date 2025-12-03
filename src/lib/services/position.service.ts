@@ -56,6 +56,7 @@ async function getPositionByOrgId(orgId: string): Promise<PositionWithCounts[]> 
                     poolCandidates: true,
                 },
             },
+            createdAt: true,
             poolCandidates: {
                 where: { assessmentStatus: AssessmentStatus.ASSIGNED },
                 select: { id: true },
@@ -68,6 +69,7 @@ async function getPositionByOrgId(orgId: string): Promise<PositionWithCounts[]> 
         title: p.title,
         numCandidates: p._count.poolCandidates,
         numAssigned: p.poolCandidates.length,
+        createdAt: p.createdAt,
     }));
 }
 
