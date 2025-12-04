@@ -1,5 +1,6 @@
 import { AppSidebar } from '@/lib/components/AppSidebar';
 import { SidebarInset, SidebarProvider } from '@/lib/components/Sidebar';
+import { Toaster } from '@/lib/components/Sonner';
 
 export default function CRMLayout({
     children,
@@ -8,6 +9,7 @@ export default function CRMLayout({
 }>) {
     return (
         <SidebarProvider>
+            <Toaster />
             <AppSidebar />
             <SidebarInset>{children}</SidebarInset>
         </SidebarProvider>
