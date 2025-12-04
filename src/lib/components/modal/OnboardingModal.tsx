@@ -7,6 +7,8 @@ import { Button } from '@/lib/components/Button';
 import Image from 'next/image';
 import { SquarePen } from 'lucide-react';
 import useOnboardingModal from '@/lib/hooks/useOnboardingModal';
+import { toast } from 'sonner';
+import { useEffect } from 'react';
 
 export default function OnboardingModal() {
     const {
@@ -21,7 +23,7 @@ export default function OnboardingModal() {
         preview,
         fileInputRef,
         handleProfileImageClick,
-        // error,
+        error,
         loading,
     } = useOnboardingModal();
 
@@ -48,6 +50,7 @@ export default function OnboardingModal() {
                         preview={preview}
                         setOrganizationName={setOrganizationName}
                         organizationName={organizationName}
+                        error={error}
                         loading={loading}
                         onBack={() => goTo('welcome')}
                         onSubmit={onCreateSubmit}
@@ -91,7 +94,7 @@ function CreateOrganizationContent({
     setOrganizationName,
     organizationName,
     loading,
-    // error,
+    error,
     onBack,
     onSubmit,
 }: {
@@ -102,10 +105,16 @@ function CreateOrganizationContent({
     setOrganizationName: React.Dispatch<React.SetStateAction<string>>;
     organizationName: string;
     loading: boolean;
-    // error: string | null;
+    error: string | null;
     onBack: () => void;
     onSubmit: () => Promise<void> | void;
 }) {
+    useEffect(() => {
+        if (error) {
+            toast.error(error)
+        }
+    }, [error]);
+
     if (loading) return <LoadingContent />;
 
     return (
@@ -148,13 +157,6 @@ function CreateOrganizationContent({
                 value={organizationName}
                 onChange={(e) => setOrganizationName(e.target.value)}
             />
-
-            {/* Error state will come in toasts https://github.com/sandboxnu/sarge/issues/118 */}
-            {/* {error && ( */}
-            {/*     <p className="mt-2 text-sm text-red-500"> */}
-            {/*         {error} */}
-            {/*     </p> */}
-            {/* )} */}
 
             <div className="mt-4 flex items-center justify-between">
                 <p
