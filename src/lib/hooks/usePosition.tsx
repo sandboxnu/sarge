@@ -9,9 +9,9 @@ export default function usePosition() {
     const [loading, setLoading] = useState(false);
     const [positions, setPositions] = useState<PositionWithCounts[]>([]);
     const [filter, setFilter] = useState<string>(''); // This ticket will implement this feature https://github.com/sandboxnu/sarge/issues/122
+    const [filter, setFilter] = useState<string>(''); // This ticket will implement this feature https://github.com/sandboxnu/sarge/issues/122
     const [sort, setSort] = useState<string>('createdAt');
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [modalError, setModalError] = useState<string | null>(null);
 
     useEffect(() => {
         async function fetchPositions() {
@@ -43,8 +43,10 @@ export default function usePosition() {
                 body: JSON.stringify({ title }),
             });
             if (!response.ok) {
-                setError('Failed to create position');
+                throw new Error('Failed to create position');
             }
+            const result = await response.json();
+            setPositions((prev) => [...prev, result.data]);
             const result = await response.json();
             setPositions((prev) => [...prev, result.data]);
         } catch (err) {
@@ -75,11 +77,9 @@ export default function usePosition() {
         loading,
         error,
         archived,
-        modalError,
         createPosition,
         sortPositions,
         isModalOpen,
         setIsModalOpen,
-        setModalError,
     };
 }

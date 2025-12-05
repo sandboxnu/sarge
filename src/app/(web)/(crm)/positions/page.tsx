@@ -7,26 +7,11 @@ import SargeCard from '@/lib/components/SargeCard';
 import { Search } from '@/lib/components/Search';
 import { type PositionWithCounts } from '@/lib/types/position.types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/lib/components/Tabs';
-import { useRouter } from 'next/navigation';
 import CreatePositionModal from '@/lib/components/modal/CreatePositionModal';
 
 export default function PositionsPage() {
-    const {
-        positions,
-        loading,
-        error,
-        archived,
-        /**
-         * // Toasts will be implemented to indicate error/success
-         * https://github.com/sandboxnu/sarge/issues/127
-         */
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        modalError,
-        isModalOpen,
-        createPosition,
-        setIsModalOpen,
-        setModalError,
-    } = usePosition();
+    const { positions, loading, error, archived, createPosition, isModalOpen, setIsModalOpen } =
+        usePosition();
 
     return (
         <div className="flex flex-col gap-8 px-5 py-4">
@@ -100,7 +85,6 @@ export default function PositionsPage() {
                 open={isModalOpen}
                 onOpenChange={setIsModalOpen}
                 onCreate={createPosition}
-                setModalError={setModalError}
             />
         </div>
     );
@@ -114,15 +98,10 @@ function PositionCardGrid({ positions }: { positions: PositionWithCounts[] }) {
             {positions.map((position) => (
                 <div
                     key={position.id}
-                    onClick={() => router.push(`/positions/${position.id}`)}
-                    className="cursor-pointer"
-                >
-                    <SargeCard
-                        title={position.title}
-                        candidateCount={position.numCandidates}
-                        assessmentName={'TBD'}
-                    />
-                </div>
+                    title={position.title}
+                    candidateCount={0}
+                    assessmentName={''}
+                />
             ))}
         </div>
     );
