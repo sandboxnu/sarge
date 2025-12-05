@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { type PositionDTO } from '@/lib/schemas/position.schema';
 import { type PositionWithCounts } from '@/lib/types/position.types';
+import { set } from 'zod';
 
 export default function usePosition() {
     const [error, setError] = useState<string | null>(null);
@@ -41,7 +42,7 @@ export default function usePosition() {
                 body: JSON.stringify({ title }),
             });
             if (!response.ok) {
-                throw new Error('Failed to create position');
+                setError('Failed to create position');
             }
             const result = await response.json();
             setPositions((prev) => [...prev, result.data]);
