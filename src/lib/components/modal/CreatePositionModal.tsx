@@ -18,7 +18,11 @@ export default function CreatePositionModal({
     onCreate,
 }: CreatePositionModalProps) {
     const [positionName, setPositionName] = useState('');
-    const [_error, setError] = useState<string | null>(null); // There are not designs for error states yet
+    /**
+     * // Toasts will be implemented to indicate error/success
+     * https://github.com/sandboxnu/sarge/issues/127
+     */
+    const [_error, setError] = useState<string | null>(null);
     const [isCreating, setIsCreating] = useState(false);
 
     const handleCreate = async () => {
@@ -64,7 +68,7 @@ export default function CreatePositionModal({
                         />
                     </Field>
 
-                    <div className="flex items-center justify-between pt-2">
+                    <div className="flex items-center justify-between">
                         <Button variant="tertiary" onClick={handleCancel} className="px-0 py-2">
                             Cancel
                         </Button>
