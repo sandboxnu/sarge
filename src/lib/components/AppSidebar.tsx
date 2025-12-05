@@ -12,7 +12,7 @@ import {
     SidebarMenuItem,
     SidebarRail,
 } from '@/lib/components/Sidebar';
-import { Home, File, ListChecks, Users, Book, Archive, Settings } from 'lucide-react';
+import { Home, File, ListChecks, Users, Book, Archive, Settings, Dog } from 'lucide-react';
 import { useAuth } from '@/lib/auth/auth-context';
 import Image from 'next/image';
 import useOnboardingState from '@/lib/hooks/useOnboardingState';
@@ -57,37 +57,33 @@ export function AppSidebar() {
 
     return (
         <Sidebar
-            className={`border-sarge-primary-100 bg-sarge-primary-100 border-r-[16px] ${
-                isOnboarding ? 'opacity-0' : ''
-            }`}
+            className={`border-sarge-primary-100 bg-sarge-primary-100 border-r-[16px] ${isOnboarding ? 'opacity-0' : ''
+                }`}
             collapsible="icon"
         >
             <SidebarHeader>
                 <div className="flex items-center gap-3">
                     {/* Avatar/Logo */}
-                    <div className="overflow-hidden rounded-full">
+                    <div className="overflow-hidden rounded-sm">
                         {auth.activeOrganization?.logo ? (
                             <Image
                                 src={auth.activeOrganization.logo}
                                 alt="Organization Logo"
-                                width={32}
-                                height={32}
+                                width={28}
+                                height={28}
                                 className="rounded-md object-cover object-center"
                             />
                         ) : (
-                            <div className="h-[45px] w-[45px] flex-shrink-0 rounded-full bg-gray-200"></div>
+                            <div className="flex items-center h-[28px] w-[28px] flex-shrink-0 bg-sarge-success-500">
+                                <Dog className='text-white h-3 w-3' />
+                            </div>
                         )}
                     </div>
 
                     {/* Organization Details */}
-                    <div className="flex min-w-0 flex-1 flex-col">
-                        <div className="truncate font-semibold text-gray-900">
-                            {auth.activeOrganization?.name ?? 'Organization Name'}
-                        </div>
-                        <div className="truncate text-sm text-gray-500">
-                            {auth.activeOrganization?.id ?? 'org-code'}
-                        </div>
-                    </div>
+                    <p className="truncate text-xs font-semibold text-gray-900">
+                        {auth.activeOrganization?.name ?? 'Organization Name'}
+                    </p>
                 </div>
             </SidebarHeader>
             <SidebarContent>
@@ -99,14 +95,14 @@ export function AppSidebar() {
                                     <SidebarMenuButton
                                         asChild
                                         tooltip={item.title}
-                                        className="hover:!bg-sarge-primary-200 focus:!bg-sarge-primary-100 [&:hover]:!bg-sarge-primary-200 group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8"
+                                        className="hover:!bg-sarge-primary-100 focus:!bg-sarge-primary-200 [&:hover]:!bg-sarge-primary-100 group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8"
                                     >
                                         <a
                                             href={item.url}
                                             className="flex items-center gap-3 group-data-[collapsible=icon]:justify-center"
                                         >
-                                            <item.icon className="h-6 w-6" />
-                                            <span className="text-md font-medium">
+                                            <item.icon className="!h-[20px] !w-[20x] text-sarge-gray-600" />
+                                            <span className="text-xs font-medium text-sarge-gray-800">
                                                 {item.title}
                                             </span>
                                         </a>
@@ -122,10 +118,10 @@ export function AppSidebar() {
                     <SidebarMenuItem>
                         <SidebarMenuButton
                             tooltip="Organization Settings"
-                            className="hover:!bg-sarge-primary-200 focus:!bg-sarge-primary-100 [&:hover]:!bg-sarge-primary-200 group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8 group-data-[collapsible=icon]:justify-center"
+                            className="hover:!bg-sarge-primary-100 focus:!bg-sarge-primary-200 [&:hover]:!bg-sarge-primary-100 group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8 group-data-[collapsible=icon]:justify-center"
                         >
                             <Settings className="h-6 w-6" />
-                            <span className="font-medium">Organization Settings</span>
+                            <span className="font-medium text-sarge-gray-800">Organization Settings</span>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
