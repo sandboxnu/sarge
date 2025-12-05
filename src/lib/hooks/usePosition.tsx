@@ -43,7 +43,7 @@ export default function usePosition() {
                 body: JSON.stringify({ title }),
             });
             if (!response.ok) {
-                throw new Error('Failed to create position');
+                setError('Failed to create position');
             }
             const result = await response.json();
             setPositions((prev) => [...prev, result.data]);
