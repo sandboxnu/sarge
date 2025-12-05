@@ -82,9 +82,14 @@ export function handleError(err: unknown): Response {
 
     if (err instanceof z.ZodError) {
         const { fieldErrors }: { fieldErrors: Record<string, string[]> } = z.flattenError(err);
+
+        const formatted = Object.entries(fieldErrors)
+            .map(([field, errors]) => `${field}: ${errors.join(', ')}`)
+            .join('; ');
+
         return Response.json(
             {
-                message: fieldErrors,
+                message: formatted,
                 data: null,
             },
             { status: 400 }

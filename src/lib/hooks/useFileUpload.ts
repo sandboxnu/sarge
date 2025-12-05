@@ -44,13 +44,15 @@ function useFileUpload(type: UploadType, organizationId?: string) {
                 }),
             });
 
+            const signResponseJson = await signResponse.json();
+
             if (!signResponse.ok) {
-                setError('[GET SIGNURL] Failed to upload image. Please contact the Sarge team.');
+                setError(signResponseJson.message);
                 setLoading(false);
                 return;
             }
 
-            const { data } = await signResponse.json();
+            const { data } = signResponseJson;
 
             const s3Response = await fetch(data.signedURL, {
                 method: 'PUT',
@@ -58,8 +60,10 @@ function useFileUpload(type: UploadType, organizationId?: string) {
                 body: file,
             });
 
+            const s3ResponseJson = await s3Response.json();
+
             if (!s3Response.ok) {
-                setError('[PUT TO S3] Failed to upload image. Please contact the Sarge team.');
+                setError(s3ResponseJson.message);
                 setLoading(false);
                 return;
             }
@@ -75,13 +79,15 @@ function useFileUpload(type: UploadType, organizationId?: string) {
                 }),
             });
 
+            const confirmResponseJson = await confirmResponse.json();
+
             if (!confirmResponse.ok) {
-                setError('[CONFIRM URL] Failed to upload image. Please contact the Sarge team.');
+                setError(confirmResponseJson.message);
                 setLoading(false);
                 return;
             }
 
-            const { data: confirmData } = await confirmResponse.json();
+            const { data: confirmData } = confirmResponseJson;
 
             setImageUrl(confirmData.imageUrl);
         } catch (error) {
