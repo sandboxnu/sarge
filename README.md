@@ -27,4 +27,3 @@ DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@localhost:5432/${DB_NAME}
 Run the following commands in order
 
 - Run `./start.sh`
-- Once you are finished run `docker-compose down`

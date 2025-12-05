@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-export function useAvatarUpload() {
+export default function useFileClient() {
     const [file, setFile] = useState<File | null>(null);
     const [preview, setPreview] = useState<string>('');
     const fileInputRef = useRef<HTMLInputElement | null>(null);
