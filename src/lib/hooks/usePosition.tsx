@@ -7,8 +7,9 @@ export default function usePosition() {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [positions, setPositions] = useState<PositionWithCounts[]>([]);
-    const [filter, setFilter] = useState<string>(''); // https://github.com/sandboxnu/sarge/issues/122
+    const [filter, setFilter] = useState<string>(''); // This ticket will implement this feature https://github.com/sandboxnu/sarge/issues/122
     const [sort, setSort] = useState<string>('createdAt');
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         async function fetchPositions() {
@@ -32,18 +33,18 @@ export default function usePosition() {
         fetchPositions();
     }, []);
 
-    async function createPosition(positionData: Omit<PositionDTO, 'id'>) {
+    async function createPosition(title: string) {
         try {
             const response = await fetch('/api/position', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(positionData),
+                body: JSON.stringify({ title }),
             });
             if (!response.ok) {
-                return;
+                throw new Error('Failed to create position');
             }
-            const newPosition = await response.json();
-            setPositions((prev) => [...prev, newPosition]);
+            const result = await response.json();
+            setPositions((prev) => [...prev, result.data]);
         } catch (err) {
             setError('An unexpected error occurred');
         }
@@ -67,5 +68,14 @@ export default function usePosition() {
 
     const archived: PositionWithCounts[] = [];
 
-    return { positions, loading, error, archived, createPosition, sortPositions };
+    return {
+        positions,
+        loading,
+        error,
+        archived,
+        createPosition,
+        sortPositions,
+        isModalOpen,
+        setIsModalOpen,
+    };
 }
