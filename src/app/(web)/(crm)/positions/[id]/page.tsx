@@ -103,7 +103,7 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
         <div className="flex flex-col gap-8 px-8 py-7">
             <div className="flex items-center gap-4">
                 <button
-                    onClick={() => router.back()}
+                    onClick={() => router.push('/positions')}
                     className="hover:bg-sarge-gray-100 rounded-lg p-2"
                 >
                     <ChevronLeft className="size-5" />
