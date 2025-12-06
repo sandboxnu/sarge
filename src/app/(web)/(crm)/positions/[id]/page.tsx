@@ -9,14 +9,16 @@ import { useRouter } from 'next/navigation';
 import { use, useEffect, useMemo, useState } from 'react';
 
 const getStatusBadgeColor = (status: string) => {
-    const statusLower = status.toLowerCase();
-    if (statusLower === 'accepted' || statusLower === 'submitted') {
+    if (status === "ACCEPTED" || status === "SUBMITTED") {
         return 'bg-sarge-success-100 text-sarge-success-800';
     }
-    if (statusLower === 'rejected') {
+    if (status === "REJECTED" || status === "EXPIRED") {
         return 'bg-sarge-error-200 text-sarge-error-700';
     }
-    if (statusLower === 'graded') {
+    if (status === "ASSIGNED") {
+        return 'bg-sarge-warning-100 text-sarge-warning-500';
+    }
+    if (status === "GRADED") {
         return 'bg-sarge-primary-200 text-sarge-primary-700';
     }
     return 'bg-sarge-gray-200 text-sarge-gray-600';
