@@ -65,18 +65,18 @@ export function AppSidebar() {
                 <div className="flex items-center gap-3 justify-between group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:w-full">
                     <div className="flex items-center gap-2">
                         {/* Avatar/Logo */}
-                        <div className="overflow-hidden rounded-sm group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:h-5 group-data-[collapsible=icon]:w-5">
+                        <div className=" overflow-hidden rounded-sm h-7 w-7 group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:h-5 group-data-[collapsible=icon]:w-5">
                             {auth.activeOrganization?.logo ? (
                                 <Image
                                     src={auth.activeOrganization.logo}
                                     alt="Organization Logo"
                                     width={28}
                                     height={28}
-                                    className="rounded-md object-cover object-center"
+                                    className="h-full w-full object-cover object-center"
                                 />
                             ) : (
-                                <div className="flex justify-center items-center h-7 w-7 flex-shrink-0 bg-sarge-success-500 group-data-[collapsible=icon]:h-5 group-data-[collapsible=icon]:w-5">
-                                    <Dog className='text-white h-4 w-4 group-data-[collapsible=icon]:h-3 group-data-[collapsible=icon]:w-3' />
+                                <div className="flex justify-center items-center h-full w-full bg-sarge-success-500">
+                                    <Dog className="text-white h-4 w-4 group-data-[collapsible=icon]:h-3 group-data-[collapsible=icon]:w-3" />
                                 </div>
                             )}
                         </div>
