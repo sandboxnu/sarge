@@ -7,9 +7,7 @@ interface UseCandidatesReturn {
     error: string | null;
 }
 
-export default function useCandidates(
-    positionId: string
-): UseCandidatesReturn {
+export default function useCandidates(positionId: string): UseCandidatesReturn {
     const [candidates, setCandidates] = useState<CandidatePoolDisplayInfo[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -18,9 +16,7 @@ export default function useCandidates(
         const fetchCandidates = async () => {
             try {
                 setLoading(true);
-                const response = await fetch(
-                    `/api/position/${positionId}/candidates`
-                );
+                const response = await fetch(`/api/position/${positionId}/candidates`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch candidates');
                 }

@@ -46,8 +46,10 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                 header: 'NAME/MAJOR',
                 cell: ({ row }) => (
                     <div className="flex flex-col">
-                        <span className="text-lg text-sarge-gray-800">{row.original.candidate.name}</span>
-                        <span className="text-sm text-sarge-gray-600">
+                        <span className="text-sarge-gray-800 text-lg">
+                            {row.original.candidate.name}
+                        </span>
+                        <span className="text-sarge-gray-600 text-sm">
                             {row.original.candidate.major ?? 'N/A'}
                         </span>
                     </div>
@@ -57,9 +59,14 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                 accessorKey: 'decisionStatus',
                 header: 'OA STATUS',
                 cell: ({ row }) => {
-                    const status = row.original.assessmentStatus === 'NOT_ASSIGNED' ? 'Not started' : row.original.assessmentStatus;
+                    const status =
+                        row.original.assessmentStatus === 'NOT_ASSIGNED'
+                            ? 'Not started'
+                            : row.original.assessmentStatus;
                     return (
-                        <span className={`inline-block rounded-full px-3 py-1 text-sm font-medium ${getStatusBadgeColor(status)}`}>
+                        <span
+                            className={`inline-block rounded-full px-3 py-1 text-sm font-medium ${getStatusBadgeColor(status)}`}
+                        >
                             {status}
                         </span>
                     );
@@ -78,7 +85,7 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                             onClick={(e) => isDisabled && e.preventDefault()}
                             className={`inline-flex items-center gap-1.5 ${
                                 isDisabled
-                                    ? 'cursor-not-allowed text-sarge-gray-300'
+                                    ? 'text-sarge-gray-300 cursor-not-allowed'
                                     : 'text-sarge-primary-500 hover:text-sarge-primary-600'
                             }`}
                         >
@@ -90,26 +97,27 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
             {
                 accessorKey: 'candidate.resumeUrl',
                 header: 'RESUME',
-                cell: ({ row }) => (
+                cell: ({ row }) =>
                     row.original.candidate.resumeUrl ? (
                         <a
                             href={row.original.candidate.resumeUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 text-sarge-primary-500 hover:text-sarge-primary-600"
+                            className="text-sarge-primary-500 hover:text-sarge-primary-600 inline-flex items-center gap-1.5"
                         >
                             Link to Resume <ExternalLink className="size-4" />
                         </a>
                     ) : (
                         'N/A'
-                    )
-                ),
+                    ),
             },
             {
                 accessorKey: 'decisionMaker.name',
                 header: 'DECISION',
                 cell: ({ row }) => (
-                    <span className={`inline-block rounded-full px-3 py-1 text-sm font-medium ${getStatusBadgeColor(row.original.decisionStatus)}`}>
+                    <span
+                        className={`inline-block rounded-full px-3 py-1 text-sm font-medium ${getStatusBadgeColor(row.original.decisionStatus)}`}
+                    >
                         {row.original.decisionStatus}
                     </span>
                 ),
@@ -123,24 +131,24 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
             <div className="flex items-center gap-4">
                 <button
                     onClick={() => router.back()}
-                    className="rounded-lg p-2 hover:bg-sarge-gray-100"
+                    className="hover:bg-sarge-gray-100 rounded-lg p-2"
                 >
                     <ChevronLeft className="size-5" />
                 </button>
                 <h1 className="text-2xl font-semibold">All Positions</h1>
             </div>
 
-            <hr/>
+            <hr />
             <div className="space-y-0">
-                <h1 className="font-semibold text-lg">{positionTitle} Candidates</h1>
-                <h3 className="text-sm">{candidates.length} {candidates.length === 1 ? "candidate" : "candidates"}</h3>
+                <h1 className="text-lg font-semibold">{positionTitle} Candidates</h1>
+                <h3 className="text-sm">
+                    {candidates.length} {candidates.length === 1 ? 'candidate' : 'candidates'}
+                </h3>
             </div>
 
             {loading && <p>Loading candidates...</p>}
             {error && <p className="text-sarge-error-700">Error: {error}</p>}
-            {!loading && !error && (
-                <DataTable columns={columns} data={candidates} />
-            )}
+            {!loading && !error && <DataTable columns={columns} data={candidates} />}
         </div>
     );
 }
