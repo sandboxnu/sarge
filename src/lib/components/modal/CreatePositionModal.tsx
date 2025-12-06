@@ -10,35 +10,31 @@ interface CreatePositionModalProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     onCreate: (title: string) => Promise<void>;
+    setModalError: (error: string | null) => void;
 }
 
 export default function CreatePositionModal({
     open,
     onOpenChange,
     onCreate,
+    setModalError,
 }: CreatePositionModalProps) {
     const [positionName, setPositionName] = useState('');
-    /**
-     * // Toasts will be implemented to indicate error/success
-     * https://github.com/sandboxnu/sarge/issues/127
-     */
-    const [_error, setError] = useState<string | null>(null);
     const [isCreating, setIsCreating] = useState(false);
 
     const handleCreate = async () => {
         if (!positionName.trim()) {
-            setError('Position name is required');
+            setModalError('Position name is required');
             return;
         }
         setIsCreating(true);
-        setError(null);
-
+        setModalError(null);
         try {
             await onCreate(positionName);
             setPositionName('');
             onOpenChange(false);
         } catch {
-            setError('Failed to create position. Please try again.');
+            setModalError('Failed to create position. Please try again.');
         } finally {
             setIsCreating(false);
         }
