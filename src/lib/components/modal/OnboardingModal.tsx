@@ -20,9 +20,9 @@ export default function OnboardingModal() {
         createOrganization,
         loading,
 
-        handleFileChange,
         preview,
         fileInputRef,
+        handleFileChange,
         handleProfileImageClick,
     } = useOnboardingModal();
 

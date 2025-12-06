@@ -6,10 +6,12 @@ function useOnboardingModal() {
     const { userId, step, open, goTo, onOpenChange, isOnboarding, isSignedOut, isUserLoading } =
         useOnboardingState();
 
-    const { organizationName, setOrganizationName, error, loading, createOrganization } =
-        useOrganizationCreation(userId);
+    const org = useOrganizationCreation(userId);
 
-    const { preview, fileInputRef, handleFileChange, handleProfileImageClick } = useFileClient();
+    const { file, preview, fileInputRef, handleFileChange, handleProfileImageClick } =
+        useFileClient();
+
+    const createOrganization = () => org.createOrganization(file);
 
     return {
         step,
@@ -25,10 +27,10 @@ function useOnboardingModal() {
         isUserLoading,
 
         createOrganization,
-        organizationName,
-        setOrganizationName,
-        error,
-        loading,
+        organizationName: org.organizationName,
+        setOrganizationName: org.setOrganizationName,
+        error: org.error,
+        loading: org.loading,
 
         preview,
         fileInputRef,
