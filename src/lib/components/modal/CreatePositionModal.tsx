@@ -10,61 +10,31 @@ interface CreatePositionModalProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     onCreate: (title: string) => Promise<void>;
-<<<<<<< HEAD
     setModalError: (error: string | null) => void;
-=======
->>>>>>> 7da5d60 (feat: Create Position Modal)
 }
 
 export default function CreatePositionModal({
     open,
     onOpenChange,
     onCreate,
-<<<<<<< HEAD
     setModalError,
 }: CreatePositionModalProps) {
     const [positionName, setPositionName] = useState('');
-=======
-}: CreatePositionModalProps) {
-    const [positionName, setPositionName] = useState('');
-<<<<<<< HEAD
-    const [_error, setError] = useState<string | null>(null); // There are not designs for error states yet
->>>>>>> 7da5d60 (feat: Create Position Modal)
-=======
-    /**
-     * // Toasts will be implemented to indicate error/success
-     * https://github.com/sandboxnu/sarge/issues/127
-     */
-    const [_error, setError] = useState<string | null>(null);
->>>>>>> 1daa685 (PR comments)
     const [isCreating, setIsCreating] = useState(false);
 
     const handleCreate = async () => {
         if (!positionName.trim()) {
-<<<<<<< HEAD
             setModalError('Position name is required');
             return;
         }
         setIsCreating(true);
         setModalError(null);
-=======
-            setError('Position name is required');
-            return;
-        }
-        setIsCreating(true);
-        setError(null);
-
->>>>>>> 7da5d60 (feat: Create Position Modal)
         try {
             await onCreate(positionName);
             setPositionName('');
             onOpenChange(false);
         } catch {
-<<<<<<< HEAD
             setModalError('Failed to create position. Please try again.');
-=======
-            setError('Failed to create position. Please try again.');
->>>>>>> 7da5d60 (feat: Create Position Modal)
         } finally {
             setIsCreating(false);
         }
@@ -94,15 +64,7 @@ export default function CreatePositionModal({
                         />
                     </Field>
 
-<<<<<<< HEAD
-<<<<<<< HEAD
                     <div className="flex items-center justify-between">
-=======
-                    <div className="flex items-center justify-between pt-2">
->>>>>>> 7da5d60 (feat: Create Position Modal)
-=======
-                    <div className="flex items-center justify-between">
->>>>>>> 1daa685 (PR comments)
                         <Button variant="tertiary" onClick={handleCancel} className="px-0 py-2">
                             Cancel
                         </Button>

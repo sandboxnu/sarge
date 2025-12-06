@@ -10,8 +10,22 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/lib/components/Tabs'
 import CreatePositionModal from '@/lib/components/modal/CreatePositionModal';
 
 export default function PositionsPage() {
-    const { positions, loading, error, archived, createPosition, isModalOpen, setIsModalOpen } =
-        usePosition();
+    const {
+        positions,
+        loading,
+        error,
+        archived,
+        /**
+         * // Toasts will be implemented to indicate error/success
+         * https://github.com/sandboxnu/sarge/issues/127
+         */
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        modalError,
+        isModalOpen,
+        createPosition,
+        setIsModalOpen,
+        setModalError,
+    } = usePosition();
 
     return (
         <div className="flex flex-col gap-8 px-5 py-4">
@@ -85,6 +99,7 @@ export default function PositionsPage() {
                 open={isModalOpen}
                 onOpenChange={setIsModalOpen}
                 onCreate={createPosition}
+                setModalError={setModalError}
             />
         </div>
     );
@@ -99,7 +114,7 @@ function PositionCardGrid({ positions }: { positions: PositionWithCounts[] }) {
                 <div
                     key={position.id}
                     title={position.title}
-                    candidateCount={0}
+                    candidateCount={position.numCandidates}
                     assessmentName={''}
                 />
             ))}

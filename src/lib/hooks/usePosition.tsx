@@ -12,6 +12,7 @@ export default function usePosition() {
     const [filter, setFilter] = useState<string>(''); // This ticket will implement this feature https://github.com/sandboxnu/sarge/issues/122
     const [sort, setSort] = useState<string>('createdAt');
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalError, setModalError] = useState<string | null>(null);
 
     useEffect(() => {
         async function fetchPositions() {
@@ -77,9 +78,11 @@ export default function usePosition() {
         loading,
         error,
         archived,
+        modalError,
         createPosition,
         sortPositions,
         isModalOpen,
         setIsModalOpen,
+        setModalError,
     };
 }
