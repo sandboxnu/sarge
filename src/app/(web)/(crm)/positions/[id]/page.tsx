@@ -6,45 +6,13 @@ import type { CandidatePoolDisplayInfo } from '@/lib/types/position.types';
 import type { ColumnDef } from '@tanstack/react-table';
 import { ChevronLeft, ExternalLink } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { use, useEffect, useMemo, useState } from 'react';
-
-const getStatusBadgeColor = (status: string) => {
-    if (status === 'ACCEPTED' || status === 'SUBMITTED') {
-        return 'bg-sarge-success-100 text-sarge-success-800';
-    }
-    if (status === 'REJECTED' || status === 'EXPIRED') {
-        return 'bg-sarge-error-200 text-sarge-error-700';
-    }
-    if (status === 'ASSIGNED') {
-        return 'bg-sarge-warning-100 text-sarge-warning-500';
-    }
-    if (status === 'GRADED') {
-        return 'bg-sarge-primary-200 text-sarge-primary-700';
-    }
-    return 'bg-sarge-gray-200 text-sarge-gray-600';
-};
+import { use, useMemo } from 'react';
 
 export default function CandidatesPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
     const router = useRouter();
-    const { candidates, loading, error } = useCandidates(id);
-    const [positionTitle, setPositionTitle] = useState<string | null>(null);
-
-    useEffect(() => {
-        const fetchPosition = async () => {
-            const response = await fetch(`/api/position/${id}`);
-            if (response.ok) {
-                const data = await response.json();
-                setPositionTitle(data.data?.title ?? null);
-            }
-        };
-        fetchPosition();
-    }, [id]);
-
-    const ensureAbsoluteUrl = (url: string) => {
-        if (!url) return '';
-        return url.startsWith('http://') || url.startsWith('https://') ? url : `https://${url}`;
-    };
+    const { candidates, loading, error, positionTitle, getStatusBadgeColor, ensureAbsoluteUrl } =
+        useCandidates(id);
 
     const columns = useMemo<ColumnDef<CandidatePoolDisplayInfo>[]>(
         () => [
@@ -128,7 +96,7 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                 ),
             },
         ],
-        []
+        [getStatusBadgeColor, ensureAbsoluteUrl]
     );
 
     return (
