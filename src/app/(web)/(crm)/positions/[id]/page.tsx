@@ -6,7 +6,7 @@ import type { CandidatePoolDisplayInfo } from '@/lib/types/position.types';
 import type { ColumnDef } from '@tanstack/react-table';
 import { ChevronLeft, ExternalLink } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { use, useMemo } from 'react';
+import { use, useEffect, useMemo, useState } from 'react';
 
 const getStatusBadgeColor = (status: string) => {
     const statusLower = status.toLowerCase();
@@ -26,6 +26,18 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
     const { id } = use(params);
     const router = useRouter();
     const { candidates, loading, error } = useCandidatesForPosition(id);
+    const [positionTitle, setPositionTitle] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchPosition = async () => {
+            const response = await fetch(`/api/position/${id}`);
+            if (response.ok) {
+                const data = await response.json();
+                setPositionTitle(data.data?.title ?? null);
+            }
+        };
+        fetchPosition();
+    }, [id]);
 
     const columns = useMemo<ColumnDef<CandidatePoolDisplayInfo>[]>(
         () => [
@@ -35,7 +47,7 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                 cell: ({ row }) => (
                     <div className="flex flex-col">
                         <span className="text-lg text-sarge-gray-800">{row.original.candidate.name}</span>
-                        <span className="text-sm text-sarge-gray-500">
+                        <span className="text-sm text-sarge-gray-600">
                             {row.original.candidate.major ?? 'N/A'}
                         </span>
                     </div>
@@ -107,7 +119,7 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
     );
 
     return (
-        <div className="flex flex-col gap-8 px-5 py-4">
+        <div className="flex flex-col gap-8 px-8 py-7">
             <div className="flex items-center gap-4">
                 <button
                     onClick={() => router.back()}
@@ -116,6 +128,12 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                     <ChevronLeft className="size-5" />
                 </button>
                 <h1 className="text-2xl font-semibold">All Positions</h1>
+            </div>
+
+            <hr/>
+            <div className="space-y-0">
+                <h1 className="font-semibold text-lg">{positionTitle} Candidates</h1>
+                <h3 className="text-sm">{candidates.length} {candidates.length === 1 ? "candidate" : "candidates"}</h3>
             </div>
 
             {loading && <p>Loading candidates...</p>}

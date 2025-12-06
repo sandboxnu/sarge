@@ -31,7 +31,7 @@ export function DataTable<TData, TValue>({
                             {headerGroup.headers.map((header) => (
                                 <th
                                     key={header.id}
-                                    className="px-6 py-4 text-left text-s uppercase tracking-wider text-sarge-gray-800"
+                                    className="px-4 py-4 text-left text-s uppercase tracking-wider text-sarge-gray-800"
                                 >
                                     {header.isPlaceholder
                                         ? null
@@ -51,7 +51,7 @@ export function DataTable<TData, TValue>({
                                 {row.getVisibleCells().map((cell) => (
                                     <td
                                         key={cell.id}
-                                        className="px-6 py-4 text-sm text-sarge-gray-800"
+                                        className="px-4 py-4 text-sm text-sarge-gray-800"
                                     >
                                         {flexRender(
                                             cell.column.columnDef.cell,
@@ -65,7 +65,7 @@ export function DataTable<TData, TValue>({
                         <tr>
                             <td
                                 colSpan={columns.length}
-                                className="h-24 text-center text-sarge-gray-500"
+                                className="h-24 text-center text-sarge-gray-600"
                             >
                                 No results.
                             </td>
