@@ -61,10 +61,10 @@ export function AppSidebar() {
                 }`}
             collapsible="icon"
         >
-            <SidebarHeader>
+            <SidebarHeader className="group-data-[collapsible=icon]:px-1 group-data-[collapsible=icon]:pb-2">
                 <div className="flex items-center gap-3">
                     {/* Avatar/Logo */}
-                    <div className="overflow-hidden rounded-sm">
+                    <div className="overflow-hidden rounded-sm group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:h-5 group-data-[collapsible=icon]:w-5">
                         {auth.activeOrganization?.logo ? (
                             <Image
                                 src={auth.activeOrganization.logo}
@@ -74,59 +74,49 @@ export function AppSidebar() {
                                 className="rounded-md object-cover object-center"
                             />
                         ) : (
-                            <div className="flex items-center h-[28px] w-[28px] flex-shrink-0 bg-sarge-success-500">
-                                <Dog className='text-white h-3 w-3' />
+                            <div className="flex justify-center items-center h-7 w-7 flex-shrink-0 bg-sarge-success-500 group-data-[collapsible=icon]:h-5 group-data-[collapsible=icon]:w-5">
+                                <Dog className='text-white h-4 w-4 group-data-[collapsible=icon]:h-3 group-data-[collapsible=icon]:w-3' />
                             </div>
                         )}
                     </div>
 
                     {/* Organization Details */}
-                    <p className="truncate text-xs font-semibold text-gray-900">
+                    <p className="truncate text-xs font-semibold text-gray-900 group-data-[collapsible=icon]:hidden">
                         {auth.activeOrganization?.name ?? 'Organization Name'}
                     </p>
                 </div>
             </SidebarHeader>
             <SidebarContent>
-                <SidebarGroup>
+                <SidebarGroup className="group-data-[collapsible=icon]:p-0">
                     <SidebarGroupContent>
-                        <SidebarMenu className="space-y-1 group-data-[collapsible=icon]:px-1">
+                        <SidebarMenu className="space-y-1">
                             {sidebarMenuItems.map((item) => (
                                 <SidebarMenuItem key={item.title}>
                                     <SidebarMenuButton
-                                        asChild
                                         tooltip={item.title}
-                                        className="hover:!bg-sarge-primary-100 focus:!bg-sarge-primary-200 [&:hover]:!bg-sarge-primary-100 group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8"
-                                    >
-                                        <a
-                                            href={item.url}
-                                            className="flex items-center gap-3 group-data-[collapsible=icon]:justify-center"
-                                        >
-                                            <item.icon className="!h-[20px] !w-[20x] text-sarge-gray-600" />
-                                            <span className="text-xs font-medium text-sarge-gray-800">
-                                                {item.title}
-                                            </span>
-                                        </a>
+                                        className="hover:!bg-sarge-primary-100 focus:!bg-sarge-primary-200 [&:hover]:!bg-sarge-primary-100 group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8 group-data-[collapsible=icon]:p-0 !important">
+                                        <item.icon className="!h-[20px] !w-[20x] text-sarge-gray-600" />
+                                        <span className="text-xs font-medium text-sarge-gray-800">{item.title}</span>
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
                             ))}
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
-            </SidebarContent>
+            </SidebarContent >
             <SidebarFooter>
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton
                             tooltip="Organization Settings"
-                            className="hover:!bg-sarge-primary-100 focus:!bg-sarge-primary-200 [&:hover]:!bg-sarge-primary-100 group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8 group-data-[collapsible=icon]:justify-center"
-                        >
-                            <Settings className="h-6 w-6" />
-                            <span className="font-medium text-sarge-gray-800">Organization Settings</span>
+                            className="hover:!bg-sarge-primary-100 focus:!bg-sarge-primary-200 [&:hover]:!bg-sarge-primary-100 group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8 group-data-[collapsible=icon]:p-0 !important">
+                            <Settings className="!h-[20px] !w-[20x] text-sarge-gray-600" />
+                            <span className="text-xs font-medium text-sarge-gray-800">Organization Settings</span>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarFooter>
             <SidebarRail />
-        </Sidebar>
+        </Sidebar >
     );
 }
