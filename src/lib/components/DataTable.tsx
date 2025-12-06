@@ -1,21 +1,13 @@
 'use client';
 
-import {
-    flexRender,
-    getCoreRowModel,
-    useReactTable,
-    type ColumnDef,
-} from '@tanstack/react-table';
+import { flexRender, getCoreRowModel, useReactTable, type ColumnDef } from '@tanstack/react-table';
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
 }
 
-export function DataTable<TData, TValue>({
-    columns,
-    data,
-}: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
     const table = useReactTable({
         data,
         columns,
@@ -27,11 +19,11 @@ export function DataTable<TData, TValue>({
             <table className="w-full">
                 <thead>
                     {table.getHeaderGroups().map((headerGroup) => (
-                        <tr key={headerGroup.id} className="border-b border-sarge-gray-200">
+                        <tr key={headerGroup.id} className="border-sarge-gray-200 border-b">
                             {headerGroup.headers.map((header) => (
                                 <th
                                     key={header.id}
-                                    className="px-4 py-4 text-left text-s uppercase tracking-wider text-sarge-gray-800"
+                                    className="text-s text-sarge-gray-800 px-4 py-4 text-left tracking-wider uppercase"
                                 >
                                     {header.isPlaceholder
                                         ? null
@@ -47,16 +39,13 @@ export function DataTable<TData, TValue>({
                 <tbody>
                     {table.getRowModel().rows?.length ? (
                         table.getRowModel().rows.map((row) => (
-                            <tr key={row.id} className="border-b border-sarge-gray-200">
+                            <tr key={row.id} className="border-sarge-gray-200 border-b">
                                 {row.getVisibleCells().map((cell) => (
                                     <td
                                         key={cell.id}
-                                        className="px-4 py-4 text-sm text-sarge-gray-800"
+                                        className="text-sarge-gray-800 px-4 py-4 text-sm"
                                     >
-                                        {flexRender(
-                                            cell.column.columnDef.cell,
-                                            cell.getContext()
-                                        )}
+                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                     </td>
                                 ))}
                             </tr>
@@ -65,7 +54,7 @@ export function DataTable<TData, TValue>({
                         <tr>
                             <td
                                 colSpan={columns.length}
-                                className="h-24 text-center text-sarge-gray-600"
+                                className="text-sarge-gray-600 h-24 text-center"
                             >
                                 No results.
                             </td>
