@@ -1,7 +1,7 @@
 'use client';
 
 import { DataTable } from '@/lib/components/DataTable';
-import useCandidatesForPosition from '@/lib/hooks/useCandidatesForPosition';
+import useCandidates from '@/lib/hooks/useCandidates';
 import type { CandidatePoolDisplayInfo } from '@/lib/types/position.types';
 import type { ColumnDef } from '@tanstack/react-table';
 import { ChevronLeft, ExternalLink } from 'lucide-react';
@@ -25,7 +25,7 @@ const getStatusBadgeColor = (status: string) => {
 export default function CandidatesPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
     const router = useRouter();
-    const { candidates, loading, error } = useCandidatesForPosition(id);
+    const { candidates, loading, error } = useCandidates(id);
     const [positionTitle, setPositionTitle] = useState<string | null>(null);
 
     useEffect(() => {
