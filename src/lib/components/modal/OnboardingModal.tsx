@@ -121,7 +121,7 @@ function CreateOrganizationContent({
 
             <div className="mt-4 mb-2 flex w-full content-center justify-center">
                 <div
-                    className="bg-sarge-gray-200 flex h-[65px] w-[65px] items-center justify-center overflow-hidden rounded-full hover:cursor-pointer hover:ring-2 hover:ring-black/40"
+                    className="bg-sarge-gray-200 flex h-[65px] w-[65px] items-center justify-center overflow-hidden rounded-md hover:cursor-pointer hover:ring-2 hover:ring-black/40"
                     onClick={handleProfileImageClick}
                 >
                     {preview ? (
