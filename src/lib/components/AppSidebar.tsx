@@ -93,7 +93,7 @@ export function AppSidebar() {
                         </div>
 
                         {/* Organization Details */}
-                        <p className="truncate text-xs font-semibold text-gray-900 group-data-[collapsible=icon]:hidden">
+                        <p className="text-sarge-gray-800 truncate text-xs font-semibold group-data-[collapsible=icon]:hidden">
                             {auth.activeOrganization?.name ?? 'Organization Name'}
                         </p>
                     </div>
@@ -111,7 +111,7 @@ export function AppSidebar() {
                                         tooltip={item.title}
                                         className="hover:!bg-sarge-primary-100 focus:!bg-sarge-primary-200 [&:hover]:!bg-sarge-primary-100 !important group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8 group-data-[collapsible=icon]:p-0"
                                     >
-                                        <item.icon className="text-sarge-gray-600 !h-[20px] !w-[20x]" />
+                                        <item.icon className="text-sarge-gray-600 !h-5 !w-5" />
                                         <span className="text-sarge-gray-800 text-xs font-medium">
                                             {item.title}
                                         </span>
@@ -129,7 +129,7 @@ export function AppSidebar() {
                             tooltip="Organization Settings"
                             className="hover:!bg-sarge-primary-100 focus:!bg-sarge-primary-200 [&:hover]:!bg-sarge-primary-100 !important group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8 group-data-[collapsible=icon]:p-0"
                         >
-                            <Settings className="text-sarge-gray-600 !h-[20px] !w-[20x]" />
+                            <Settings className="text-sarge-gray-600 !h-5 !w-5" />
                             <span className="text-sarge-gray-800 text-xs font-medium">
                                 Organization Settings
                             </span>
