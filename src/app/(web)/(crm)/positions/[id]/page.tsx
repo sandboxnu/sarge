@@ -63,7 +63,7 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                                     : 'text-sarge-primary-500 hover:text-sarge-primary-600'
                             }`}
                         >
-                            Link to assessment <ExternalLink className="size-4" />
+                            Link to Assessment <ExternalLink className="size-4" />
                         </a>
                     );
                 },
