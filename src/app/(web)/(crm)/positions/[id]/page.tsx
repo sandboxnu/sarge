@@ -39,6 +39,11 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
         fetchPosition();
     }, [id]);
 
+    const ensureAbsoluteUrl = (url: string) => {
+        if (!url) return '';
+        return url.startsWith('http://') || url.startsWith('https://') ? url : `https://${url}`;
+    };
+
     const columns = useMemo<ColumnDef<CandidatePoolDisplayInfo>[]>(
         () => [
             {
@@ -81,11 +86,10 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                         <a
                             href={isDisabled ? '#' : (row.original.assessment?.uniqueLink ?? '#')}
                             target={isDisabled ? undefined : '_blank'}
-                            rel={isDisabled ? undefined : 'noopener noreferrer'}
                             onClick={(e) => isDisabled && e.preventDefault()}
                             className={`inline-flex items-center gap-1.5 ${
                                 isDisabled
-                                    ? 'text-sarge-gray-300 cursor-not-allowed'
+                                    ? 'text-sarge-primary-300 cursor-not-allowed'
                                     : 'text-sarge-primary-500 hover:text-sarge-primary-600'
                             }`}
                         >
@@ -100,9 +104,8 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                 cell: ({ row }) =>
                     row.original.candidate.resumeUrl ? (
                         <a
-                            href={row.original.candidate.resumeUrl}
+                            href={ensureAbsoluteUrl(row.original.candidate.resumeUrl)}
                             target="_blank"
-                            rel="noopener noreferrer"
                             className="text-sarge-primary-500 hover:text-sarge-primary-600 inline-flex items-center gap-1.5"
                         >
                             Link to Resume <ExternalLink className="size-4" />
