@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import useFileClient from '@/lib/hooks/useFileClient';
 import useFileUpload from '@/lib/hooks/useFileUpload';
 import { authClient } from '@/lib/auth/auth-client';
 import { toast } from 'sonner';
@@ -8,16 +7,12 @@ function useOrganizationCreation(userId: string | null) {
     const [organizationName, setOrganizationName] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
-    const [organizationIdForUpload, setOrganizationIdForUpload] = useState<string | undefined>();
-
-    const { file } = useFileClient();
 
     const {
-        handleFileChange: handleOrgFileUpload,
-        imageUrl,
+        uploadFile,
         error: uploadError,
         loading: uploadLoading,
-    } = useFileUpload('organization', organizationIdForUpload);
+    } = useFileUpload('organization');
 
     const invalidate = (msg: string) => {
         setError(msg);
@@ -25,7 +20,7 @@ function useOrganizationCreation(userId: string | null) {
         return;
     };
 
-    const createOrganization = async () => {
+    const createOrganization = async (file?: File | null) => {
         setError(null);
 
         if (!userId) {
@@ -61,11 +56,7 @@ function useOrganizationCreation(userId: string | null) {
             const organizationId = createJson.data.id;
 
             if (file) {
-                setOrganizationIdForUpload(organizationId);
-
-                await handleOrgFileUpload({
-                    target: { files: [file] },
-                } as unknown as React.ChangeEvent<HTMLInputElement>);
+                const imageUrl = await uploadFile(file, organizationId);
 
                 if (uploadError) {
                     invalidate(uploadError);

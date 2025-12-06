@@ -2,18 +2,14 @@ import { type UploadType } from '@/lib/connectors/s3.connector';
 import { useAuth } from '@/lib/auth/auth-context';
 import { useState } from 'react';
 
-function useFileUpload(type: UploadType, organizationId?: string) {
+function useFileUpload(type: UploadType) {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [imageUrl, setImageUrl] = useState<string | null>(null);
     const { userId } = useAuth();
 
-    async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-        const file = e.target.files?.[0];
-
-        if (!file) return;
-
+    async function uploadFile(file: File, organizationId: string) {
         setError(null);
         setSubmitted(false);
         setImageUrl(null);
@@ -60,10 +56,8 @@ function useFileUpload(type: UploadType, organizationId?: string) {
                 body: file,
             });
 
-            const s3ResponseJson = await s3Response.json();
-
             if (!s3Response.ok) {
-                setError(s3ResponseJson.message);
+                setError(`S3 upload failed with status ${s3Response.status}`);
                 setLoading(false);
                 return;
             }
@@ -90,6 +84,7 @@ function useFileUpload(type: UploadType, organizationId?: string) {
             const { data: confirmData } = confirmResponseJson;
 
             setImageUrl(confirmData.imageUrl);
+            return confirmData.imageUrl;
         } catch (error) {
             setError(`Error handling file change: ${error}`);
         } finally {
@@ -99,7 +94,7 @@ function useFileUpload(type: UploadType, organizationId?: string) {
     }
 
     return {
-        handleFileChange,
+        uploadFile,
         loading,
         error,
         submitted,
