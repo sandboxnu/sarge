@@ -7,9 +7,25 @@ import SargeCard from '@/lib/components/SargeCard';
 import { Search } from '@/lib/components/Search';
 import { type PositionWithCounts } from '@/lib/types/position.types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/lib/components/Tabs';
+import CreatePositionModal from '@/lib/components/modal/CreatePositionModal';
 
 export default function PositionsPage() {
-    const { positions, loading, error, archived } = usePosition();
+    const {
+        positions,
+        loading,
+        error,
+        archived,
+        /**
+         * // Toasts will be implemented to indicate error/success
+         * https://github.com/sandboxnu/sarge/issues/127
+         */
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        modalError,
+        isModalOpen,
+        createPosition,
+        setIsModalOpen,
+        setModalError,
+    } = usePosition();
 
     return (
         <div className="flex flex-col gap-8 px-5 py-4">
@@ -43,7 +59,11 @@ export default function PositionsPage() {
                         <div className="w-[550px]">
                             <Search />
                         </div>
-                        <Button variant="primary" className="px-4 py-2">
+                        <Button
+                            variant="primary"
+                            className="px-4 py-2"
+                            onClick={() => setIsModalOpen(true)}
+                        >
                             <div className="flex items-center gap-2">
                                 <Plus className="size-5" />
                                 New Position
@@ -74,6 +94,13 @@ export default function PositionsPage() {
                     )}
                 </TabsContent>
             </Tabs>
+
+            <CreatePositionModal
+                open={isModalOpen}
+                onOpenChange={setIsModalOpen}
+                onCreate={createPosition}
+                setModalError={setModalError}
+            />
         </div>
     );
 }
@@ -86,7 +113,7 @@ function PositionCardGrid({ positions }: { positions: PositionWithCounts[] }) {
                     key={position.id}
                     title={position.title}
                     candidateCount={position.numCandidates}
-                    assessmentName={'TBD'}
+                    assessmentName={''}
                 />
             ))}
         </div>
