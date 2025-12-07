@@ -26,6 +26,7 @@ import {
 import { useAuth } from '@/lib/auth/auth-context';
 import Image from 'next/image';
 import useOnboardingState from '@/lib/hooks/useOnboardingState';
+import { useRouter } from 'next/navigation';
 
 const sidebarMenuItems = [
     {
@@ -62,14 +63,14 @@ const sidebarMenuItems = [
 
 export function AppSidebar() {
     const auth = useAuth();
+    const router = useRouter();
 
     const { isOnboarding } = useOnboardingState();
 
     return (
         <Sidebar
-            className={`border-sarge-primary-100 bg-sarge-primary-100 border-r-4 ${
-                isOnboarding ? 'opacity-0' : ''
-            }`}
+            className={`border-sarge-primary-100 bg-sarge-primary-100 border-r-4 ${isOnboarding ? 'opacity-0' : ''
+                }`}
             collapsible="icon"
         >
             <SidebarHeader className="group-data-[collapsible=icon]:px-1 group-data-[collapsible=icon]:pb-2">
@@ -110,6 +111,7 @@ export function AppSidebar() {
                                     <SidebarMenuButton
                                         tooltip={item.title}
                                         className="hover:!bg-sarge-primary-100 focus:!bg-sarge-primary-200 [&:hover]:!bg-sarge-primary-100 !important group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8 group-data-[collapsible=icon]:p-0"
+                                        onClick={() => router.push(item.url)}
                                     >
                                         <item.icon className="text-sarge-gray-600 !h-4 !w-4" />
                                         <span className="text-sarge-gray-800 text-xs font-medium">
