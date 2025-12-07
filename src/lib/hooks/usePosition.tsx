@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react';
 import { type PositionDTO } from '@/lib/schemas/position.schema';
 import { type PositionWithCounts } from '@/lib/types/position.types';
-import { set } from 'zod';
 
 export default function usePosition() {
     const [error, setError] = useState<string | null>(null);

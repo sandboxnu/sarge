@@ -51,4 +51,24 @@ function TabsContent({ className, ...props }: React.ComponentProps<typeof TabsPr
     );
 }
 
-export { Tabs, TabsList, TabsTrigger, TabsContent };
+function UnderlineTabsTrigger({
+    className,
+    ...props
+}: React.ComponentProps<typeof TabsPrimitive.Trigger>) {
+    return (
+        <TabsPrimitive.Trigger
+            data-slot="underline-tabs-trigger"
+            className={cn(
+                'inline-flex items-center justify-center pb-4 pt-3',
+                'text-sm font-medium text-sarge-gray-600',
+                'border-b-2 border-b-transparent',
+                'focus-visible:outline-none',
+                'data-[state=active]:border-b-sarge-primary-500 data-[state=active]:text-sarge-primary-500',
+                className
+            )}
+            {...props}
+        />
+    );
+}
+
+export { Tabs, TabsList, TabsTrigger, TabsContent, UnderlineTabsTrigger };
