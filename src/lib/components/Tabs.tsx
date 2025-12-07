@@ -59,8 +59,8 @@ function UnderlineTabsTrigger({
         <TabsPrimitive.Trigger
             data-slot="underline-tabs-trigger"
             className={cn(
-                'inline-flex items-center justify-center pb-4 pt-3',
-                'text-sm font-medium text-sarge-gray-600',
+                'inline-flex items-center justify-center pt-3 pb-4',
+                'text-sarge-gray-600 text-sm font-medium',
                 'border-b-2 border-b-transparent',
                 'focus-visible:outline-none',
                 'data-[state=active]:border-b-sarge-primary-500 data-[state=active]:text-sarge-primary-500',

@@ -74,7 +74,7 @@ export default function CreatePositionModal({
                             className="h-11"
                         />
                         {localError && (
-                            <div className="mt-1 flex items-center gap-2 text-sm text-sarge-error-700">
+                            <div className="text-sarge-error-700 mt-1 flex items-center gap-2 text-sm">
                                 <AlertCircle className="size-4" />
                                 {localError}
                             </div>

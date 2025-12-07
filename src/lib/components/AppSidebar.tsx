@@ -12,16 +12,7 @@ import {
     SidebarMenuItem,
     SidebarRail,
 } from '@/lib/components/Sidebar';
-import {
-    Home,
-    File,
-    ListChecks,
-    Users,
-    Book,
-    Archive,
-    Settings,
-    ChevronDown,
-} from 'lucide-react';
+import { Home, File, ListChecks, Users, Book, Archive, Settings, ChevronDown } from 'lucide-react';
 import { useAuth } from '@/lib/auth/auth-context';
 import Image from 'next/image';
 import useOnboardingState from '@/lib/hooks/useOnboardingState';
@@ -75,9 +66,13 @@ export function AppSidebar() {
                 <div className="flex items-center justify-between gap-3 group-data-[collapsible=icon]:w-full group-data-[collapsible=icon]:justify-center">
                     <div className="flex items-center gap-2">
                         {/* Avatar/Logo */}
-                        <div 
+                        <div
                             className="h-7 w-7 overflow-hidden rounded group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:h-5 group-data-[collapsible=icon]:w-5"
-                            style={!auth.activeOrganization?.logo ? { background: '#858C9C' } : undefined}
+                            style={
+                                !auth.activeOrganization?.logo
+                                    ? { background: '#858C9C' }
+                                    : undefined
+                            }
                         >
                             {auth.activeOrganization?.logo ? (
                                 <Image

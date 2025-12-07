@@ -26,16 +26,13 @@ export default function PositionCard({
         <div
             className={cn(
                 'min-h-[160px] w-[384px]',
-                'rounded-xl border border-sarge-gray-200 bg-sarge-gray-0 p-4',
+                'border-sarge-gray-200 bg-sarge-gray-0 rounded-xl border p-4',
                 className
             )}
         >
             <div className="flex items-start justify-between gap-2">
                 <div className="flex min-w-0 flex-[1_0_0] flex-col items-start gap-1 px-1">
-                    <h3
-                        className="line-clamp-2 text-label-s text-sarge-gray-800"
-                        title={title}
-                    >
+                    <h3 className="text-label-s text-sarge-gray-800 line-clamp-2" title={title}>
                         {title}
                     </h3>
 
@@ -44,17 +41,17 @@ export default function PositionCard({
                     </p>
                 </div>
 
-                <button className="grid min-h-[44px] min-w-[44px] place-items-center text-sarge-gray-800">
+                <button className="text-sarge-gray-800 grid min-h-[44px] min-w-[44px] place-items-center">
                     <MoreVertical className="h-5 w-5" />
                 </button>
             </div>
-            <div className="mt-4 w-full rounded-lg border border-sarge-gray-200 bg-sarge-gray-0 p-3">
+            <div className="border-sarge-gray-200 bg-sarge-gray-0 mt-4 w-full rounded-lg border p-3">
                 <div className="flex flex-col items-start gap-2">
                     <div className="flex w-full min-w-0 items-start gap-3">
-                        <FileText className="h-5 w-5 shrink-0 text-sarge-gray-600" />
+                        <FileText className="text-sarge-gray-600 h-5 w-5 shrink-0" />
                         <div className="min-w-0 flex-1">
                             <div
-                                className="truncate text-label-s text-sarge-gray-800"
+                                className="text-label-s text-sarge-gray-800 truncate"
                                 title={assessmentName}
                             >
                                 {assessmentName}
