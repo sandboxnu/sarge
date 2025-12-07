@@ -38,7 +38,7 @@ export const positionSchema = z.object({
     createdById: z.string(),
 });
 
-export type Position = z.infer<typeof positionSchema>;
+export type PositionDTO = z.infer<typeof positionSchema>;
 export type CreatePositionDTO = z.infer<typeof createPositionSchema>;
 export type UpdatePositionDTO = z.infer<typeof updatePositionSchema>;
 export type GetPositionDTO = z.infer<typeof getPositionSchema>;

@@ -191,8 +191,14 @@ async function removeAllCandidatesFromPosition(positionId: string, orgId: string
     await prisma.candidatePoolEntry.deleteMany({ where: { positionId } });
 }
 
-async function getCandidatePoolEntry(id: string): Promise<CandidatePoolEntry | null> {
-    return prisma.candidatePoolEntry.findUnique({ where: { id } });
+async function getCandidatePoolEntry(id: string): Promise<CandidatePoolEntry> {
+    const entry = await prisma.candidatePoolEntry.findUnique({ where: { id } });
+
+    if (!entry) {
+        throw new NotFoundException('Candidate Pool Entry', id);
+    }
+
+    return entry;
 }
 
 async function getAssessmentStatus(candidatePoolEntryId: string): Promise<AssessmentStatus> {

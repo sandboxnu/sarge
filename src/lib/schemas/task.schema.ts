@@ -13,6 +13,6 @@ export const UpdateTaskSchema = TaskSchema.partial().extend({
     id: z.string(),
 });
 
-export type Task = z.infer<typeof TaskSchema>;
+export type TaskDTO = z.infer<typeof TaskSchema>;
 export type CreateTaskDTO = z.infer<typeof CreateTaskSchema>;
 export type UpdateTaskDTO = z.infer<typeof UpdateTaskSchema>;

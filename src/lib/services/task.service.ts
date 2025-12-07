@@ -1,8 +1,8 @@
 import { prisma } from '@/lib/prisma';
-import type { CreateTaskDTO, Task, UpdateTaskDTO } from '@/lib/schemas/task.schema';
+import type { CreateTaskDTO, TaskDTO, UpdateTaskDTO } from '@/lib/schemas/task.schema';
 import { NotFoundException } from '@/lib/utils/errors.utils';
 
-async function getTask(id: string): Promise<Task> {
+async function getTask(id: string): Promise<TaskDTO> {
     const foundTask = await prisma.task.findUnique({
         where: {
             id,
@@ -16,7 +16,7 @@ async function getTask(id: string): Promise<Task> {
     return foundTask;
 }
 
-async function createTask(task: CreateTaskDTO): Promise<Task> {
+async function createTask(task: CreateTaskDTO): Promise<TaskDTO> {
     const assessment = await prisma.assessment.findUnique({
         where: {
             id: task.assessmentId,
@@ -38,7 +38,7 @@ async function createTask(task: CreateTaskDTO): Promise<Task> {
     return newTask;
 }
 
-async function deleteTask(id: string): Promise<Task> {
+async function deleteTask(id: string): Promise<TaskDTO> {
     const existingTask = await prisma.task.findUnique({
         where: { id },
     });
@@ -56,7 +56,7 @@ async function deleteTask(id: string): Promise<Task> {
     return deletedTask;
 }
 
-async function updateTask(task: UpdateTaskDTO): Promise<Task> {
+async function updateTask(task: UpdateTaskDTO): Promise<TaskDTO> {
     const existingTask = await prisma.task.findUnique({
         where: {
             id: task.id,

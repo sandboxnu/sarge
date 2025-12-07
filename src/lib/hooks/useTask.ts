@@ -8,7 +8,7 @@ import {
 import { sleep } from '@/lib/utils/utils';
 import type { TaskTemplateDTO } from '@/lib/schemas/task-template.schema';
 import type { TaskTemplate } from '@/generated/prisma';
-import type { CreateTaskDTO, Task } from '@/lib/schemas/task.schema';
+import type { CreateTaskDTO, TaskDTO } from '@/lib/schemas/task.schema';
 
 const languageIds: Record<string, number> = {
     python: 100,
@@ -16,7 +16,7 @@ const languageIds: Record<string, number> = {
 };
 
 export function useTask(taskTemplateId: string, assessmentId: string) {
-    const [task, setTask] = useState<Task | null>(null);
+    const [task, setTask] = useState<TaskDTO | null>(null);
     const [taskTemplate, setTaskTemplate] = useState<TaskTemplateDTO | null>(null);
     const [isLoading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error | null>(null);
@@ -88,9 +88,7 @@ export function useTask(taskTemplateId: string, assessmentId: string) {
     }
 
     /**
-     * This is not a chat comment lol
-     *
-     * using indexes allows us to spot run specific test cases if we want
+     * Using indexes allows us to spot run specific test cases if we want
      * to allow that feature but we can change this if we want
      */
     async function handleRun(
@@ -132,10 +130,11 @@ export function useTask(taskTemplateId: string, assessmentId: string) {
                     `No tokens received from Judge0 for payload ${JSON.stringify(payload, null, 2)}`
                 );
             }
-            await sleep(5000);
             /**
              * Link to ticket to improve polling mechanism:
+             * https://github.com/sandboxnu/sarge/issues/130
              */
+            await sleep(5000);
             const results = await getSubmission(tokens);
 
             setOutput(`Judge0 Results: ${JSON.stringify(results, null, 2)}`);
