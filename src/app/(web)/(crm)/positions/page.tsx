@@ -7,6 +7,7 @@ import SargeCard from '@/lib/components/SargeCard';
 import { Search } from '@/lib/components/Search';
 import { type PositionWithCounts } from '@/lib/types/position.types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/lib/components/Tabs';
+import { useRouter } from 'next/navigation';
 import CreatePositionModal from '@/lib/components/modal/CreatePositionModal';
 
 export default function PositionsPage() {
@@ -106,15 +107,22 @@ export default function PositionsPage() {
 }
 
 function PositionCardGrid({ positions }: { positions: PositionWithCounts[] }) {
+    const router = useRouter();
+
     return (
         <div className="flex flex-wrap gap-4">
             {positions.map((position) => (
-                <SargeCard
+                <div
                     key={position.id}
-                    title={position.title}
-                    candidateCount={position.numCandidates}
-                    assessmentName={''}
-                />
+                    onClick={() => router.push(`/positions/${position.id}`)}
+                    className="cursor-pointer"
+                >
+                    <SargeCard
+                        title={position.title}
+                        candidateCount={position.numCandidates}
+                        assessmentName={'TBD'}
+                    />
+                </div>
             ))}
         </div>
     );

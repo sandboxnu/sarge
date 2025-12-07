@@ -1,0 +1,127 @@
+'use client';
+
+import { DataTable } from '@/lib/components/DataTable';
+import useCandidates from '@/lib/hooks/useCandidates';
+import type { CandidatePoolDisplayInfo } from '@/lib/types/position.types';
+import type { ColumnDef } from '@tanstack/react-table';
+import { ChevronLeft, ExternalLink } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { use, useMemo } from 'react';
+
+export default function CandidatesPage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = use(params);
+    const router = useRouter();
+    const { candidates, loading, error, positionTitle, getStatusBadgeColor, ensureAbsoluteUrl } =
+        useCandidates(id);
+
+    const columns = useMemo<ColumnDef<CandidatePoolDisplayInfo>[]>(
+        () => [
+            {
+                accessorKey: 'candidate.name',
+                header: 'NAME/MAJOR',
+                cell: ({ row }) => (
+                    <div className="flex flex-col">
+                        <span className="text-sarge-gray-800 text-lg">
+                            {row.original.candidate.name}
+                        </span>
+                        <span className="text-sarge-gray-600 text-sm">
+                            {row.original.candidate.major ?? 'N/A'}
+                        </span>
+                    </div>
+                ),
+            },
+            {
+                accessorKey: 'decisionStatus',
+                header: 'OA STATUS',
+                cell: ({ row }) => {
+                    const status =
+                        row.original.assessmentStatus === 'NOT_ASSIGNED'
+                            ? 'Not started'
+                            : row.original.assessmentStatus;
+                    return (
+                        <span
+                            className={`inline-block rounded-full px-3 py-1 text-sm font-medium ${getStatusBadgeColor(status)}`}
+                        >
+                            {status}
+                        </span>
+                    );
+                },
+            },
+            {
+                accessorKey: 'assessmentStatus',
+                header: 'ASSESSMENT',
+                cell: ({ row }) => {
+                    const isDisabled = row.original.assessmentStatus === 'NOT_ASSIGNED';
+                    return (
+                        <a
+                            href={isDisabled ? '#' : (row.original.assessment?.uniqueLink ?? '#')}
+                            target={isDisabled ? undefined : '_blank'}
+                            onClick={(e) => isDisabled && e.preventDefault()}
+                            className={`inline-flex items-center gap-1.5 ${
+                                isDisabled
+                                    ? 'text-sarge-primary-300 cursor-not-allowed'
+                                    : 'text-sarge-primary-500 hover:text-sarge-primary-600'
+                            }`}
+                        >
+                            Link to Assessment <ExternalLink className="size-4" />
+                        </a>
+                    );
+                },
+            },
+            {
+                accessorKey: 'candidate.resumeUrl',
+                header: 'RESUME',
+                cell: ({ row }) =>
+                    row.original.candidate.resumeUrl ? (
+                        <a
+                            href={ensureAbsoluteUrl(row.original.candidate.resumeUrl)}
+                            target="_blank"
+                            className="text-sarge-primary-500 hover:text-sarge-primary-600 inline-flex items-center gap-1.5"
+                        >
+                            Link to Resume <ExternalLink className="size-4" />
+                        </a>
+                    ) : (
+                        'N/A'
+                    ),
+            },
+            {
+                accessorKey: 'decisionMaker.name',
+                header: 'DECISION',
+                cell: ({ row }) => (
+                    <span
+                        className={`inline-block rounded-full px-3 py-1 text-sm font-medium ${getStatusBadgeColor(row.original.decisionStatus)}`}
+                    >
+                        {row.original.decisionStatus}
+                    </span>
+                ),
+            },
+        ],
+        [getStatusBadgeColor, ensureAbsoluteUrl]
+    );
+
+    return (
+        <div className="flex flex-col gap-8 px-8 py-7">
+            <div className="flex items-center gap-4">
+                <button
+                    onClick={() => router.push('/positions')}
+                    className="hover:bg-sarge-gray-100 rounded-lg p-2"
+                >
+                    <ChevronLeft className="size-5" />
+                </button>
+                <h1 className="text-2xl font-semibold">All Positions</h1>
+            </div>
+
+            <hr />
+            <div className="space-y-0">
+                <h1 className="text-lg font-semibold">{positionTitle} Candidates</h1>
+                <h3 className="text-sm">
+                    {candidates.length} {candidates.length === 1 ? 'candidate' : 'candidates'}
+                </h3>
+            </div>
+
+            {loading && <p>Loading candidates...</p>}
+            {error && <p className="text-sarge-error-700">Error: {error}</p>}
+            {!loading && !error && <DataTable columns={columns} data={candidates} />}
+        </div>
+    );
+}
