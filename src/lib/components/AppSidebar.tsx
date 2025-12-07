@@ -12,17 +12,7 @@ import {
     SidebarMenuItem,
     SidebarRail,
 } from '@/lib/components/Sidebar';
-import {
-    Home,
-    File,
-    ListChecks,
-    Users,
-    Book,
-    Archive,
-    Settings,
-    Dog,
-    ChevronDown,
-} from 'lucide-react';
+import { Home, File, ListChecks, Users, Book, Archive, Settings, ChevronDown } from 'lucide-react';
 import { useAuth } from '@/lib/auth/auth-context';
 import Image from 'next/image';
 import useOnboardingState from '@/lib/hooks/useOnboardingState';
@@ -76,8 +66,14 @@ export function AppSidebar() {
             <SidebarHeader className="group-data-[collapsible=icon]:px-1 group-data-[collapsible=icon]:pb-2">
                 <div className="flex items-center justify-between gap-3 group-data-[collapsible=icon]:w-full group-data-[collapsible=icon]:justify-center">
                     <div className="flex items-center gap-2">
-                        {/* Avatar/Logo */}
-                        <div className="h-7 w-7 overflow-hidden rounded-sm group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:h-5 group-data-[collapsible=icon]:w-5">
+                        <div
+                            className="h-7 w-7 overflow-hidden rounded group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:h-5 group-data-[collapsible=icon]:w-5"
+                            style={
+                                !auth.activeOrganization?.logo
+                                    ? { background: '#858C9C' }
+                                    : undefined
+                            }
+                        >
                             {auth.activeOrganization?.logo ? (
                                 <Image
                                     src={auth.activeOrganization.logo}
@@ -87,13 +83,16 @@ export function AppSidebar() {
                                     className="h-full w-full object-cover object-center"
                                 />
                             ) : (
-                                <div className="bg-sarge-success-500 flex h-full w-full items-center justify-center">
-                                    <Dog className="h-4 w-4 text-white group-data-[collapsible=icon]:h-3 group-data-[collapsible=icon]:w-3" />
-                                </div>
+                                <Image
+                                    src="/Winston Logomark.svg"
+                                    alt="Winston Logo"
+                                    width={28}
+                                    height={28}
+                                    className="h-full w-full object-cover object-center brightness-0 invert"
+                                />
                             )}
                         </div>
 
-                        {/* Organization Details */}
                         <p className="truncate text-xs font-semibold text-gray-900 group-data-[collapsible=icon]:hidden">
                             {auth.activeOrganization?.name ?? 'Organization Name'}
                         </p>

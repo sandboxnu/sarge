@@ -5,74 +5,97 @@ import { Dialog, DialogContent, DialogTitle } from './Modal';
 import { Field, FieldLabel } from '@/lib/components/Field';
 import { Input } from '@/lib/components/Input';
 import { Button } from '@/lib/components/Button';
+import { AlertCircle } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface CreatePositionModalProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     onCreate: (title: string) => Promise<void>;
-    setModalError: (error: string | null) => void;
 }
 
 export default function CreatePositionModal({
     open,
     onOpenChange,
     onCreate,
-    setModalError,
 }: CreatePositionModalProps) {
     const [positionName, setPositionName] = useState('');
     const [isCreating, setIsCreating] = useState(false);
+    const [localError, setLocalError] = useState<string | null>(null);
 
     const handleCreate = async () => {
         if (!positionName.trim()) {
-            setModalError('Position name is required');
+            setLocalError('Position name is required');
             return;
         }
         setIsCreating(true);
-        setModalError(null);
+        setLocalError(null);
         try {
             await onCreate(positionName);
+            toast.success('Position created successfully.');
             setPositionName('');
             onOpenChange(false);
         } catch {
-            setModalError('Failed to create position. Please try again.');
+            const errorMsg = 'Failed to create position. Please try again.';
+            setLocalError(errorMsg);
+            toast.error('Creation failed', {
+                description: errorMsg,
+            });
         } finally {
             setIsCreating(false);
         }
     };
 
     const handleCancel = () => {
+        setPositionName('');
+        setLocalError(null);
         onOpenChange(false);
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setPositionName(e.target.value);
+        if (localError) {
+            setLocalError(null);
+        }
     };
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-[614px] gap-4 p-6" showCloseButton={true}>
+            <DialogContent className="max-w-2xl gap-4 p-6" showCloseButton={true}>
                 <div className="flex flex-col gap-4">
-                    <DialogTitle className="text-sarge-gray-800 text-lg font-bold">
-                        Create new position
-                    </DialogTitle>
+                    <DialogTitle className="text-display-xs">Create new position</DialogTitle>
 
                     <Field className="gap-1">
-                        <FieldLabel className="text-sarge-gray-800 text-sm font-medium">
-                            Position name
-                        </FieldLabel>
+                        <FieldLabel className="text-label-s">Position name</FieldLabel>
                         <Input
                             placeholder="Enter a position name"
                             value={positionName}
-                            onChange={(e) => setPositionName(e.target.value)}
+                            onChange={handleInputChange}
                             className="h-11"
                         />
+                        {localError && (
+                            <div className="text-sarge-error-700 mt-1 flex items-center gap-2 text-sm">
+                                <AlertCircle className="size-4" />
+                                {localError}
+                            </div>
+                        )}
                     </Field>
 
                     <div className="flex items-center justify-between">
-                        <Button variant="tertiary" onClick={handleCancel} className="px-0 py-2">
+                        <Button
+                            type="button"
+                            variant="tertiary"
+                            onClick={handleCancel}
+                            className="px-0 py-2"
+                        >
                             Cancel
                         </Button>
                         <Button
+                            type="button"
                             variant="primary"
                             onClick={handleCreate}
                             disabled={isCreating}
-                            className="h-9 w-[125px] px-4 py-2"
+                            className="min-w-[125px] px-4 py-2"
                         >
                             {isCreating ? 'Creating...' : 'Create'}
                         </Button>
