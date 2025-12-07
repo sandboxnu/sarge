@@ -65,7 +65,6 @@ export function AppSidebar() {
             <SidebarHeader className="group-data-[collapsible=icon]:px-1 group-data-[collapsible=icon]:pb-2">
                 <div className="flex items-center justify-between gap-3 group-data-[collapsible=icon]:w-full group-data-[collapsible=icon]:justify-center">
                     <div className="flex items-center gap-2">
-                        {/* Avatar/Logo */}
                         <div
                             className="h-7 w-7 overflow-hidden rounded group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:h-5 group-data-[collapsible=icon]:w-5"
                             style={
@@ -93,7 +92,6 @@ export function AppSidebar() {
                             )}
                         </div>
 
-                        {/* Organization Details */}
                         <p className="truncate text-xs font-semibold text-gray-900 group-data-[collapsible=icon]:hidden">
                             {auth.activeOrganization?.name ?? 'Organization Name'}
                         </p>
