@@ -46,7 +46,7 @@
         "next": "15.5.7",
         "prisma": "^6.15.0",
         "react": "19.1.2",
-        "react-dom": "19.1.0",
+        "react-dom": "19.1.2",
         "react-hook-form": "^7.65.0",
         "react-markdown": "^10.1.0",
         "react-resizable-panels": "^3.0.6",
