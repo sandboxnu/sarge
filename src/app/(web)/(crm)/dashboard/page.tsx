@@ -2,6 +2,7 @@
 
 import OnboardingModal from '@/lib/components/modal/OnboardingModal';
 import useOnboardingState from '@/lib/hooks/useOnboardingState';
+import Image from 'next/image';
 
 export default function DashboardPage() {
     const { isOnboarding, isSignedOut, isUserLoading } = useOnboardingState();
@@ -14,8 +15,15 @@ export default function DashboardPage() {
             {isOnboarding ? (
                 <OnboardingModal />
             ) : (
-                <div>
-                    <p>This is the normal dashboard content!</p>
+                <div className="flex items-center justify-center h-screen flex-col">
+                    <Image
+                        src="/HelmetLogoFull.png"
+                        alt="Helmet Logo"
+                        width={900}
+                        height={900}
+                        priority
+                    />
+                    <p className="text-xl text-sarge-primary-700">Coming 2026...</p>
                 </div>
             )}
         </div>
