@@ -37,8 +37,8 @@ async function createTaskTemplate(taskTemplate: CreateTaskTemplateDTO): Promise<
     const createdTaskTemplate = await prisma.taskTemplate.create({
         data: {
             ...taskTemplate,
-            tags: taskTemplate.tagIds?.length
-                ? { connect: taskTemplate.tagIds.map((id) => ({ id })) }
+            tags: taskTemplate.tags?.length
+                ? { connect: taskTemplate.tags.map((id) => ({ id })) }
                 : undefined,
         },
     });
@@ -63,7 +63,7 @@ async function deleteTaskTemplate(id: string): Promise<TaskTemplate> {
 }
 
 async function updateTaskTemplate(taskTemplate: UpdateTaskTemplateDTO): Promise<TaskTemplate> {
-    const { id, title, content, public_test_cases, private_test_cases, tagIds } = taskTemplate;
+    const { id, title, content, public_test_cases, private_test_cases, tags } = taskTemplate;
 
     const current = await prisma.taskTemplate.findUnique({ where: { id } });
     if (!current) throw new NotFoundException('Task Template', id);
@@ -90,7 +90,11 @@ async function updateTaskTemplate(taskTemplate: UpdateTaskTemplateDTO): Promise<
             content,
             public_test_cases,
             private_test_cases,
-            tags: tagIds?.length ? { set: tagIds.map((tagId) => ({ id: tagId })) } : undefined,
+            tags: tags
+                ? {
+                      set: tags.map((tag) => ({ id: tag })),
+                  }
+                : undefined,
         },
     });
     return updatedTaskTemplate;
