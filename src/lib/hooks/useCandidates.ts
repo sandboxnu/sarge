@@ -7,6 +7,15 @@ interface UseCandidatesReturn {
     error: string | null;
     positionTitle: string | null;
     ensureAbsoluteUrl: (url: string) => string;
+    createCandidate: (
+        fullName: string,
+        email: string,
+        major: string,
+        graduationYear: string,
+        resume: string,
+        linkedin: string,
+        github: string
+    ) => Promise<void>;
 }
 
 const ensureAbsoluteUrl = (url: string) => {
@@ -58,11 +67,49 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
         }
     }, [positionId]);
 
+    const createCandidate = async (
+        fullName: string,
+        major: string,
+        email: string,
+        graduationDate: string,
+        resume: string,
+        linkedin: string,
+        github: string
+    ) => {
+        setLoading(true);
+        try {
+            const response = await fetch(`/api/position/${positionId}/candidates`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: fullName,
+                    email,
+                    major,
+                    graduationDate,
+                    resumeUrl: resume,
+                    linkedinUrl: linkedin,
+                    githubUrl: github,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to create candidate');
+            }
+            const data = await response.json();
+            setCandidates((prev) => [...prev, data.data]);
+            setError(null);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return {
         candidates,
         loading,
         error,
         positionTitle,
+        getStatusBadgeColor,
         ensureAbsoluteUrl,
+        createCandidate,
     };
 }

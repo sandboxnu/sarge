@@ -18,11 +18,11 @@ export const addCandidateWithDataSchema = z.object({
         .toLowerCase()
         .trim()
         .max(255, 'Email must be less than 255 characters'),
-    linkedinUrl: z.union([z.literal('-'), z.string().url('Invalid LinkedIn URL')]).optional(),
-    githubUrl: z.union([z.literal('-'), z.string().url('Invalid GitHub URL')]).optional(),
+    linkedinUrl: z.union([z.literal('-'), z.string()]).optional(),
+    githubUrl: z.union([z.literal('-'), z.string()]).optional(),
     major: z.union([z.literal('-'), z.string()]).optional(),
     graduationDate: z.union([z.literal('-'), z.string()]).optional(),
-    resumeUrl: z.union([z.literal('-'), z.string().url('Invalid resume URL')]).optional(),
+    resumeUrl: z.union([z.literal('-'), z.string()]).optional(),
 });
 
 // for batch adding candidates (CSV upload flow)

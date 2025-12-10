@@ -29,7 +29,7 @@ async function addCandidateToPosition(
     candidateData: AddCandidateWithDataDTO,
     positionId: string,
     orgId: string
-): Promise<CandidatePoolEntry> {
+): Promise<CandidatePoolDisplayInfo> {
     await validatePositionAccess(positionId, orgId);
 
     const entry = await prisma.candidatePoolEntry.create({
@@ -53,6 +53,33 @@ async function addCandidateToPosition(
                         graduationDate: candidateData.graduationDate,
                         resumeUrl: candidateData.resumeUrl,
                     },
+                },
+            },
+        },
+        select: {
+            assessmentStatus: true,
+            decisionStatus: true,
+            candidate: {
+                select: {
+                    name: true,
+                    major: true,
+                    graduationDate: true,
+                    githubUrl: true,
+                    resumeUrl: true,
+                },
+            },
+            assessment: {
+                select: {
+                    id: true,
+                    uniqueLink: true,
+                    submittedAt: true,
+                },
+            },
+            decisionMaker: {
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
                 },
             },
         },

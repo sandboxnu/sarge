@@ -1,7 +1,9 @@
 'use client';
 
+import { Button } from '@/lib/components/Button';
 import { DataTable } from '@/lib/components/DataTable';
 import { Chip } from '@/lib/components/Chip';
+import CreateCandidateModal from '@/lib/components/modal/CreateCandidateModal';
 import useCandidates from '@/lib/hooks/useCandidates';
 import type { CandidatePoolDisplayInfo } from '@/lib/types/position.types';
 import {
@@ -11,14 +13,23 @@ import {
     getDecisionStatusLabel,
 } from '@/lib/utils/status.utils';
 import type { ColumnDef } from '@tanstack/react-table';
-import { ChevronLeft, ExternalLink } from 'lucide-react';
+import { ChevronLeft, ExternalLink, Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { use, useMemo } from 'react';
+import { use, useMemo, useState } from 'react';
 
 export default function CandidatesPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
     const router = useRouter();
-    const { candidates, loading, error, positionTitle, ensureAbsoluteUrl } = useCandidates(id);
+    const [isModalManualOpen, setIsModalManualOpen] = useState(false);
+    const {
+        candidates,
+        loading,
+        error,
+        positionTitle,
+        getStatusBadgeColor,
+        ensureAbsoluteUrl,
+        createCandidate,
+    } = useCandidates(id);
 
     const columns = useMemo<ColumnDef<CandidatePoolDisplayInfo>[]>(
         () => [
@@ -84,28 +95,53 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
     );
 
     return (
-        <div className="flex flex-col gap-8 px-8 py-7">
-            <div className="flex items-center gap-4">
-                <button
-                    onClick={() => router.push('/positions')}
-                    className="hover:bg-sarge-gray-100 rounded-lg p-2"
-                >
-                    <ChevronLeft className="size-5" />
-                </button>
-                <h1 className="text-2xl font-semibold">All Positions</h1>
+        <>
+            <div className="flex flex-col gap-8 px-8 py-7">
+                <div className="flex items-center gap-4">
+                    <button
+                        onClick={() => router.push('/positions')}
+                        className="hover:bg-sarge-gray-100 rounded-lg p-2"
+                    >
+                        <ChevronLeft className="size-5" />
+                    </button>
+                    <h1 className="text-2xl font-semibold">All Positions</h1>
+                </div>
+
+                <hr />
+                <div className="flex justify-between">
+                    <div className="space-y-0">
+                        <h1 className="text-lg font-semibold">{positionTitle} Candidates</h1>
+                        <h3 className="text-sm">
+                            {candidates.length}{' '}
+                            {candidates.length === 1 ? 'candidate' : 'candidates'}
+                        </h3>
+                    </div>
+                    <div className="flex gap-x-4">
+                        <Button
+                            variant="secondary"
+                            className="px-4 py-2"
+                            onClick={() => setIsModalManualOpen(true)}
+                        >
+                            <Plus className="size-5" />
+                            Manual Add
+                        </Button>
+                        <Button className="px-4 py-2">
+                            <Plus className="size-5" />
+                            Import CSV
+                        </Button>
+                    </div>
+                </div>
+
+                {loading && <p>Loading candidates...</p>}
+                {error && <p className="text-sarge-error-700">Error: {error}</p>}
+                {!loading && !error && <DataTable columns={columns} data={candidates} />}
             </div>
 
-            <hr />
-            <div className="space-y-0">
-                <h1 className="text-lg font-semibold">{positionTitle} Candidates</h1>
-                <h3 className="text-sm">
-                    {candidates.length} {candidates.length === 1 ? 'candidate' : 'candidates'}
-                </h3>
-            </div>
-
-            {loading && <p>Loading candidates...</p>}
-            {error && <p className="text-sarge-error-700">Error: {error}</p>}
-            {!loading && !error && <DataTable columns={columns} data={candidates} />}
-        </div>
+            <CreateCandidateModal
+                open={isModalManualOpen}
+                onOpenChange={setIsModalManualOpen}
+                onCreate={createCandidate}
+            />
+        </>
     );
 }
