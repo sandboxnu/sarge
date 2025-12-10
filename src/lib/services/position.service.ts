@@ -3,10 +3,7 @@ import { type CreatePositionDTO, type UpdatePositionDTO } from '@/lib/schemas/po
 import { type Position } from '@/generated/prisma';
 import { AssessmentStatus } from '@/generated/prisma';
 import { NotFoundException } from '@/lib/utils/errors.utils';
-import {
-    type PositionWithCounts,
-    type PositionPreviewData,
-} from '@/lib/types/position.types';
+import { type PositionWithCounts, type PositionPreviewData } from '@/lib/types/position.types';
 
 async function createPosition(
     positionRequest: CreatePositionDTO,

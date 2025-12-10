@@ -4,7 +4,7 @@ export const candidatesData = [
         name: 'Carter Herman',
         email: 'carter.herman@northeastern.edu',
         linkedinUrl: 'https://www.linkedin.com/in/carter-herman/',
-        githubUrl: 'https://github.com/carterherman', 
+        githubUrl: 'https://github.com/carterherman',
         major: 'Computer Science',
         graduationDate: 'May 2027',
         resumeUrl: null,

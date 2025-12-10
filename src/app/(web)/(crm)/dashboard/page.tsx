@@ -15,7 +15,7 @@ export default function DashboardPage() {
             {isOnboarding ? (
                 <OnboardingModal />
             ) : (
-                <div className="flex items-center justify-center h-screen flex-col">
+                <div className="flex h-screen flex-col items-center justify-center">
                     <Image
                         src="/HelmetLogoFull.png"
                         alt="Helmet Logo"
@@ -23,7 +23,7 @@ export default function DashboardPage() {
                         height={900}
                         priority
                     />
-                    <p className="text-xl text-sarge-primary-700">Coming 2026...</p>
+                    <p className="text-sarge-primary-700 text-xl">Coming 2026...</p>
                 </div>
             )}
         </div>

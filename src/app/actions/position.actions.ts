@@ -9,11 +9,7 @@ export async function createPositionAction(title: string): Promise<void> {
     const session = await getSession();
     const parsed = createPositionSchema.parse({ title });
 
-    await PositionService.createPosition(
-        parsed,
-        session.userId,
-        session.activeOrganizationId
-    );
+    await PositionService.createPosition(parsed, session.userId, session.activeOrganizationId);
 
     revalidatePath('/positions');
 }

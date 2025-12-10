@@ -14,10 +14,7 @@ interface CreatePositionModalProps {
     onOpenChange: (open: boolean) => void;
 }
 
-export default function CreatePositionModal({
-    open,
-    onOpenChange,
-}: CreatePositionModalProps) {
+export default function CreatePositionModal({ open, onOpenChange }: CreatePositionModalProps) {
     const [positionName, setPositionName] = useState('');
     const [isCreating, setIsCreating] = useState(false);
     const [localError, setLocalError] = useState<string | null>(null);
@@ -73,7 +70,7 @@ export default function CreatePositionModal({
                             className="h-11"
                         />
                         {localError && (
-                            <div className="text-sarge-error-700 mt-1 flex items-center gap-2 text-body-s">
+                            <div className="text-sarge-error-700 text-body-s mt-1 flex items-center gap-2">
                                 <AlertCircle className="size-4" />
                                 {localError}
                             </div>

@@ -5,10 +5,6 @@ import { Dialog, DialogContent, DialogTitle } from './Modal';
 import { FileText, ExternalLink, SquareArrowOutUpRightIcon } from 'lucide-react';
 import { cn } from '@/lib/utils/cn.utils';
 import AvatarGroup from '@/lib/components/AvatarGroup';
-import type {
-    PositionPreviewData,
-    PositionPreviewCandidate,
-} from '@/lib/types/position.types';
 import type { AssessmentStatus, DecisionStatus } from '@/generated/prisma';
 import { getPositionPreviewAction } from '@/app/actions/position.actions';
 
@@ -98,26 +94,26 @@ function CandidateTable({
     candidates: Awaited<ReturnType<typeof getPositionPreviewAction>>['candidates'];
 }) {
     return (
-        <div className="bg-white max-h-[400px] overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="max-h-[400px] overflow-y-auto bg-white [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <table className="w-full">
                 <thead className="sticky top-0 z-10 bg-white">
                     <tr className="border-sarge-gray-200 border-b">
-                        <th className="text-sarge-gray-700 px-4 py-3 text-left text-body-s uppercase tracking-wider">
+                        <th className="text-sarge-gray-700 text-body-s px-4 py-3 text-left tracking-wider uppercase">
                             NAME/MAJOR
                         </th>
-                        <th className="text-sarge-gray-700 px-4 py-3 text-center text-body-s uppercase tracking-wider">
+                        <th className="text-sarge-gray-700 text-body-s px-4 py-3 text-center tracking-wider uppercase">
                             GRAD YEAR
                         </th>
-                        <th className="text-sarge-gray-700 px-4 py-3 text-center text-body-s uppercase tracking-wider">
+                        <th className="text-sarge-gray-700 text-body-s px-4 py-3 text-center tracking-wider uppercase">
                             OA STATUS
                         </th>
-                        <th className="text-sarge-gray-700 px-4 py-3 text-center text-body-s uppercase tracking-wider">
+                        <th className="text-sarge-gray-700 text-body-s px-4 py-3 text-center tracking-wider uppercase">
                             GRADER
                         </th>
-                        <th className="text-sarge-gray-700 px-4 py-3 text-center text-body-s uppercase tracking-wider">
+                        <th className="text-sarge-gray-700 text-body-s px-4 py-3 text-center tracking-wider uppercase">
                             DECISION
                         </th>
-                        <th className="text-sarge-gray-700 px-4 py-3 text-center text-body-s uppercase tracking-wider">
+                        <th className="text-sarge-gray-700 text-body-s px-4 py-3 text-center tracking-wider uppercase">
                             SUBMISSION
                         </th>
                     </tr>
@@ -250,10 +246,14 @@ export default function PositionPreviewModal({
                 className="bg-sarge-gray-50 flex max-h-[85vh] w-full max-w-5xl flex-col gap-0 overflow-hidden p-0 sm:max-w-5xl"
                 showCloseButton={true}
             >
-                <div className="relative flex flex-shrink-0 items-start px-6 pt-6 pb-2 pr-[72px]">
+                <div className="relative flex flex-shrink-0 items-start px-6 pt-6 pr-[72px] pb-2">
                     <div className="flex flex-col gap-1">
                         <DialogTitle className="text-label-m text-sarge-gray-800">
-                            {isPending ? 'Loading...' : error ? 'Error' : (position?.title ?? 'Position')}
+                            {isPending
+                                ? 'Loading...'
+                                : error
+                                  ? 'Error'
+                                  : (position?.title ?? 'Position')}
                         </DialogTitle>
                         {!isPending && !error && position && (
                             <p className="text-body-s text-sarge-gray-600">
@@ -265,7 +265,7 @@ export default function PositionPreviewModal({
                     {!isPending && !error && position && (
                         <button
                             onClick={handleViewFullPosition}
-                            className="absolute right-12 top-4 text-sarge-gray-600 hover:text-sarge-primary-500 transition-colors rounded-xs opacity-70 hover:opacity-100"
+                            className="text-sarge-gray-600 hover:text-sarge-primary-500 absolute top-4 right-12 rounded-xs opacity-70 transition-colors hover:opacity-100"
                             aria-label="Open position in new tab"
                         >
                             <SquareArrowOutUpRightIcon className="size-4" />
@@ -288,13 +288,11 @@ export default function PositionPreviewModal({
                 {!isPending && !error && position && (
                     <div className="flex min-h-0 flex-1 flex-col">
                         <div className="flex flex-shrink-0 flex-col gap-2 px-6 pt-2 pb-6">
-                            <span className="text-label-s text-sarge-gray-800">
-                                Assessment
-                            </span>
+                            <span className="text-label-s text-sarge-gray-800">Assessment</span>
 
                             <div className="border-sarge-gray-200 overflow-hidden rounded-lg border">
                                 {position.assessmentTemplate ? (
-                                    <div className="bg-white border-sarge-gray-200 border-b p-3">
+                                    <div className="border-sarge-gray-200 border-b bg-white p-3">
                                         <div className="flex flex-col gap-2">
                                             <div className="flex items-center gap-2">
                                                 <FileText className="text-sarge-gray-600 size-5" />
@@ -320,7 +318,7 @@ export default function PositionPreviewModal({
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className="bg-white border-sarge-gray-200 border-b p-4">
+                                    <div className="border-sarge-gray-200 border-b bg-white p-4">
                                         <p className="text-body-s text-sarge-gray-600 text-center">
                                             No assessment assigned to this position
                                         </p>
