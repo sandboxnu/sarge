@@ -14,12 +14,14 @@ export type CreateCandidateModalProps = {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     onCreate: (candidate: AddCandidateWithDataDTO) => Promise<void>;
+    onSwitchModal?: () => void;
 };
 
 export default function CreateCandidateModal({
     open,
     onOpenChange,
     onCreate,
+    onSwitchModal,
 }: CreateCandidateModalProps) {
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
@@ -96,7 +98,10 @@ export default function CreateCandidateModal({
                         <DialogTitle className="text-display-xs text-sarge-gray-800 font-bold">
                             Add new candidate
                         </DialogTitle>
-                        <button className="text-label-xs text-sarge-primary-600 hover:text-sarge-primary-700 px-1 font-medium transition-colors">
+                        <button
+                            onClick={onSwitchModal}
+                            className="text-label-xs text-sarge-primary-600 hover:text-sarge-primary-700 px-1 font-medium transition-colors"
+                        >
                             Import CSV
                         </button>
                     </div>

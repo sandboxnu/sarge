@@ -14,6 +14,7 @@ export type UploadCSVModalProps = {
     positionId: string;
     onOpenChange: (open: boolean) => void;
     onCreate: (candidates: AddCandidateWithDataDTO[]) => Promise<void>;
+    onSwitchModal?: () => void;
 };
 
 export default function UploadCSVModal({
@@ -21,6 +22,7 @@ export default function UploadCSVModal({
     positionId,
     onOpenChange,
     onCreate,
+    onSwitchModal,
 }: UploadCSVModalProps) {
     const {
         selectedFile,
@@ -72,7 +74,10 @@ export default function UploadCSVModal({
                             </a>
                         </div>
                         <div className="flex items-center gap-2">
-                            <button className="text-label-xs text-sarge-primary-600 hover:text-sarge-primary-700 px-1 py-0 font-medium transition-colors">
+                            <button
+                                onClick={onSwitchModal}
+                                className="text-label-xs text-sarge-primary-600 hover:text-sarge-primary-700 px-1 py-0 font-medium transition-colors"
+                            >
                                 Add details manually
                             </button>
                             <button

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { CandidatePoolDisplayInfo } from '@/lib/types/position.types';
 import type { AddCandidateWithDataDTO } from '@/lib/schemas/candidate-pool.schema';
+import { toast } from 'sonner';
 
 interface UseCandidatesReturn {
     candidates: CandidatePoolDisplayInfo[];
@@ -85,11 +86,15 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
             });
 
             if (!response.ok) {
-                throw new Error('Failed to create candidates in batch');
+                setError('Failed to batch create candidates');
+                return;
             }
             const data = await response.json();
             setCandidates((prev) => [...prev, ...data.data.candidates]);
             setError(null);
+        } catch {
+            setError('Failed to batch create candidates');
+            toast.error('Batch creation failed');
         } finally {
             setLoading(false);
         }
