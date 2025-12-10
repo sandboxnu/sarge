@@ -71,7 +71,7 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
             />
             <UploadCSVModal
                 open={isCSVModalOpen}
-                positionId={'cmiz82dgh00016ly5vie2b1a6'}
+                positionId={id}
                 onOpenChange={setIsCSVModalOpen}
                 onCreate={batchCreateCandidates}
                 onSwitchModal={() => {

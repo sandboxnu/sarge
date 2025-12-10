@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { AddCandidateWithDataDTO } from '@/lib/schemas/candidate-pool.schema';
+import { toast } from 'sonner';
 
 export function useUploadCSV(positionId: string) {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -45,12 +46,15 @@ export function useUploadCSV(positionId: string) {
                 body: formData,
             });
             if (!response.ok) {
-                alert(await response.text());
+                toast.error('An unexpected error occured');
             }
             const data = await response.json();
             setCandidates(data.data);
 
             setError(null);
+        } catch (error) {
+            setError(error as Error);
+            toast.error('Error uploading CSV');
         } finally {
             setIsUploading(false);
         }
@@ -74,7 +78,7 @@ export function useUploadCSV(positionId: string) {
                 setError(new Error('no candidates'));
             }
         } catch (error) {
-            console.error('Upload failed:', error);
+            setError(error as Error);
         } finally {
             setIsUploading(false);
         }
@@ -83,6 +87,7 @@ export function useUploadCSV(positionId: string) {
 
     const handleCancel = () => {
         setSelectedFile(null);
+        setCandidates(null);
         setStep('uploadCSV');
     };
 

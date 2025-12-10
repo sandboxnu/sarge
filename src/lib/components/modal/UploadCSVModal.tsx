@@ -45,13 +45,20 @@ export default function UploadCSVModal({
         }
     };
 
+    const handleOpenChange = (open: boolean) => {
+        if (!open) {
+            handleCancel();
+        }
+        onOpenChange(open);
+    };
+
     const onCancelClick = () => {
         handleCancel();
         onOpenChange(false);
     };
 
     return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
+        <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogContent
                 className={`border-sarge-gray-200 !max-w-[95vw] gap-0 px-7 py-6 ${
                     step === 'confirm' ? 'w-[1200px]' : 'w-[650px]'
@@ -210,6 +217,7 @@ function UploadCandidateTable({ candidates }: { candidates: AddCandidateWithData
                     <a
                         href={url}
                         target="_blank"
+                        rel="noopener noreferrer"
                         className="text-sarge-primary-500 hover:text-sarge-primary-600 inline-flex items-center gap-1.5"
                     >
                         Link to Resume <ExternalLink className="size-4" />
@@ -228,6 +236,7 @@ function UploadCandidateTable({ candidates }: { candidates: AddCandidateWithData
                     <a
                         href={url}
                         target="_blank"
+                        rel="noopener noreferrer"
                         className="text-sarge-primary-500 hover:text-sarge-primary-600 inline-flex items-center gap-1.5"
                     >
                         Link to LinkedIn <ExternalLink className="size-4" />
@@ -246,6 +255,7 @@ function UploadCandidateTable({ candidates }: { candidates: AddCandidateWithData
                     <a
                         href={url}
                         target="_blank"
+                        rel="noopener noreferrer"
                         className="text-sarge-primary-500 hover:text-sarge-primary-600 inline-flex items-center gap-1.5"
                     >
                         Link to GitHub <ExternalLink className="size-4" />

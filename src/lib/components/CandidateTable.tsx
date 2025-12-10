@@ -74,6 +74,7 @@ export function CandidateTable({ candidates }: CandidateTableProps) {
                         <a
                             href={isDisabled ? '#' : (row.original.assessment?.uniqueLink ?? '#')}
                             target={isDisabled ? undefined : '_blank'}
+                            rel="noopener noreferrer"
                             onClick={(e) => isDisabled && e.preventDefault()}
                             className={`inline-flex items-center gap-1.5 ${
                                 isDisabled
@@ -94,6 +95,7 @@ export function CandidateTable({ candidates }: CandidateTableProps) {
                         <a
                             href={ensureAbsoluteUrl(row.original.candidate.resumeUrl)}
                             target="_blank"
+                            rel="noopener noreferrer"
                             className="text-sarge-primary-500 hover:text-sarge-primary-600 inline-flex items-center gap-1.5"
                         >
                             Link to Resume <ExternalLink className="size-4" />

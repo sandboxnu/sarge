@@ -71,6 +71,9 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
             const data = await response.json();
             setCandidates((prev) => [...prev, data.data]);
             setError(null);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'An error occurred');
+            toast.error('Candidate creation failed');
         } finally {
             setLoading(false);
         }
