@@ -4,6 +4,7 @@ import { Button } from '@/lib/components/Button';
 import { DataTable } from '@/lib/components/DataTable';
 import { Chip } from '@/lib/components/Chip';
 import CreateCandidateModal from '@/lib/components/modal/CreateCandidateModal';
+import UploadCSVModal from '@/lib/components/modal/UploadCSVModal';
 import useCandidates from '@/lib/hooks/useCandidates';
 import type { CandidatePoolDisplayInfo } from '@/lib/types/position.types';
 import {
@@ -21,6 +22,7 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
     const { id } = use(params);
     const router = useRouter();
     const [isModalManualOpen, setIsModalManualOpen] = useState(false);
+    const [isCSVModalOpen, setIsCSVModalOpen] = useState(false);
     const {
         candidates,
         loading,
@@ -29,6 +31,7 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
         getStatusBadgeColor,
         ensureAbsoluteUrl,
         createCandidate,
+        batchCreateCandidates,
     } = useCandidates(id);
 
     const columns = useMemo<ColumnDef<CandidatePoolDisplayInfo>[]>(
@@ -96,8 +99,8 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
 
     return (
         <>
-            <div className="flex flex-col gap-8 px-8 py-7">
-                <div className="flex items-center gap-4">
+            <div className="flex max-h-screen flex-col gap-8 px-8 py-7">
+                <div className="sticky flex items-center gap-4">
                     <button
                         onClick={() => router.push('/positions')}
                         className="hover:bg-sarge-gray-100 rounded-lg p-2"
@@ -108,7 +111,7 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                 </div>
 
                 <hr />
-                <div className="flex justify-between">
+                <div className="sticky flex justify-between">
                     <div className="space-y-0">
                         <h1 className="text-lg font-semibold">{positionTitle} Candidates</h1>
                         <h3 className="text-sm">
@@ -125,7 +128,7 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                             <Plus className="size-5" />
                             Manual Add
                         </Button>
-                        <Button className="px-4 py-2">
+                        <Button className="px-4 py-2" onClick={() => setIsCSVModalOpen(true)}>
                             <Plus className="size-5" />
                             Import CSV
                         </Button>
@@ -141,6 +144,12 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                 open={isModalManualOpen}
                 onOpenChange={setIsModalManualOpen}
                 onCreate={createCandidate}
+            />
+            <UploadCSVModal
+                open={isCSVModalOpen}
+                positionId={'cmiz82dgh00016ly5vie2b1a6'}
+                onOpenChange={setIsCSVModalOpen}
+                onCreate={batchCreateCandidates}
             />
         </>
     );

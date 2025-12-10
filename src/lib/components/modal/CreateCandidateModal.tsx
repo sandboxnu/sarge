@@ -91,7 +91,6 @@ export default function CreateCandidateModal({
                 showCloseButton={true}
             >
                 <div className="flex h-full flex-col items-center justify-between">
-                    {/* Header */}
                     <div className="mb-6 flex w-full items-start justify-between">
                         <DialogTitle className="text-display-xs text-sarge-gray-800 font-bold">
                             Add new candidate
@@ -101,11 +100,8 @@ export default function CreateCandidateModal({
                         </button>
                     </div>
 
-                    {/* Form Fields */}
                     <div className="mb-6 flex w-full flex-col gap-6">
-                        {/* Horizontal layout fields with gap-[10px] */}
                         <div className="flex flex-col gap-[10px]">
-                            {/* Full Name */}
                             <div className="flex w-full items-center justify-between">
                                 <FieldLabel className="text-label-m text-sarge-gray-700 w-[222px] font-medium uppercase">
                                     Full Name
@@ -118,7 +114,6 @@ export default function CreateCandidateModal({
                                 />
                             </div>
 
-                            {/* Major */}
                             <div className="flex w-full items-center justify-center">
                                 <FieldLabel className="text-label-m text-sarge-gray-700 w-[222px] font-medium uppercase">
                                     Major
@@ -131,7 +126,6 @@ export default function CreateCandidateModal({
                                 />
                             </div>
 
-                            {/* Email */}
                             <div className="flex w-full items-center justify-center">
                                 <FieldLabel className="text-label-m text-sarge-gray-700 w-[222px] font-medium uppercase">
                                     Email
@@ -145,7 +139,6 @@ export default function CreateCandidateModal({
                                 />
                             </div>
 
-                            {/* Graduation Year */}
                             <div className="flex w-full items-center justify-center">
                                 <FieldLabel className="text-label-m text-sarge-gray-700 w-[222px] font-medium uppercase">
                                     Graduation Year
@@ -158,7 +151,6 @@ export default function CreateCandidateModal({
                                 />
                             </div>
 
-                            {/* Resume */}
                             <div className="flex w-full items-center justify-center">
                                 <FieldLabel className="text-label-m text-sarge-gray-700 w-[222px] font-medium uppercase">
                                     Resume
@@ -172,7 +164,6 @@ export default function CreateCandidateModal({
                                 />
                             </div>
 
-                            {/* LinkedIn */}
                             <div className="flex w-full items-center justify-center">
                                 <FieldLabel className="text-label-m text-sarge-gray-700 w-[222px] font-medium uppercase">
                                     LinkedIn
@@ -186,7 +177,6 @@ export default function CreateCandidateModal({
                                 />
                             </div>
 
-                            {/* GitHub */}
                             <div className="flex w-full items-center justify-center">
                                 <FieldLabel className="text-label-m text-sarge-gray-700 w-[222px] font-medium uppercase">
                                     GitHub
@@ -201,7 +191,6 @@ export default function CreateCandidateModal({
                             </div>
                         </div>
 
-                        {/* Error Message */}
                         {localError && (
                             <div className="text-sarge-error-700 flex items-center gap-2 text-sm">
                                 <AlertCircle className="size-4" />
@@ -210,7 +199,6 @@ export default function CreateCandidateModal({
                         )}
                     </div>
 
-                    {/* Footer */}
                     <div className="flex w-full items-center justify-between">
                         <div className="flex flex-1 items-center justify-end gap-5">
                             <button

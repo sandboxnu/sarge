@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react';
 import type { CandidatePoolDisplayInfo } from '@/lib/types/position.types';
+import type {
+    AddCandidateWithDataDTO,
+    BatchAddCandidatesDTO,
+} from '@/lib/schemas/candidate-pool.schema';
 
 interface UseCandidatesReturn {
     candidates: CandidatePoolDisplayInfo[];
@@ -7,15 +11,8 @@ interface UseCandidatesReturn {
     error: string | null;
     positionTitle: string | null;
     ensureAbsoluteUrl: (url: string) => string;
-    createCandidate: (
-        fullName: string,
-        email: string,
-        major: string,
-        graduationYear: string,
-        resume: string,
-        linkedin: string,
-        github: string
-    ) => Promise<void>;
+    createCandidate: (candidate: AddCandidateWithDataDTO) => Promise<void>;
+    batchCreateCandidates: (candidates: BatchAddCandidatesDTO) => Promise<void>;
 }
 
 const ensureAbsoluteUrl = (url: string) => {
@@ -67,29 +64,13 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
         }
     }, [positionId]);
 
-    const createCandidate = async (
-        fullName: string,
-        major: string,
-        email: string,
-        graduationDate: string,
-        resume: string,
-        linkedin: string,
-        github: string
-    ) => {
+    const createCandidate = async (candidate: AddCandidateWithDataDTO) => {
         setLoading(true);
         try {
             const response = await fetch(`/api/position/${positionId}/candidates`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    name: fullName,
-                    email,
-                    major,
-                    graduationDate,
-                    resumeUrl: resume,
-                    linkedinUrl: linkedin,
-                    githubUrl: github,
-                }),
+                body: JSON.stringify(candidate),
             });
 
             if (!response.ok) {
@@ -97,6 +78,26 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
             }
             const data = await response.json();
             setCandidates((prev) => [...prev, data.data]);
+            setError(null);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const batchCreateCandidates = async (candidates: BatchAddCandidatesDTO) => {
+        setLoading(true);
+        try {
+            const response = await fetch(`/api/position/${positionId}/candidates/batch`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ candidates }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to create candidates in batch');
+            }
+            const data = await response.json();
+            setCandidates((prev) => [...prev, ...data.data.candidates]);
             setError(null);
         } finally {
             setLoading(false);
@@ -111,5 +112,6 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
         getStatusBadgeColor,
         ensureAbsoluteUrl,
         createCandidate,
+        batchCreateCandidates,
     };
 }
