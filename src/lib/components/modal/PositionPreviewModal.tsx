@@ -3,89 +3,20 @@
 import { useEffect, useState, useTransition } from 'react';
 import { Dialog, DialogContent, DialogTitle } from './Modal';
 import { FileText, ExternalLink, SquareArrowOutUpRightIcon } from 'lucide-react';
-import { cn } from '@/lib/utils/cn.utils';
 import AvatarGroup from '@/lib/components/AvatarGroup';
-import type { AssessmentStatus, DecisionStatus } from '@/generated/prisma';
 import { getPositionPreviewAction } from '@/app/actions/position.actions';
+import { Chip } from '@/lib/components/Chip';
+import {
+    getAssessmentStatusVariant,
+    getAssessmentStatusLabel,
+    getDecisionStatusVariant,
+    getDecisionStatusLabel,
+} from '@/lib/utils/status.utils';
 
 interface PositionPreviewModalProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     positionId: string | null;
-}
-
-type ChipVariant = 'neutral' | 'success' | 'error' | 'primary';
-
-function getOAStatusVariant(status: AssessmentStatus): ChipVariant {
-    switch (status) {
-        case 'GRADED':
-            return 'success';
-        case 'SUBMITTED':
-            return 'primary';
-        case 'ASSIGNED':
-        case 'EXPIRED':
-        case 'NOT_ASSIGNED':
-        default:
-            return 'neutral';
-    }
-}
-
-function getOAStatusLabel(status: AssessmentStatus): string {
-    switch (status) {
-        case 'GRADED':
-            return 'Graded';
-        case 'SUBMITTED':
-            return 'Submitted';
-        case 'ASSIGNED':
-            return 'Sent';
-        case 'EXPIRED':
-            return 'Expired';
-        case 'NOT_ASSIGNED':
-        default:
-            return 'Not started';
-    }
-}
-
-function getDecisionVariant(status: DecisionStatus): ChipVariant {
-    switch (status) {
-        case 'ACCEPTED':
-            return 'success';
-        case 'REJECTED':
-            return 'error';
-        case 'PENDING':
-        default:
-            return 'neutral';
-    }
-}
-
-function getDecisionLabel(status: DecisionStatus): string {
-    switch (status) {
-        case 'ACCEPTED':
-            return 'Accept';
-        case 'REJECTED':
-            return 'Reject';
-        case 'PENDING':
-        default:
-            return 'Pending';
-    }
-}
-
-function Chip({
-    children,
-    variant = 'neutral',
-}: {
-    children: React.ReactNode;
-    variant?: ChipVariant;
-}) {
-    const base = 'inline-flex items-center px-2 py-1 rounded-lg text-label-xs';
-    const variantStyles = {
-        neutral: 'bg-sarge-gray-200 text-sarge-gray-600',
-        success: 'bg-sarge-success-100 text-sarge-success-800',
-        error: 'bg-sarge-error-200 text-sarge-error-700',
-        primary: 'bg-sarge-primary-200 text-sarge-primary-600',
-    }[variant];
-
-    return <span className={cn(base, variantStyles)}>{children}</span>;
 }
 
 function CandidateTable({
@@ -165,8 +96,12 @@ function CandidateTable({
                                         </span>
                                     </td>
                                     <td className="px-4 py-4 text-center">
-                                        <Chip variant={getOAStatusVariant(entry.assessmentStatus)}>
-                                            {getOAStatusLabel(entry.assessmentStatus)}
+                                        <Chip
+                                            variant={getAssessmentStatusVariant(
+                                                entry.assessmentStatus
+                                            )}
+                                        >
+                                            {getAssessmentStatusLabel(entry.assessmentStatus)}
                                         </Chip>
                                     </td>
                                     <td className="px-4 py-4">
@@ -175,8 +110,10 @@ function CandidateTable({
                                         </div>
                                     </td>
                                     <td className="px-4 py-4 text-center">
-                                        <Chip variant={getDecisionVariant(entry.decisionStatus)}>
-                                            {getDecisionLabel(entry.decisionStatus)}
+                                        <Chip
+                                            variant={getDecisionStatusVariant(entry.decisionStatus)}
+                                        >
+                                            {getDecisionStatusLabel(entry.decisionStatus)}
                                         </Chip>
                                     </td>
                                     <td className="px-4 py-4">

@@ -1,6 +1,8 @@
 'use client';
 import { FileText, MoreVertical } from 'lucide-react';
 import { cn } from '@/lib/utils/cn.utils';
+import { Chip } from '@/lib/components/Chip';
+import { getSubmissionVariant } from '@/lib/utils/status.utils';
 
 type PositionCardProps = {
     title: string;
@@ -98,32 +100,4 @@ export default function PositionCard({
             </div>
         </div>
     );
-}
-
-type ChipVariant = 'neutral' | 'error' | 'warning' | 'success';
-
-function getSubmissionVariant(submitted: number, total: number): ChipVariant {
-    if (total <= 0 || submitted <= 0) return 'neutral';
-    const r = submitted / total;
-    if (r <= 1 / 3) return 'error';
-    if (r <= 2 / 3) return 'warning';
-    return 'success';
-}
-
-function Chip({
-    children,
-    variant = 'neutral',
-}: {
-    children: React.ReactNode;
-    variant?: ChipVariant;
-}) {
-    const base = 'inline-flex items-center px-2 py-1 rounded-md text-label-xs';
-    const variantStyles = {
-        neutral: 'bg-sarge-gray-200 text-sarge-gray-600',
-        error: 'bg-sarge-error-200 text-sarge-error-700',
-        warning: 'bg-sarge-warning-100 text-sarge-warning-700',
-        success: 'bg-sarge-success-100 text-sarge-success-800',
-    }[variant];
-
-    return <span className={cn(base, variantStyles)}>{children}</span>;
 }
