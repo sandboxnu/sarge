@@ -5,14 +5,15 @@ import { DialogContent, DialogTitle } from './Modal';
 import { Button } from '@/lib/components/Button';
 import { ExternalLink, Import, X } from 'lucide-react';
 import { DataTable } from '@/lib/components/DataTable';
-import type { BatchAddCandidatesDTO } from '@/lib/schemas/candidate-pool.schema';
+import type { AddCandidateWithDataDTO } from '@/lib/schemas/candidate-pool.schema';
 import { useUploadCSV } from '@/lib/hooks/useUploadCSV';
+import type { ColumnDef } from '@tanstack/react-table';
 
 export type UploadCSVModalProps = {
     open: boolean;
     positionId: string;
     onOpenChange: (open: boolean) => void;
-    onCreate: (candidates: BatchAddCandidatesDTO) => Promise<void>;
+    onCreate: (candidates: AddCandidateWithDataDTO[]) => Promise<void>;
 };
 
 export default function UploadCSVModal({
@@ -50,7 +51,9 @@ export default function UploadCSVModal({
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent
-                className="border-sarge-gray-200 w-[650px] !max-w-[95vw] gap-0 px-7 py-6"
+                className={`border-sarge-gray-200 !max-w-[95vw] gap-0 px-7 py-6 ${
+                    step === 'confirm' ? 'w-[1200px]' : 'w-[650px]'
+                }`}
                 showCloseButton={false}
             >
                 <div className="flex w-full flex-col gap-4">
@@ -124,11 +127,12 @@ export default function UploadCSVModal({
                             <div className="">
                                 <div className="text-lg font-bold">Preview</div>
                                 <div className="text-sm font-light">
-                                    {0} Candidates will be added
+                                    {candidates?.length} Candidates will be added
                                 </div>
                             </div>
-                            <div className="">{JSON.stringify(candidates, null, 2)}</div>
-                            <DataTable columns={[]} data={[]} />
+                            <div className="max-h-[500px] overflow-y-auto">
+                                <UploadCandidateTable candidates={candidates ?? []} />
+                            </div>
                         </div>
                     )}
 
@@ -156,4 +160,97 @@ export default function UploadCSVModal({
             </DialogContent>
         </Dialog>
     );
+}
+
+function UploadCandidateTable({ candidates }: { candidates: AddCandidateWithDataDTO[] }) {
+    const columns: ColumnDef<AddCandidateWithDataDTO>[] = [
+        {
+            accessorKey: 'name',
+            header: 'NAME/MAJOR',
+            cell: ({ row }) => (
+                <div className="flex flex-col">
+                    <span className="text-sarge-gray-800 text-lg">{row.original.name}</span>
+                    <span className="text-sarge-gray-600 text-sm">
+                        {row.original.major && row.original.major !== '-'
+                            ? row.original.major
+                            : 'N/A'}
+                    </span>
+                </div>
+            ),
+        },
+        {
+            accessorKey: 'email',
+            header: 'EMAIL',
+            cell: ({ row }) => (
+                <span className="text-sarge-gray-800 text-sm">{row.original.email}</span>
+            ),
+        },
+        {
+            accessorKey: 'graduationDate',
+            header: 'GRADUATION DATE',
+            cell: ({ row }) => (
+                <span className="text-sarge-gray-800 text-sm">
+                    {row.original.graduationDate && row.original.graduationDate !== '-'
+                        ? row.original.graduationDate
+                        : 'N/A'}
+                </span>
+            ),
+        },
+        {
+            accessorKey: 'resumeUrl',
+            header: 'RESUME',
+            cell: ({ row }) => {
+                const url = row.original.resumeUrl;
+                return url ? (
+                    <a
+                        href={url}
+                        target="_blank"
+                        className="text-sarge-primary-500 hover:text-sarge-primary-600 inline-flex items-center gap-1.5"
+                    >
+                        Link to Resume <ExternalLink className="size-4" />
+                    </a>
+                ) : (
+                    'N/A'
+                );
+            },
+        },
+        {
+            accessorKey: 'linkedinUrl',
+            header: 'LINKEDIN',
+            cell: ({ row }) => {
+                const url = row.original.linkedinUrl;
+                return url ? (
+                    <a
+                        href={url}
+                        target="_blank"
+                        className="text-sarge-primary-500 hover:text-sarge-primary-600 inline-flex items-center gap-1.5"
+                    >
+                        Link to LinkedIn <ExternalLink className="size-4" />
+                    </a>
+                ) : (
+                    'N/A'
+                );
+            },
+        },
+        {
+            accessorKey: 'githubUrl',
+            header: 'GITHUB',
+            cell: ({ row }) => {
+                const url = row.original.githubUrl;
+                return url ? (
+                    <a
+                        href={url}
+                        target="_blank"
+                        className="text-sarge-primary-500 hover:text-sarge-primary-600 inline-flex items-center gap-1.5"
+                    >
+                        Link to GitHub <ExternalLink className="size-4" />
+                    </a>
+                ) : (
+                    'N/A'
+                );
+            },
+        },
+    ];
+
+    return <DataTable columns={columns} data={candidates} />;
 }

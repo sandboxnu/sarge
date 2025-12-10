@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import type { BatchAddCandidatesDTO } from '@/lib/schemas/candidate-pool.schema';
+import type { AddCandidateWithDataDTO } from '@/lib/schemas/candidate-pool.schema';
 
 export function useUploadCSV(positionId: string) {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [isDragging, setIsDragging] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
     const [error, setError] = useState<Error | null>(null);
-    const [candidates, setCandidates] = useState<BatchAddCandidatesDTO | null>(null);
+    const [candidates, setCandidates] = useState<AddCandidateWithDataDTO[] | null>(null);
     const [step, setStep] = useState<'uploadCSV' | 'confirm'>('uploadCSV');
 
     const handleDragOver = (e: React.DragEvent) => {
@@ -56,7 +56,9 @@ export function useUploadCSV(positionId: string) {
         }
     };
 
-    const handleCreate = async (onCreate: (candidates: BatchAddCandidatesDTO) => Promise<void>) => {
+    const handleCreate = async (
+        onCreate: (candidates: AddCandidateWithDataDTO[]) => Promise<void>
+    ) => {
         if (!selectedFile) return;
         setIsUploading(true);
         try {

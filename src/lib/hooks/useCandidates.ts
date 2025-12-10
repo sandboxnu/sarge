@@ -1,24 +1,15 @@
 import { useEffect, useState } from 'react';
 import type { CandidatePoolDisplayInfo } from '@/lib/types/position.types';
-import type {
-    AddCandidateWithDataDTO,
-    BatchAddCandidatesDTO,
-} from '@/lib/schemas/candidate-pool.schema';
+import type { AddCandidateWithDataDTO } from '@/lib/schemas/candidate-pool.schema';
 
 interface UseCandidatesReturn {
     candidates: CandidatePoolDisplayInfo[];
     loading: boolean;
     error: string | null;
     positionTitle: string | null;
-    ensureAbsoluteUrl: (url: string) => string;
     createCandidate: (candidate: AddCandidateWithDataDTO) => Promise<void>;
-    batchCreateCandidates: (candidates: BatchAddCandidatesDTO) => Promise<void>;
+    batchCreateCandidates: (candidates: AddCandidateWithDataDTO[]) => Promise<void>;
 }
-
-const ensureAbsoluteUrl = (url: string) => {
-    if (!url) return '';
-    return url.startsWith('http://') || url.startsWith('https://') ? url : `https://${url}`;
-};
 
 export default function useCandidates(positionId: string): UseCandidatesReturn {
     const [candidates, setCandidates] = useState<CandidatePoolDisplayInfo[]>([]);
@@ -84,7 +75,7 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
         }
     };
 
-    const batchCreateCandidates = async (candidates: BatchAddCandidatesDTO) => {
+    const batchCreateCandidates = async (candidates: AddCandidateWithDataDTO[]) => {
         setLoading(true);
         try {
             const response = await fetch(`/api/position/${positionId}/candidates/batch`, {
@@ -109,8 +100,6 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
         loading,
         error,
         positionTitle,
-        getStatusBadgeColor,
-        ensureAbsoluteUrl,
         createCandidate,
         batchCreateCandidates,
     };
