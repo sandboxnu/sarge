@@ -4,6 +4,9 @@ import { organizationsData } from './seed-data/organizations.seed';
 import { usersData } from './seed-data/users.seed';
 import { positionsData } from './seed-data/positions.seed';
 import { candidatesData } from './seed-data/candidates.seed';
+import { taskTemplatesData } from './seed-data/task-template.seed';
+import { assessmentTemplatesData } from './seed-data/assessment-template.seed';
+import { assessmentsData } from './seed-data/assessment.seed';
 
 /**
  * Seed Organizations
@@ -194,6 +197,66 @@ async function seedCandidatePoolEntries() {
 }
 
 /**
+ * Seed Tasks
+ */
+
+async function seedTasks() {
+    console.log('Seeding tasks...');
+
+    for (const taskTemplateData of taskTemplatesData) {
+        await prisma.taskTemplate.upsert({
+            where: { id: taskTemplateData.id },
+            update: {},
+            create: taskTemplateData,
+        });
+
+        console.log(`  Created task template: ${taskTemplateData.title}`);
+    }
+}
+
+/**
+ * Seed Assessment Templates
+ */
+
+async function seedAssessmentTemplates() {
+    console.log('Seeding assessment templates...');
+
+    const orgId = organizationsData[0].id;
+    const taskTemplateIds = taskTemplatesData.map((t) => t.id);
+
+    for (const assessmentTemplateData of assessmentTemplatesData) {
+        const createdAssessmentTemplate = await prisma.assessmentTemplate.upsert({
+            where: { id: assessmentTemplateData.id },
+            update: {},
+            create: {
+                id: assessmentTemplateData.id,
+                title: assessmentTemplateData.title,
+                description: assessmentTemplateData.description,
+                orgId: orgId,
+            },
+        });
+    }
+}
+
+/**
+ * Seed Assessments
+ */
+
+async function seedAssessments() {
+    console.log('Seeding assessments...');
+
+    for (const assessmentData of assessmentsData) {
+        await prisma.assessment.upsert({
+            where: { id: assessmentData.id },
+            update: {},
+            create: assessmentData,
+        });
+
+        console.log(`  Created assessment: ${assessmentData.id}`);
+    }
+}
+
+/**
  * Main seeding function
  */
 async function main() {
@@ -207,6 +270,9 @@ async function main() {
         await seedPositions();
         await seedCandidates();
         await seedCandidatePoolEntries();
+        await seedTasks();
+        await seedAssessmentTemplates();
+        await seedAssessments();
 
         console.log('\nDatabase seeding completed successfully!');
     } catch (error) {
