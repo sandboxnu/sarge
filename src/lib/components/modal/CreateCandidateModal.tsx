@@ -8,19 +8,12 @@ import { Button } from '@/lib/components/Button';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { AlertCircle } from 'lucide-react';
+import type { AddCandidateWithDataDTO } from '@/lib/schemas/candidate-pool.schema';
 
 export type CreateCandidateModalProps = {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    onCreate: (
-        fullName: string,
-        email: string,
-        major: string,
-        graduationYear: string,
-        resume: string,
-        linkedin: string,
-        github: string
-    ) => Promise<void>;
+    onCreate: (candidate: AddCandidateWithDataDTO) => Promise<void>;
 };
 
 export default function CreateCandidateModal({
@@ -51,7 +44,15 @@ export default function CreateCandidateModal({
         setIsCreating(true);
         setLocalError(null);
         try {
-            await onCreate(fullName, major, email, graduationYear, resume, linkedin, github);
+            await onCreate({
+                name: fullName,
+                email,
+                ...(major && { major }),
+                ...(graduationYear && { graduationDate: graduationYear }),
+                ...(resume && { resumeUrl: resume }),
+                ...(linkedin && { linkedinUrl: linkedin }),
+                ...(github && { githubUrl: github }),
+            });
             toast.success('Candidate added successfully.');
             setFullName('');
             setEmail('');

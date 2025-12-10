@@ -3,10 +3,10 @@
 import { Dialog } from '@radix-ui/react-dialog';
 import { DialogContent, DialogTitle } from './Modal';
 import { Button } from '@/lib/components/Button';
-import { useState } from 'react';
 import { ExternalLink, Import, X } from 'lucide-react';
 import { DataTable } from '@/lib/components/DataTable';
 import type { BatchAddCandidatesDTO } from '@/lib/schemas/candidate-pool.schema';
+import { useUploadCSV } from '@/lib/hooks/useUploadCSV';
 
 export type UploadCSVModalProps = {
     open: boolean;
@@ -21,86 +21,30 @@ export default function UploadCSVModal({
     onOpenChange,
     onCreate,
 }: UploadCSVModalProps) {
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const [isDragging, setIsDragging] = useState(false);
-    const [isUploading, setIsUploading] = useState(false);
-    const [error, setError] = useState<Error | null>(null);
-    const [candidates, setCandidates] = useState<BatchAddCandidatesDTO | null>(null);
-    const [step, setStep] = useState<'uploadCSV' | 'confirm'>('uploadCSV');
+    const {
+        selectedFile,
+        isDragging,
+        isUploading,
+        candidates,
+        step,
+        handleDragOver,
+        handleDragLeave,
+        handleDrop,
+        handleFileSelect,
+        handleCreate,
+        handleCancel,
+    } = useUploadCSV(positionId);
 
-    const handleDragOver = (e: React.DragEvent) => {
-        e.preventDefault();
-        setIsDragging(true);
-    };
-
-    const handleDragLeave = () => {
-        setIsDragging(false);
-    };
-
-    const handleDrop = (e: React.DragEvent) => {
-        e.preventDefault();
-        setIsDragging(false);
-        const files = e.dataTransfer.files;
-        if (files.length > 0 && files[0].type === 'text/csv') {
-            setSelectedFile(files[0]);
+    const onCreateClick = async () => {
+        const shouldClose = await handleCreate(onCreate);
+        if (shouldClose) {
+            onOpenChange(false);
         }
     };
 
-    const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const files = e.target.files;
-        if (files && files.length > 0) {
-            setSelectedFile(files[0]);
-        }
-    };
-
-    const handleCreate = async () => {
-        if (!selectedFile) return;
-        setIsUploading(true);
-        try {
-            if (step === 'uploadCSV') {
-                await uploadCSV(selectedFile);
-                setStep('confirm');
-            } else if (candidates) {
-                await onCreate(candidates);
-                setSelectedFile(null);
-                setStep('uploadCSV');
-                onOpenChange(false);
-            } else {
-                setError(new Error('no candidates'));
-            }
-        } catch (error) {
-            console.error('Upload failed:', error);
-        } finally {
-            setIsUploading(false);
-        }
-    };
-
-    const handleCancel = () => {
-        setSelectedFile(null);
+    const onCancelClick = () => {
+        handleCancel();
         onOpenChange(false);
-        setStep('uploadCSV');
-    };
-
-    const uploadCSV = async (file: File) => {
-        setIsUploading(true);
-        try {
-            const formData = new FormData();
-            formData.append('file', file);
-
-            const response = await fetch(`/api/position/${positionId}/candidates/csv`, {
-                method: 'POST',
-                body: formData,
-            });
-            if (!response.ok) {
-                alert(await response.text());
-            }
-            const data = await response.json();
-            setCandidates(data.data);
-
-            setError(null);
-        } finally {
-            setIsUploading(false);
-        }
     };
 
     return (
@@ -190,14 +134,14 @@ export default function UploadCSVModal({
 
                     <div className="flex w-full items-center justify-between">
                         <button
-                            onClick={handleCancel}
+                            onClick={onCancelClick}
                             className="text-label-s text-sarge-primary-600 hover:text-sarge-primary-700 px-0 py-2 pr-4 text-left font-medium transition-colors"
                         >
                             Cancel
                         </button>
                         <Button
                             variant="primary"
-                            onClick={handleCreate}
+                            onClick={onCreateClick}
                             disabled={!selectedFile || isUploading}
                             className="h-9 w-[125px] px-4 py-2 disabled:opacity-50"
                         >
