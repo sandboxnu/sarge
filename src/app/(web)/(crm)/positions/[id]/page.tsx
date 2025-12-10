@@ -19,7 +19,7 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
 
     return (
         <>
-            <div className="flex max-h-screen flex-col gap-8 px-8 py-7">
+            <div className="flex max-h-screen flex-col gap-8 px-8 py-7 pb-20">
                 <div className="sticky flex items-center gap-4">
                     <button
                         onClick={() => router.push('/positions')}

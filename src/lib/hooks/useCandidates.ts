@@ -70,6 +70,7 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
             }
             const data = await response.json();
             setCandidates((prev) => [...prev, data.data]);
+            toast.success('Candidate created successfully');
             setError(null);
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An error occurred');
@@ -94,6 +95,7 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
             }
             const data = await response.json();
             setCandidates((prev) => [...prev, ...data.data.candidates]);
+            toast.success('Candidates created successfully');
             setError(null);
         } catch {
             setError('Failed to batch create candidates');
