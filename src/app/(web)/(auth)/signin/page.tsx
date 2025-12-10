@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -52,8 +53,8 @@ export default function SignInPage() {
             <div className="relative hidden overflow-hidden bg-white lg:flex lg:w-1/2">
                 <div className="from-sarge-primary-100 absolute -top-[42px] left-0 h-[calc(100%+84px)] w-full rounded-r-2xl bg-linear-to-b to-white" />
 
-                <div className="absolute top-0 left-0 z-10 px-8 pt-8">
-                    <h1 className="text-display-xs text-sarge-primary-500">Sarge</h1>
+                <div className="absolute top-0 left-0 z-10 pt-6 pr-6">
+                    <Image src="/HelmetLogoFull.png" alt="Sarge" width={200} height={61} priority />
                 </div>
 
                 <div className="relative flex flex-1 items-center justify-center px-8 pt-24 pb-10 lg:px-12">

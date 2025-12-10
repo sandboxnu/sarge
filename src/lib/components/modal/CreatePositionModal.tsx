@@ -7,18 +7,14 @@ import { Input } from '@/lib/components/Input';
 import { Button } from '@/lib/components/Button';
 import { AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import { createPositionAction } from '@/app/actions/position.actions';
 
 interface CreatePositionModalProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    onCreate: (title: string) => Promise<void>;
 }
 
-export default function CreatePositionModal({
-    open,
-    onOpenChange,
-    onCreate,
-}: CreatePositionModalProps) {
+export default function CreatePositionModal({ open, onOpenChange }: CreatePositionModalProps) {
     const [positionName, setPositionName] = useState('');
     const [isCreating, setIsCreating] = useState(false);
     const [localError, setLocalError] = useState<string | null>(null);
@@ -31,7 +27,7 @@ export default function CreatePositionModal({
         setIsCreating(true);
         setLocalError(null);
         try {
-            await onCreate(positionName);
+            await createPositionAction(positionName);
             toast.success('Position created successfully.');
             setPositionName('');
             onOpenChange(false);
@@ -74,7 +70,7 @@ export default function CreatePositionModal({
                             className="h-11"
                         />
                         {localError && (
-                            <div className="text-sarge-error-700 mt-1 flex items-center gap-2 text-sm">
+                            <div className="text-sarge-error-700 text-body-s mt-1 flex items-center gap-2">
                                 <AlertCircle className="size-4" />
                                 {localError}
                             </div>

@@ -1,6 +1,9 @@
 @import 'tailwindcss';
 
 :root {
+    /* Layout */
+    --navbar-height: 43px;
+
     /* Primary */
     --sarge-primary-700: #4125dc;
     --sarge-primary-600: #4d38ef;
@@ -179,6 +182,10 @@
 @layer base {
     * {
         @apply border-border;
+    }
+    html,
+    body {
+        @apply overflow-hidden;
     }
     body {
         @apply bg-background text-foreground font-sans;

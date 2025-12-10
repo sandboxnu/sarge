@@ -34,3 +34,45 @@ export interface BatchAddResult {
     entriesCreated: number;
     totalProcessed: number;
 }
+
+export interface PositionPreviewCandidate {
+    id: string;
+    assessmentStatus: AssessmentStatus;
+    decisionStatus: DecisionStatus;
+    candidate: {
+        id: string;
+        name: string;
+        major: string | null;
+        graduationDate: string | null;
+    };
+    assessment: {
+        id: string;
+        uniqueLink: string;
+        submittedAt: Date | null;
+        reviews: {
+            reviewer: {
+                id: string;
+                name: string;
+                email: string;
+                image: string | null;
+            };
+        }[];
+    } | null;
+}
+
+export interface PositionPreviewData {
+    id: string;
+    title: string;
+    createdAt: Date;
+    candidateCount: number;
+    assessmentTemplate: {
+        id: string;
+        title: string;
+    } | null;
+    candidates: PositionPreviewCandidate[];
+    stats: {
+        totalSent: number;
+        totalSubmitted: number;
+        totalGraded: number;
+    };
+}

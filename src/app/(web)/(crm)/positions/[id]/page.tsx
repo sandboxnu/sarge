@@ -1,8 +1,15 @@
 'use client';
 
 import { DataTable } from '@/lib/components/DataTable';
+import { Chip } from '@/lib/components/Chip';
 import useCandidates from '@/lib/hooks/useCandidates';
 import type { CandidatePoolDisplayInfo } from '@/lib/types/position.types';
+import {
+    getAssessmentStatusVariant,
+    getAssessmentStatusLabel,
+    getDecisionStatusVariant,
+    getDecisionStatusLabel,
+} from '@/lib/utils/status.utils';
 import type { ColumnDef } from '@tanstack/react-table';
 import { ChevronLeft, ExternalLink } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -11,8 +18,7 @@ import { use, useMemo } from 'react';
 export default function CandidatesPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
     const router = useRouter();
-    const { candidates, loading, error, positionTitle, getStatusBadgeColor, ensureAbsoluteUrl } =
-        useCandidates(id);
+    const { candidates, loading, error, positionTitle, ensureAbsoluteUrl } = useCandidates(id);
 
     const columns = useMemo<ColumnDef<CandidatePoolDisplayInfo>[]>(
         () => [
@@ -31,45 +37,16 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                 ),
             },
             {
-                accessorKey: 'decisionStatus',
-                header: 'OA STATUS',
-                cell: ({ row }) => {
-                    const status =
-                        row.original.assessmentStatus === 'NOT_ASSIGNED'
-                            ? 'Not started'
-                            : row.original.assessmentStatus;
-                    return (
-                        <span
-                            className={`inline-block rounded-full px-3 py-1 text-sm font-medium ${getStatusBadgeColor(status)}`}
-                        >
-                            {status}
-                        </span>
-                    );
-                },
-            },
-            {
                 accessorKey: 'assessmentStatus',
                 header: 'ASSESSMENT',
-                cell: ({ row }) => {
-                    const isDisabled = row.original.assessmentStatus === 'NOT_ASSIGNED';
-                    return (
-                        <a
-                            href={isDisabled ? '#' : (row.original.assessment?.uniqueLink ?? '#')}
-                            target={isDisabled ? undefined : '_blank'}
-                            onClick={(e) => isDisabled && e.preventDefault()}
-                            className={`inline-flex items-center gap-1.5 ${
-                                isDisabled
-                                    ? 'text-sarge-primary-300 cursor-not-allowed'
-                                    : 'text-sarge-primary-500 hover:text-sarge-primary-600'
-                            }`}
-                        >
-                            Link to Assessment <ExternalLink className="size-4" />
-                        </a>
-                    );
-                },
+                cell: ({ row }) => (
+                    <Chip variant={getAssessmentStatusVariant(row.original.assessmentStatus)}>
+                        {getAssessmentStatusLabel(row.original.assessmentStatus)}
+                    </Chip>
+                ),
             },
             {
-                accessorKey: 'candidate.resumeUrl',
+                accessorKey: 'assessment.uniqueLink',
                 header: 'RESUME',
                 cell: ({ row }) =>
                     row.original.candidate.resumeUrl ? (
@@ -86,17 +63,24 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
             },
             {
                 accessorKey: 'decisionMaker.name',
-                header: 'DECISION',
+                header: 'GRADER',
                 cell: ({ row }) => (
-                    <span
-                        className={`inline-block rounded-full px-3 py-1 text-sm font-medium ${getStatusBadgeColor(row.original.decisionStatus)}`}
-                    >
-                        {row.original.decisionStatus}
+                    <span className="text-sarge-gray-800">
+                        {row.original.decisionMaker?.name ?? 'N/A'}
                     </span>
                 ),
             },
+            {
+                accessorKey: 'decisionStatus',
+                header: 'DECISION',
+                cell: ({ row }) => (
+                    <Chip variant={getDecisionStatusVariant(row.original.decisionStatus)}>
+                        {getDecisionStatusLabel(row.original.decisionStatus)}
+                    </Chip>
+                ),
+            },
         ],
-        [getStatusBadgeColor, ensureAbsoluteUrl]
+        [ensureAbsoluteUrl]
     );
 
     return (

@@ -6,25 +6,8 @@ interface UseCandidatesReturn {
     loading: boolean;
     error: string | null;
     positionTitle: string | null;
-    getStatusBadgeColor: (status: string) => string;
     ensureAbsoluteUrl: (url: string) => string;
 }
-
-const getStatusBadgeColor = (status: string) => {
-    if (status === 'ACCEPTED' || status === 'SUBMITTED') {
-        return 'bg-sarge-success-100 text-sarge-success-800';
-    }
-    if (status === 'REJECTED' || status === 'EXPIRED') {
-        return 'bg-sarge-error-200 text-sarge-error-700';
-    }
-    if (status === 'ASSIGNED') {
-        return 'bg-sarge-warning-100 text-sarge-warning-500';
-    }
-    if (status === 'GRADED') {
-        return 'bg-sarge-primary-200 text-sarge-primary-700';
-    }
-    return 'bg-sarge-gray-200 text-sarge-gray-600';
-};
 
 const ensureAbsoluteUrl = (url: string) => {
     if (!url) return '';
@@ -75,5 +58,11 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
         }
     }, [positionId]);
 
-    return { candidates, loading, error, positionTitle, getStatusBadgeColor, ensureAbsoluteUrl };
+    return {
+        candidates,
+        loading,
+        error,
+        positionTitle,
+        ensureAbsoluteUrl,
+    };
 }

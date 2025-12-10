@@ -1,6 +1,8 @@
 'use client';
 import { FileText, MoreVertical } from 'lucide-react';
 import { cn } from '@/lib/utils/cn.utils';
+import { Chip } from '@/lib/components/Chip';
+import { getSubmissionVariant } from '@/lib/utils/status.utils';
 
 type PositionCardProps = {
     title: string;
@@ -10,6 +12,7 @@ type PositionCardProps = {
     submittedCount?: number;
     totalAssigned?: number;
     className?: string;
+    onClick?: () => void;
 };
 
 export default function PositionCard({
@@ -20,15 +23,39 @@ export default function PositionCard({
     submittedCount = 0,
     totalAssigned = 0,
     className,
+    onClick,
 }: PositionCardProps) {
     const submissionVariant = getSubmissionVariant(submittedCount, totalAssigned);
+
+    const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
+        // Don't trigger if clicking the menu button
+        if ((e.target as HTMLElement).closest('[data-menu-button]')) {
+            return;
+        }
+        onClick?.();
+    };
+
     return (
         <div
             className={cn(
                 'min-h-[160px] w-[384px]',
                 'border-sarge-gray-200 bg-sarge-gray-0 rounded-xl border p-4',
+                onClick && 'cursor-pointer transition-shadow hover:shadow-md',
                 className
             )}
+            onClick={handleCardClick}
+            role={onClick ? 'button' : undefined}
+            tabIndex={onClick ? 0 : undefined}
+            onKeyDown={
+                onClick
+                    ? (e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              onClick();
+                          }
+                      }
+                    : undefined
+            }
         >
             <div className="flex items-start justify-between gap-2">
                 <div className="flex min-w-0 flex-[1_0_0] flex-col items-start gap-1 px-1">
@@ -41,7 +68,11 @@ export default function PositionCard({
                     </p>
                 </div>
 
-                <button className="text-sarge-gray-800 grid min-h-[44px] min-w-[44px] place-items-center">
+                <button
+                    data-menu-button
+                    className="text-sarge-gray-800 grid min-h-[44px] min-w-[44px] place-items-center"
+                    onClick={(e) => e.stopPropagation()}
+                >
                     <MoreVertical className="h-5 w-5" />
                 </button>
             </div>
@@ -69,32 +100,4 @@ export default function PositionCard({
             </div>
         </div>
     );
-}
-
-type ChipVariant = 'neutral' | 'error' | 'warning' | 'success';
-
-function getSubmissionVariant(submitted: number, total: number): ChipVariant {
-    if (total <= 0 || submitted <= 0) return 'neutral';
-    const r = submitted / total;
-    if (r <= 1 / 3) return 'error';
-    if (r <= 2 / 3) return 'warning';
-    return 'success';
-}
-
-function Chip({
-    children,
-    variant = 'neutral',
-}: {
-    children: React.ReactNode;
-    variant?: ChipVariant;
-}) {
-    const base = 'inline-flex items-center px-2 py-1 rounded-md text-label-xs';
-    const variantStyles = {
-        neutral: 'bg-sarge-gray-200 text-sarge-gray-600',
-        error: 'bg-sarge-error-200 text-sarge-error-700',
-        warning: 'bg-sarge-warning-100 text-sarge-warning-700',
-        success: 'bg-sarge-success-100 text-sarge-success-800',
-    }[variant];
-
-    return <span className={cn(base, variantStyles)}>{children}</span>;
 }

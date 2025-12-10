@@ -17,6 +17,7 @@ import { useAuth } from '@/lib/auth/auth-context';
 import Image from 'next/image';
 import useOnboardingState from '@/lib/hooks/useOnboardingState';
 import { useRouter } from 'next/navigation';
+import { cn } from '@/lib/utils/cn.utils';
 
 const sidebarMenuItems = [
     {
@@ -59,9 +60,10 @@ export function AppSidebar() {
 
     return (
         <Sidebar
-            className={`border-sarge-primary-100 bg-sarge-primary-100 border-r-4 ${
-                isOnboarding ? 'opacity-0' : ''
-            }`}
+            className={cn(
+                'border-sarge-primary-100 bg-sarge-primary-100 !top-[var(--navbar-height)] !h-[calc(100vh-var(--navbar-height))] border-r-4',
+                isOnboarding && 'opacity-0'
+            )}
             collapsible="icon"
         >
             <SidebarHeader className="group-data-[collapsible=icon]:px-1 group-data-[collapsible=icon]:pb-2">

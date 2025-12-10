@@ -12,11 +12,15 @@
         "lint": "eslint . --max-warnings=0",
         "lint:fix": "eslint . --fix",
         "prisma:generate": "prisma generate",
+        "prisma:generate:prod": "dotenv -e .env.production.local -- prisma generate",
         "prettier:check": "prettier --check .",
         "prettier:fix": "prettier --write .",
         "build:check": "NEXT_TELEMETRY_DISABLED=1 next build",
         "db:seed": "tsx prisma/seed.ts",
+        "db:seed:prod": "dotenv -e .env.production.local -- tsx prisma/seed.ts",
         "db:teardown": "tsx prisma/teardown.ts",
+        "db:teardown:prod": "dotenv -e .env.production.local -- tsx prisma/teardown.ts",
+        "db:reset": "npm run db:teardown && npm run db:seed",
         "prisma:seed": "prisma db seed"
     },
     "prisma": {
@@ -63,6 +67,7 @@
         "@types/react-dom": "^19",
         "@typescript-eslint/eslint-plugin": "^8.43.0",
         "@typescript-eslint/parser": "^8.43.0",
+        "dotenv-cli": "^11.0.0",
         "eslint": "^9",
         "eslint-config-next": "15.5.7",
         "eslint-config-prettier": "^10.1.8",

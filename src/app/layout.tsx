@@ -41,10 +41,10 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body
-                className={`${inter.variable} ${satoshi.variable} grid h-dvh grid-rows-[auto_1fr] antialiased`}
+                className={`${inter.variable} ${satoshi.variable} flex h-dvh flex-col antialiased`}
             >
                 <AuthProvider>
-                    <main>{children}</main>
+                    <main className="flex-1 overflow-hidden">{children}</main>
                 </AuthProvider>
             </body>
         </html>

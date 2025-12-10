@@ -14,7 +14,7 @@ export default async function PositionsPage() {
                 <h1 className="text-display-xs">Positions</h1>
             </div>
 
-            <PositionsContent initialPositions={positions} />
+            <PositionsContent positions={positions} />
         </div>
     );
 }

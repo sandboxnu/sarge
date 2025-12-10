@@ -1,386 +1,218 @@
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth/auth';
+import { organizationsData } from './seed-data/organizations.seed';
+import { usersData } from './seed-data/users.seed';
+import { positionsData } from './seed-data/positions.seed';
+import { candidatesData } from './seed-data/candidates.seed';
 
-async function main() {
-    const seedUsers = [
-        {
-            id: 'clx00000000000000000000001',
-            name: 'Admin User',
-            email: 'admin@techcorp.com',
-            password: 'password123',
-        },
-        {
-            id: 'clx00000000000000000000002',
-            name: 'John Doe',
-            email: 'john.doe@techcorp.com',
-            password: 'password123',
-        },
-        {
-            id: 'clx00000000000000000000003',
-            name: 'Jane Smith',
-            email: 'jane.smith@startupxyz.com',
-            password: 'password123',
-        },
-        {
-            id: 'clx00000000000000000000004',
-            name: 'Bob Wilson',
-            email: 'bob.wilson@enterprise.com',
-            password: 'password123',
-        },
-    ];
+/**
+ * Seed Organizations
+ */
+async function seedOrganizations() {
+    console.log('Seeding organizations...');
 
-    const _users = await Promise.all(
-        seedUsers.map(async (userData) => {
-            const existingUser = await prisma.user.findUnique({
-                where: { id: userData.id },
-            });
+    for (const orgData of organizationsData) {
+        const existingOrg = await prisma.organization.findUnique({
+            where: { id: orgData.id },
+        });
 
-            if (existingUser) {
-                return existingUser;
-            }
+        if (existingOrg) {
+            console.log(`  Organization "${orgData.name}" already exists`);
+            continue;
+        }
 
-            await auth.api.signUpEmail({
-                body: {
-                    name: userData.name,
-                    email: userData.email,
-                    password: userData.password,
-                },
-            });
+        const ownerUser = usersData.find((u) => u.role === 'owner');
+        if (!ownerUser) {
+            throw new Error('No owner user found in seed data');
+        }
 
-            const updatedUser = await prisma.user.update({
-                where: { email: userData.email },
-                data: {
-                    id: userData.id,
-                    emailVerified: true,
-                },
-            });
-
-            return updatedUser;
-        })
-    );
-
-    const orgConfigs = [
-        {
-            id: 'clx00000000000000000000011',
-            name: 'Tech Corp',
-            creatorId: 'clx00000000000000000000001',
-            slug: 'tech-corp',
-        },
-        {
-            id: 'clx00000000000000000000012',
-            name: 'StartupXYZ',
-            creatorId: 'clx00000000000000000000003',
-            slug: 'startupxyz',
-        },
-        {
-            id: 'clx00000000000000000000013',
-            name: 'Enterprise Solutions',
-            creatorId: 'clx00000000000000000000004',
-            slug: 'enterprise-solutions',
-        },
-    ];
-
-    const _orgs = await Promise.all(
-        orgConfigs.map(async (orgConfig) => {
-            const existingOrg = await prisma.organization.findUnique({
-                where: { id: orgConfig.id },
-            });
-
-            if (existingOrg) {
-                return existingOrg;
-            }
-
-            const createdOrg = await auth.api.createOrganization({
-                body: {
-                    name: orgConfig.name,
-                    slug: orgConfig.slug,
-                    userId: orgConfig.creatorId,
-                },
-            });
-
-            if (!createdOrg) {
-                throw new Error(`Failed to create organization: ${orgConfig.name}`);
-            }
-
-            // Update organization ID to match seed data (for consistent references)
-            const updatedOrg = await prisma.organization.update({
-                where: { id: createdOrg.id },
-                data: {
-                    id: orgConfig.id,
-                },
-            });
-
-            return updatedOrg;
-        })
-    );
-
-    try {
-        await auth.api.addMember({
+        const createdOrg = await auth.api.createOrganization({
             body: {
-                userId: 'clx00000000000000000000002',
-                organizationId: 'clx00000000000000000000011',
-                role: 'recruiter',
+                name: orgData.name,
+                slug: orgData.slug,
+                userId: ownerUser.id,
             },
         });
-    } catch (error) {
-        console.warn('Failed to add member (may already exist):', error);
+
+        if (!createdOrg) {
+            throw new Error(`Failed to create organization: ${orgData.name}`);
+        }
+
+        // Update organization ID to match seed data
+        await prisma.organization.update({
+            where: { id: createdOrg.id },
+            data: {
+                id: orgData.id,
+                logo: orgData.logo,
+            },
+        });
+
+        console.log(`  Created organization: ${orgData.name}`);
     }
+}
 
-    // ----- Positions -----
-    await Promise.all([
-        prisma.position.upsert({
-            where: { id: 'clx00000000000000000000021' },
-            update: {},
-            create: {
-                id: 'clx00000000000000000000021',
-                title: 'Frontend Developer',
-                orgId: 'clx00000000000000000000011',
-                createdById: 'clx00000000000000000000001',
-            },
-        }),
-        prisma.position.upsert({
-            where: { id: 'clx00000000000000000000022' },
-            update: {},
-            create: {
-                id: 'clx00000000000000000000022',
-                title: 'Backend Developer',
-                orgId: 'clx00000000000000000000011',
-                createdById: 'clx00000000000000000000001',
-            },
-        }),
-        prisma.position.upsert({
-            where: { id: 'clx00000000000000000000023' },
-            update: {},
-            create: {
-                id: 'clx00000000000000000000023',
-                title: 'Full Stack Engineer',
-                orgId: 'clx00000000000000000000012',
-                createdById: 'clx00000000000000000000003',
-            },
-        }),
-        prisma.position.upsert({
-            where: { id: 'clx00000000000000000000024' },
-            update: {},
-            create: {
-                id: 'clx00000000000000000000024',
-                title: 'Senior Software Engineer',
-                orgId: 'clx00000000000000000000013',
-                createdById: 'clx00000000000000000000004',
-            },
-        }),
-    ]);
+/**
+ * Seed Users
+ */
+async function seedUsers() {
+    console.log('Seeding users...');
 
-    // ----- Candidates -----
-    await Promise.all([
-        prisma.candidate.upsert({
-            where: { id: 'clx00000000000000000000031' },
-            update: {},
-            create: {
-                id: 'clx00000000000000000000031',
-                name: 'Alice Candidate',
-                email: 'alice@example.com',
-                orgId: 'clx00000000000000000000011',
-                linkedinUrl: 'https://linkedin.com/in/alice-candidate',
-                githubUrl: 'https://github.com/alicecandidate',
-                major: 'Computer Science',
-                graduationDate: 'May 2024',
-                resumeUrl: 'https://example.com/resumes/alice-candidate.pdf',
-            },
-        }),
-        prisma.candidate.upsert({
-            where: { id: 'clx00000000000000000000032' },
-            update: {},
-            create: {
-                id: 'clx00000000000000000000032',
-                name: 'Evan Applicant',
-                email: 'evan@example.com',
-                orgId: 'clx00000000000000000000012',
-                linkedinUrl: 'https://linkedin.com/in/evan-applicant',
-                githubUrl: null,
-                major: 'Software Engineering',
-                graduationDate: 'December 2023',
-                resumeUrl: null,
-            },
-        }),
-    ]);
+    for (const userData of usersData) {
+        const existingUser = await prisma.user.findUnique({
+            where: { id: userData.id },
+        });
 
-    // ----- Tags -----
-    const tags = [
-        {
-            id: 'clx00000000000000000000041',
-            name: 'React.js',
-            orgId: 'clx00000000000000000000011', // Tech Corp
-            colorHexCode: '#3B82F6',
-        },
-        {
-            id: 'clx00000000000000000000042',
-            name: 'JavaScript',
-            orgId: 'clx00000000000000000000011', // Tech Corp
-            colorHexCode: '#10B981',
-        },
-        {
-            id: 'clx00000000000000000000043',
-            name: 'Python',
-            orgId: 'clx00000000000000000000012', // StartupXYZ
-            colorHexCode: '#8B5CF6',
-        },
-        {
-            id: 'clx00000000000000000000044',
-            name: 'Data Structures',
-            orgId: 'clx00000000000000000000012', // StartupXYZ
-            colorHexCode: '#F59E0B',
-        },
-    ];
+        if (existingUser) {
+            console.log(`  User "${userData.name}" already exists`);
+            continue;
+        }
 
-    const _tags = await Promise.all(
-        tags.map(async (tag) => {
-            return prisma.tag.upsert({
+        await auth.api.signUpEmail({
+            body: {
+                name: userData.name,
+                email: userData.email,
+                password: userData.password,
+            },
+        });
+
+        // Update user ID and verify email
+        const updatedUser = await prisma.user.update({
+            where: { email: userData.email },
+            data: {
+                id: userData.id,
+                emailVerified: true,
+            },
+        });
+
+        console.log(`  Created user: ${userData.name}`);
+    }
+}
+
+/**
+ * Seed Organization Memberships
+ */
+async function seedOrganizationMemberships() {
+    console.log('Seeding organization memberships...');
+
+    const orgId = organizationsData[0].id;
+
+    for (const userData of usersData) {
+        try {
+            const existingMember = await prisma.member.findUnique({
                 where: {
-                    name_orgId: {
-                        name: tag.name,
-                        orgId: tag.orgId,
+                    userId_organizationId: {
+                        userId: userData.id,
+                        organizationId: orgId,
                     },
                 },
-                update: {},
-                create: {
-                    id: tag.id,
-                    name: tag.name,
-                    orgId: tag.orgId,
-                    colorHexCode: tag.colorHexCode,
+            });
+
+            if (existingMember) {
+                console.log(`  User "${userData.name}" already member of organization`);
+                continue;
+            }
+
+            await auth.api.addMember({
+                body: {
+                    userId: userData.id,
+                    organizationId: orgId,
+                    role: userData.role,
                 },
             });
-        })
-    );
 
-    // ----- TaskTemplates -----
-    await Promise.all([
-        prisma.taskTemplate.upsert({
-            where: { id: 'clx00000000000000000000051' },
+            console.log(`  Added ${userData.name} to organization with role: ${userData.role}`);
+        } catch (error) {
+            console.warn(`  ! Failed to add member ${userData.name}:`, error);
+        }
+    }
+}
+
+/**
+ * Seed Positions
+ */
+async function seedPositions() {
+    console.log('Seeding positions...');
+
+    for (const positionData of positionsData) {
+        await prisma.position.upsert({
+            where: { id: positionData.id },
             update: {},
-            create: {
-                id: 'clx00000000000000000000051',
-                title: 'Add Two Numbers',
-                content: `# Add Two Numbers
+            create: positionData,
+        });
 
-## Problem Description
+        console.log(`  Created position: ${positionData.title}`);
+    }
+}
 
-Write a function that takes two integers as input and returns their sum.
+/**
+ * Seed Candidates
+ */
+async function seedCandidates() {
+    console.log('Seeding candidates...');
 
-## Input Format
+    for (const candidateData of candidatesData) {
+        await prisma.candidate.upsert({
+            where: {
+                id: candidateData.id,
+            },
+            update: {},
+            create: candidateData,
+        });
 
-The input consists of two lines:
-- First line: an integer \`a\`
-- Second line: an integer \`b\`
+        console.log(`  Created candidate: ${candidateData.name}`);
+    }
+}
 
-## Output Format
+/**
+ * Seed Candidate Pool Entries
+ * Links candidates to positions
+ */
+async function seedCandidatePoolEntries() {
+    console.log('Seeding candidate pool entries...');
 
-Output a single integer representing the sum of \`a\` and \`b\`.
+    const positionId = positionsData[0].id;
 
-## Constraints
-
-- \`-1000 ≤ a, b ≤ 1000\`
-
-## Example
-
-### Input
-\`\`\`
-2
-3
-\`\`\`
-
-### Output
-\`\`\`
-5
-\`\`\`
-
-## Implementation Notes
-
-- Read two integers from standard input
-- Calculate their sum
-- Print the result to standard output`,
-                orgId: 'clx00000000000000000000011', // Tech Corp
-                public_test_cases: [
-                    { input: '2\n3\n', output: '5\n' },
-                    { input: '10\n20\n', output: '30\n' },
-                ],
-                private_test_cases: [
-                    { input: '1\n1\n', output: '2\n' },
-                    { input: '5\n5\n', output: '10\n' },
-                    { input: '-5\n3\n', output: '-2\n' },
-                    { input: '0\n0\n', output: '0\n' },
-                ],
-                tags: {
-                    connect: [
-                        { id: 'clx00000000000000000000041' }, // React.js
-                        { id: 'clx00000000000000000000042' }, // JavaScript
-                    ],
+    for (const candidateData of candidatesData) {
+        await prisma.candidatePoolEntry.upsert({
+            where: {
+                candidateId_positionId: {
+                    candidateId: candidateData.id,
+                    positionId: positionId,
                 },
             },
-        }),
-        prisma.taskTemplate.upsert({
-            where: { id: 'clx00000000000000000000052' },
             update: {},
             create: {
-                id: 'clx00000000000000000000052',
-                title: 'Find GCD of Two Numbers',
-                content: `# Find GCD of Two Numbers
-
-## Problem Description
-
-Write a function that takes two integers as input and returns their greatest common divisor (GCD).
-
-## Input Format
-
-The input consists of two lines:
-- First line: an integer \`a\`
-- Second line: an integer \`b\`
-
-## Output Format
-
-Output a single integer representing the GCD of \`a\` and \`b\`.
-
-## Constraints
-
-- \`1 ≤ a, b ≤ 10^6\`
-
-## Example
-
-### Input
-\`\`\`
-12
-15
-\`\`\`
-
-### Output
-\`\`\`
-3
-\`\`\`
-
-## Implementation Notes
-
-- Read two integers from standard input
-- Calculate their GCD
-- Print the result to standard output`,
-                orgId: 'clx00000000000000000000012', // StartupXYZ
-                public_test_cases: [
-                    { input: '12\n15\n', output: '3\n' },
-                    { input: '100\n80\n', output: '20\n' },
-                ],
-                private_test_cases: [
-                    { input: '7\n5\n', output: '1\n' },
-                    { input: '20\n30\n', output: '10\n' },
-                    { input: '81\n27\n', output: '27\n' },
-                    { input: '17\n19\n', output: '1\n' },
-                ],
-                tags: {
-                    connect: [
-                        { id: 'clx00000000000000000000043' }, // Python
-                        { id: 'clx00000000000000000000044' }, // Data Structures
-                    ],
-                },
+                candidateId: candidateData.id,
+                positionId: positionId,
+                assessmentStatus: 'NOT_ASSIGNED',
+                decisionStatus: 'PENDING',
             },
-        }),
-    ]);
+        });
+
+        console.log(`  Added ${candidateData.name} to position pool`);
+    }
+}
+
+/**
+ * Main seeding function
+ */
+async function main() {
+    console.log('Starting database seeding...\n');
+
+    try {
+        // Seed in order: users first (owner needed for org creation), then org, then memberships, then rest
+        await seedUsers();
+        await seedOrganizations();
+        await seedOrganizationMemberships();
+        await seedPositions();
+        await seedCandidates();
+        await seedCandidatePoolEntries();
+
+        console.log('\nDatabase seeding completed successfully!');
+    } catch (error) {
+        console.error('\nSeeding failed:', error);
+        throw error;
+    }
 }
 
 main()
