@@ -83,13 +83,13 @@ export default function UploadCSVModal({
                         <div className="flex items-center gap-2">
                             <button
                                 onClick={onSwitchModal}
-                                className="text-label-xs text-sarge-primary-600 hover:text-sarge-primary-700 px-1 py-0 font-medium transition-colors"
+                                className="text-label-xs text-sarge-primary-600 hover:text-sarge-primary-700 px-1 py-0 font-medium transition-colors hover:underline"
                             >
                                 Add details manually
                             </button>
                             <button
                                 onClick={() => onOpenChange(false)}
-                                className="hover:bg-sarge-gray-100 rounded p-0.5 transition-colors"
+                                className="hover:bg-sarge-gray-200 rounded p-0.5 transition-colors"
                             >
                                 <X className="size-5" />
                             </button>

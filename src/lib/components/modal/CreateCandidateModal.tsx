@@ -7,7 +7,7 @@ import { Input } from '@/lib/components/Input';
 import { Button } from '@/lib/components/Button';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, X } from 'lucide-react';
 import type { AddCandidateWithDataDTO } from '@/lib/schemas/candidate-pool.schema';
 
 export type CreateCandidateModalProps = {
@@ -91,19 +91,27 @@ export default function CreateCandidateModal({
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent
                 className="w-[900px] !max-w-[750px] gap-0 px-8 py-6"
-                showCloseButton={true}
+                showCloseButton={false}
             >
                 <div className="flex h-full flex-col items-center justify-between">
                     <div className="mb-6 flex w-full items-start justify-between">
                         <DialogTitle className="text-display-xs text-sarge-gray-800 font-bold">
                             Add new candidate
                         </DialogTitle>
-                        <button
-                            onClick={onSwitchModal}
-                            className="text-label-xs text-sarge-primary-600 hover:text-sarge-primary-700 px-1 font-medium transition-colors"
-                        >
-                            Import CSV
-                        </button>
+                        <div className="flex items-center gap-2">
+                            <button
+                                onClick={onSwitchModal}
+                                className="text-label-xs text-sarge-primary-600 px-1 font-medium transition-colors hover:underline"
+                            >
+                                Import CSV
+                            </button>
+                            <button
+                                onClick={() => onOpenChange(false)}
+                                className="hover:bg-sarge-gray-100 hover:bg-sarge-gray-200 rounded p-0.5 transition-colors"
+                            >
+                                <X className="size-5" />
+                            </button>
+                        </div>
                     </div>
 
                     <div className="mb-6 flex w-full flex-col gap-6">
