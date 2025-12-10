@@ -33,6 +33,7 @@ export interface BatchAddResult {
     candidatesCreated: number;
     entriesCreated: number;
     totalProcessed: number;
+    candidates: CandidatePoolDisplayInfo[];
 }
 
 export interface PositionPreviewCandidate {

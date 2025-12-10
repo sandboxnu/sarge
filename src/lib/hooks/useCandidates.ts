@@ -1,18 +1,16 @@
 import { useEffect, useState } from 'react';
 import type { CandidatePoolDisplayInfo } from '@/lib/types/position.types';
+import type { AddCandidateWithDataDTO } from '@/lib/schemas/candidate-pool.schema';
+import { toast } from 'sonner';
 
 interface UseCandidatesReturn {
     candidates: CandidatePoolDisplayInfo[];
     loading: boolean;
     error: string | null;
     positionTitle: string | null;
-    ensureAbsoluteUrl: (url: string) => string;
+    createCandidate: (candidate: AddCandidateWithDataDTO) => Promise<void>;
+    batchCreateCandidates: (candidates: AddCandidateWithDataDTO[]) => Promise<void>;
 }
-
-const ensureAbsoluteUrl = (url: string) => {
-    if (!url) return '';
-    return url.startsWith('http://') || url.startsWith('https://') ? url : `https://${url}`;
-};
 
 export default function useCandidates(positionId: string): UseCandidatesReturn {
     const [candidates, setCandidates] = useState<CandidatePoolDisplayInfo[]>([]);
@@ -58,11 +56,61 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
         }
     }, [positionId]);
 
+    const createCandidate = async (candidate: AddCandidateWithDataDTO) => {
+        setLoading(true);
+        try {
+            const response = await fetch(`/api/position/${positionId}/candidates`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(candidate),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to create candidate');
+            }
+            const data = await response.json();
+            setCandidates((prev) => [...prev, data.data]);
+            toast.success('Candidate created successfully');
+            setError(null);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'An error occurred');
+            toast.error('Candidate creation failed');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const batchCreateCandidates = async (candidates: AddCandidateWithDataDTO[]) => {
+        setLoading(true);
+        try {
+            const response = await fetch(`/api/position/${positionId}/candidates/batch`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ candidates }),
+            });
+
+            if (!response.ok) {
+                setError('Failed to batch create candidates');
+                return;
+            }
+            const data = await response.json();
+            setCandidates((prev) => [...prev, ...data.data.candidates]);
+            toast.success('Candidates created successfully');
+            setError(null);
+        } catch {
+            setError('Failed to batch create candidates');
+            toast.error('Batch creation failed');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return {
         candidates,
         loading,
         error,
         positionTitle,
-        ensureAbsoluteUrl,
+        createCandidate,
+        batchCreateCandidates,
     };
 }

@@ -14,7 +14,6 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
         const positionId = (await params).id;
         const body = await request.json();
         const parsed = addCandidateWithDataSchema.parse(body);
-
         const result = await CandidatePoolService.addCandidateToPosition(
             parsed,
             positionId,
