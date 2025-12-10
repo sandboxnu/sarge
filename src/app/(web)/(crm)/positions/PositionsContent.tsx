@@ -8,31 +8,23 @@ import { Search } from '@/lib/components/Search';
 import { type PositionWithCounts } from '@/lib/types/position.types';
 import { Tabs, TabsContent, TabsList, UnderlineTabsTrigger } from '@/lib/components/Tabs';
 import CreatePositionModal from '@/lib/components/modal/CreatePositionModal';
+import PositionPreviewModal from '@/lib/components/modal/PositionPreviewModal';
 import Image from 'next/image';
 
 interface PositionsContentProps {
-    initialPositions: PositionWithCounts[];
+    positions: PositionWithCounts[];
 }
 
-export default function PositionsContent({ initialPositions }: PositionsContentProps) {
-    const [positions, setPositions] = useState<PositionWithCounts[]>(initialPositions);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+export default function PositionsContent({ positions }: PositionsContentProps) {
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
+    const [selectedPositionId, setSelectedPositionId] = useState<string | null>(null);
 
     const archived: PositionWithCounts[] = [];
 
-    async function handleCreatePosition(title: string) {
-        const response = await fetch('/api/position', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title }),
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to create position');
-        }
-
-        const result = await response.json();
-        setPositions((prev) => [...prev, result.data]);
+    function handlePositionClick(positionId: string) {
+        setSelectedPositionId(positionId);
+        setIsPreviewModalOpen(true);
     }
 
     return (
@@ -46,11 +38,11 @@ export default function PositionsContent({ initialPositions }: PositionsContentP
                     <div className="flex items-center gap-3">
                         <button className="border-sarge-gray-200 text-sarge-gray-600 hover:bg-sarge-gray-100 flex items-center gap-2 rounded-lg border bg-white px-3 py-2.5">
                             <ArrowUpDown className="size-5" />
-                            <span className="text-sm font-medium">Sort</span>
+                            <span className="text-label-s">Sort</span>
                         </button>
                         <button className="border-sarge-gray-200 text-sarge-gray-600 hover:bg-sarge-gray-100 flex items-center gap-2 rounded-lg border bg-white px-3 py-2.5">
                             <SlidersHorizontal className="size-5" />
-                            <span className="text-sm font-medium">Filter</span>
+                            <span className="text-label-s">Filter</span>
                         </button>
                     </div>
 
@@ -68,7 +60,7 @@ export default function PositionsContent({ initialPositions }: PositionsContentP
                         type="button"
                         variant="primary"
                         className="gap-2 px-4 py-2.5"
-                        onClick={() => setIsModalOpen(true)}
+                        onClick={() => setIsCreateModalOpen(true)}
                     >
                         <Plus className="size-5" />
                         <span>New position</span>
@@ -86,7 +78,10 @@ export default function PositionsContent({ initialPositions }: PositionsContentP
 
                 <TabsContent value="active" className="flex flex-col gap-4">
                     {positions.length > 0 ? (
-                        <PositionCardGrid positions={positions} />
+                        <PositionCardGrid
+                            positions={positions}
+                            onPositionClick={handlePositionClick}
+                        />
                     ) : (
                         <EmptyState
                             imageSrc="/User_empty.svg"
@@ -98,7 +93,10 @@ export default function PositionsContent({ initialPositions }: PositionsContentP
 
                 <TabsContent value="archived" className="flex flex-col gap-4">
                     {archived.length > 0 ? (
-                        <PositionCardGrid positions={archived} />
+                        <PositionCardGrid
+                            positions={archived}
+                            onPositionClick={handlePositionClick}
+                        />
                     ) : (
                         <EmptyState
                             imageSrc="/No_Archive.svg"
@@ -110,15 +108,26 @@ export default function PositionsContent({ initialPositions }: PositionsContentP
             </Tabs>
 
             <CreatePositionModal
-                open={isModalOpen}
-                onOpenChange={setIsModalOpen}
-                onCreate={handleCreatePosition}
+                open={isCreateModalOpen}
+                onOpenChange={setIsCreateModalOpen}
+            />
+
+            <PositionPreviewModal
+                open={isPreviewModalOpen}
+                onOpenChange={setIsPreviewModalOpen}
+                positionId={selectedPositionId}
             />
         </>
     );
 }
 
-function PositionCardGrid({ positions }: { positions: PositionWithCounts[] }) {
+function PositionCardGrid({
+    positions,
+    onPositionClick,
+}: {
+    positions: PositionWithCounts[];
+    onPositionClick: (positionId: string) => void;
+}) {
     return (
         <div className="flex flex-wrap gap-4">
             {positions.map((position) => (
@@ -127,6 +136,7 @@ function PositionCardGrid({ positions }: { positions: PositionWithCounts[] }) {
                     title={position.title}
                     candidateCount={position.numCandidates}
                     assessmentName={''}
+                    onClick={() => onPositionClick(position.id)}
                 />
             ))}
         </div>

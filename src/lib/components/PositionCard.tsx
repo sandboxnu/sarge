@@ -10,6 +10,7 @@ type PositionCardProps = {
     submittedCount?: number;
     totalAssigned?: number;
     className?: string;
+    onClick?: () => void;
 };
 
 export default function PositionCard({
@@ -20,15 +21,39 @@ export default function PositionCard({
     submittedCount = 0,
     totalAssigned = 0,
     className,
+    onClick,
 }: PositionCardProps) {
     const submissionVariant = getSubmissionVariant(submittedCount, totalAssigned);
+
+    const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
+        // Don't trigger if clicking the menu button
+        if ((e.target as HTMLElement).closest('[data-menu-button]')) {
+            return;
+        }
+        onClick?.();
+    };
+
     return (
         <div
             className={cn(
                 'min-h-[160px] w-[384px]',
                 'border-sarge-gray-200 bg-sarge-gray-0 rounded-xl border p-4',
+                onClick && 'cursor-pointer transition-shadow hover:shadow-md',
                 className
             )}
+            onClick={handleCardClick}
+            role={onClick ? 'button' : undefined}
+            tabIndex={onClick ? 0 : undefined}
+            onKeyDown={
+                onClick
+                    ? (e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              onClick();
+                          }
+                      }
+                    : undefined
+            }
         >
             <div className="flex items-start justify-between gap-2">
                 <div className="flex min-w-0 flex-[1_0_0] flex-col items-start gap-1 px-1">
@@ -41,7 +66,11 @@ export default function PositionCard({
                     </p>
                 </div>
 
-                <button className="text-sarge-gray-800 grid min-h-[44px] min-w-[44px] place-items-center">
+                <button
+                    data-menu-button
+                    className="text-sarge-gray-800 grid min-h-[44px] min-w-[44px] place-items-center"
+                    onClick={(e) => e.stopPropagation()}
+                >
                     <MoreVertical className="h-5 w-5" />
                 </button>
             </div>

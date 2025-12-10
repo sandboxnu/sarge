@@ -9,6 +9,30 @@ export const auth = betterAuth({
     database: prismaAdapter(prisma, {
         provider: 'postgresql',
     }),
+    databaseHooks: {
+        session: {
+            create: {
+                before: async (session) => {
+                    // set activeOrganizationId to user's first organization
+                    const member = await prisma.member.findFirst({
+                        where: { userId: session.userId },
+                        orderBy: { createdAt: 'asc' },
+                    });
+
+                    if (member) {
+                        return {
+                            data: {
+                                ...session,
+                                activeOrganizationId: member.organizationId,
+                            },
+                        };
+                    }
+
+                    return { data: session };
+                },
+            },
+        },
+    },
     emailAndPassword: {
         enabled: true,
         requireEmailVerification: false,
