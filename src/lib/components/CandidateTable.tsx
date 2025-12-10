@@ -114,7 +114,7 @@ export function CandidateTable({ candidates }: CandidateTableProps) {
                 ),
             },
         ],
-        [getStatusBadgeColor, ensureAbsoluteUrl]
+        []
     );
 
     return <DataTable columns={columns} data={candidates} />;
