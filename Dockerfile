@@ -26,8 +26,7 @@ RUN apt-get update -y && apt-get install -y openssl ca-certificates libssl3 && r
 
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
-# TODO: uncomment when we add public directory
-# COPY --from=builder /app/public ./public
+COPY --from=builder /app/public ./public
 
 COPY --from=builder /app/prisma ./prisma
 
