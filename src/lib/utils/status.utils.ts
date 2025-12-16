@@ -1,5 +1,5 @@
 import type { AssessmentStatus, DecisionStatus } from '@/generated/prisma';
-import type { ChipVariant } from '@/lib/components/Chip';
+import type { ChipVariant } from '@/lib/components/ui/Chip';
 
 /**
  * Get the chip variant for a given assessment status
