@@ -19,7 +19,7 @@ export default function Home() {
                 </p>
 
                 <Button asChild variant="primary" className="px-8">
-                    <Link href="/signin">Log In</Link>
+                    <Link href="/signin">Sign In</Link>
                 </Button>
             </div>
         </div>
