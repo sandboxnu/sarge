@@ -17,7 +17,6 @@ FROM public.ecr.aws/docker/library/node:22-slim
 WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
-# TODO: check if AWS needs this env variable
 # ENV HOST=0.0.0.0
 ENV HOSTNAME=0.0.0.0
 EXPOSE 3000
