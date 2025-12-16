@@ -189,8 +189,8 @@ export default function PositionPreviewModal({
                             {isPending
                                 ? 'Loading...'
                                 : error
-                                    ? 'Error'
-                                    : (position?.title ?? 'Position')}
+                                  ? 'Error'
+                                  : (position?.title ?? 'Position')}
                         </DialogTitle>
                         {!isPending && !error && position && (
                             <p className="text-body-s text-sarge-gray-600">
