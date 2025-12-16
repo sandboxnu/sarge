@@ -1,7 +1,7 @@
-import { AppSidebar } from '@/lib/components/AppSidebar';
+import { Sidebar } from '@/lib/components/Sidebar';
 import { SidebarInset, SidebarProvider } from '@/lib/components/Sidebar';
 import { Toaster } from '@/lib/components/Sonner';
-import { TopNav } from '@/lib/components/TopNav';
+import { Navbar } from '@/lib/components/Navbar';
 
 export default function CRMLayout({
     children,
@@ -10,11 +10,11 @@ export default function CRMLayout({
 }>) {
     return (
         <div className="flex h-full w-full flex-col">
-            <TopNav />
+            <Navbar />
             <div className="flex flex-1 overflow-hidden">
                 <SidebarProvider>
                     <Toaster />
-                    <AppSidebar />
+                    <Sidebar />
                     <SidebarInset className="overflow-y-auto">{children}</SidebarInset>
                 </SidebarProvider>
             </div>
