@@ -1,14 +1,5 @@
 import { BadRequestException, InternalServerException } from '@/lib/utils/errors.utils';
 
-// TODO: move inside the class
-const headers: HeadersInit = {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    'x-rapidapi-key': process.env.JUDGE_API_KEY!,
-    'x-rapidapi-host': 'judge0-ce.p.rapidapi.com',
-};
-
-const fields = ['stdout', 'status', 'language_id', 'stderr', 'token', 'expected_output'];
-
 export interface JudgeSubmissionRequestBody {
     source_code: string;
     language_id: number;
@@ -26,19 +17,29 @@ export interface JudgeResultRequestBody {
 }
 
 class Judge0Connector {
-    constructor() {}
+    private headers: HeadersInit;
+    private fields: string[];
+
+    constructor() {
+        this.headers = {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            'x-rapidapi-key': process.env.JUDGE_API_KEY!,
+            'x-rapidapi-host': 'judge0-ce.p.rapidapi.com',
+        };
+        this.fields = ['stdout', 'status', 'language_id', 'stderr', 'token', 'expected_output'];
+    }
 
     async createBatchSubmission(body: JudgeSubmissionRequestBody[]): Promise<string[]> {
         if (!body || body.length === 0) {
             throw new BadRequestException('At least one submission is required');
         }
 
-        const url = `${process.env.JUDGE_URL}/submissions/batch?fields=${fields.join(',')}`;
+        const url = `${process.env.JUDGE_URL}/submissions/batch?fields=${this.fields.join(',')}`;
         const requestBody = { submissions: [...body] };
         const response = await fetch(url, {
             method: 'POST',
             headers: {
-                ...headers,
+                ...this.headers,
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(requestBody),
@@ -57,10 +58,10 @@ class Judge0Connector {
             throw new BadRequestException('At least one token is required');
         }
 
-        const url = `${process.env.JUDGE_URL}/submissions/batch?tokens=${tokens.join(',')}&fields=${fields.join(',')}`;
+        const url = `${process.env.JUDGE_URL}/submissions/batch?tokens=${tokens.join(',')}&fields=${this.fields.join(',')}`;
         const response = await fetch(url, {
             headers: {
-                ...headers,
+                ...this.headers,
             },
         });
         const jsonResponse = await response.json();
