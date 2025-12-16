@@ -71,7 +71,7 @@ export default function SignInPage() {
             <div className="flex w-full items-center justify-center bg-white px-4 py-8 sm:px-8 lg:w-1/2 lg:px-16">
                 <div className="w-full max-w-sm">
                     <div className="mb-8 flex justify-center">
-                        <h1 className="text-display-xs text-sarge-gray-800">Login to Sarge</h1>
+                        <h1 className="text-display-xs text-sarge-gray-800">Sign in to Sarge</h1>
                     </div>
 
                     {form.formState.errors.root && (
