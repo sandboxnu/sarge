@@ -2,17 +2,17 @@
 
 import { Editor } from '@monaco-editor/react';
 import { use } from 'react';
-import { Button } from '@/lib/components/Button';
+import { Button } from '@/lib/components/ui/Button';
 import { useTask } from '@/lib/hooks/useTask';
-import { ResizablePanel, ResizablePanelGroup, ResizableHandle } from '@/lib/components/Resizable';
+import { ResizablePanel, ResizablePanelGroup, ResizableHandle } from '@/lib/components/ui/Resizable';
 import {
     DropdownMenuContent,
     DropdownMenuRadioGroup,
     DropdownMenuRadioItem,
     DropdownMenuTrigger,
-} from '@/lib/components/Dropdown';
+} from '@/lib/components/ui/Dropdown';
 import { DropdownMenu } from '@radix-ui/react-dropdown-menu';
-import MarkdownViewer from '@/lib/components/Markdown';
+import MarkdownViewer from '@/lib/components/core/Markdown';
 import useAssessment from '@/lib/hooks/useAssessment';
 
 export default function TaskPage({

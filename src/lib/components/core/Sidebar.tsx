@@ -11,18 +11,18 @@ import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { PanelLeftIcon } from 'lucide-react';
 import { useIsMobile } from '@/lib/hooks/useIsMobileShadcn';
-import { Button } from '@/lib/components/Button';
-import { Input } from '@/lib/components/Input';
-import { Separator } from '@/lib/components/Separator';
+import { Button } from '@/lib/components/ui/Button';
+import { Input } from '@/lib/components/ui/Input';
+import { Separator } from '@/lib/components/ui/Separator';
 import {
     Sheet,
     SheetContent,
     SheetDescription,
     SheetHeader,
     SheetTitle,
-} from '@/lib/components/Sheet';
-import { Skeleton } from '@/lib/components/Skeleton';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/lib/components/Tooltip';
+} from '@/lib/components/ui/Sheet';
+import { Skeleton } from '@/lib/components/ui/Skeleton';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/lib/components/ui/Tooltip';
 
 const SIDEBAR_COOKIE_NAME = 'sidebar_state';
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;

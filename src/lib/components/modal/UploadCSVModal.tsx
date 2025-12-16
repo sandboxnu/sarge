@@ -1,10 +1,10 @@
 'use client';
 
 import { Dialog } from '@radix-ui/react-dialog';
-import { DialogContent, DialogTitle } from './Modal';
-import { Button } from '@/lib/components/Button';
+import { DialogContent, DialogTitle } from '@/lib/components/ui/Modal';
+import { Button } from '@/lib/components/ui/Button';
 import { ExternalLink, Import, X } from 'lucide-react';
-import { DataTable } from '@/lib/components/DataTable';
+import { DataTable } from '@/lib/components/ui/DataTable';
 import type { AddCandidateWithDataDTO } from '@/lib/schemas/candidate-pool.schema';
 import { useUploadCSV } from '@/lib/hooks/useUploadCSV';
 import type { ColumnDef } from '@tanstack/react-table';
@@ -60,9 +60,8 @@ export default function UploadCSVModal({
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogContent
-                className={`border-sarge-gray-200 !max-w-[95vw] gap-0 px-7 py-6 ${
-                    step === 'confirm' ? 'w-[1200px]' : 'w-[650px]'
-                }`}
+                className={`border-sarge-gray-200 !max-w-[95vw] gap-0 px-7 py-6 ${step === 'confirm' ? 'w-[1200px]' : 'w-[650px]'
+                    }`}
                 showCloseButton={false}
             >
                 <div className="flex w-full flex-col gap-4">
@@ -101,9 +100,8 @@ export default function UploadCSVModal({
                             onDragOver={handleDragOver}
                             onDragLeave={handleDragLeave}
                             onDrop={handleDrop}
-                            className={`border-sarge-gray-300 flex h-[252px] w-full cursor-pointer flex-col items-center justify-center gap-2.5 border-[1.5px] border-dashed transition-colors ${
-                                isDragging ? 'bg-sarge-gray-50 border-sarge-primary-500' : ''
-                            }`}
+                            className={`border-sarge-gray-300 flex h-[252px] w-full cursor-pointer flex-col items-center justify-center gap-2.5 border-[1.5px] border-dashed transition-colors ${isDragging ? 'bg-sarge-gray-50 border-sarge-primary-500' : ''
+                                }`}
                         >
                             <input
                                 type="file"
@@ -164,8 +162,8 @@ export default function UploadCSVModal({
                             {isUploading
                                 ? 'Uploading...'
                                 : step === 'uploadCSV'
-                                  ? 'Continue'
-                                  : 'Create'}
+                                    ? 'Continue'
+                                    : 'Create'}
                         </Button>
                     </div>
                 </div>

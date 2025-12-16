@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@/lib/components/Button';
+import { Button } from '@/lib/components/ui/Button';
 import useAssessment from '@/lib/hooks/useAssessment';
 import { use } from 'react';
 

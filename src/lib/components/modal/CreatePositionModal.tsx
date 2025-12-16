@@ -1,10 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogTitle } from './Modal';
-import { Field, FieldLabel } from '@/lib/components/Field';
-import { Input } from '@/lib/components/Input';
-import { Button } from '@/lib/components/Button';
+import { Dialog, DialogContent, DialogTitle } from '@/lib/components/ui/Modal';
+import { Field, FieldLabel } from '@/lib/components/ui/Field';
+import { Input } from '@/lib/components/ui/Input';
+import { Button } from '@/lib/components/ui/Button';
 import { AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { createPositionAction } from '@/app/actions/position.actions';

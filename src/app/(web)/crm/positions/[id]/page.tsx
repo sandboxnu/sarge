@@ -1,7 +1,7 @@
 'use client';
 
-import { Button } from '@/lib/components/Button';
-import { CandidateTable } from '@/lib/components/CandidateTable';
+import { Button } from '@/lib/components/ui/Button';
+import { CandidateTable } from '@/lib/components/core/CandidateTable';
 import CreateCandidateModal from '@/lib/components/modal/CreateCandidateModal';
 import UploadCSVModal from '@/lib/components/modal/UploadCSVModal';
 import useCandidates from '@/lib/hooks/useCandidates';

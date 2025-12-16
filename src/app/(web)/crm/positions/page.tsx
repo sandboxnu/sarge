@@ -1,7 +1,7 @@
 import { Users } from 'lucide-react';
 import PositionService from '@/lib/services/position.service';
 import { getSession } from '@/lib/utils/auth.utils';
-import PositionsContent from './PositionsContent';
+import PositionsContent from '@/lib/components/core/PositionsContent';
 
 export default async function PositionsPage() {
     const session = await getSession();

@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect, useState, useTransition } from 'react';
-import { Dialog, DialogContent, DialogTitle } from './Modal';
+import { Dialog, DialogContent, DialogTitle } from '@/lib/components/ui/Modal';
 import { FileText, ExternalLink, SquareArrowOutUpRightIcon } from 'lucide-react';
-import AvatarGroup from '@/lib/components/AvatarGroup';
+import AvatarGroup from '@/lib/components/ui/AvatarGroup';
 import { getPositionPreviewAction } from '@/app/actions/position.actions';
-import { Chip } from '@/lib/components/Chip';
+import { Chip } from '@/lib/components/ui/Chip';
 import {
     getAssessmentStatusVariant,
     getAssessmentStatusLabel,
@@ -189,8 +189,8 @@ export default function PositionPreviewModal({
                             {isPending
                                 ? 'Loading...'
                                 : error
-                                  ? 'Error'
-                                  : (position?.title ?? 'Position')}
+                                    ? 'Error'
+                                    : (position?.title ?? 'Position')}
                         </DialogTitle>
                         {!isPending && !error && position && (
                             <p className="text-body-s text-sarge-gray-600">
