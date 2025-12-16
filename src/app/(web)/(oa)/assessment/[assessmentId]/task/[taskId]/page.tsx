@@ -4,7 +4,11 @@ import { Editor } from '@monaco-editor/react';
 import { use } from 'react';
 import { Button } from '@/lib/components/ui/Button';
 import { useTask } from '@/lib/hooks/useTask';
-import { ResizablePanel, ResizablePanelGroup, ResizableHandle } from '@/lib/components/ui/Resizable';
+import {
+    ResizablePanel,
+    ResizablePanelGroup,
+    ResizableHandle,
+} from '@/lib/components/ui/Resizable';
 import {
     DropdownMenuContent,
     DropdownMenuRadioGroup,

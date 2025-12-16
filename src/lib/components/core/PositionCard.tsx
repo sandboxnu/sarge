@@ -49,11 +49,11 @@ export default function PositionCard({
             onKeyDown={
                 onClick
                     ? (e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            onClick();
-                        }
-                    }
+                          if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              onClick();
+                          }
+                      }
                     : undefined
             }
         >
