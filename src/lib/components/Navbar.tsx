@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useAuthSession } from '@/lib/auth/auth-context';
 
-export function TopNav() {
+export function Navbar() {
     const { user } = useAuthSession();
     const userInitial = user?.name?.charAt(0).toUpperCase() ?? 'U';
 
