@@ -6,15 +6,15 @@ import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import { signUp } from '@/lib/auth/auth-client';
-import { Button } from '@/lib/components/Button';
+import { Button } from '@/lib/components/ui/Button';
 import {
     Field,
     FieldError,
     FieldGroup,
     FieldLabel,
     FieldDescription,
-} from '@/lib/components/Field';
-import { Input } from '@/lib/components/Input';
+} from '@/lib/components/ui/Field';
+import { Input } from '@/lib/components/ui/Input';
 import { createUserSchema } from '@/lib/schemas/user.schema';
 import type { z } from 'zod';
 

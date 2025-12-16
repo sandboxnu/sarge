@@ -1,5 +1,5 @@
 import { SearchIcon } from 'lucide-react';
-import { Input } from './Input';
+import { Input } from '@/lib/components/ui/Input';
 
 export interface SearchProps {
     className?: string;

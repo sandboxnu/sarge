@@ -1,12 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@/lib/components/Button';
+import { Button } from '@/lib/components/ui/Button';
 import { Plus, ArrowUpDown, SlidersHorizontal, Rows3, LayoutGrid } from 'lucide-react';
-import PositionCard from '@/lib/components/PositionCard';
-import { Search } from '@/lib/components/Search';
+import PositionCard from '@/lib/components/core/PositionCard';
+import { Search } from '@/lib/components/core/Search';
 import { type PositionWithCounts } from '@/lib/types/position.types';
-import { Tabs, TabsContent, TabsList, UnderlineTabsTrigger } from '@/lib/components/Tabs';
+import { Tabs, TabsContent, TabsList, UnderlineTabsTrigger } from '@/lib/components/ui/Tabs';
 import CreatePositionModal from '@/lib/components/modal/CreatePositionModal';
 import PositionPreviewModal from '@/lib/components/modal/PositionPreviewModal';
 import Image from 'next/image';

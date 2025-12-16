@@ -1,7 +1,7 @@
 'use client';
 import { FileText, MoreVertical } from 'lucide-react';
 import { cn } from '@/lib/utils/cn.utils';
-import { Chip } from '@/lib/components/Chip';
+import { Chip } from '@/lib/components/ui/Chip';
 import { getSubmissionVariant } from '@/lib/utils/status.utils';
 
 type PositionCardProps = {
@@ -49,11 +49,11 @@ export default function PositionCard({
             onKeyDown={
                 onClick
                     ? (e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                              e.preventDefault();
-                              onClick();
-                          }
-                      }
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            onClick();
+                        }
+                    }
                     : undefined
             }
         >

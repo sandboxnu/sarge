@@ -1,9 +1,9 @@
 'use client';
 
-import { Dialog, DialogContent, DialogTitle } from '@/lib/components/modal/Modal';
+import { Dialog, DialogContent, DialogTitle } from '@/lib/components/ui/Modal';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { type RefObject } from 'react';
-import { Button } from '@/lib/components/Button';
+import { Button } from '@/lib/components/ui/Button';
 import Image from 'next/image';
 import { SquarePen } from 'lucide-react';
 import useOnboardingModal from '@/lib/hooks/useOnboardingModal';

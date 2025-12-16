@@ -1,7 +1,6 @@
-import { Sidebar } from '@/lib/components/Sidebar';
-import { SidebarInset, SidebarProvider } from '@/lib/components/Sidebar';
-import { Toaster } from '@/lib/components/Sonner';
-import { Navbar } from '@/lib/components/Navbar';
+import { Sidebar, SidebarInset, SidebarProvider } from '@/lib/components/core/Sidebar';
+import { Toaster } from '@/lib/components/ui/Sonner';
+import { Navbar } from '@/lib/components/core/Navbar';
 
 export default function CRMLayout({
     children,

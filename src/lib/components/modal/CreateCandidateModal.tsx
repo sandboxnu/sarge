@@ -1,10 +1,10 @@
 'use client';
 
 import { Dialog } from '@radix-ui/react-dialog';
-import { DialogContent, DialogTitle } from './Modal';
-import { FieldLabel } from '@/lib/components/Field';
-import { Input } from '@/lib/components/Input';
-import { Button } from '@/lib/components/Button';
+import { DialogContent, DialogTitle } from '@/lib/components/ui/Modal';
+import { FieldLabel } from '@/lib/components/ui/Field';
+import { Input } from '@/lib/components/ui/Input';
+import { Button } from '@/lib/components/ui/Button';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { AlertCircle, X } from 'lucide-react';
