@@ -12,7 +12,7 @@ const EXTENSIONS: Record<string, string> = {
     'image/avif': 'avif',
 };
 
-class S3Service {
+class S3Connector {
     private client: S3Client;
     private bucket: string;
 
@@ -63,6 +63,5 @@ class S3Service {
     }
 }
 
-const s3Service = new S3Service();
-
-export default s3Service;
+const s3Connector = new S3Connector();
+export default s3Connector;

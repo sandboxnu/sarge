@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import s3Service from '@/lib/connectors/s3.connector';
+import s3Connector from '@/lib/connectors/s3.connector';
 import { type NextRequest } from 'next/server';
 import { ConfirmBodySchema } from '@/lib/schemas/upload.schema';
 import {
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
             throw new BadRequestException('Key does not match the provided ID');
         }
 
-        const exists = await s3Service.doesKeyExist(key);
+        const exists = await s3Connector.doesKeyExist(key);
         if (!exists) throw new BadRequestException('Key does not exist');
 
         const cdnBase = process.env.NEXT_PUBLIC_CDN_BASE;

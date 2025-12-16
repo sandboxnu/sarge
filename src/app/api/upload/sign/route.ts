@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import s3Service from '@/lib/connectors/s3.connector';
+import s3Connector from '@/lib/connectors/s3.connector';
 import { type NextRequest } from 'next/server';
 import { SignBodySchema } from '@/lib/schemas/upload.schema';
 import { handleError, NotFoundException, UnauthorizedException } from '@/lib/utils/errors.utils';
@@ -29,11 +29,11 @@ export async function POST(request: NextRequest) {
             //     return Response.json(forbidden(`User ${userId} is not authorized`));
             // }
 
-            const res = await s3Service.getSignedURL(type, organizationId, mime);
+            const res = await s3Connector.getSignedURL(type, organizationId, mime);
             return Response.json({ data: res }, { status: 200 });
         }
 
-        const res = await s3Service.getSignedURL(type, userId, mime);
+        const res = await s3Connector.getSignedURL(type, userId, mime);
         return Response.json({ data: res }, { status: 200 });
     } catch (err) {
         return handleError(err);
