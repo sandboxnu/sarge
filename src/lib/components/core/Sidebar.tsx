@@ -254,7 +254,11 @@ function ShadSidebar({
     );
 }
 
-function SidebarTrigger({ className, onClick, ...props }: React.ComponentProps<typeof Button>) {
+export function SidebarTrigger({
+    className,
+    onClick,
+    ...props
+}: React.ComponentProps<typeof Button>) {
     const { toggleSidebar } = useSidebar();
 
     return (
@@ -313,7 +317,7 @@ export function SidebarInset({ className, ...props }: React.ComponentProps<'main
     );
 }
 
-function SidebarInput({ className, ...props }: React.ComponentProps<typeof Input>) {
+export function SidebarInput({ className, ...props }: React.ComponentProps<typeof Input>) {
     return (
         <Input
             data-slot="sidebar-input"
@@ -324,7 +328,7 @@ function SidebarInput({ className, ...props }: React.ComponentProps<typeof Input
     );
 }
 
-function SidebarHeader({ className, ...props }: React.ComponentProps<'div'>) {
+export function SidebarHeader({ className, ...props }: React.ComponentProps<'div'>) {
     return (
         <div
             data-slot="sidebar-header"
@@ -346,7 +350,7 @@ function SidebarFooter({ className, ...props }: React.ComponentProps<'div'>) {
     );
 }
 
-function SidebarSeparator({ className, ...props }: React.ComponentProps<typeof Separator>) {
+export function SidebarSeparator({ className, ...props }: React.ComponentProps<typeof Separator>) {
     return (
         <Separator
             data-slot="sidebar-separator"
@@ -357,7 +361,7 @@ function SidebarSeparator({ className, ...props }: React.ComponentProps<typeof S
     );
 }
 
-function SidebarContent({ className, ...props }: React.ComponentProps<'div'>) {
+export function SidebarContent({ className, ...props }: React.ComponentProps<'div'>) {
     return (
         <div
             data-slot="sidebar-content"
@@ -382,7 +386,7 @@ function SidebarGroup({ className, ...props }: React.ComponentProps<'div'>) {
     );
 }
 
-function SidebarGroupLabel({
+export function SidebarGroupLabel({
     className,
     asChild = false,
     ...props
@@ -403,7 +407,7 @@ function SidebarGroupLabel({
     );
 }
 
-function SidebarGroupAction({
+export function SidebarGroupAction({
     className,
     asChild = false,
     ...props
@@ -426,7 +430,7 @@ function SidebarGroupAction({
     );
 }
 
-function SidebarGroupContent({ className, ...props }: React.ComponentProps<'div'>) {
+export function SidebarGroupContent({ className, ...props }: React.ComponentProps<'div'>) {
     return (
         <div
             data-slot="sidebar-group-content"
@@ -437,7 +441,7 @@ function SidebarGroupContent({ className, ...props }: React.ComponentProps<'div'
     );
 }
 
-function SidebarMenu({ className, ...props }: React.ComponentProps<'ul'>) {
+export function SidebarMenu({ className, ...props }: React.ComponentProps<'ul'>) {
     return (
         <ul
             data-slot="sidebar-menu"
@@ -481,7 +485,7 @@ const sidebarMenuButtonVariants = cva(
     }
 );
 
-function SidebarMenuButton({
+export function SidebarMenuButton({
     asChild = false,
     isActive = false,
     variant = 'default',
@@ -531,7 +535,7 @@ function SidebarMenuButton({
     );
 }
 
-function SidebarMenuAction({
+export function SidebarMenuAction({
     className,
     asChild = false,
     showOnHover = false,
@@ -563,7 +567,7 @@ function SidebarMenuAction({
     );
 }
 
-function SidebarMenuBadge({ className, ...props }: React.ComponentProps<'div'>) {
+export function SidebarMenuBadge({ className, ...props }: React.ComponentProps<'div'>) {
     return (
         <div
             data-slot="sidebar-menu-badge"
@@ -582,7 +586,7 @@ function SidebarMenuBadge({ className, ...props }: React.ComponentProps<'div'>) 
     );
 }
 
-function SidebarMenuSkeleton({
+export function SidebarMenuSkeleton({
     className,
     showIcon = false,
     ...props
@@ -617,7 +621,7 @@ function SidebarMenuSkeleton({
     );
 }
 
-function SidebarMenuSub({ className, ...props }: React.ComponentProps<'ul'>) {
+export function SidebarMenuSub({ className, ...props }: React.ComponentProps<'ul'>) {
     return (
         <ul
             data-slot="sidebar-menu-sub"
@@ -632,7 +636,7 @@ function SidebarMenuSub({ className, ...props }: React.ComponentProps<'ul'>) {
     );
 }
 
-function SidebarMenuSubItem({ className, ...props }: React.ComponentProps<'li'>) {
+export function SidebarMenuSubItem({ className, ...props }: React.ComponentProps<'li'>) {
     return (
         <li
             data-slot="sidebar-menu-sub-item"
@@ -643,7 +647,7 @@ function SidebarMenuSubItem({ className, ...props }: React.ComponentProps<'li'>)
     );
 }
 
-function SidebarMenuSubButton({
+export function SidebarMenuSubButton({
     asChild = false,
     size = 'md',
     isActive = false,
