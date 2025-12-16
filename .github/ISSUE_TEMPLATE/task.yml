@@ -19,6 +19,14 @@ body:
           required: true
 
     - type: input
+      id: blocked-by
+      attributes:
+          label: Blocked By
+          description: Link any issues that are blocking this issue from being complete (if applicable)
+      validations:
+          required: false
+
+    - type: input
       id: figma-link
       attributes:
           label: Figma Link
