@@ -1,6 +1,7 @@
 import { SecretsManager } from '@aws-sdk/client-secrets-manager';
+import { handleError } from '@/lib/utils/errors.utils';
 
-class SecretsService {
+class SecretsConnector {
     private client: SecretsManager;
     private secretName: string;
 
@@ -11,7 +12,7 @@ class SecretsService {
         this.secretName = process.env.AWS_SECRET_NAME ?? '';
     }
 
-    async getSecretValue(secret: string): Promise<string | null> {
+    async getSecretValue(secret: string): Promise<string | null | undefined> {
         try {
             const data = await this.client.getSecretValue({
                 SecretId: this.secretName,
@@ -36,11 +37,10 @@ class SecretsService {
 
             return null;
         } catch (error) {
-            // TODO: add a secrets parsing error
-            throw error;
+            handleError(error);
         }
     }
 }
 
-const secretsService = new SecretsService();
-export default secretsService;
+const secretsConnector = new SecretsConnector();
+export default secretsConnector;
