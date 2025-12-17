@@ -1,59 +1,20 @@
 'use client';
 
-import { useState } from 'react';
 import { Dialog, DialogContent, DialogTitle } from '@/lib/components/ui/Modal';
 import { Field, FieldLabel } from '@/lib/components/ui/Field';
 import { Input } from '@/lib/components/ui/Input';
 import { Button } from '@/lib/components/ui/Button';
 import { AlertCircle } from 'lucide-react';
-import { toast } from 'sonner';
-import { createPositionAction } from '@/app/(web)/crm/positions/actions';
+import useCreatePositionModal from '@/lib/hooks/useCreatePositionModal';
 
-interface CreatePositionModalProps {
+export interface CreatePositionModalProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
 }
 
 export default function CreatePositionModal({ open, onOpenChange }: CreatePositionModalProps) {
-    const [positionName, setPositionName] = useState('');
-    const [isCreating, setIsCreating] = useState(false);
-    const [localError, setLocalError] = useState<string | null>(null);
-
-    const handleCreate = async () => {
-        if (!positionName.trim()) {
-            setLocalError('Position name is required');
-            return;
-        }
-        setIsCreating(true);
-        setLocalError(null);
-        try {
-            await createPositionAction(positionName);
-            toast.success('Position created successfully');
-            setPositionName('');
-            onOpenChange(false);
-        } catch {
-            const errorMsg = 'Failed to create position. Please try again.';
-            setLocalError(errorMsg);
-            toast.error('Creation failed', {
-                description: errorMsg,
-            });
-        } finally {
-            setIsCreating(false);
-        }
-    };
-
-    const handleCancel = () => {
-        setPositionName('');
-        setLocalError(null);
-        onOpenChange(false);
-    };
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setPositionName(e.target.value);
-        if (localError) {
-            setLocalError(null);
-        }
-    };
+    const { positionName, isCreating, localError, handleCreate, handleCancel, handleInputChange } =
+        useCreatePositionModal(onOpenChange);
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
