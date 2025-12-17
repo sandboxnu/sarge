@@ -10,22 +10,22 @@ import { Tabs, TabsContent, TabsList, UnderlineTabsTrigger } from '@/lib/compone
 import CreatePositionModal from '@/lib/components/modal/CreatePositionModal';
 import PositionPreviewModal from '@/lib/components/modal/PositionPreviewModal';
 import Image from 'next/image';
+import usePositionContent from '@/lib/hooks/usePositionsContent';
 
 interface PositionsContentProps {
     positions: PositionWithCounts[];
 }
 
 export default function PositionsContent({ positions }: PositionsContentProps) {
-    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-    const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
-    const [selectedPositionId, setSelectedPositionId] = useState<string | null>(null);
-
-    const archived: PositionWithCounts[] = [];
-
-    function handlePositionClick(positionId: string) {
-        setSelectedPositionId(positionId);
-        setIsPreviewModalOpen(true);
-    }
+    const {
+        isCreateModalOpen,
+        setIsCreateModalOpen,
+        isPreviewModalOpen,
+        setIsPreviewModalOpen,
+        selectedPositionId,
+        archived,
+        handlePositionClick,
+    } = usePositionContent();
 
     return (
         <>
