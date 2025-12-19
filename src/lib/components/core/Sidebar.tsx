@@ -730,12 +730,9 @@ export function Sidebar() {
                 <div className="flex items-center justify-between gap-3 group-data-[collapsible=icon]:w-full group-data-[collapsible=icon]:justify-center">
                     <div className="flex items-center gap-2">
                         <div
-                            className="h-7 w-7 overflow-hidden rounded group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:h-5 group-data-[collapsible=icon]:w-5"
-                            style={
-                                !auth.activeOrganization?.logo
-                                    ? { background: '#858C9C' }
-                                    : undefined
-                            }
+                            className={`h-7 w-7 overflow-hidden rounded group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:h-5 group-data-[collapsible=icon]:w-5 ${
+                                !auth.activeOrganization?.logo ? 'bg-sarge-gray-500' : ''
+                            }`}
                         >
                             {auth.activeOrganization?.logo ? (
                                 <Image
