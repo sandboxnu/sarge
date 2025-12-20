@@ -7,7 +7,7 @@ import { Input } from '@/lib/components/ui/Input';
 import { Button } from '@/lib/components/ui/Button';
 import { AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
-import { createPositionAction } from '@/app/actions/position.actions';
+import { createPositionAction } from '@/app/(web)/crm/positions/actions';
 
 interface CreatePositionModalProps {
     open: boolean;
@@ -28,7 +28,7 @@ export default function CreatePositionModal({ open, onOpenChange }: CreatePositi
         setLocalError(null);
         try {
             await createPositionAction(positionName);
-            toast.success('Position created successfully.');
+            toast.success('Position created successfully');
             setPositionName('');
             onOpenChange(false);
         } catch {
