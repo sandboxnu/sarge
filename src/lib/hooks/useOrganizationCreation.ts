@@ -76,7 +76,7 @@ function useOrganizationCreation(userId: string | null) {
             }
 
             await authClient.organization.setActive({ organizationId });
-            toast.success('Organization created');
+            toast.success('Organization created successfully');
 
             return organizationId;
         } catch (err) {

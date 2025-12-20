@@ -55,7 +55,7 @@ export default function CreateCandidateModal({
                 ...(linkedin && { linkedinUrl: linkedin }),
                 ...(github && { githubUrl: github }),
             });
-            toast.success('Candidate added successfully.');
+            toast.success('Candidate added successfully');
             setFullName('');
             setEmail('');
             setMajor('');
