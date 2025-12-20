@@ -44,7 +44,7 @@ export default function SignInPage() {
             return;
         }
 
-        router.push('crm/dashboard');
+        router.push('/crm/dashboard');
         router.refresh();
     };
 
