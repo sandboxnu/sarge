@@ -78,14 +78,12 @@ export default function CreatePositionModal({ open, onOpenChange }: CreatePositi
                     </Field>
 
                     <div className="flex items-center justify-between">
-                        <Button
-                            type="button"
-                            variant="tertiary"
+                        <p
+                            className="text-sarge-primary-500 hover:text-sarge-primary-600 hover:cursor-pointer"
                             onClick={handleCancel}
-                            className="px-0 py-2"
                         >
-                            Cancel
-                        </Button>
+                            Back
+                        </p>
                         <Button
                             type="button"
                             variant="primary"
