@@ -769,7 +769,7 @@ export function Sidebar() {
                                 <SidebarMenuItem key={item.title}>
                                     <SidebarMenuButton
                                         tooltip={item.title}
-                                        className="hover:!bg-sarge-primary-100 focus:!bg-sarge-primary-200 [&:hover]:!bg-sarge-primary-100 !important group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8 group-data-[collapsible=icon]:p-0"
+                                        className="hover:!bg-sarge-primary-100 focus:!bg-sarge-primary-200 [&:hover]:!bg-sarge-primary-100 !important group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8 group-data-[collapsible=icon]:p-0 hover:cursor-pointer"
                                         onClick={() => router.push(item.url)}
                                     >
                                         <item.icon className="text-sarge-gray-600 !h-4 !w-4" />
@@ -788,7 +788,7 @@ export function Sidebar() {
                     <SidebarMenuItem>
                         <SidebarMenuButton
                             tooltip="Organization Settings"
-                            className="hover:!bg-sarge-primary-100 focus:!bg-sarge-primary-200 [&:hover]:!bg-sarge-primary-100 !important group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8 group-data-[collapsible=icon]:p-0"
+                            className="hover:!bg-sarge-primary-100 focus:!bg-sarge-primary-200 [&:hover]:!bg-sarge-primary-100 !important group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8 group-data-[collapsible=icon]:p-0 hover:cursor-pointer"
                         >
                             <Settings className="text-sarge-gray-600 !h-4 !w-4" />
                             <span className="text-sarge-gray-800 text-xs font-medium">

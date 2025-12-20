@@ -64,6 +64,7 @@ function UnderlineTabsTrigger({
                 'border-b-2 border-b-transparent',
                 'focus-visible:outline-none',
                 'data-[state=active]:border-b-sarge-primary-500 data-[state=active]:text-sarge-primary-500',
+                'hover:cursor-pointer',
                 className
             )}
             {...props}
