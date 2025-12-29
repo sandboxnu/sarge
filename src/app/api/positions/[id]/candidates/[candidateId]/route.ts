@@ -4,7 +4,7 @@ import { type NextRequest } from 'next/server';
 import { getSession } from '@/lib/utils/auth.utils';
 
 /**
- * DELETE /api/position/[id]/candidates/[candidateId]
+ * DELETE /api/positions/[id]/candidates/[candidateId]
  * Remove a single candidate from a position's pool
  * This will cascade delete their assessment if one exists
  */
