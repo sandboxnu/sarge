@@ -41,7 +41,7 @@ export function useUploadCSV(positionId: string) {
             const formData = new FormData();
             formData.append('file', file);
 
-            const response = await fetch(`/api/position/${positionId}/candidates/csv`, {
+            const response = await fetch(`/api/positions/${positionId}/candidates/csv`, {
                 method: 'POST',
                 body: formData,
             });

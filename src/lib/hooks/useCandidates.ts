@@ -22,7 +22,7 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
         const fetchCandidates = async () => {
             try {
                 setLoading(true);
-                const response = await fetch(`/api/position/${positionId}/candidates`);
+                const response = await fetch(`/api/positions/${positionId}/candidates`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch candidates');
                 }
@@ -44,7 +44,7 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
 
     useEffect(() => {
         const fetchPosition = async () => {
-            const response = await fetch(`/api/position/${positionId}`);
+            const response = await fetch(`/api/positions/${positionId}`);
             if (response.ok) {
                 const data = await response.json();
                 setPositionTitle(data.data?.title ?? null);
@@ -59,7 +59,7 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
     const createCandidate = async (candidate: AddCandidateWithDataDTO) => {
         setLoading(true);
         try {
-            const response = await fetch(`/api/position/${positionId}/candidates`, {
+            const response = await fetch(`/api/positions/${positionId}/candidates`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(candidate),
@@ -83,7 +83,7 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
     const batchCreateCandidates = async (candidates: AddCandidateWithDataDTO[]) => {
         setLoading(true);
         try {
-            const response = await fetch(`/api/position/${positionId}/candidates/batch`, {
+            const response = await fetch(`/api/positions/${positionId}/candidates/batch`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ candidates }),

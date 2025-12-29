@@ -5,7 +5,7 @@ import { getSession } from '@/lib/utils/auth.utils';
 import { batchAddCandidatesSchema } from '@/lib/schemas/candidate-pool.schema';
 
 /**
- * POST /api/position/[id]/candidates/batch
+ * POST /api/positions/[id]/candidates/batch
  * Batch add candidates to a position (CSV upload flow)
  */
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
