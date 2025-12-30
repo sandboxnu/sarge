@@ -8,8 +8,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// An Organization that is hiring technical positions (ie: NEU, MIT, Harvard).
-// One instance of Sarge can host multiple organizations.
+// An organization using Sarge to run technical hiring workflows. An organization owns positions, candidates, assessment templates, and members.
 model Organization {
   id        String   @id @unique @default(cuid())
   name      String   @unique
@@ -27,7 +26,7 @@ model Organization {
   tags                Tag[]
 }
 
-// A user of the Sarge platform (not a candidate)
+// An internal user of the Sarge platform (e.g. recruiter, reviewer, admin). Users authenticate and may belong to one or more organizations.
 model User {
   id            String   @id @unique @default(cuid())
   name          String
@@ -48,7 +47,7 @@ model User {
   decidedApplications Application[]  @relation("ApplicationDecision")
 }
 
-// A position that an organization is hiring for (ie: SWE)
+// A role or position that an organization is hiring for (e.g. "Software Engineer"). Positions collect applications from candidates.
 model Position {
   id          String   @id @unique @default(cuid())
   title       String
@@ -57,21 +56,21 @@ model Position {
   updatedAt   DateTime @updatedAt
   createdById String
 
-  applications Application[] // list of candidates in the position
+  applications Application[]
   organization Organization  @relation(fields: [orgId], references: [id])
   creator      User          @relation("CreatedPositions", fields: [createdById], references: [id])
 }
 
-// An external entity (not associated with a User) of the Sarge platform that is participating in a technical interview
+// An external applicant who applies to positions within an organization. Candidates do not authenticate and may apply to multiple positions.
 model Candidate {
   id    String @id @unique @default(cuid())
   name  String
   email String
 
-  linkedinUrl    String? // these are unlikely to change from application to application, so we can store them here
+  linkedinUrl    String?
   githubUrl      String?
   major          String?
-  graduationDate String? // May 2026 for example
+  graduationDate String?
   resumeUrl      String?
 
   orgId     String
@@ -84,7 +83,7 @@ model Candidate {
 }
 
 enum AssessmentStatus {
-  NOT_ASSIGNED // In pool, no assessment assigned yet
+  NOT_ASSIGNED // Application created, no assessment assigned yet
   ASSIGNED // Assessment created and link sent to candidate
   SUBMITTED // Candidate completed and submitted assessment
   EXPIRED // Assessment deadline passed without submission
@@ -97,7 +96,7 @@ enum DecisionStatus {
   REJECTED // Candidate did not meet requirements
 }
 
-// Represents a candidate's application to a specific position. This is the core hiring entity, tracking assessment progress and decisions.
+// Represents a candidate's application to a specific position. This is the core hiring entity, tracking assessment progress and hiring decisions.
 model Application {
   id               String           @id @unique @default(cuid())
   candidateId      String
@@ -114,7 +113,6 @@ model Application {
   candidate     Candidate   @relation(fields: [candidateId], references: [id], onDelete: Cascade)
   position      Position    @relation(fields: [positionId], references: [id], onDelete: Cascade)
   assessment    Assessment?
-  // We store the assessment here bc in the position view we want to have an easy way to access the assessment
   decidedByUser User?       @relation("ApplicationDecision", fields: [decidedBy], references: [id], onDelete: SetNull)
 
   @@unique([candidateId, positionId])
@@ -122,7 +120,6 @@ model Application {
   @@index([positionId, decisionStatus]) // For filtering by decision
 }
 
-// TODO
 model AssessmentTemplate {
   id            String   @id @unique @default(cuid())
   title         String
@@ -134,34 +131,34 @@ model AssessmentTemplate {
   assessments  Assessment[] @relation("derivedFromAssessmentTemplate")
 }
 
-// TODO
 model TaskTemplate {
-  id                 String @id @unique @default(cuid())
-  title              String
-  content            String @db.Text
-  public_test_cases  Json[]
-  private_test_cases Json[]
-  orgId              String
+  id               String @id @unique @default(cuid())
+  title            String
+  content          String @db.Text
+  publicTestCases  Json[]
+  privateTestCases Json[]
+  orgId            String
 
   organization Organization @relation(fields: [orgId], references: [id])
   tasks        Task[]       @relation("derivedFromTaskTemplate")
   tags         Tag[]        @relation("TaskTemplateTags")
 }
 
-// TODO
+// A task within an assessment, containing the candidate's submitted code.
 model Task {
-  id             String    @id @unique @default(cuid())
+  id             String @id @unique @default(cuid())
   assessmentId   String
   taskTemplateId String
-  candidateCode  String    @db.Text
-  lastUpdated    DateTime? @updatedAt
+  candidateCode  String @db.Text
+
+  updatedAt DateTime? @updatedAt
 
   assessment   Assessment   @relation("combineToFormAssessment", fields: [assessmentId], references: [id])
   taskTemplate TaskTemplate @relation("derivedFromTaskTemplate", fields: [taskTemplateId], references: [id])
   comments     Comment[]
 }
 
-// TODO
+// An assessment instance assigned to an application. Generated from an assessment template and composed of multiple tasks.
 model Assessment {
   id                   String    @id @unique @default(cuid())
   applicationId        String    @unique
@@ -177,7 +174,7 @@ model Assessment {
   reviews            Review[]
 }
 
-// TODO
+// A review of an assessment submitted by a user, including a rating and feedback.
 model Review {
   id           String   @id @unique @default(cuid())
   assessmentId String
@@ -190,7 +187,7 @@ model Review {
   reviewer   User       @relation(fields: [reviewerId], references: [id])
 }
 
-// TODO
+// A comment left by a reviewer on a specific task within an assessment.
 model Comment {
   id         String   @id @unique @default(cuid())
   taskId     String
@@ -202,7 +199,7 @@ model Comment {
   reviewer User @relation(fields: [reviewerId], references: [id])
 }
 
-// TODO
+// An authenticated session for a user. Stores login state and the user's active organization context.
 model Session {
   id        String   @id @default(cuid())
   userId    String
@@ -221,7 +218,7 @@ model Session {
   @@index([token])
 }
 
-// TODO
+// An authentication account linked to a user (email/password).
 model Account {
   id                    String    @id @default(cuid())
   userId                String
@@ -243,7 +240,7 @@ model Account {
   @@index([userId])
 }
 
-// TODO
+// A verification token used for actions such as email verification or password resets.
 model Verification {
   id         String   @id @default(cuid())
   identifier String
@@ -258,13 +255,14 @@ model Verification {
   @@index([identifier, value])
 }
 
-// TODO
+// Represents a user's membership within an organization and their assigned role.
 model Member {
   id             String       @id @default(cuid())
   organizationId String
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   userId         String
   user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Role identifier for the member within the organization. Stored as a lowercase string (e.g. "owner", "admin") to match better-auth role keys.
   role           String
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
@@ -274,17 +272,25 @@ model Member {
   @@index([organizationId])
 }
 
-// TODO
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+  REVOKED
+}
+
+// An invitation sent to an email address to join an organization with a specific role. Accepted invitations result in the creation of a Member record.
 model Invitation {
-  id             String       @id @default(cuid())
+  id             String           @id @default(cuid())
   organizationId String
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organization   Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   email          String
+  // Role granted upon invitation acceptance. Stored as a lowercase string (e.g. "owner", "admin") to match better-auth role keys.
   role           String
-  status         String
+  status         InvitationStatus @default(PENDING)
   expiresAt      DateTime
   acceptedAt     DateTime?
-  createdAt      DateTime     @default(now())
+  createdAt      DateTime         @default(now())
   inviterId      String
 
   inviter User @relation("Inviter", fields: [inviterId], references: [id], onDelete: Cascade)
@@ -294,7 +300,7 @@ model Invitation {
   @@index([organizationId])
 }
 
-// TODO
+// A label used to categorize and organize task templates within an organization.
 model Tag {
   id           String   @id @unique @default(cuid())
   name         String
