@@ -8,6 +8,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// An Organization that is hiring technical positions (ie: NEU, MIT, Harvard).
+// One instance of Sarge can host multiple organizations.
 model Organization {
   id        String   @id @unique @default(cuid())
   name      String   @unique
@@ -25,6 +27,7 @@ model Organization {
   tags                Tag[]
 }
 
+// A user of the Sarge platform (not a candidate)
 model User {
   id            String   @id @unique @default(cuid())
   name          String
@@ -34,17 +37,18 @@ model User {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  Review               Review[]
-  Comment              Comment[]
-  sessions             Session[]
-  accounts             Account[]
-  verifications        Verification[]
-  members              Member[]
-  invitations          Invitation[]         @relation("Inviter")
-  positions            Position[]           @relation("CreatedPositions")
-  candidatePoolEntries CandidatePoolEntry[] @relation("DecisionMaker")
+  reviews             Review[]
+  comments            Comment[]
+  sessions            Session[]
+  accounts            Account[]
+  verifications       Verification[]
+  members             Member[]
+  invitations         Invitation[]   @relation("Inviter")
+  positions           Position[]     @relation("CreatedPositions")
+  decidedApplications Application[]  @relation("ApplicationDecision")
 }
 
+// A position that an organization is hiring for (ie: SWE)
 model Position {
   id          String   @id @unique @default(cuid())
   title       String
@@ -53,11 +57,12 @@ model Position {
   updatedAt   DateTime @updatedAt
   createdById String
 
-  poolCandidates CandidatePoolEntry[] // list of candidates in the position (candidate pool)
-  organization   Organization         @relation(fields: [orgId], references: [id])
-  creator        User                 @relation("CreatedPositions", fields: [createdById], references: [id])
+  applications Application[] // list of candidates in the position
+  organization Organization  @relation(fields: [orgId], references: [id])
+  creator      User          @relation("CreatedPositions", fields: [createdById], references: [id])
 }
 
+// An external entity (not associated with a User) of the Sarge platform that is participating in a technical interview
 model Candidate {
   id    String @id @unique @default(cuid())
   name  String
@@ -72,8 +77,8 @@ model Candidate {
   orgId     String
   createdAt DateTime @default(now())
 
-  appliedPositions CandidatePoolEntry[] // list of positions the candidate has applied to
-  organization     Organization         @relation(fields: [orgId], references: [id])
+  applications Application[] // list of positions the candidate has applied to
+  organization Organization  @relation(fields: [orgId], references: [id])
 
   @@unique([email, orgId])
 }
@@ -92,28 +97,32 @@ enum DecisionStatus {
   REJECTED // Candidate did not meet requirements
 }
 
-model CandidatePoolEntry {
+// Represents a candidate's application to a specific position. This is the core hiring entity, tracking assessment progress and decisions.
+model Application {
   id               String           @id @unique @default(cuid())
   candidateId      String
   positionId       String
+  // Canonical assessment workflow state for the application. Other assessment fields (submittedAt, reviews, deadline) are derived indicators.
   assessmentStatus AssessmentStatus @default(NOT_ASSIGNED)
   decisionStatus   DecisionStatus   @default(PENDING)
   decidedBy        String?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  decidedAt DateTime?
 
   candidate     Candidate   @relation(fields: [candidateId], references: [id], onDelete: Cascade)
   position      Position    @relation(fields: [positionId], references: [id], onDelete: Cascade)
   assessment    Assessment?
   // We store the assessment here bc in the position view we want to have an easy way to access the assessment
-  decisionMaker User?       @relation("DecisionMaker", fields: [decidedBy], references: [id], onDelete: SetNull)
+  decidedByUser User?       @relation("ApplicationDecision", fields: [decidedBy], references: [id], onDelete: SetNull)
 
   @@unique([candidateId, positionId])
   @@index([positionId, assessmentStatus]) // For position stats queries
   @@index([positionId, decisionStatus]) // For filtering by decision
 }
 
+// TODO
 model AssessmentTemplate {
   id            String   @id @unique @default(cuid())
   title         String
@@ -125,6 +134,7 @@ model AssessmentTemplate {
   assessments  Assessment[] @relation("derivedFromAssessmentTemplate")
 }
 
+// TODO
 model TaskTemplate {
   id                 String @id @unique @default(cuid())
   title              String
@@ -138,6 +148,7 @@ model TaskTemplate {
   tags         Tag[]        @relation("TaskTemplateTags")
 }
 
+// TODO
 model Task {
   id             String    @id @unique @default(cuid())
   assessmentId   String
@@ -150,21 +161,23 @@ model Task {
   comments     Comment[]
 }
 
+// TODO
 model Assessment {
   id                   String    @id @unique @default(cuid())
-  candidatePoolEntryId String    @unique
+  applicationId        String    @unique
   assessmentTemplateId String
   assignedAt           DateTime  @default(now())
   submittedAt          DateTime?
   uniqueLink           String    @unique
   deadline             DateTime?
 
-  candidatePoolEntry CandidatePoolEntry @relation(fields: [candidatePoolEntryId], references: [id], onDelete: Cascade)
+  application        Application        @relation(fields: [applicationId], references: [id], onDelete: Cascade)
   assessmentTemplate AssessmentTemplate @relation("derivedFromAssessmentTemplate", fields: [assessmentTemplateId], references: [id])
   tasks              Task[]             @relation("combineToFormAssessment")
   reviews            Review[]
 }
 
+// TODO
 model Review {
   id           String   @id @unique @default(cuid())
   assessmentId String
@@ -177,6 +190,7 @@ model Review {
   reviewer   User       @relation(fields: [reviewerId], references: [id])
 }
 
+// TODO
 model Comment {
   id         String   @id @unique @default(cuid())
   taskId     String
@@ -188,6 +202,7 @@ model Comment {
   reviewer User @relation(fields: [reviewerId], references: [id])
 }
 
+// TODO
 model Session {
   id        String   @id @default(cuid())
   userId    String
@@ -206,6 +221,7 @@ model Session {
   @@index([token])
 }
 
+// TODO
 model Account {
   id                    String    @id @default(cuid())
   userId                String
@@ -227,6 +243,7 @@ model Account {
   @@index([userId])
 }
 
+// TODO
 model Verification {
   id         String   @id @default(cuid())
   identifier String
@@ -241,6 +258,7 @@ model Verification {
   @@index([identifier, value])
 }
 
+// TODO
 model Member {
   id             String       @id @default(cuid())
   organizationId String
@@ -256,6 +274,7 @@ model Member {
   @@index([organizationId])
 }
 
+// TODO
 model Invitation {
   id             String       @id @default(cuid())
   organizationId String
@@ -275,6 +294,7 @@ model Invitation {
   @@index([organizationId])
 }
 
+// TODO
 model Tag {
   id           String   @id @unique @default(cuid())
   name         String
