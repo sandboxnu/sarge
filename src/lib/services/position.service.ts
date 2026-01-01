@@ -1,7 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { type CreatePositionDTO, type UpdatePositionDTO } from '@/lib/schemas/position.schema';
-import { type Position } from '@/generated/prisma';
-import { AssessmentStatus } from '@/generated/prisma';
+import { type Position, AssessmentStatus } from '@/generated/prisma';
 import { NotFoundException } from '@/lib/utils/errors.utils';
 import { type PositionWithCounts, type PositionPreviewData } from '@/lib/types/position.types';
 
@@ -10,32 +9,30 @@ async function createPosition(
     userId: string,
     orgId: string
 ): Promise<Position> {
-    const position = await prisma.position.create({
+    return prisma.position.create({
         data: {
             title: positionRequest.title,
             createdById: userId,
             orgId,
         },
     });
-
-    return position;
 }
 
 async function deletePosition(positionId: string): Promise<Position> {
-    const existingPosition = await prisma.position.findUnique({ where: { id: positionId } });
+    const existingPosition = await prisma.position.findUnique({
+        where: { id: positionId },
+    });
+
     if (!existingPosition) {
         throw new NotFoundException('Position', positionId);
     }
 
-    const deleted = await prisma.position.delete({ where: { id: positionId } });
-    return deleted;
+    return prisma.position.delete({ where: { id: positionId } });
 }
 
 async function getPosition(positionId: string): Promise<Position> {
     const position = await prisma.position.findUnique({
-        where: {
-            id: positionId,
-        },
+        where: { id: positionId },
     });
 
     if (!position) {
@@ -51,13 +48,13 @@ async function getPositionByOrgId(orgId: string): Promise<PositionWithCounts[]> 
         select: {
             id: true,
             title: true,
+            createdAt: true,
             _count: {
                 select: {
-                    poolCandidates: true,
+                    applications: true,
                 },
             },
-            createdAt: true,
-            poolCandidates: {
+            applications: {
                 where: { assessmentStatus: AssessmentStatus.ASSIGNED },
                 select: { id: true },
             },
@@ -67,8 +64,8 @@ async function getPositionByOrgId(orgId: string): Promise<PositionWithCounts[]> 
     return positions.map((p) => ({
         id: p.id,
         title: p.title,
-        numCandidates: p._count.poolCandidates,
-        numAssigned: p.poolCandidates.length,
+        numCandidates: p._count.applications,
+        numAssigned: p.applications.length,
         createdAt: p.createdAt,
     }));
 }
@@ -77,16 +74,18 @@ async function updatePosition(
     positionId: string,
     positionData: UpdatePositionDTO
 ): Promise<Position> {
-    const existingPosition = await prisma.position.findUnique({ where: { id: positionId } });
+    const existingPosition = await prisma.position.findUnique({
+        where: { id: positionId },
+    });
+
     if (!existingPosition) {
         throw new NotFoundException('Position', positionId);
     }
 
-    const updatedPosition = await prisma.position.update({
+    return prisma.position.update({
         where: { id: positionId },
         data: positionData,
     });
-    return updatedPosition;
 }
 
 async function getPositionPreview(positionId: string): Promise<PositionPreviewData> {
@@ -96,7 +95,7 @@ async function getPositionPreview(positionId: string): Promise<PositionPreviewDa
             id: true,
             title: true,
             createdAt: true,
-            poolCandidates: {
+            applications: {
                 select: {
                     id: true,
                     assessmentStatus: true,
@@ -144,21 +143,21 @@ async function getPositionPreview(positionId: string): Promise<PositionPreviewDa
     }
 
     const assessmentTemplate =
-        position.poolCandidates.find((entry) => entry.assessment?.assessmentTemplate)?.assessment
+        position.applications.find((app) => app.assessment?.assessmentTemplate)?.assessment
             ?.assessmentTemplate ?? null;
 
-    const stats = position.poolCandidates.reduce(
-        (acc, entry) => {
-            if (entry.assessmentStatus !== AssessmentStatus.NOT_ASSIGNED) {
+    const stats = position.applications.reduce(
+        (acc, app) => {
+            if (app.assessmentStatus !== AssessmentStatus.NOT_ASSIGNED) {
                 acc.totalSent++;
             }
             if (
-                entry.assessmentStatus === AssessmentStatus.SUBMITTED ||
-                entry.assessmentStatus === AssessmentStatus.GRADED
+                app.assessmentStatus === AssessmentStatus.SUBMITTED ||
+                app.assessmentStatus === AssessmentStatus.GRADED
             ) {
                 acc.totalSubmitted++;
             }
-            if (entry.assessmentStatus === AssessmentStatus.GRADED) {
+            if (app.assessmentStatus === AssessmentStatus.GRADED) {
                 acc.totalGraded++;
             }
             return acc;
@@ -170,19 +169,19 @@ async function getPositionPreview(positionId: string): Promise<PositionPreviewDa
         id: position.id,
         title: position.title,
         createdAt: position.createdAt,
-        candidateCount: position.poolCandidates.length,
+        candidateCount: position.applications.length,
         assessmentTemplate,
-        candidates: position.poolCandidates.map((entry) => ({
-            id: entry.id,
-            assessmentStatus: entry.assessmentStatus,
-            decisionStatus: entry.decisionStatus,
-            candidate: entry.candidate,
-            assessment: entry.assessment
+        candidates: position.applications.map((app) => ({
+            id: app.id,
+            assessmentStatus: app.assessmentStatus,
+            decisionStatus: app.decisionStatus,
+            candidate: app.candidate,
+            assessment: app.assessment
                 ? {
-                      id: entry.assessment.id,
-                      uniqueLink: entry.assessment.uniqueLink,
-                      submittedAt: entry.assessment.submittedAt,
-                      reviews: entry.assessment.reviews.map((review) => ({
+                      id: app.assessment.id,
+                      uniqueLink: app.assessment.uniqueLink,
+                      submittedAt: app.assessment.submittedAt,
+                      reviews: app.assessment.reviews.map((review) => ({
                           reviewer: review.reviewer,
                       })),
                   }

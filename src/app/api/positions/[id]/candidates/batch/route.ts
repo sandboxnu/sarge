@@ -1,22 +1,22 @@
-import CandidatePoolService from '@/lib/services/candidate-pool.service';
+import ApplicationService from '@/lib/services/application.service';
 import { handleError } from '@/lib/utils/errors.utils';
 import { type NextRequest } from 'next/server';
 import { getSession } from '@/lib/utils/auth.utils';
-import { batchAddCandidatesSchema } from '@/lib/schemas/candidate-pool.schema';
+import { batchAddApplicationsSchema } from '@/lib/schemas/application.schema';
 
 /**
  * POST /api/positions/[id]/candidates/batch
- * Batch add candidates to a position (CSV upload flow)
+ * Batch add candidate applications to a position (CSV upload flow)
  */
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         const session = await getSession();
         const positionId = (await params).id;
         const body = await request.json();
-        const parsed = batchAddCandidatesSchema.parse(body);
+        const parsed = batchAddApplicationsSchema.parse(body);
 
-        const result = await CandidatePoolService.batchAddCandidatesToPosition(
-            parsed.candidates,
+        const result = await ApplicationService.batchAddApplicationsToPosition(
+            parsed.applications,
             positionId,
             session.activeOrganizationId
         );

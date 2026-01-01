@@ -8,12 +8,12 @@ import { Button } from '@/lib/components/ui/Button';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { AlertCircle, X } from 'lucide-react';
-import type { AddCandidateWithDataDTO } from '@/lib/schemas/candidate-pool.schema';
+import type { AddApplicationWithCandidateDataDTO } from '@/lib/schemas/application.schema';
 
 export type CreateCandidateModalProps = {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    onCreate: (candidate: AddCandidateWithDataDTO) => Promise<void>;
+    onCreate: (candidate: AddApplicationWithCandidateDataDTO) => Promise<void>;
     onSwitchModal?: () => void;
 };
 

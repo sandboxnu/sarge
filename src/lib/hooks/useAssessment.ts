@@ -90,8 +90,8 @@ export default function useAssessment(id: string, currentTaskId?: string) {
                 if (!prev) return prev;
                 return {
                     ...prev,
-                    candidatePoolEntry: {
-                        ...prev.candidatePoolEntry,
+                    application: {
+                        ...prev.application,
                         assessmentStatus: status,
                     },
                 };

@@ -1,13 +1,13 @@
 import {
-    batchAddCandidatesSchema,
-    type AddCandidateWithDataDTO,
-} from '@/lib/schemas/candidate-pool.schema';
+    batchAddApplicationsSchema,
+    type AddApplicationWithCandidateDataDTO,
+} from '@/lib/schemas/application.schema';
 import { BadRequestException } from '@/lib/utils/errors.utils';
 
 // Normalize header by lowercasing and removing any spaces
 const normalizeHeader = (h: string) => h.toLowerCase().replace(/\s+/g, '');
 
-export function parseCandidateCsv(csv: string): AddCandidateWithDataDTO[] {
+export function parseCandidateCsv(csv: string): AddApplicationWithCandidateDataDTO[] {
     const trimmedCsv = csv.trim();
     if (!trimmedCsv) {
         throw new BadRequestException('CSV file is empty');
@@ -77,9 +77,10 @@ export function parseCandidateCsv(csv: string): AddCandidateWithDataDTO[] {
     });
 
     // validate the parsed candidates using Zod schema
-    const parsed = batchAddCandidatesSchema.parse({
-        candidates: rawCandidates,
+    const parsed = batchAddApplicationsSchema.parse({
+        // CSV rows represent candidate data, but each row creates an Application for this position.
+        applications: rawCandidates,
     });
 
-    return parsed.candidates;
+    return parsed.applications;
 }

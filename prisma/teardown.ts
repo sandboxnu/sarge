@@ -18,7 +18,7 @@ async function main() {
                 "Assessment",
                 "TaskTemplate",
                 "AssessmentTemplate",
-                "CandidatePoolEntry",
+                "Application",
                 "Candidate",
                 "Position",
                 "Tag",

@@ -8,9 +8,10 @@ export type PositionWithCounts = {
     createdAt: Date;
 };
 
-export interface CandidatePoolDisplayInfo {
+export interface ApplicationDisplayInfo {
     assessmentStatus: AssessmentStatus;
     decisionStatus: DecisionStatus;
+    decidedAt: Date | null;
     candidate: {
         name: string;
         major: string | null;
@@ -23,7 +24,7 @@ export interface CandidatePoolDisplayInfo {
         uniqueLink: string;
         submittedAt: Date | null;
     } | null;
-    decisionMaker: {
+    decidedByUser: {
         name: string;
         email: string;
     } | null;
@@ -33,7 +34,7 @@ export interface BatchAddResult {
     candidatesCreated: number;
     entriesCreated: number;
     totalProcessed: number;
-    candidates: CandidatePoolDisplayInfo[];
+    candidates: ApplicationDisplayInfo[];
 }
 
 export interface PositionPreviewCandidate {

@@ -20,7 +20,7 @@ export default function OutroAssessmentPage({
         return <div>Error: {error.message}</div>;
     }
 
-    if (assessment?.candidatePoolEntry.assessmentStatus === 'SUBMITTED') {
+    if (assessment?.application.assessmentStatus === 'SUBMITTED') {
         return <div>This assessment has already been submitted.</div>;
     }
 

@@ -1,19 +1,19 @@
 import { useEffect, useState } from 'react';
-import type { CandidatePoolDisplayInfo } from '@/lib/types/position.types';
-import type { AddCandidateWithDataDTO } from '@/lib/schemas/candidate-pool.schema';
+import type { ApplicationDisplayInfo } from '@/lib/types/position.types';
+import type { AddApplicationWithCandidateDataDTO } from '@/lib/schemas/application.schema';
 import { toast } from 'sonner';
 
 interface UseCandidatesReturn {
-    candidates: CandidatePoolDisplayInfo[];
+    candidates: ApplicationDisplayInfo[];
     loading: boolean;
     error: string | null;
     positionTitle: string | null;
-    createCandidate: (candidate: AddCandidateWithDataDTO) => Promise<void>;
-    batchCreateCandidates: (candidates: AddCandidateWithDataDTO[]) => Promise<void>;
+    createCandidate: (candidate: AddApplicationWithCandidateDataDTO) => Promise<void>;
+    batchCreateCandidates: (candidates: AddApplicationWithCandidateDataDTO[]) => Promise<void>;
 }
 
 export default function useCandidates(positionId: string): UseCandidatesReturn {
-    const [candidates, setCandidates] = useState<CandidatePoolDisplayInfo[]>([]);
+    const [candidates, setCandidates] = useState<ApplicationDisplayInfo[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [positionTitle, setPositionTitle] = useState<string | null>(null);
@@ -56,7 +56,7 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
         }
     }, [positionId]);
 
-    const createCandidate = async (candidate: AddCandidateWithDataDTO) => {
+    const createCandidate = async (candidate: AddApplicationWithCandidateDataDTO) => {
         setLoading(true);
         try {
             const response = await fetch(`/api/positions/${positionId}/candidates`, {
@@ -68,6 +68,7 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
             if (!response.ok) {
                 throw new Error('Failed to create candidate');
             }
+
             const data = await response.json();
             setCandidates((prev) => [...prev, data.data]);
             toast.success('Candidate created successfully');
@@ -80,7 +81,7 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
         }
     };
 
-    const batchCreateCandidates = async (candidates: AddCandidateWithDataDTO[]) => {
+    const batchCreateCandidates = async (candidates: AddApplicationWithCandidateDataDTO[]) => {
         setLoading(true);
         try {
             const response = await fetch(`/api/positions/${positionId}/candidates/batch`, {
@@ -93,6 +94,7 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
                 setError('Failed to batch create candidates');
                 return;
             }
+
             const data = await response.json();
             setCandidates((prev) => [...prev, ...data.data.candidates]);
             toast.success('Candidates created successfully');

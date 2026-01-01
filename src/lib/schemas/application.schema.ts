@@ -1,13 +1,13 @@
 import { AssessmentStatus, DecisionStatus } from '@/generated/prisma';
 import { z } from 'zod';
 
-// for adding a single candidate by ID (candidate must already exist)
-export const addCandidateByIdSchema = z.object({
-    candidateId: z.string().cuid('Invalid candidate ID'),
+// for adding a single application by candidate ID (candidate must already exist)
+export const addApplicationByCandidateIdSchema = z.object({
+    candidateId: z.cuid('Invalid candidate ID'),
 });
 
-// for adding a single candidate with data (create if not exists)
-export const addCandidateWithDataSchema = z.object({
+// for adding a single application with candidate data (create candidate if not exists)
+export const addApplicationWithCandidateDataSchema = z.object({
     name: z
         .string()
         .min(2, 'Name must be at least 2 characters')
@@ -25,12 +25,12 @@ export const addCandidateWithDataSchema = z.object({
     resumeUrl: z.union([z.literal('-'), z.string()]).optional(),
 });
 
-// for batch adding candidates (CSV upload flow)
-export const batchAddCandidatesSchema = z.object({
-    candidates: z
-        .array(addCandidateWithDataSchema)
-        .min(1, 'At least one candidate is required')
-        .max(1000, 'Cannot add more than 1000 candidates at once'),
+// for batch adding applications (CSV upload flow)
+export const batchAddApplicationsSchema = z.object({
+    applications: z
+        .array(addApplicationWithCandidateDataSchema)
+        .min(1, 'At least one application is required')
+        .max(1000, 'Cannot add more than 1000 applications at once'),
 });
 
 export const updateAssessmentStatusSchema = z.object({
@@ -41,20 +41,23 @@ export const updateDecisionStatusSchema = z.object({
     decisionStatus: z.enum(DecisionStatus),
 });
 
-export const CandidatePoolSchema = z.object({
+export const ApplicationSchema = z.object({
     id: z.cuid(),
     candidateId: z.cuid(),
     positionId: z.cuid(),
     assessmentStatus: z.enum(AssessmentStatus),
     decisionStatus: z.enum(DecisionStatus),
     decidedBy: z.cuid().nullable(),
+    decidedAt: z.date().nullable(),
     createdAt: z.date(),
     updatedAt: z.date(),
 });
 
-export type CandidatePoolDTO = z.infer<typeof CandidatePoolSchema>;
-export type AddCandidateByIdDTO = z.infer<typeof addCandidateByIdSchema>;
-export type AddCandidateWithDataDTO = z.infer<typeof addCandidateWithDataSchema>;
-export type BatchAddCandidatesDTO = z.infer<typeof batchAddCandidatesSchema>;
+export type ApplicationDTO = z.infer<typeof ApplicationSchema>;
+export type AddApplicationByCandidateIdDTO = z.infer<typeof addApplicationByCandidateIdSchema>;
+export type AddApplicationWithCandidateDataDTO = z.infer<
+    typeof addApplicationWithCandidateDataSchema
+>;
+export type BatchAddApplicationsDTO = z.infer<typeof batchAddApplicationsSchema>;
 export type UpdateAssessmentStatusDTO = z.infer<typeof updateAssessmentStatusSchema>;
 export type UpdateDecisionStatusDTO = z.infer<typeof updateDecisionStatusSchema>;
