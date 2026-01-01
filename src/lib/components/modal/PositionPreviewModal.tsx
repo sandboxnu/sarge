@@ -173,7 +173,7 @@ export default function PositionPreviewModal({
 
     const handleViewFullPosition = () => {
         if (positionId) {
-            window.open(`/positions/${positionId}`, '_blank');
+            window.open(`/crm/positions/${positionId}`, '_blank');
         }
     };
 
@@ -202,7 +202,7 @@ export default function PositionPreviewModal({
                     {!isPending && !error && position && (
                         <button
                             onClick={handleViewFullPosition}
-                            className="text-sarge-gray-600 hover:text-sarge-primary-500 absolute top-4 right-12 rounded-xs opacity-70 transition-colors hover:opacity-100"
+                            className="text-sarge-gray-600 hover:text-sarge-primary-500 absolute top-4 right-12 rounded-xs opacity-70 transition-colors hover:cursor-pointer hover:opacity-100"
                             aria-label="Open position in new tab"
                         >
                             <SquareArrowOutUpRightIcon className="size-4" />

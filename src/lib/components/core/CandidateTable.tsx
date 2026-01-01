@@ -76,10 +76,11 @@ export function CandidateTable({ candidates }: CandidateTableProps) {
                             target={isDisabled ? undefined : '_blank'}
                             rel="noopener noreferrer"
                             onClick={(e) => isDisabled && e.preventDefault()}
-                            className={`inline-flex items-center gap-1.5 ${isDisabled
-                                ? 'text-sarge-primary-300 cursor-not-allowed'
-                                : 'text-sarge-primary-500 hover:text-sarge-primary-600'
-                                }`}
+                            className={`inline-flex items-center gap-1.5 ${
+                                isDisabled
+                                    ? 'text-sarge-primary-300 cursor-not-allowed'
+                                    : 'text-sarge-primary-500 hover:text-sarge-primary-600'
+                            }`}
                         >
                             Link to Assessment <ExternalLink className="size-4" />
                         </a>

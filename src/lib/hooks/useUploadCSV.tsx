@@ -1,7 +1,5 @@
 import { useState } from 'react';
-import type {
-    AddApplicationWithCandidateDataDTO
-} from '@/lib/schemas/application.schema';
+import type { AddApplicationWithCandidateDataDTO } from '@/lib/schemas/application.schema';
 import { toast } from 'sonner';
 
 export function useUploadCSV(positionId: string) {
@@ -63,8 +61,7 @@ export function useUploadCSV(positionId: string) {
     };
 
     const handleCreate = async (
-        onCreate: (candidates:
-            AddApplicationWithCandidateDataDTO[]) => Promise<void>
+        onCreate: (candidates: AddApplicationWithCandidateDataDTO[]) => Promise<void>
     ) => {
         if (!selectedFile) return;
         setIsUploading(true);
