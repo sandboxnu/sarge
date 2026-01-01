@@ -65,8 +65,8 @@ export function useTask(taskTemplateId: string, assessmentId: string) {
         publicIndexes: number[];
         privateIndexes: number[];
     } {
-        const publicCases = task.public_test_cases || [];
-        const privateCases = task.private_test_cases || [];
+        const publicCases = task.publicTestCases || [];
+        const privateCases = task.privateTestCases || [];
 
         if (publicCases.length > 0) {
             // Use up to 3 public test cases
@@ -108,8 +108,8 @@ export function useTask(taskTemplateId: string, assessmentId: string) {
             setOutput('Running code...');
             const source_code = editorRef.current.getValue();
 
-            const publicCases = taskTemplate.public_test_cases || [];
-            const privateCases = taskTemplate.private_test_cases || [];
+            const publicCases = taskTemplate.publicTestCases || [];
+            const privateCases = taskTemplate.privateTestCases || [];
 
             // Get specified test cases by index
             const testCasesToRun = [
@@ -173,8 +173,8 @@ export function useTask(taskTemplateId: string, assessmentId: string) {
             setOutput('Submitting code...');
 
             // Run all test cases by passing all indexes
-            const publicCount = taskTemplate.public_test_cases?.length || 0;
-            const privateCount = taskTemplate.private_test_cases?.length || 0;
+            const publicCount = taskTemplate.publicTestCases?.length || 0;
+            const privateCount = taskTemplate.privateTestCases?.length || 0;
             const allPublicIndexes = Array.from({ length: publicCount }, (_, i) => i);
             const allPrivateIndexes = Array.from({ length: privateCount }, (_, i) => i);
 
