@@ -63,7 +63,7 @@ async function deleteTaskTemplate(id: string): Promise<TaskTemplate> {
 }
 
 async function updateTaskTemplate(taskTemplate: UpdateTaskTemplateDTO): Promise<TaskTemplate> {
-    const { id, title, content, public_test_cases, private_test_cases, tags } = taskTemplate;
+    const { id, title, content, publicTestCases, privateTestCases, tags } = taskTemplate;
 
     const current = await prisma.taskTemplate.findUnique({ where: { id } });
     if (!current) throw new NotFoundException('Task Template', id);
@@ -88,8 +88,8 @@ async function updateTaskTemplate(taskTemplate: UpdateTaskTemplateDTO): Promise<
         data: {
             title,
             content,
-            public_test_cases,
-            private_test_cases,
+            publicTestCases,
+            privateTestCases,
             tags: tags
                 ? {
                       set: tags.map((tag) => ({ id: tag })),

@@ -14,10 +14,8 @@ export const TaskTemplateSchema = z.object({
     title: z.string().trim(),
     content: z.string().min(2),
     orgId: z.string(),
-    public_test_cases: z
-        .array(testCaseSchema)
-        .min(1, 'There must at least be one public test case'), // Might not have to be required
-    private_test_cases: z.array(testCaseSchema).default([]),
+    publicTestCases: z.array(testCaseSchema).min(1, 'There must at least be one public test case'),
+    privateTestCases: z.array(testCaseSchema).default([]),
     tags: z.array(z.string()).optional(),
 });
 
