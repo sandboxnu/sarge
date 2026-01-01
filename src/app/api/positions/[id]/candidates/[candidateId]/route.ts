@@ -1,11 +1,11 @@
-import CandidatePoolService from '@/lib/services/candidate-pool.service';
+import ApplicationService from '@/lib/services/application.service';
 import { handleError } from '@/lib/utils/errors.utils';
 import { type NextRequest } from 'next/server';
 import { getSession } from '@/lib/utils/auth.utils';
 
 /**
  * DELETE /api/positions/[id]/candidates/[candidateId]
- * Remove a single candidate from a position's pool
+ * Remove a single application from a position
  * This will cascade delete their assessment if one exists
  */
 export async function DELETE(
@@ -15,7 +15,7 @@ export async function DELETE(
     try {
         const session = await getSession();
         const { id: positionId, candidateId } = await params;
-        const result = await CandidatePoolService.removeCandidateFromPosition(
+        const result = await ApplicationService.removeApplicationFromPosition(
             candidateId,
             positionId,
             session.activeOrganizationId

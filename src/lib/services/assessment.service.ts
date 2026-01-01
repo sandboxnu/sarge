@@ -5,11 +5,11 @@ import type {
     Assessment,
 } from '@/lib/schemas/assessment.schema';
 import { NotFoundException } from '@/lib/utils/errors.utils';
-import type { CandidatePoolDTO } from '@/lib/schemas/candidate-pool.schema';
+import type { ApplicationDTO } from '@/lib/schemas/application.schema';
 import type { AssessmentTemplate } from '@/lib/schemas/assessment-template.schema';
 
 export type AssessmentWithRelations = Assessment & {
-    candidatePoolEntry: CandidatePoolDTO;
+    application: ApplicationDTO;
     assessmentTemplate: AssessmentTemplate;
 };
 
@@ -19,7 +19,7 @@ async function getAssessmentWithRelations(id: string): Promise<AssessmentWithRel
             id,
         },
         include: {
-            candidatePoolEntry: true,
+            application: true,
             assessmentTemplate: true,
         },
     });
@@ -32,9 +32,9 @@ async function getAssessmentWithRelations(id: string): Promise<AssessmentWithRel
 }
 
 async function createAssessment(assessment: CreateAssessmentDTO): Promise<Assessment> {
-    const candidatePoolEntry = await prisma.candidatePoolEntry.findFirst({
+    const application = await prisma.application.findFirst({
         where: {
-            id: assessment.candidatePoolEntryId,
+            id: assessment.applicationId,
         },
     });
 
@@ -44,10 +44,8 @@ async function createAssessment(assessment: CreateAssessmentDTO): Promise<Assess
         },
     });
 
-    if (!candidatePoolEntry) {
-        throw new NotFoundException(
-            `Candidate Pool Entry with id ${assessment.candidatePoolEntryId} not found`
-        );
+    if (!application) {
+        throw new NotFoundException(`Application with id ${assessment.applicationId} not found`);
     }
 
     if (!assessmentTemplate) {

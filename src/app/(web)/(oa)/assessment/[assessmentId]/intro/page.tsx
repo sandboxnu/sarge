@@ -24,7 +24,7 @@ export default function IntroAssessmentPage({
         return <div>Assessment deadline has passed</div>;
     }
 
-    if (assessment?.candidatePoolEntry.assessmentStatus !== 'ASSIGNED') {
+    if (assessment?.application.assessmentStatus !== 'ASSIGNED') {
         return <div>Assessment is not open</div>;
     }
 

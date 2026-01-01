@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import type { AddCandidateWithDataDTO } from '@/lib/schemas/candidate-pool.schema';
+import type {
+    AddApplicationWithCandidateDataDTO
+} from '@/lib/schemas/application.schema';
 import { toast } from 'sonner';
 
 export function useUploadCSV(positionId: string) {
@@ -7,7 +9,7 @@ export function useUploadCSV(positionId: string) {
     const [isDragging, setIsDragging] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
     const [error, setError] = useState<Error | null>(null);
-    const [candidates, setCandidates] = useState<AddCandidateWithDataDTO[] | null>(null);
+    const [candidates, setCandidates] = useState<AddApplicationWithCandidateDataDTO[] | null>(null);
     const [step, setStep] = useState<'uploadCSV' | 'confirm'>('uploadCSV');
 
     const handleDragOver = (e: React.DragEvent) => {
@@ -61,7 +63,8 @@ export function useUploadCSV(positionId: string) {
     };
 
     const handleCreate = async (
-        onCreate: (candidates: AddCandidateWithDataDTO[]) => Promise<void>
+        onCreate: (candidates:
+            AddApplicationWithCandidateDataDTO[]) => Promise<void>
     ) => {
         if (!selectedFile) return;
         setIsUploading(true);

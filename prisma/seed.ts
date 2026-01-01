@@ -41,7 +41,6 @@ async function seedOrganizations() {
             throw new Error(`Failed to create organization: ${orgData.name}`);
         }
 
-        // Update organization ID to match seed data
         await prisma.organization.update({
             where: { id: createdOrg.id },
             data: {
@@ -78,8 +77,7 @@ async function seedUsers() {
             },
         });
 
-        // Update user ID and verify email
-        const updatedUser = await prisma.user.update({
+        await prisma.user.update({
             where: { email: userData.email },
             data: {
                 id: userData.id,
@@ -100,33 +98,29 @@ async function seedOrganizationMemberships() {
     const orgId = organizationsData[0].id;
 
     for (const userData of usersData) {
-        try {
-            const existingMember = await prisma.member.findUnique({
-                where: {
-                    userId_organizationId: {
-                        userId: userData.id,
-                        organizationId: orgId,
-                    },
-                },
-            });
-
-            if (existingMember) {
-                console.log(`  User "${userData.name}" already member of organization`);
-                continue;
-            }
-
-            await auth.api.addMember({
-                body: {
+        const existingMember = await prisma.member.findUnique({
+            where: {
+                userId_organizationId: {
                     userId: userData.id,
                     organizationId: orgId,
-                    role: userData.role,
                 },
-            });
+            },
+        });
 
-            console.log(`  Added ${userData.name} to organization with role: ${userData.role}`);
-        } catch (error) {
-            console.warn(`  ! Failed to add member ${userData.name}:`, error);
+        if (existingMember) {
+            console.log(`  User "${userData.name}" already member of organization`);
+            continue;
         }
+
+        await auth.api.addMember({
+            body: {
+                userId: userData.id,
+                organizationId: orgId,
+                role: userData.role,
+            },
+        });
+
+        console.log(`  Added ${userData.name} to organization`);
     }
 }
 
@@ -155,9 +149,7 @@ async function seedCandidates() {
 
     for (const candidateData of candidatesData) {
         await prisma.candidate.upsert({
-            where: {
-                id: candidateData.id,
-            },
+            where: { id: candidateData.id },
             update: {},
             create: candidateData,
         });
@@ -167,41 +159,40 @@ async function seedCandidates() {
 }
 
 /**
- * Seed Candidate Pool Entries
+ * Seed Applications (was CandidatePoolEntry)
  * Links candidates to positions
  */
-async function seedCandidatePoolEntries() {
-    console.log('Seeding candidate pool entries...');
+async function seedApplications() {
+    console.log('Seeding applications...');
 
     const positionId = positionsData[0].id;
 
     for (const candidateData of candidatesData) {
-        await prisma.candidatePoolEntry.upsert({
+        await prisma.application.upsert({
             where: {
                 candidateId_positionId: {
                     candidateId: candidateData.id,
-                    positionId: positionId,
+                    positionId,
                 },
             },
             update: {},
             create: {
                 candidateId: candidateData.id,
-                positionId: positionId,
+                positionId,
                 assessmentStatus: 'NOT_ASSIGNED',
                 decisionStatus: 'PENDING',
             },
         });
 
-        console.log(`  Added ${candidateData.name} to position pool`);
+        console.log(`  Created application for ${candidateData.name}`);
     }
 }
 
 /**
- * Seed Tasks
+ * Seed Task Templates
  */
-
-async function seedTasks() {
-    console.log('Seeding tasks...');
+async function seedTaskTemplates() {
+    console.log('Seeding task templates...');
 
     for (const taskTemplateData of taskTemplatesData) {
         await prisma.taskTemplate.upsert({
@@ -217,46 +208,44 @@ async function seedTasks() {
 /**
  * Seed Assessment Templates
  */
-
 async function seedAssessmentTemplates() {
     console.log('Seeding assessment templates...');
 
     const orgId = organizationsData[0].id;
-    const taskTemplateIds = taskTemplatesData.map((t) => t.id);
 
     for (const assessmentTemplateData of assessmentTemplatesData) {
-        const createdAssessmentTemplate = await prisma.assessmentTemplate.upsert({
+        await prisma.assessmentTemplate.upsert({
             where: { id: assessmentTemplateData.id },
             update: {},
             create: {
                 id: assessmentTemplateData.id,
                 title: assessmentTemplateData.title,
                 description: assessmentTemplateData.description,
-                orgId: orgId,
+                orgId,
             },
         });
+
+        console.log(`  Created assessment template: ${assessmentTemplateData.title}`);
     }
 }
 
 /**
  * Seed Assessments
  */
-
 async function seedAssessments() {
     console.log('Seeding assessments...');
 
-    const candidatePoolEntriesData = await prisma.candidatePoolEntry.findMany();
+    const applications = await prisma.application.findMany();
 
     for (const assessmentData of assessmentsData) {
-        const randomCandidatePoolEntry =
-            candidatePoolEntriesData[Math.floor(Math.random() * candidatePoolEntriesData.length)];
+        const randomApplication = applications[Math.floor(Math.random() * applications.length)];
 
         await prisma.assessment.upsert({
             where: { id: assessmentData.id },
             update: {},
             create: {
                 id: assessmentData.id,
-                candidatePoolEntryId: randomCandidatePoolEntry.id,
+                applicationId: randomApplication.id,
                 assessmentTemplateId: assessmentData.assessmentTemplateId,
                 uniqueLink: assessmentData.uniqueLink,
                 deadline: assessmentData.deadline,
@@ -273,23 +262,17 @@ async function seedAssessments() {
 async function main() {
     console.log('Starting database seeding...\n');
 
-    try {
-        // Seed in order: users first (owner needed for org creation), then org, then memberships, then rest
-        await seedUsers();
-        await seedOrganizations();
-        await seedOrganizationMemberships();
-        await seedPositions();
-        await seedCandidates();
-        await seedCandidatePoolEntries();
-        await seedTasks();
-        await seedAssessmentTemplates();
-        await seedAssessments();
+    await seedUsers();
+    await seedOrganizations();
+    await seedOrganizationMemberships();
+    await seedPositions();
+    await seedCandidates();
+    await seedApplications();
+    await seedTaskTemplates();
+    await seedAssessmentTemplates();
+    await seedAssessments();
 
-        console.log('\nDatabase seeding completed successfully!');
-    } catch (error) {
-        console.error('\nSeeding failed:', error);
-        throw error;
-    }
+    console.log('\nDatabase seeding completed successfully!');
 }
 
 main()

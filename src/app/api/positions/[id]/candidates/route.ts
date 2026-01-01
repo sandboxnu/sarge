@@ -1,8 +1,8 @@
-import CandidatePoolService from '@/lib/services/candidate-pool.service';
+import ApplicationService from '@/lib/services/application.service';
 import { handleError } from '@/lib/utils/errors.utils';
 import { type NextRequest } from 'next/server';
 import { getSession } from '@/lib/utils/auth.utils';
-import { addCandidateWithDataSchema } from '@/lib/schemas/candidate-pool.schema';
+import { addApplicationWithCandidateDataSchema } from '@/lib/schemas/application.schema';
 
 /**
  * POST /api/positions/[id]/candidates
@@ -13,8 +13,8 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
         const session = await getSession();
         const positionId = (await params).id;
         const body = await request.json();
-        const parsed = addCandidateWithDataSchema.parse(body);
-        const result = await CandidatePoolService.addCandidateToPosition(
+        const parsed = addApplicationWithCandidateDataSchema.parse(body);
+        const result = await ApplicationService.addApplicationToPosition(
             parsed,
             positionId,
             session.activeOrganizationId
@@ -28,13 +28,13 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
 /**
  * GET /api/positions/[id]/candidates
- * Get all candidates in a position's pool
+ * Get all a position's applications' candidates
  */
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         const session = await getSession();
         const positionId = (await params).id;
-        const result = await CandidatePoolService.getPositionCandidates(
+        const result = await ApplicationService.getPositionApplications(
             positionId,
             session.activeOrganizationId
         );
@@ -55,7 +55,7 @@ export async function DELETE(
     try {
         const session = await getSession();
         const positionId = (await params).id;
-        const result = await CandidatePoolService.removeAllCandidatesFromPosition(
+        const result = await ApplicationService.removeAllApplicationsFromPosition(
             positionId,
             session.activeOrganizationId
         );

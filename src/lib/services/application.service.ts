@@ -1,8 +1,8 @@
 import { prisma } from '@/lib/prisma';
 import { NotFoundException, ForbiddenException } from '@/lib/utils/errors.utils';
-import { type AddCandidateWithDataDTO } from '@/lib/schemas/candidate-pool.schema';
-import type { BatchAddResult, CandidatePoolDisplayInfo } from '@/lib/types/position.types';
-import type { CandidatePoolEntry, AssessmentStatus } from '@/generated/prisma';
+import { type AddApplicationWithCandidateDataDTO } from '@/lib/schemas/application.schema';
+import type { BatchAddResult, ApplicationDisplayInfo } from '@/lib/types/position.types';
+import type { Application, AssessmentStatus } from '@/generated/prisma';
 
 async function validatePositionAccess(positionId: string, orgId: string) {
     const position = await prisma.position.findUnique({
@@ -22,17 +22,16 @@ async function validatePositionAccess(positionId: string, orgId: string) {
 }
 
 /**
- * Add a single candidate to a position (create candidate if not exists)
- *
+ * Add a single application to a position (create candidate if not exists)
  */
-async function addCandidateToPosition(
-    candidateData: AddCandidateWithDataDTO,
+async function addApplicationToPosition(
+    candidateData: AddApplicationWithCandidateDataDTO,
     positionId: string,
     orgId: string
-): Promise<CandidatePoolDisplayInfo> {
+): Promise<ApplicationDisplayInfo> {
     await validatePositionAccess(positionId, orgId);
 
-    const entry = await prisma.candidatePoolEntry.create({
+    const application = await prisma.application.create({
         data: {
             position: { connect: { id: positionId } },
             candidate: {
@@ -59,6 +58,7 @@ async function addCandidateToPosition(
         select: {
             assessmentStatus: true,
             decisionStatus: true,
+            decidedAt: true,
             candidate: {
                 select: {
                     name: true,
@@ -75,7 +75,7 @@ async function addCandidateToPosition(
                     submittedAt: true,
                 },
             },
-            decisionMaker: {
+            decidedByUser: {
                 select: {
                     id: true,
                     name: true,
@@ -85,22 +85,19 @@ async function addCandidateToPosition(
         },
     });
 
-    return entry;
+    return application;
 }
 
 /**
- * Batch add candidates to a position (CSV upload flow)
- * Creates candidates if they don't exist, then adds them to position
- *
+ * Batch add applications to a position (CSV upload flow)
  */
-async function batchAddCandidatesToPosition(
-    candidates: AddCandidateWithDataDTO[],
+async function batchAddApplicationsToPosition(
+    candidates: AddApplicationWithCandidateDataDTO[],
     positionId: string,
     orgId: string
 ): Promise<BatchAddResult> {
     await validatePositionAccess(positionId, orgId);
 
-    //  batch create candidates before we create the candidate-pool links
     const candidatesCreated = await prisma.candidate.createMany({
         data: candidates.map((c) => ({
             name: c.name,
@@ -112,7 +109,7 @@ async function batchAddCandidatesToPosition(
             graduationDate: c.graduationDate,
             resumeUrl: c.resumeUrl,
         })),
-        skipDuplicates: true, // skip already existing candidates
+        skipDuplicates: true,
     });
 
     const emails = candidates.map((c) => c.email);
@@ -124,7 +121,7 @@ async function batchAddCandidatesToPosition(
         select: { id: true },
     });
 
-    const entriesCreated = await prisma.candidatePoolEntry.createMany({
+    const applicationsCreated = await prisma.application.createMany({
         data: candidateRecords.map((c) => ({
             candidateId: c.id,
             positionId,
@@ -132,7 +129,7 @@ async function batchAddCandidatesToPosition(
         skipDuplicates: true,
     });
 
-    const poolEntries = await prisma.candidatePoolEntry.findMany({
+    const applications = await prisma.application.findMany({
         where: {
             positionId,
             candidateId: { in: candidateRecords.map((c) => c.id) },
@@ -140,6 +137,7 @@ async function batchAddCandidatesToPosition(
         select: {
             assessmentStatus: true,
             decisionStatus: true,
+            decidedAt: true,
             candidate: {
                 select: {
                     name: true,
@@ -156,7 +154,7 @@ async function batchAddCandidatesToPosition(
                     submittedAt: true,
                 },
             },
-            decisionMaker: {
+            decidedByUser: {
                 select: {
                     id: true,
                     name: true,
@@ -166,31 +164,29 @@ async function batchAddCandidatesToPosition(
         },
     });
 
-    // not sure what would be useful to return here - can come back to this
     return {
         candidatesCreated: candidatesCreated.count,
-        entriesCreated: entriesCreated.count,
+        entriesCreated: applicationsCreated.count,
         totalProcessed: candidates.length,
-        candidates: poolEntries,
+        candidates: applications,
     };
 }
 
 /**
- * Get all candidates in a position's pool
- * Includes candidate details and assessment/decision status
+ * Get all applications for a position
  */
-async function getPositionCandidates(
+async function getPositionApplications(
     positionId: string,
     orgId: string
-): Promise<CandidatePoolDisplayInfo[]> {
+): Promise<ApplicationDisplayInfo[]> {
     await validatePositionAccess(positionId, orgId);
 
-    const entries = await prisma.candidatePoolEntry.findMany({
+    const applications = await prisma.application.findMany({
         where: { positionId },
         select: {
             assessmentStatus: true,
             decisionStatus: true,
-
+            decidedAt: true,
             candidate: {
                 select: {
                     name: true,
@@ -200,7 +196,6 @@ async function getPositionCandidates(
                     resumeUrl: true,
                 },
             },
-
             assessment: {
                 select: {
                     id: true,
@@ -208,8 +203,7 @@ async function getPositionCandidates(
                     submittedAt: true,
                 },
             },
-
-            decisionMaker: {
+            decidedByUser: {
                 select: {
                     id: true,
                     name: true,
@@ -220,21 +214,20 @@ async function getPositionCandidates(
         orderBy: { assessmentStatus: 'desc' },
     });
 
-    return entries;
+    return applications;
 }
 
 /**
- * Remove a single candidate from a position
- * This will cascade delete their assessment if one exists
+ * Remove a single application from a position
  */
-async function removeCandidateFromPosition(
+async function removeApplicationFromPosition(
     candidateId: string,
     positionId: string,
     orgId: string
 ): Promise<void> {
     await validatePositionAccess(positionId, orgId);
 
-    await prisma.candidatePoolEntry.delete({
+    await prisma.application.delete({
         where: {
             candidateId_positionId: {
                 candidateId,
@@ -245,56 +238,57 @@ async function removeCandidateFromPosition(
 }
 
 /**
- * Remove all candidates from a position
- * This will cascade delete all assessments
+ * Remove all applications from a position
  */
-async function removeAllCandidatesFromPosition(positionId: string, orgId: string): Promise<void> {
+async function removeAllApplicationsFromPosition(positionId: string, orgId: string): Promise<void> {
     await validatePositionAccess(positionId, orgId);
-    await prisma.candidatePoolEntry.deleteMany({ where: { positionId } });
+    await prisma.application.deleteMany({ where: { positionId } });
 }
 
-async function getCandidatePoolEntry(id: string): Promise<CandidatePoolEntry> {
-    const entry = await prisma.candidatePoolEntry.findUnique({ where: { id } });
+async function getApplication(id: string): Promise<Application> {
+    const application = await prisma.application.findUnique({ where: { id } });
 
-    if (!entry) {
-        throw new NotFoundException('Candidate Pool Entry', id);
+    if (!application) {
+        throw new NotFoundException('Application', id);
     }
 
-    return entry;
+    return application;
 }
 
-async function getAssessmentStatus(candidatePoolEntryId: string): Promise<AssessmentStatus> {
-    const entry = await prisma.candidatePoolEntry.findUnique({
-        where: { id: candidatePoolEntryId },
+async function getAssessmentStatus(applicationId: string): Promise<AssessmentStatus> {
+    const application = await prisma.application.findUnique({
+        where: { id: applicationId },
         select: { assessmentStatus: true },
     });
-    if (!entry) {
-        throw new NotFoundException('Candidate Pool Entry', candidatePoolEntryId);
+
+    if (!application) {
+        throw new NotFoundException('Application', applicationId);
     }
-    return entry.assessmentStatus;
+
+    return application.assessmentStatus;
 }
 
 async function updateAssessmentStatus(params: {
     id: string;
     assessmentStatus: AssessmentStatus;
-}): Promise<CandidatePoolEntry> {
+}): Promise<Application> {
     const { id, assessmentStatus } = params;
-    const entry = await prisma.candidatePoolEntry.update({
+
+    return prisma.application.update({
         where: { id },
         data: { assessmentStatus },
     });
-    return entry;
 }
 
-const CandidatePoolService = {
-    addCandidateToPosition,
-    batchAddCandidatesToPosition,
-    getPositionCandidates,
-    removeCandidateFromPosition,
-    removeAllCandidatesFromPosition,
-    getCandidatePoolEntry,
+const ApplicationService = {
+    addApplicationToPosition,
+    batchAddApplicationsToPosition,
+    getPositionApplications,
+    removeApplicationFromPosition,
+    removeAllApplicationsFromPosition,
+    getApplication,
     getAssessmentStatus,
     updateAssessmentStatus,
 };
 
-export default CandidatePoolService;
+export default ApplicationService;
