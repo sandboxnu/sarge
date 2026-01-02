@@ -249,7 +249,10 @@ export default function PositionPreviewModal({
                                                     }
                                                 >
                                                     {position.stats.totalSubmitted}/
-                                                    {position.stats.totalSent} submissions
+                                                    {position.stats.totalSent}{' '}
+                                                    {position.stats.totalSent === 1
+                                                        ? 'submission'
+                                                        : 'submissions'}
                                                 </Chip>
                                             </div>
                                         </div>
