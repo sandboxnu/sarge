@@ -6,15 +6,18 @@ import { Input } from '@/lib/components/ui/Input';
 import { Button } from '@/lib/components/ui/Button';
 import { AlertCircle } from 'lucide-react';
 import useCreatePositionModal from '@/lib/hooks/useCreatePositionModal';
+import { type PositionWithCounts } from '@/lib/types/position.types'
 
 export interface CreatePositionModalProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
+    setActive: React.Dispatch<React.SetStateAction<PositionWithCounts[]>>
+
 }
 
-export default function CreatePositionModal({ open, onOpenChange }: CreatePositionModalProps) {
+export default function CreatePositionModal({ open, onOpenChange, setActive }: CreatePositionModalProps) {
     const { positionName, isCreating, localError, handleCreate, handleCancel, handleInputChange } =
-        useCreatePositionModal(onOpenChange);
+        useCreatePositionModal(onOpenChange, setActive);
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>

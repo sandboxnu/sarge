@@ -5,7 +5,7 @@ import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { type RefObject } from 'react';
 import { Button } from '@/lib/components/ui/Button';
 import Image from 'next/image';
-import { SquarePen } from 'lucide-react';
+import { SquarePen, AlertCircle } from 'lucide-react';
 import useOnboardingModal from '@/lib/hooks/useOnboardingModal';
 
 export default function OnboardingModal() {
@@ -19,6 +19,7 @@ export default function OnboardingModal() {
         setOrganizationName,
         createOrganization,
         loading,
+        error,
 
         preview,
         fileInputRef,
@@ -34,7 +35,7 @@ export default function OnboardingModal() {
             </VisuallyHidden>
 
             <DialogContent
-                className="h-[292px] w-[544px]"
+                className="h-[309px] w-[544px]"
                 showCloseButton={false}
                 onInteractOutside={(event) => {
                     event.preventDefault();
@@ -51,6 +52,7 @@ export default function OnboardingModal() {
                         setOrganizationName={setOrganizationName}
                         organizationName={organizationName}
                         loading={loading}
+                        error={error}
                         onBack={() => goTo('welcome')}
                         onSubmit={createOrganization}
                     />
@@ -92,6 +94,7 @@ function CreateOrganizationContent({
     preview,
     setOrganizationName,
     organizationName,
+    error,
     loading,
     onBack,
     onSubmit,
@@ -102,9 +105,10 @@ function CreateOrganizationContent({
     preview: string;
     setOrganizationName: React.Dispatch<React.SetStateAction<string>>;
     organizationName: string;
+    error: string | null;
     loading: boolean;
     onBack: () => void;
-    onSubmit: () => Promise<void> | void;
+    onSubmit: () => Promise<string | undefined> | void;
 }) {
     if (loading) return <LoadingContent />;
 
@@ -148,6 +152,13 @@ function CreateOrganizationContent({
                 value={organizationName}
                 onChange={(e) => setOrganizationName(e.target.value)}
             />
+            {error && (
+                <div className="text-sarge-error-700 text-body-s mt-1 flex items-center gap-2">
+                    <AlertCircle className="size-4" />
+                    {error}
+                </div>
+            )}
+
 
             <div className="mt-4 flex items-center justify-between">
                 <p
