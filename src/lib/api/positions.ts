@@ -1,4 +1,7 @@
-import { PositionPreviewResponse, type ApplicationDisplayInfo } from '@/lib/types/position.types';
+import {
+    type PositionPreviewResponse,
+    type ApplicationDisplayInfo,
+} from '@/lib/types/position.types';
 import { type AddApplicationWithCandidateDataDTO } from '@/lib/schemas/application.schema';
 import { type BatchAddResult, type PositionWithCounts } from '@/lib/types/position.types';
 import { type Position } from '@/generated/prisma';
