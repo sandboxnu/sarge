@@ -5,8 +5,6 @@ import { DialogContent, DialogTitle } from '@/lib/components/ui/Modal';
 import { FieldLabel } from '@/lib/components/ui/Field';
 import { Input } from '@/lib/components/ui/Input';
 import { Button } from '@/lib/components/ui/Button';
-import { useState } from 'react';
-import { toast } from 'sonner';
 import { AlertCircle, X } from 'lucide-react';
 import type { AddApplicationWithCandidateDataDTO } from '@/lib/schemas/application.schema';
 import useCreateCandidateModal from '@/lib/hooks/useCreateCandidateModal';

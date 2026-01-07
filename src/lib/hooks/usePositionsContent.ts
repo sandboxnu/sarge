@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { type PositionWithCounts } from '@/lib/types/position.types';
-import PositionService from '@/lib/services/position.service';
 import { useSession } from '@/lib/auth/auth-client';
 import { getPositionsByOrgId } from '@/lib/api/positions';
 
@@ -21,20 +20,13 @@ function usePositionContent() {
     useEffect(() => {
         async function fetchPositions() {
             try {
-                console.log('Effect running', { activeOrganizationId });
-
                 if (!activeOrganizationId) {
-                    console.log('No activeOrganizationId, returning early');
                     return;
                 }
 
-                console.log('Setting loading to true');
                 setLoading(true);
 
-                console.log('Calling getPositionsByOrgId...');
                 const positions = await getPositionsByOrgId(activeOrganizationId);
-
-                console.log('POSITIONS!!', positions);
 
                 const activePositions = positions.filter((pos) => !pos.archived);
                 const archivedPositions = positions.filter((pos) => pos.archived);
@@ -42,10 +34,8 @@ function usePositionContent() {
                 setActive(activePositions);
                 setArchived(archivedPositions);
             } catch (err) {
-                console.error('ERROR fetching positions:', err);
                 setError(err instanceof Error ? err : new Error('Failed to fetch'));
             } finally {
-                console.log('Setting loading to false');
                 setLoading(false);
             }
         }
