@@ -3,6 +3,7 @@ import type { DecisionStatus, AssessmentStatus } from '@/generated/prisma';
 export type PositionWithCounts = {
     title: string;
     id: string;
+    archived: boolean;
     numCandidates: number;
     numAssigned: number;
     createdAt: Date;
