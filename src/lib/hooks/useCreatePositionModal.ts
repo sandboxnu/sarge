@@ -1,8 +1,12 @@
 import { useState } from 'react';
-import { createPositionAction } from '@/app/actions/position.actions';
 import { toast } from 'sonner';
+import { createPosition } from '@/lib/api/positions';
+import { type PositionWithCounts } from '@/lib/types/position.types';
 
-export function useCreatePositionModal(onOpenChange: (open: boolean) => void) {
+export default function useCreatePositionModal(
+    onOpenChange: (open: boolean) => void,
+    setActive: React.Dispatch<React.SetStateAction<PositionWithCounts[]>>
+) {
     const [positionName, setPositionName] = useState('');
     const [isCreating, setIsCreating] = useState(false);
     const [localError, setLocalError] = useState<string | null>(null);
@@ -17,14 +21,27 @@ export function useCreatePositionModal(onOpenChange: (open: boolean) => void) {
         setLocalError(null);
 
         try {
-            await createPositionAction(positionName);
+            const newPosition = await createPosition(positionName);
+
+            // In the future we may want to add the ability to create a position AND upload a CSV
+            // of candidates at the same time. If that were the case, we'd want to create a new
+            // route to create a position with the count fields included in the returned object
+            const positionWithCounts: PositionWithCounts = {
+                ...newPosition,
+                numCandidates: 0,
+                numAssigned: 0,
+            };
+
+            setActive((prev) => [...prev, positionWithCounts]);
+
             toast.success('Position created successfully.');
             setPositionName('');
             onOpenChange(false);
-        } catch {
-            const errorMsg = 'Failed to create position. Please try again.';
-            setLocalError(errorMsg);
-            toast.error('Creation failed', { description: errorMsg });
+        } catch (err) {
+            const message =
+                err instanceof Error ? err.message : 'Failed to create position. Please try again.';
+
+            setLocalError(message);
         } finally {
             setIsCreating(false);
         }
@@ -50,5 +67,3 @@ export function useCreatePositionModal(onOpenChange: (open: boolean) => void) {
         handleInputChange,
     };
 }
-
-export default useCreatePositionModal;

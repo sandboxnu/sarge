@@ -6,9 +6,11 @@ import {
     type JudgeSubmissionRequestBody,
 } from '@/lib/connectors/judge0.connector';
 import { sleep } from '@/lib/utils/utils';
-import type { TaskTemplateDTO } from '@/lib/schemas/task-template.schema';
-import type { TaskTemplate } from '@/generated/prisma';
-import type { CreateTaskDTO, TaskDTO } from '@/lib/schemas/task.schema';
+import { type TaskTemplateDTO } from '@/lib/schemas/task-template.schema';
+import { type TaskTemplate } from '@/generated/prisma';
+import { type CreateTaskDTO, type TaskDTO } from '@/lib/schemas/task.schema';
+import { createTask, updateTask } from '@/lib/api/tasks';
+import { getTaskTemplate } from '@/lib/api/task-templates';
 
 const languageIds: Record<string, number> = {
     python: 100,
@@ -29,13 +31,9 @@ export function useTask(taskTemplateId: string, assessmentId: string) {
         const fetchTask = async () => {
             setLoading(true);
             try {
-                const response = await fetch(`/api/task-templates/${taskTemplateId}`);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch task');
-                }
-                const responseBody = await response.json();
+                const taskTemplate = await getTaskTemplate(taskTemplateId);
 
-                setTaskTemplate(responseBody.data);
+                setTaskTemplate(taskTemplate);
             } catch (err) {
                 setError(err as Error);
             } finally {
@@ -187,41 +185,24 @@ export function useTask(taskTemplateId: string, assessmentId: string) {
     }
 
     async function updateOrCreateTask(candidateCode: string) {
-        if (task) {
-            // Save task with current code
-            const response = await fetch(`/api/tasks/${task.id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
+        try {
+            if (task) {
+                const updatedTask = await updateTask(task.id, candidateCode);
+
+                setTask(updatedTask);
+            } else {
+                const createTaskPayload: CreateTaskDTO = {
+                    assessmentId,
+                    taskTemplateId,
                     candidateCode,
-                }),
-            });
+                };
 
-            if (!response.ok) {
-                throw new Error('Failed to save task');
+                const task = await createTask(createTaskPayload);
+
+                setTask(task);
             }
-        } else {
-            const createTask: CreateTaskDTO = {
-                assessmentId,
-                taskTemplateId,
-                candidateCode,
-            };
-            const response = await fetch(`/api/tasks`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(createTask),
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to submit task');
-            }
-
-            const responseBody = await response.json();
-            setTask(responseBody.data);
+        } catch (error) {
+            setError(error as Error);
         }
     }
 

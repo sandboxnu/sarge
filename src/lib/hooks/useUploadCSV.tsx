@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import type { AddApplicationWithCandidateDataDTO } from '@/lib/schemas/application.schema';
+import { type AddApplicationWithCandidateDataDTO } from '@/lib/schemas/application.schema';
+import { csvCreateCandidates } from '@/lib/api/positions';
 import { toast } from 'sonner';
 
 export function useUploadCSV(positionId: string) {
@@ -41,15 +42,8 @@ export function useUploadCSV(positionId: string) {
             const formData = new FormData();
             formData.append('file', file);
 
-            const response = await fetch(`/api/positions/${positionId}/candidates/csv`, {
-                method: 'POST',
-                body: formData,
-            });
-            if (!response.ok) {
-                toast.error('An unexpected error occured');
-            }
-            const data = await response.json();
-            setCandidates(data.data);
+            const candidates = await csvCreateCandidates(positionId, formData)
+            setCandidates(candidates);
 
             setError(null);
         } catch (error) {

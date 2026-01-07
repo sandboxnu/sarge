@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import type { AssessmentWithRelations } from '@/lib/services/assessment.service';
+import { type AssessmentWithRelations } from '@/lib/services/assessment.service';
 import { AssessmentStatus } from '@/generated/prisma';
+import { getAssessment, updateAssessment, updateAssessmentStatus } from '@/lib/api/assessments';
 
 export default function useAssessment(id: string, currentTaskId?: string) {
     const router = useRouter();
@@ -16,23 +17,20 @@ export default function useAssessment(id: string, currentTaskId?: string) {
             try {
                 setLoading(true);
                 setError(null);
-                const response = await fetch(`/api/assessments/${id}`);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch assessment template');
-                }
-                const assessment = await response.json();
-                setAssessment(assessment.data);
+
+                const data = await getAssessment(id);
+                setAssessment(data);
             } catch (err) {
                 setError(err as Error);
             } finally {
                 setLoading(false);
             }
         }
+
         fetchAssessment();
     }, [id]);
 
     function startAssessment() {
-        // Setting this up in case we want to add future logic
         goToNextTask();
     }
 
@@ -40,6 +38,7 @@ export default function useAssessment(id: string, currentTaskId?: string) {
         const currentTaskIndex = getCurrentTaskIndex();
         const nextTaskIndex = currentTaskIndex + 1;
         const taskList = assessment?.assessmentTemplate.taskTemplates ?? [];
+
         if (nextTaskIndex < taskList.length) {
             router.push(`/assessment/${id}/task/${taskList[nextTaskIndex]}`);
         } else {
@@ -51,16 +50,13 @@ export default function useAssessment(id: string, currentTaskId?: string) {
         try {
             setLoading(true);
             setError(null);
-            const response = await fetch(`/api/assessments/${id}`, {
-                method: 'PUT',
-                body: JSON.stringify({ submittedAt: new Date() }),
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+
+            const updatedAssessment = await updateAssessment({
+                id,
+                submittedAt: new Date(),
             });
-            if (!response.ok) {
-                throw new Error('Failed to submit assessment');
-            }
+
+            setAssessment((prev) => (prev ? { ...prev, ...updatedAssessment } : prev));
 
             await setAssessmentStatus(AssessmentStatus.SUBMITTED);
         } catch (err) {
@@ -74,25 +70,17 @@ export default function useAssessment(id: string, currentTaskId?: string) {
         try {
             setLoading(true);
             setError(null);
-            const response = await fetch(`/api/assessments/${id}/status`, {
-                method: 'PUT',
-                body: JSON.stringify({ assessmentStatus: status }),
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
 
-            if (!response.ok) {
-                throw new Error('Failed to update assessment status');
-            }
+            const updatedApplication = await updateAssessmentStatus(id, status);
 
             setAssessment((prev) => {
                 if (!prev) return prev;
+
                 return {
                     ...prev,
                     application: {
                         ...prev.application,
-                        assessmentStatus: status,
+                        assessmentStatus: updatedApplication.assessmentStatus,
                     },
                 };
             });
@@ -104,7 +92,10 @@ export default function useAssessment(id: string, currentTaskId?: string) {
     }
 
     const getCurrentTaskIndex = () => {
-        if (!currentTaskId || !assessment?.assessmentTemplate.taskTemplates) return -1;
+        if (!currentTaskId || !assessment?.assessmentTemplate.taskTemplates) {
+            return -1;
+        }
+
         return assessment.assessmentTemplate.taskTemplates.indexOf(currentTaskId);
     };
 
