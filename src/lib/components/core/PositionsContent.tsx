@@ -105,7 +105,11 @@ export default function PositionsContent() {
                 </TabsContent>
             </Tabs>
 
-            <CreatePositionModal open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen} setActive={setActive} />
+            <CreatePositionModal
+                open={isCreateModalOpen}
+                onOpenChange={setIsCreateModalOpen}
+                setActive={setActive}
+            />
 
             <PositionPreviewModal
                 open={isPreviewModalOpen}
