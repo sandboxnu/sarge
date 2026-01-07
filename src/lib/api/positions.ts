@@ -1,4 +1,4 @@
-import { type ApplicationDisplayInfo } from '@/lib/types/position.types';
+import { PositionPreviewResponse, type ApplicationDisplayInfo } from '@/lib/types/position.types';
 import { type AddApplicationWithCandidateDataDTO } from '@/lib/schemas/application.schema';
 import { type BatchAddResult, type PositionWithCounts } from '@/lib/types/position.types';
 import { type Position } from '@/generated/prisma';
@@ -105,7 +105,7 @@ export async function batchCreateCandidates(
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ candidates }),
+        body: JSON.stringify({ applications: candidates }),
     });
 
     const json = await res.json();
@@ -126,11 +126,23 @@ export async function csvCreateCandidates(
 ): Promise<AddApplicationWithCandidateDataDTO[]> {
     const res = await fetch(`/api/positions/${positionId}/candidates/csv`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
         body: formData,
     });
+
+    const json = await res.json();
+
+    if (!res.ok) {
+        throw new Error(json.message);
+    }
+
+    return json.data;
+}
+
+/**
+ * GET /api/positions/:positionId/preview
+ */
+export async function getPositionPreview(positionId: string): Promise<PositionPreviewResponse> {
+    const res = await fetch(`/api/positions/${positionId}/preview`);
 
     const json = await res.json();
 
