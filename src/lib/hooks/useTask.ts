@@ -6,9 +6,9 @@ import {
     type JudgeSubmissionRequestBody,
 } from '@/lib/connectors/judge0.connector';
 import { sleep } from '@/lib/utils/utils';
-import { type TaskTemplateDTO } from '@/lib/schemas/task-template.schema';
 import { type TaskTemplate } from '@/generated/prisma';
 import { type CreateTaskDTO, type TaskDTO } from '@/lib/schemas/task.schema';
+import { type TestCaseDTO } from '@/lib/schemas/task-template.schema';
 import { createTask, updateTask } from '@/lib/api/tasks';
 import { getTaskTemplate } from '@/lib/api/task-templates';
 
@@ -19,7 +19,7 @@ const languageIds: Record<string, number> = {
 
 export function useTask(taskTemplateId: string, assessmentId: string) {
     const [task, setTask] = useState<TaskDTO | null>(null);
-    const [taskTemplate, setTaskTemplate] = useState<TaskTemplateDTO | null>(null);
+    const [taskTemplate, setTaskTemplate] = useState<TaskTemplate | null>(null);
     const [isLoading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error | null>(null);
     const [language, setLanguage] = useState<string>('python');
@@ -110,9 +110,14 @@ export function useTask(taskTemplateId: string, assessmentId: string) {
             const privateCases = taskTemplate.privateTestCases || [];
 
             // Get specified test cases by index
-            const testCasesToRun = [
-                ...publicIndexes.map((idx) => publicCases[idx]),
-                ...privateIndexes.map((idx) => privateCases[idx]),
+            const testCasesToRun: TestCaseDTO[] = [
+                ...publicIndexes
+                    .map((idx) => publicCases[idx])
+                    // converting a JsonValue | null | undefined -> TestCaseDTO
+                    .filter((tc): tc is TestCaseDTO => Boolean(tc)),
+                ...privateIndexes
+                    .map((idx) => privateCases[idx])
+                    .filter((tc): tc is TestCaseDTO => Boolean(tc)),
             ];
 
             const payload: JudgeSubmissionRequestBody[] = testCasesToRun.map((testCase) => ({
