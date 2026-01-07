@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { Button } from '@/lib/components/ui/Button';
 import { Plus, ArrowUpDown, SlidersHorizontal, Rows3, LayoutGrid } from 'lucide-react';
 import PositionCard from '@/lib/components/core/PositionCard';
@@ -12,18 +11,17 @@ import PositionPreviewModal from '@/lib/components/modal/PositionPreviewModal';
 import Image from 'next/image';
 import usePositionContent from '@/lib/hooks/usePositionsContent';
 
-interface PositionsContentProps {
-    positions: PositionWithCounts[];
-}
-
-export default function PositionsContent({ positions }: PositionsContentProps) {
+export default function PositionsContent() {
     const {
         isCreateModalOpen,
         setIsCreateModalOpen,
         isPreviewModalOpen,
         setIsPreviewModalOpen,
         selectedPositionId,
+        active,
+        setActive,
         archived,
+        setArchived,
         handlePositionClick,
     } = usePositionContent();
 
@@ -69,7 +67,7 @@ export default function PositionsContent({ positions }: PositionsContentProps) {
 
                 <TabsList className="h-auto gap-5 bg-transparent p-0">
                     <UnderlineTabsTrigger value="active">
-                        Active ({positions.length ?? 0})
+                        Active ({active.length ?? 0})
                     </UnderlineTabsTrigger>
                     <UnderlineTabsTrigger value="archived">
                         Archived ({archived.length})
@@ -77,9 +75,9 @@ export default function PositionsContent({ positions }: PositionsContentProps) {
                 </TabsList>
 
                 <TabsContent value="active" className="flex flex-col gap-4">
-                    {positions.length > 0 ? (
+                    {active.length > 0 ? (
                         <PositionCardGrid
-                            positions={positions}
+                            positions={active}
                             onPositionClick={handlePositionClick}
                         />
                     ) : (
@@ -107,7 +105,7 @@ export default function PositionsContent({ positions }: PositionsContentProps) {
                 </TabsContent>
             </Tabs>
 
-            <CreatePositionModal open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen} />
+            <CreatePositionModal open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen} setActive={setActive} />
 
             <PositionPreviewModal
                 open={isPreviewModalOpen}
