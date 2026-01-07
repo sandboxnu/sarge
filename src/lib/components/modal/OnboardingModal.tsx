@@ -153,7 +153,7 @@ function CreateOrganizationContent({
                 onChange={(e) => setOrganizationName(e.target.value)}
             />
             {error && (
-                <div className="text-sarge-error-700 text-body-s mt-1 flex items-center gap-2">
+                <div className="text-sarge-error-700 text-body-s mt-2 flex items-center gap-2">
                     <AlertCircle className="size-4" />
                     {error}
                 </div>
