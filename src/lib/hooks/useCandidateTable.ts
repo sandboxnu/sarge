@@ -1,4 +1,3 @@
-import { getAssessmentStatusVariant } from '@/lib/utils/status.utils';
 import type { PositionPreviewData } from './usePositionPreviewModal';
 
 export type Candidate = NonNullable<PositionPreviewData>['candidates'][number];
