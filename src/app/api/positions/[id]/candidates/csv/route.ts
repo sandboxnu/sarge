@@ -23,6 +23,7 @@ export async function POST(request: NextRequest) {
 
         return Response.json({ data: candidates }, { status: 200 });
     } catch (err) {
+        console.error('POST /api/positions/[id]/candidates/csv error:', err);
         return handleError(err);
     }
 }
