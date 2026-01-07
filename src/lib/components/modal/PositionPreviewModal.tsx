@@ -1,10 +1,8 @@
 'use client';
 
-import { useEffect, useState, useTransition } from 'react';
 import { Dialog, DialogContent, DialogTitle } from '@/lib/components/ui/Modal';
 import { FileText, ExternalLink, SquareArrowOutUpRightIcon } from 'lucide-react';
 import AvatarGroup from '@/lib/components/ui/AvatarGroup';
-import { type getPositionPreviewAction } from '@/app/(web)/crm/positions/actions';
 import { Chip } from '@/lib/components/ui/Chip';
 import {
     getAssessmentStatusVariant,
