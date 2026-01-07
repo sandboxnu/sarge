@@ -79,3 +79,43 @@ export interface PositionPreviewData {
         totalGraded: number;
     };
 }
+
+export interface PositionPreviewResponse {
+    id: string;
+    title: string;
+    createdAt: string;
+    candidateCount: number;
+    assessmentTemplate: {
+        id: string;
+        title: string;
+    } | null;
+    candidates: {
+        id: string;
+        assessmentStatus: AssessmentStatus;
+        decisionStatus: DecisionStatus;
+        candidate: {
+            id: string;
+            name: string;
+            major: string | null;
+            graduationDate: string | null;
+        };
+        assessment: {
+            id: string;
+            uniqueLink: string;
+            submittedAt: string | null;
+            reviews: {
+                reviewer: {
+                    id: string;
+                    name: string;
+                    email: string;
+                    image: string | null;
+                };
+            }[];
+        } | null;
+    }[];
+    stats: {
+        totalSent: number;
+        totalSubmitted: number;
+        totalGraded: number;
+    };
+}
