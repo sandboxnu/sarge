@@ -1,6 +1,10 @@
 import { useState } from 'react';
 import useFileUpload from '@/lib/hooks/useFileUpload';
 import { authClient } from '@/lib/auth/auth-client';
+import {
+    createOrganization as createOrganizationApi,
+    updateOrganization,
+} from '@/lib/api/organizations';
 import { toast } from 'sonner';
 
 function useOrganizationCreation(userId: string | null) {
@@ -14,63 +18,41 @@ function useOrganizationCreation(userId: string | null) {
         loading: uploadLoading,
     } = useFileUpload('organization');
 
-    const invalidate = (msg: string) => {
-        setError(msg);
-        toast.error(msg);
-        return;
-    };
-
     const createOrganization = async (file?: File | null) => {
         setError(null);
 
         if (!userId) {
-            invalidate('User not authenticated');
+            setError('User not authenticated');
             return;
         }
 
         if (!organizationName.trim()) {
-            invalidate('Organization must have a name');
+            setError('Organization must have a name');
             return;
         }
 
         try {
             setLoading(true);
 
-            const createResponse = await fetch('/api/organizations', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    name: organizationName,
-                    createdById: userId,
-                }),
+            const organization = await createOrganizationApi({
+                name: organizationName,
+                createdById: userId,
             });
 
-            const createJson = await createResponse.json();
-
-            if (!createResponse.ok) {
-                console.error(createJson);
-                invalidate(createJson.message);
-                return;
-            }
-
-            const organizationId = createJson.data.id;
+            const organizationId = organization.id;
 
             if (file) {
                 const imageUrl = await uploadFile(file, organizationId);
 
                 if (uploadError) {
-                    invalidate(uploadError);
+                    setError(uploadError);
                     return;
                 }
 
                 if (imageUrl) {
-                    await fetch(`/api/organizations/${organizationId}`, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            name: organizationName,
-                            logo: imageUrl,
-                        }),
+                    await updateOrganization(organizationId, {
+                        name: organizationName,
+                        logo: imageUrl,
                     });
                 }
             }
@@ -80,8 +62,7 @@ function useOrganizationCreation(userId: string | null) {
 
             return organizationId;
         } catch (err) {
-            console.error('Error creating organization', err);
-            invalidate('Error creating organization. Please try again.');
+            setError((err as Error).message);
             return;
         } finally {
             setLoading(false);
