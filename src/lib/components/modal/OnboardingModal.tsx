@@ -159,7 +159,6 @@ function CreateOrganizationContent({
                 </div>
             )}
 
-
             <div className="mt-4 flex items-center justify-between">
                 <p
                     className="text-sarge-primary-500 hover:text-sarge-primary-600 hover:cursor-pointer"

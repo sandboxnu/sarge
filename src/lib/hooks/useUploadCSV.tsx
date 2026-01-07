@@ -42,7 +42,7 @@ export function useUploadCSV(positionId: string) {
             const formData = new FormData();
             formData.append('file', file);
 
-            const candidates = await csvCreateCandidates(positionId, formData)
+            const candidates = await csvCreateCandidates(positionId, formData);
             setCandidates(candidates);
 
             setError(null);
