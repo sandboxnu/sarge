@@ -67,7 +67,7 @@ export default function CreateCandidateModal({
                         <div className="flex items-center gap-2">
                             <button
                                 onClick={onSwitchModal}
-                                className="text-label-xs text-sarge-primary-600 px-1 font-medium transition-colors hover:underline"
+                                className="text-label-xs text-sarge-primary-600 px-1 font-medium transition-colors hover:cursor-pointer"
                             >
                                 Import CSV
                             </button>
@@ -184,7 +184,7 @@ export default function CreateCandidateModal({
                             <button
                                 type="button"
                                 onClick={handleCancel}
-                                className="text-label-s text-sarge-primary-600 hover:text-sarge-primary-700 px-0 py-2 font-medium transition-colors"
+                                className="text-label-s text-sarge-primary-600 hover:text-sarge-primary-700 px-0 py-2 font-medium transition-colors hover:cursor-pointer"
                             >
                                 Cancel
                             </button>
