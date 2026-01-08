@@ -11,6 +11,7 @@ import { type PositionWithCounts } from '@/lib/types/position.types';
 export interface CreatePositionModalProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
+    // https://stackoverflow.com/questions/72451220/how-to-set-props-type-of-a-usestate-function
     setActive: React.Dispatch<React.SetStateAction<PositionWithCounts[]>>;
 }
 

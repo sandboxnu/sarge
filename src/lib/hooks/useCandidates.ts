@@ -80,7 +80,6 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
             toast.success('Candidates created successfully');
         } catch (err) {
             const message = err instanceof Error ? err.message : 'Batch creation failed';
-            console.error(err);
             setError(message);
             toast.error(message);
         } finally {
