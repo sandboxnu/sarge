@@ -1,6 +1,6 @@
 import type { PositionPreviewData } from './usePositionPreviewModal';
 
-export type Candidate = NonNullable<PositionPreviewData>['candidates'][number];
+export type Candidate = PositionPreviewData['candidates'][number];
 
 export function useCandidateTable(candidates: Candidate[]) {
     const rows = candidates.map((entry) => {
