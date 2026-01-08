@@ -40,7 +40,8 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
                 setCandidates(candidatesData);
                 setPositionTitle(positionData.title);
             } catch (err) {
-                setError(err instanceof Error ? err.message : 'An error occurred');
+                const message = (err as Error).message;
+                setError(message);
                 setCandidates([]);
             } finally {
                 setLoading(false);
@@ -60,8 +61,8 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
             setCandidates((prev) => [...prev, created]);
             toast.success('Candidate created successfully');
         } catch (err) {
-            const message = err instanceof Error ? err.message : 'Candidate creation failed';
-
+            const message = (err as Error).message;
+            // TODO (design question): do we want to toast here?
             setError(message);
             toast.error(message);
         } finally {
@@ -79,7 +80,8 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
             setCandidates((prev) => [...prev, ...created.candidates]);
             toast.success('Candidates created successfully');
         } catch (err) {
-            const message = err instanceof Error ? err.message : 'Batch creation failed';
+            const message = (err as Error).message;
+            // TODO (design question): do we want to toast here?
             setError(message);
             toast.error(message);
         } finally {

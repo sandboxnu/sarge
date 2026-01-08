@@ -39,9 +39,7 @@ export default function useCreatePositionModal(
             setPositionName('');
             onOpenChange(false);
         } catch (err) {
-            const message =
-                err instanceof Error ? err.message : 'Failed to create position. Please try again.';
-
+            const message = (err as Error).message;
             setLocalError(message);
         } finally {
             setIsCreating(false);
