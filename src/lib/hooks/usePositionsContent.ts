@@ -34,7 +34,8 @@ function usePositionContent() {
                 setActive(activePositions);
                 setArchived(archivedPositions);
             } catch (err) {
-                setError(err instanceof Error ? err : new Error('Failed to fetch'));
+                const message = err as Error;
+                setError(message);
             } finally {
                 setLoading(false);
             }
