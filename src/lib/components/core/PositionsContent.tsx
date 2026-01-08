@@ -21,7 +21,6 @@ export default function PositionsContent() {
         active,
         setActive,
         archived,
-        // setArchived,
         handlePositionClick,
     } = usePositionContent();
 
