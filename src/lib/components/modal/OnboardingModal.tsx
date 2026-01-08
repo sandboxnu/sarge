@@ -103,6 +103,7 @@ function CreateOrganizationContent({
     handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleProfileImageClick: () => void;
     preview: string;
+    // https://stackoverflow.com/questions/72451220/how-to-set-props-type-of-a-usestate-function
     setOrganizationName: React.Dispatch<React.SetStateAction<string>>;
     organizationName: string;
     error: string | null;
