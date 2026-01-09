@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { type AssessmentWithRelations } from '@/lib/services/assessment.service';
 import { AssessmentStatus } from '@/generated/prisma';
 import { getAssessment, updateAssessment, updateAssessmentStatus } from '@/lib/api/assessments';
+import { type AssessmentWithRelations } from '@/lib/types/assessment.types';
 
 export default function useAssessment(id: string, currentTaskId?: string) {
     const router = useRouter();

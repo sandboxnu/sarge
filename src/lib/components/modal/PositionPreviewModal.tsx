@@ -72,14 +72,14 @@ function CandidateTable({ candidates }: { candidates: Candidate[] }) {
                                             {entry.candidate.name}
                                         </span>
                                         <span className="text-body-xs text-sarge-gray-600">
-                                            {entry.candidate.major ?? 'N/A'}
+                                            {entry.candidate.major}
                                         </span>
                                     </div>
                                 </td>
 
                                 <td className="px-4 py-4 text-center">
                                     <span className="text-label-xs text-sarge-gray-800">
-                                        {entry.candidate.graduationDate ?? 'N/A'}
+                                        {entry.candidate.graduationDate}
                                     </span>
                                 </td>
 
