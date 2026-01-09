@@ -1,32 +1,55 @@
-# Sarge
+<a href="https://sarge-nu.vercel.app/"><p align="center">
+<img height=100 src="https://raw.githubusercontent.com/sandboxnu/sarge/main/.assets/HelmetLogoFull.png"/>
 
-### Requirements:
+</p></a>
+<p align="center">
+  <strong>System for Automated Recruitment Grading and Evaluation 🪖</strong>
+</p>
 
+<h3 align="center">
+  <a href="https://www.sandboxnu.com/">Sandbox</a>
+  <span> · </span>
+  <a href="https://www.nunext.dev/">NExT Consulting</a>
+</h3>
+
+---
+
+## Requirements:
+
+- [Node](https://nodejs.org/en/download)
 - [PNPM](https://pnpm.io/installation)
 - [Docker](https://docs.docker.com/desktop/)
 
-### Running in Dev Mode:
+## Getting Started
 
-Add the following env variables to a .env file:
+Run the commands in the following order
 
-```
-DB_USER="postgres"
-DB_PASSWORD="password"
-DB_NAME="sarge"
+1. Clone the repository
 
-AWS_ACCESS_KEY_ID=
-AWS_SECRET_ACCESS_KEY=
-AWS_SECRET_NAME=
-AWS_BUCKET_NAME=
-
-JUDGE_API_KEY=''
-JUDGE_URL=''
-
-JWT_SECRET="sarge"
-NEXT_PUBLIC_CDN_BASE=
-DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@localhost:5432/${DB_NAME}
+```sh
+git clone https://github.com/sandboxnu/sarge.git
+cd sarge/
 ```
 
-Run the following commands in order
+2. Install project dependencies
 
-- Run `./start.sh`
+```sh
+pnpm install
+```
+
+3. Setup the .env file
+
+```
+mv .env.example .env
+```
+
+> [!NOTE]
+> You must contact Sarge project leadership to retrieve project environment variables
+
+4. Run the application
+
+```sh
+# with docker desktop open
+./start.sh
+```
+Sarge will be available on http://localhost:3000/
