@@ -83,7 +83,7 @@ export default function UploadCSVModal({
                         <div className="flex items-center gap-2">
                             <button
                                 onClick={onSwitchModal}
-                                className="text-label-xs text-sarge-primary-600 hover:text-sarge-primary-700 px-1 py-0 font-medium transition-colors hover:underline"
+                                className="text-label-xs text-sarge-primary-600 hover:text-sarge-primary-700 px-1 py-0 font-medium transition-colors hover:cursor-pointer"
                             >
                                 Add details manually
                             </button>
@@ -151,7 +151,7 @@ export default function UploadCSVModal({
                     <div className="flex w-full items-center justify-between">
                         <button
                             onClick={onCancelClick}
-                            className="text-label-s text-sarge-primary-600 hover:text-sarge-primary-700 px-0 py-2 pr-4 text-left font-medium transition-colors"
+                            className="text-label-s text-sarge-primary-600 hover:text-sarge-primary-700 px-0 py-2 pr-4 text-left font-medium transition-colors hover:cursor-pointer"
                         >
                             Cancel
                         </button>

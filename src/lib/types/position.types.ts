@@ -3,6 +3,7 @@ import type { DecisionStatus, AssessmentStatus } from '@/generated/prisma';
 export type PositionWithCounts = {
     title: string;
     id: string;
+    archived: boolean;
     numCandidates: number;
     numAssigned: number;
     createdAt: Date;
@@ -72,6 +73,46 @@ export interface PositionPreviewData {
         title: string;
     } | null;
     candidates: PositionPreviewCandidate[];
+    stats: {
+        totalSent: number;
+        totalSubmitted: number;
+        totalGraded: number;
+    };
+}
+
+export interface PositionPreviewResponse {
+    id: string;
+    title: string;
+    createdAt: string;
+    candidateCount: number;
+    assessmentTemplate: {
+        id: string;
+        title: string;
+    } | null;
+    candidates: {
+        id: string;
+        assessmentStatus: AssessmentStatus;
+        decisionStatus: DecisionStatus;
+        candidate: {
+            id: string;
+            name: string;
+            major: string | null;
+            graduationDate: string | null;
+        };
+        assessment: {
+            id: string;
+            uniqueLink: string;
+            submittedAt: string | null;
+            reviews: {
+                reviewer: {
+                    id: string;
+                    name: string;
+                    email: string;
+                    image: string | null;
+                };
+            }[];
+        } | null;
+    }[];
     stats: {
         totalSent: number;
         totalSubmitted: number;

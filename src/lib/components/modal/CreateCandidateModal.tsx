@@ -5,10 +5,9 @@ import { DialogContent, DialogTitle } from '@/lib/components/ui/Modal';
 import { FieldLabel } from '@/lib/components/ui/Field';
 import { Input } from '@/lib/components/ui/Input';
 import { Button } from '@/lib/components/ui/Button';
-import { useState } from 'react';
-import { toast } from 'sonner';
 import { AlertCircle, X } from 'lucide-react';
 import type { AddApplicationWithCandidateDataDTO } from '@/lib/schemas/application.schema';
+import useCreateCandidateModal from '@/lib/hooks/useCreateCandidateModal';
 
 export type CreateCandidateModalProps = {
     open: boolean;
@@ -23,69 +22,34 @@ export default function CreateCandidateModal({
     onCreate,
     onSwitchModal,
 }: CreateCandidateModalProps) {
-    const [fullName, setFullName] = useState('');
-    const [email, setEmail] = useState('');
-    const [major, setMajor] = useState('');
-    const [graduationYear, setGraduationYear] = useState('');
-    const [resume, setResume] = useState('');
-    const [linkedin, setLinkedin] = useState('');
-    const [github, setGithub] = useState('');
-    const [isCreating, setIsCreating] = useState(false);
-    const [localError, setLocalError] = useState<string | null>(null);
+    const {
+        fullName,
+        email,
+        major,
+        graduationYear,
+        resume,
+        linkedin,
+        github,
 
-    const handleCreate = async () => {
-        if (!fullName.trim()) {
-            setLocalError('Full name is required');
-            return;
-        }
-        if (!email.trim()) {
-            setLocalError('Email is required');
-            return;
-        }
+        setFullName,
+        setEmail,
+        setMajor,
+        setGraduationYear,
+        setResume,
+        setLinkedin,
+        setGithub,
 
-        setIsCreating(true);
-        setLocalError(null);
-        try {
-            await onCreate({
-                name: fullName,
-                email,
-                ...(major && { major }),
-                ...(graduationYear && { graduationDate: graduationYear }),
-                ...(resume && { resumeUrl: resume }),
-                ...(linkedin && { linkedinUrl: linkedin }),
-                ...(github && { githubUrl: github }),
-            });
-            toast.success('Candidate added successfully');
-            setFullName('');
-            setEmail('');
-            setMajor('');
-            setGraduationYear('');
-            setResume('');
-            setLinkedin('');
-            setGithub('');
-            onOpenChange(false);
-        } catch {
-            const errorMsg = 'Failed to add candidate. Please try again.';
-            setLocalError(errorMsg);
-            toast.error('Creation failed', {
-                description: errorMsg,
-            });
-        } finally {
-            setIsCreating(false);
-        }
-    };
+        isCreating,
+        localError,
 
-    const handleCancel = () => {
-        setFullName('');
-        setEmail('');
-        setMajor('');
-        setGraduationYear('');
-        setResume('');
-        setLinkedin('');
-        setGithub('');
-        setLocalError(null);
-        onOpenChange(false);
-    };
+        handleCreate,
+        handleCancel,
+    } = useCreateCandidateModal({
+        open,
+        onOpenChange,
+        onCreate,
+        onSwitchModal,
+    });
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -101,7 +65,7 @@ export default function CreateCandidateModal({
                         <div className="flex items-center gap-2">
                             <button
                                 onClick={onSwitchModal}
-                                className="text-label-xs text-sarge-primary-600 px-1 font-medium transition-colors hover:underline"
+                                className="text-label-xs text-sarge-primary-600 px-1 font-medium transition-colors hover:cursor-pointer"
                             >
                                 Import CSV
                             </button>
@@ -218,7 +182,7 @@ export default function CreateCandidateModal({
                             <button
                                 type="button"
                                 onClick={handleCancel}
-                                className="text-label-s text-sarge-primary-600 hover:text-sarge-primary-700 px-0 py-2 font-medium transition-colors"
+                                className="text-label-s text-sarge-primary-600 hover:text-sarge-primary-700 px-0 py-2 font-medium transition-colors hover:cursor-pointer"
                             >
                                 Cancel
                             </button>

@@ -34,3 +34,4 @@ export type GetTaskTemplateDTO = z.infer<typeof getTaskTemplateSchema>;
 export type CreateTaskTemplateDTO = z.infer<typeof createTaskTemplateSchema>;
 export type DeleteTaskTemplateDTO = z.infer<typeof deleteTaskTemplateSchema>;
 export type UpdateTaskTemplateDTO = z.infer<typeof updateTaskTemplateSchema>;
+export type TestCaseDTO = z.infer<typeof testCaseSchema>;
