@@ -45,7 +45,6 @@ function useCreateCandidateModal({ onOpenChange, onCreate }: CreateCandidateModa
             setLinkedin('');
             setGithub('');
             onOpenChange(false);
-            toast.success('Candidate added successfully.');
         } catch {
             const errorMsg = 'Failed to add candidate. Please try again.';
             setLocalError(errorMsg);
