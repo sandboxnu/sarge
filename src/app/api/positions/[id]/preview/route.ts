@@ -15,6 +15,11 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
             createdAt: position.createdAt.toISOString(),
             candidates: position.candidates.map((c) => ({
                 ...c,
+                candidate: {
+                    ...c.candidate,
+                    graduationDate: c.candidate.graduationDate ?? 'N/A',
+                    major: c.candidate.major ?? 'N/A',
+                },
                 assessment: c.assessment
                     ? {
                           ...c.assessment,
