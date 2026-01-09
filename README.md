@@ -1,5 +1,5 @@
 <a href="https://sarge-nu.vercel.app/"><p align="center">
-<img height=100 src="https://raw.githubusercontent.com/sandboxnu/sarge/main/.assets/HelmetLogoFull.png"/>
+<img height=200 src="https://raw.githubusercontent.com/sandboxnu/sarge/main/.assets/HelmetLogoFull.png"/>
 
 </p></a>
 <p align="center">
