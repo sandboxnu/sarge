@@ -4,6 +4,10 @@
     /* Layout */
     --navbar-height: 43px;
 
+    /* Modal */
+    --onboarding-modal-width: 544px;
+    --onboarding-modal-height: 309px;
+
     /* Primary */
     --sarge-primary-700: #4125dc;
     --sarge-primary-600: #4d38ef;
@@ -177,6 +181,11 @@
     --font-inter: var(--font-inter);
 
     --tracking-design: var(--letter-spacing-design);
+
+    /* Width and Height */
+    --spacing-onboarding-modal-width: var(--onboarding-modal-width);
+    --spacing-onboarding-modal-height: var(--onboarding-modal-height);
+
 }
 
 @layer base {
