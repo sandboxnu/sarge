@@ -185,7 +185,6 @@
     /* Width and Height */
     --spacing-onboarding-modal-width: var(--onboarding-modal-width);
     --spacing-onboarding-modal-height: var(--onboarding-modal-height);
-
 }
 
 @layer base {
