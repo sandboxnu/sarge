@@ -52,5 +52,4 @@ mv .env.example .env
 # with docker desktop open
 ./start.sh
 ```
-
 Sarge will be available on http://localhost:3000/
