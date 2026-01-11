@@ -12,6 +12,7 @@ async function createPosition(
     const positionNameExists = await prisma.position.findFirst({
         where: {
             title: positionRequest.title,
+            orgId,
         },
     });
 
