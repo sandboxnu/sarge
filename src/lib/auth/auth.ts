@@ -4,6 +4,12 @@ import { organization } from 'better-auth/plugins';
 import { prisma } from '@/lib/prisma';
 import { ac, owner, admin, recruiter, reviewer, member } from '@/lib/auth/permissions';
 
+// used for vercel branch previews
+const previewUrl =
+    process.env.VERCEL_ENV === 'preview' && process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : null;
+
 export const auth = betterAuth({
     secret: process.env.BETTER_AUTH_SECRET,
     database: prismaAdapter(prisma, {
@@ -51,7 +57,9 @@ export const auth = betterAuth({
             maxAge: 60 * 60, // 1 hour - cache session data in cookie
         },
     },
-    trustedOrigins: [process.env.BETTER_AUTH_URL ?? 'http://localhost:3000'],
+    trustedOrigins: ['http://localhost:3000', process.env.BETTER_AUTH_URL, previewUrl].filter(
+        (origin): origin is string => Boolean(origin)
+    ),
     plugins: [
         organization({
             ac,
