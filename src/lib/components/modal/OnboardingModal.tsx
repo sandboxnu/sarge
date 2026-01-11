@@ -5,7 +5,7 @@ import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { type RefObject } from 'react';
 import { Button } from '@/lib/components/ui/Button';
 import Image from 'next/image';
-import { SquarePen } from 'lucide-react';
+import { SquarePen, AlertCircle } from 'lucide-react';
 import useOnboardingModal from '@/lib/hooks/useOnboardingModal';
 
 export default function OnboardingModal() {
@@ -19,6 +19,7 @@ export default function OnboardingModal() {
         setOrganizationName,
         createOrganization,
         loading,
+        error,
 
         preview,
         fileInputRef,
@@ -34,7 +35,7 @@ export default function OnboardingModal() {
             </VisuallyHidden>
 
             <DialogContent
-                className="h-[292px] w-[544px]"
+                className="h-[309px] w-[544px]"
                 showCloseButton={false}
                 onInteractOutside={(event) => {
                     event.preventDefault();
@@ -51,6 +52,7 @@ export default function OnboardingModal() {
                         setOrganizationName={setOrganizationName}
                         organizationName={organizationName}
                         loading={loading}
+                        error={error}
                         onBack={() => goTo('welcome')}
                         onSubmit={createOrganization}
                     />
@@ -92,6 +94,7 @@ function CreateOrganizationContent({
     preview,
     setOrganizationName,
     organizationName,
+    error,
     loading,
     onBack,
     onSubmit,
@@ -100,11 +103,13 @@ function CreateOrganizationContent({
     handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleProfileImageClick: () => void;
     preview: string;
+    // https://stackoverflow.com/questions/72451220/how-to-set-props-type-of-a-usestate-function
     setOrganizationName: React.Dispatch<React.SetStateAction<string>>;
     organizationName: string;
+    error: string | null;
     loading: boolean;
     onBack: () => void;
-    onSubmit: () => Promise<void> | void;
+    onSubmit: () => Promise<string | undefined> | void;
 }) {
     if (loading) return <LoadingContent />;
 
@@ -121,7 +126,7 @@ function CreateOrganizationContent({
 
             <div className="mt-4 mb-2 flex w-full content-center justify-center">
                 <div
-                    className="bg-sarge-gray-200 flex h-[65px] w-[65px] items-center justify-center overflow-hidden rounded-md hover:cursor-pointer hover:ring-2 hover:ring-black/40"
+                    className="flex h-[65px] w-[65px] items-center justify-center overflow-hidden rounded-md bg-sarge-gray-200 hover:cursor-pointer hover:ring-2 hover:ring-black/40"
                     onClick={handleProfileImageClick}
                 >
                     {preview ? (
@@ -143,15 +148,21 @@ function CreateOrganizationContent({
                 type="text"
                 name="Enter a name for your organization"
                 id="Name"
-                className="bg-sarge-gray-50 text-sarge-gray-800 placeholder:text-sarge-gray-500 border-sarge-gray-200 h-[44px] rounded-lg border px-3 py-1"
+                className="h-[44px] rounded-lg border border-sarge-gray-200 bg-sarge-gray-50 px-3 py-1 text-sarge-gray-800 placeholder:text-sarge-gray-500"
                 placeholder="Enter a name for your organization"
                 value={organizationName}
                 onChange={(e) => setOrganizationName(e.target.value)}
             />
+            {error && (
+                <div className="text-body-s mt-2 flex items-center gap-2 text-sarge-error-700">
+                    <AlertCircle className="size-4" />
+                    {error}
+                </div>
+            )}
 
             <div className="mt-4 flex items-center justify-between">
                 <p
-                    className="text-sarge-primary-500 hover:text-sarge-primary-600 hover:cursor-pointer"
+                    className="text-sarge-primary-500 hover:cursor-pointer hover:text-sarge-primary-600"
                     onClick={onBack}
                 >
                     Back
@@ -175,7 +186,7 @@ function LoadingContent() {
         <div className="flex flex-col items-center justify-center gap-1 self-stretch">
             <Image src="/CreateOrgLoading.gif" alt="Loading GIF" width={66} height={66} />
 
-            <p className="text-sarge-gray-800 text-base leading-tight font-medium tracking-wide">
+            <p className="text-base leading-tight font-medium tracking-wide text-sarge-gray-800">
                 Creating organization...
             </p>
         </div>

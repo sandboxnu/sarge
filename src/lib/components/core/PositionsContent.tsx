@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { Button } from '@/lib/components/ui/Button';
 import { Plus, ArrowUpDown, SlidersHorizontal, Rows3, LayoutGrid } from 'lucide-react';
 import PositionCard from '@/lib/components/core/PositionCard';
@@ -10,22 +9,20 @@ import { Tabs, TabsContent, TabsList, UnderlineTabsTrigger } from '@/lib/compone
 import CreatePositionModal from '@/lib/components/modal/CreatePositionModal';
 import PositionPreviewModal from '@/lib/components/modal/PositionPreviewModal';
 import Image from 'next/image';
+import usePositionContent from '@/lib/hooks/usePositionsContent';
 
-interface PositionsContentProps {
-    positions: PositionWithCounts[];
-}
-
-export default function PositionsContent({ positions }: PositionsContentProps) {
-    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-    const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
-    const [selectedPositionId, setSelectedPositionId] = useState<string | null>(null);
-
-    const archived: PositionWithCounts[] = [];
-
-    function handlePositionClick(positionId: string) {
-        setSelectedPositionId(positionId);
-        setIsPreviewModalOpen(true);
-    }
+export default function PositionsContent() {
+    const {
+        isCreateModalOpen,
+        setIsCreateModalOpen,
+        isPreviewModalOpen,
+        setIsPreviewModalOpen,
+        selectedPositionId,
+        active,
+        setActive,
+        archived,
+        handlePositionClick,
+    } = usePositionContent();
 
     return (
         <>
@@ -36,22 +33,22 @@ export default function PositionsContent({ positions }: PositionsContentProps) {
                     </div>
 
                     <div className="flex items-center gap-3">
-                        <button className="border-sarge-gray-200 text-sarge-gray-600 hover:bg-sarge-gray-100 flex items-center gap-2 rounded-lg border bg-white px-3 py-2.5">
+                        <button className="hover:bg-sarge-gray-100 flex items-center gap-2 rounded-lg border border-sarge-gray-200 bg-white px-3 py-2.5 text-sarge-gray-600">
                             <ArrowUpDown className="size-5" />
                             <span className="text-label-s">Sort</span>
                         </button>
-                        <button className="border-sarge-gray-200 text-sarge-gray-600 hover:bg-sarge-gray-100 flex items-center gap-2 rounded-lg border bg-white px-3 py-2.5">
+                        <button className="hover:bg-sarge-gray-100 flex items-center gap-2 rounded-lg border border-sarge-gray-200 bg-white px-3 py-2.5 text-sarge-gray-600">
                             <SlidersHorizontal className="size-5" />
                             <span className="text-label-s">Filter</span>
                         </button>
                     </div>
 
-                    <div className="border-sarge-gray-200 flex items-center rounded-lg border bg-white">
-                        <button className="text-sarge-gray-600 hover:bg-sarge-gray-100 flex items-center justify-center p-3">
+                    <div className="flex items-center rounded-lg border border-sarge-gray-200 bg-white">
+                        <button className="hover:bg-sarge-gray-100 flex items-center justify-center p-3 text-sarge-gray-600">
                             <Rows3 className="size-5" />
                         </button>
-                        <div className="bg-sarge-gray-200 h-6 w-px" />
-                        <button className="text-sarge-gray-600 hover:bg-sarge-gray-100 flex items-center justify-center p-3">
+                        <div className="h-6 w-px bg-sarge-gray-200" />
+                        <button className="hover:bg-sarge-gray-100 flex items-center justify-center p-3 text-sarge-gray-600">
                             <LayoutGrid className="size-5" />
                         </button>
                     </div>
@@ -69,7 +66,7 @@ export default function PositionsContent({ positions }: PositionsContentProps) {
 
                 <TabsList className="h-auto gap-5 bg-transparent p-0">
                     <UnderlineTabsTrigger value="active">
-                        Active ({positions.length ?? 0})
+                        Active ({active.length ?? 0})
                     </UnderlineTabsTrigger>
                     <UnderlineTabsTrigger value="archived">
                         Archived ({archived.length})
@@ -77,9 +74,9 @@ export default function PositionsContent({ positions }: PositionsContentProps) {
                 </TabsList>
 
                 <TabsContent value="active" className="flex flex-col gap-4">
-                    {positions.length > 0 ? (
+                    {active.length > 0 ? (
                         <PositionCardGrid
-                            positions={positions}
+                            positions={active}
                             onPositionClick={handlePositionClick}
                         />
                     ) : (
@@ -107,7 +104,11 @@ export default function PositionsContent({ positions }: PositionsContentProps) {
                 </TabsContent>
             </Tabs>
 
-            <CreatePositionModal open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen} />
+            <CreatePositionModal
+                open={isCreateModalOpen}
+                onOpenChange={setIsCreateModalOpen}
+                setActive={setActive}
+            />
 
             <PositionPreviewModal
                 open={isPreviewModalOpen}

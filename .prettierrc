@@ -9,6 +9,6 @@
     "bracketSpacing": true,
     "bracketSameLine": false,
     "plugins": ["prettier-plugin-tailwindcss"],
-    "tailwindConfig": "./tailwind.config.ts",
+    "tailwindStylesheet": "./src/app/globals.css",
     "tailwindFunctions": ["cn", "cva", "clsx", "classnames", "tw"]
 }

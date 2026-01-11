@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { type CreatePositionDTO, type UpdatePositionDTO } from '@/lib/schemas/position.schema';
 import { type Position, AssessmentStatus } from '@/generated/prisma';
-import { NotFoundException } from '@/lib/utils/errors.utils';
+import { NotFoundException, ConflictException } from '@/lib/utils/errors.utils';
 import { type PositionWithCounts, type PositionPreviewData } from '@/lib/types/position.types';
 
 async function createPosition(
@@ -9,6 +9,16 @@ async function createPosition(
     userId: string,
     orgId: string
 ): Promise<Position> {
+    const positionNameExists = await prisma.position.findFirst({
+        where: {
+            title: positionRequest.title,
+        },
+    });
+
+    if (positionNameExists) {
+        throw new ConflictException('Name', positionRequest.title);
+    }
+
     return prisma.position.create({
         data: {
             title: positionRequest.title,
@@ -42,13 +52,14 @@ async function getPosition(positionId: string): Promise<Position> {
     return position;
 }
 
-async function getPositionByOrgId(orgId: string): Promise<PositionWithCounts[]> {
+async function getPositionsByOrgId(orgId: string): Promise<PositionWithCounts[]> {
     const positions = await prisma.position.findMany({
         where: { orgId },
         select: {
             id: true,
             title: true,
             createdAt: true,
+            archived: true,
             _count: {
                 select: {
                     applications: true,
@@ -64,6 +75,7 @@ async function getPositionByOrgId(orgId: string): Promise<PositionWithCounts[]> 
     return positions.map((p) => ({
         id: p.id,
         title: p.title,
+        archived: p.archived,
         numCandidates: p._count.applications,
         numAssigned: p.applications.length,
         createdAt: p.createdAt,
@@ -195,7 +207,7 @@ const PositionService = {
     createPosition,
     deletePosition,
     getPosition,
-    getPositionByOrgId,
+    getPositionsByOrgId,
     getPositionPreview,
     updatePosition,
 };

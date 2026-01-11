@@ -5,13 +5,7 @@ import type {
     Assessment,
 } from '@/lib/schemas/assessment.schema';
 import { NotFoundException } from '@/lib/utils/errors.utils';
-import type { ApplicationDTO } from '@/lib/schemas/application.schema';
-import type { AssessmentTemplate } from '@/lib/schemas/assessment-template.schema';
-
-export type AssessmentWithRelations = Assessment & {
-    application: ApplicationDTO;
-    assessmentTemplate: AssessmentTemplate;
-};
+import { type AssessmentWithRelations } from '@/lib/types/assessment.types';
 
 async function getAssessmentWithRelations(id: string): Promise<AssessmentWithRelations> {
     const foundAssessment = await prisma.assessment.findFirst({

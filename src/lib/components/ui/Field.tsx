@@ -31,7 +31,7 @@ const FieldError = React.forwardRef<
     if (!errors?.length) return null;
     return (
         <div ref={ref} className={cn('min-h-5', className)} {...props}>
-            <p className="text-sarge-error-700 text-sm">{errors[0]?.message}</p>
+            <p className="text-sm text-sarge-error-700">{errors[0]?.message}</p>
         </div>
     );
 });
@@ -39,7 +39,7 @@ FieldError.displayName = 'FieldError';
 
 const FieldDescription = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
     ({ className, ...props }, ref) => (
-        <div ref={ref} className={cn('text-sarge-gray-600 text-xs', className)} {...props} />
+        <div ref={ref} className={cn('text-xs text-sarge-gray-600', className)} {...props} />
     )
 );
 FieldDescription.displayName = 'FieldDescription';

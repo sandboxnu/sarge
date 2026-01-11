@@ -47,7 +47,7 @@ export class BadRequestException extends HttpException {
  */
 export class UnauthorizedException extends HttpException {
     constructor(message?: string) {
-        super(401, `Unauthorized${message ? `: ${message}` : '!'}`);
+        super(401, `Unauthorized: ${message ? `: ${message}` : '!'}`);
     }
 }
 
@@ -56,7 +56,7 @@ export class UnauthorizedException extends HttpException {
  */
 export class ForbiddenException extends HttpException {
     constructor(message?: string) {
-        super(403, `Access Denied ${message ? `: ${message}` : '!'}`);
+        super(403, `Access Denied: ${message ? `: ${message}` : '!'}`);
     }
 }
 
@@ -65,7 +65,7 @@ export class ForbiddenException extends HttpException {
  */
 export class InternalServerException extends HttpException {
     constructor(message?: string) {
-        super(500, `Internal Server Error${message ? `: ${message}` : '!'}`);
+        super(500, `Internal Server Error: ${message ? `: ${message}` : '!'}`);
     }
 }
 

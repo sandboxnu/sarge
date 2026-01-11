@@ -14,7 +14,7 @@ export const Input = React.forwardRef<
         <input
             type={type}
             className={cn(
-                'bg-sarge-gray-50 text-sarge-gray-800 placeholder:text-sarge-gray-500 rounded-lg border px-3 py-1 transition-colors disabled:cursor-not-allowed disabled:opacity-50',
+                'rounded-lg border bg-sarge-gray-50 px-3 py-1 text-sarge-gray-800 transition-colors placeholder:text-sarge-gray-500 disabled:cursor-not-allowed disabled:opacity-50',
                 borderColor,
                 className
             )}
