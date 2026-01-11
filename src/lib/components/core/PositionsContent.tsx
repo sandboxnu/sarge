@@ -33,22 +33,22 @@ export default function PositionsContent() {
                     </div>
 
                     <div className="flex items-center gap-3">
-                        <button className="border-sarge-gray-200 text-sarge-gray-600 hover:bg-sarge-gray-100 flex items-center gap-2 rounded-lg border bg-white px-3 py-2.5">
+                        <button className="hover:bg-sarge-gray-100 flex items-center gap-2 rounded-lg border border-sarge-gray-200 bg-white px-3 py-2.5 text-sarge-gray-600">
                             <ArrowUpDown className="size-5" />
                             <span className="text-label-s">Sort</span>
                         </button>
-                        <button className="border-sarge-gray-200 text-sarge-gray-600 hover:bg-sarge-gray-100 flex items-center gap-2 rounded-lg border bg-white px-3 py-2.5">
+                        <button className="hover:bg-sarge-gray-100 flex items-center gap-2 rounded-lg border border-sarge-gray-200 bg-white px-3 py-2.5 text-sarge-gray-600">
                             <SlidersHorizontal className="size-5" />
                             <span className="text-label-s">Filter</span>
                         </button>
                     </div>
 
-                    <div className="border-sarge-gray-200 flex items-center rounded-lg border bg-white">
-                        <button className="text-sarge-gray-600 hover:bg-sarge-gray-100 flex items-center justify-center p-3">
+                    <div className="flex items-center rounded-lg border border-sarge-gray-200 bg-white">
+                        <button className="hover:bg-sarge-gray-100 flex items-center justify-center p-3 text-sarge-gray-600">
                             <Rows3 className="size-5" />
                         </button>
-                        <div className="bg-sarge-gray-200 h-6 w-px" />
-                        <button className="text-sarge-gray-600 hover:bg-sarge-gray-100 flex items-center justify-center p-3">
+                        <div className="h-6 w-px bg-sarge-gray-200" />
+                        <button className="hover:bg-sarge-gray-100 flex items-center justify-center p-3 text-sarge-gray-600">
                             <LayoutGrid className="size-5" />
                         </button>
                     </div>

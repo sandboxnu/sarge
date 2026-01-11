@@ -11,11 +11,11 @@ const buttonVariants = cva(
         variants: {
             variant: {
                 primary:
-                    'bg-sarge-primary-500 hover:bg-sarge-primary-600 text-sarge-gray-50 [&_svg]:text-sarge-gray-50 transition-colors duration-200 disabled:opacity-50',
+                    'bg-sarge-primary-500 text-sarge-gray-50 transition-colors duration-200 hover:bg-sarge-primary-600 disabled:opacity-50 [&_svg]:text-sarge-gray-50',
                 secondary:
-                    'bg-sarge-gray-50 border-sarge-primary-500 hover:bg-sarge-primary-100 text-sarge-primary-500 [&_svg]:text-sarge-primary-500 border transition-colors duration-200 disabled:opacity-50',
+                    'border border-sarge-primary-500 bg-sarge-gray-50 text-sarge-primary-500 transition-colors duration-200 hover:bg-sarge-primary-100 disabled:opacity-50 [&_svg]:text-sarge-primary-500',
                 tertiary:
-                    'hover:bg-sarge-primary-100 [&_svg]:text-sarge-primary-500 text-sarge-primary-500 transition-colors duration-200 disabled:opacity-50',
+                    'text-sarge-primary-500 transition-colors duration-200 hover:bg-sarge-primary-100 disabled:opacity-50 [&_svg]:text-sarge-primary-500',
             },
             size: {
                 default: 'gap-[10px] rounded-lg px-1 py-2',

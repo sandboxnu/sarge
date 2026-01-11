@@ -1,23 +1,20 @@
 # Dependencies
-node_modules/
+node_modules
 pnpm-lock.yaml
 package-lock.json
-yarn.lock
 
 # Build outputs
-.next/
-out/
-build/
-dist/
+.next
+out
+dist
+build
 
 # Generated files
-src/generated/
+prisma/migrations
 
-# Config files that have their own formatting
-*.config.js
-*.config.ts
-next-env.d.ts
-
-# Other files
 *.log
-*.md.backup
+
+.env
+.env.*
+
+public
