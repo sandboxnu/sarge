@@ -35,7 +35,7 @@ export default function OnboardingModal() {
             </VisuallyHidden>
 
             <DialogContent
-                className="h-[309px] w-[544px]"
+                className="w-onboarding-modal-width h-onboarding-modal-height"
                 showCloseButton={false}
                 onInteractOutside={(event) => {
                     event.preventDefault();
