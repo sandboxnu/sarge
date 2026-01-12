@@ -30,7 +30,7 @@ const satoshi = localFont({
 
 export const metadata: Metadata = {
     title: 'Sarge',
-    description: 'Standardized Assessment Review, Grading, & Evaluation',
+    description: 'System for Assessment Review, Grading, and Evaluation',
 };
 
 export default function RootLayout({
