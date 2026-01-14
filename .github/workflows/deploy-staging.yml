@@ -1,23 +1,23 @@
 name: Deploy Staging
 on:
-  workflow_dispatch:
+    workflow_dispatch:
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: 'pnpm'
-      - name: Install modules
-        run: pnpm install
-      - name: Run migrations
-        env:
-          DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
-          DIRECT_URL: ${{ secrets.STAGING_DIRECT_URL }}
-        run: pnpm prisma migrate reset --force && pnpm prisma migrate deploy
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+            - name: Set up Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  cache: 'pnpm'
+            - name: Install modules
+              run: pnpm install
+            - name: Run migrations
+              env:
+                  DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
+                  DIRECT_URL: ${{ secrets.STAGING_DIRECT_URL }}
+              run: pnpm prisma migrate reset --force && pnpm prisma migrate deploy
