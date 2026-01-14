@@ -3,10 +3,7 @@ import { type NextRequest, NextResponse } from 'next/server';
 const protectedRoutes = ['/crm'];
 
 function hasAuthCookie(request: NextRequest): boolean {
-    return (
-        request.cookies.has('__Secure-better-auth.session') ||
-        request.cookies.has('better-auth.session')
-    );
+    return request.cookies.getAll().some((cookie) => cookie.name.startsWith('better-auth'));
 }
 
 export function middleware(request: NextRequest) {
