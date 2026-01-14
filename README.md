@@ -3,7 +3,7 @@
 
 </p></a>
 <p align="center">
-  <strong>System for Automated Recruitment Grading and Evaluation 🪖</strong>
+  <strong>System for Automated Recruitment, Grading, and Evaluation 🪖</strong>
 </p>
 
 <h3 align="center">
