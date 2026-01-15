@@ -26,7 +26,7 @@ Constraints:
 - -10^9 <= nums[i] <= 10^9
 - -10^9 <= target <= 10^9
 - Only one valid answer exists.`,
-        public_test_cases: [
+        publicTestCases: [
             {
                 input: { nums: [2, 7, 11, 15], target: 9 },
                 expected: [0, 1],
@@ -36,7 +36,7 @@ Constraints:
                 expected: [1, 2],
             },
         ],
-        private_test_cases: [
+        privateTestCases: [
             {
                 input: { nums: [3, 3], target: 6 },
                 expected: [0, 1],
@@ -66,13 +66,13 @@ Output: ["h","a","n","n","a","H"]
 Constraints:
 - 1 <= s.length <= 10^5
 - s[i] is a printable ascii character.`,
-        public_test_cases: [
+        publicTestCases: [
             {
                 input: { s: ['h', 'e', 'l', 'l', 'o'] },
                 expected: ['o', 'l', 'l', 'e', 'h'],
             },
         ],
-        private_test_cases: [
+        privateTestCases: [
             {
                 input: { s: ['H', 'a', 'n', 'n', 'a', 'h'] },
                 expected: ['h', 'a', 'n', 'n', 'a', 'H'],
@@ -110,7 +110,7 @@ Since an empty string reads the same forward and backward, it is a palindrome.
 Constraints:
 - 1 <= s.length <= 2 * 10^5
 - s consists only of printable ASCII characters.`,
-        public_test_cases: [
+        publicTestCases: [
             {
                 input: { s: 'A man, a plan, a canal: Panama' },
                 expected: true,
@@ -120,7 +120,7 @@ Constraints:
                 expected: false,
             },
         ],
-        private_test_cases: [
+        privateTestCases: [
             {
                 input: { s: ' ' },
                 expected: true,
