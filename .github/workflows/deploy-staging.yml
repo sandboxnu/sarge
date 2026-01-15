@@ -20,4 +20,4 @@ jobs:
               env:
                   DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
                   DIRECT_URL: ${{ secrets.STAGING_DIRECT_URL }}
-              run: pnpm prisma migrate reset --force && pnpm prisma migrate deploy
+              run: pnpm prisma migrate reset --force
