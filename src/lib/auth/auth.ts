@@ -4,9 +4,9 @@ import { organization } from 'better-auth/plugins';
 import { prisma } from '@/lib/prisma';
 import { ac, owner, admin, recruiter, reviewer, member } from '@/lib/auth/permissions';
 
-const baseUrl = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : 'http://localhost:3000';
+const baseUrl =
+    process.env.BETTER_AUTH_URL ??
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
 
 export const auth = betterAuth({
     secret: process.env.BETTER_AUTH_SECRET,
