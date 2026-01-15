@@ -1,18 +1,16 @@
 import { type NextRequest, NextResponse } from 'next/server';
-import { getCookieCache } from 'better-auth/cookies';
 
 const protectedRoutes = ['/crm'];
 
-export async function middleware(request: NextRequest) {
+function hasAuthCookie(request: NextRequest): boolean {
+    return request.cookies.getAll().some((cookie) => cookie.name.startsWith('better-auth'));
+}
+
+export function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
-    const isProtectedRoute = protectedRoutes.some((route) => pathname.startsWith(route));
 
-    if (isProtectedRoute) {
-        // Get session from cookie cache (optimistic check for middleware performance)
-        // Note: Full session validation happens on the server/page level
-        const session = await getCookieCache(request);
-
-        if (!session) {
+    if (protectedRoutes.some((route) => pathname.startsWith(route))) {
+        if (!hasAuthCookie(request)) {
             return NextResponse.redirect(new URL('/signin', request.url));
         }
     }
