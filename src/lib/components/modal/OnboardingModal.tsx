@@ -5,7 +5,7 @@ import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { type RefObject } from 'react';
 import { Button } from '@/lib/components/ui/Button';
 import Image from 'next/image';
-import { SquarePen, AlertCircle } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 import useOnboardingModal from '@/lib/hooks/useOnboardingModal';
 
 export default function OnboardingModal() {
@@ -130,7 +130,7 @@ function CreateOrganizationContent({
 
             <div className="mt-4 mb-2 flex w-full content-center justify-center">
                 <div
-                    className="bg-sarge-gray-200 flex h-[65px] w-[65px] items-center justify-center overflow-hidden rounded-md hover:cursor-pointer hover:ring-2 hover:ring-black/40"
+                    className="bg-sarge-gray-200 group flex h-[65px] w-[65px] items-center justify-center overflow-hidden rounded-md hover:cursor-pointer hover:ring-2 hover:ring-black/40"
                     onClick={handleProfileImageClick}
                 >
                     {preview ? (
@@ -142,12 +142,27 @@ function CreateOrganizationContent({
                             className="h-full w-full object-cover object-center"
                         />
                     ) : (
-                        <SquarePen className="text-sarge-gray-500" />
+                        <div className="relative h-full w-full">
+                            <Image
+                                src="/CreateOrgIcon.svg"
+                                width={65}
+                                height={65}
+                                alt="Create organization"
+                                className="absolute inset-0 h-full w-full object-contain opacity-100 transition-opacity duration-150 group-hover:opacity-0"
+                            />
+                            <Image
+                                src="/CreateOrgHoverIcon.svg"
+                                width={65}
+                                height={65}
+                                alt="Create organization"
+                                className="absolute inset-0 h-full w-full object-contain opacity-0 transition-opacity duration-150 group-hover:opacity-100"
+                            />
+                        </div>
                     )}
                 </div>
             </div>
 
-            <div className="pt-2 pb-1 font-bold">Organization name</div>
+            <div className="pt-2 pb-1 font-medium">Organization name</div>
             <input
                 type="text"
                 name="Enter a name for your organization"
