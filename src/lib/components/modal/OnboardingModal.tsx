@@ -70,16 +70,20 @@ function WelcomeContent({ onCreate }: { onCreate: () => void }) {
                 Get started by creating or joining an organization. You&apos;ll be able to manage
                 tasks, assessments, and candidates all in one place.
             </p>
-            <div className="mt-[24px] h-[72px] w-[415px]">
+            <div className="mt-[24px] flex w-[415px] flex-col gap-2">
                 <Button
-                    className="flex w-106 justify-center"
+                    className="flex h-[36px] w-full justify-center px-4 py-2"
                     size="default"
                     variant="primary"
                     onClick={onCreate}
                 >
                     Create Organization
                 </Button>
-                <Button className="flex w-106 justify-center" size="default" variant="tertiary">
+                <Button
+                    className="flex h-[36px] w-full justify-center px-4 py-2"
+                    size="default"
+                    variant="tertiary"
+                >
                     Join Organization
                 </Button>
             </div>
