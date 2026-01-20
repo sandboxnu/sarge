@@ -6,6 +6,7 @@ import CreateCandidateModal from '@/lib/components/modal/CreateCandidateModal';
 import UploadCSVModal from '@/lib/components/modal/UploadCSVModal';
 import useCandidates from '@/lib/hooks/useCandidates';
 import { Search } from '@/lib/components/core/Search';
+import { Tabs, TabsContent, TabsList, UnderlineTabsTrigger } from '@/lib/components/ui/Tabs';
 import { ChevronLeft, Plus, ArrowUpDown, SlidersHorizontal } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { use, useState } from 'react';
@@ -66,7 +67,24 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
 
                 {loading && <p>Loading candidates...</p>}
                 {error && <p className="text-sarge-error-700">Error: {error}</p>}
-                {!loading && !error && <CandidateTable candidates={candidates} />}
+                {!loading && !error && (
+                    <Tabs defaultValue="candidates" className="flex flex-col gap-3">
+                        <TabsList className="h-auto gap-5 bg-transparent p-0">
+                            <UnderlineTabsTrigger value="candidates">
+                                Candidates ({candidates.length})
+                            </UnderlineTabsTrigger>
+                            <UnderlineTabsTrigger value="assessment">
+                                Assessment
+                            </UnderlineTabsTrigger>
+                        </TabsList>
+
+                        <TabsContent value="candidates">
+                            <CandidateTable candidates={candidates} />
+                        </TabsContent>
+
+                        <TabsContent value="assessment">{/* No content yet */}</TabsContent>
+                    </Tabs>
+                )}
             </div>
 
             <CreateCandidateModal
