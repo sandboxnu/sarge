@@ -5,7 +5,8 @@ import { CandidateTable } from '@/lib/components/core/CandidateTable';
 import CreateCandidateModal from '@/lib/components/modal/CreateCandidateModal';
 import UploadCSVModal from '@/lib/components/modal/UploadCSVModal';
 import useCandidates from '@/lib/hooks/useCandidates';
-import { ChevronLeft, Plus } from 'lucide-react';
+import { Search } from '@/lib/components/core/Search';
+import { ChevronLeft, Plus, ArrowUpDown, SlidersHorizontal } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { use, useState } from 'react';
 
@@ -27,19 +28,27 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                     >
                         <ChevronLeft className="size-5" />
                     </button>
-                    <h1 className="text-2xl font-semibold">All Positions</h1>
+                    <h1 className="text-2xl font-semibold">{positionTitle} Candidates</h1>
                 </div>
-
                 <hr />
-                <div className="sticky flex justify-between">
-                    <div className="space-y-0">
-                        <h1 className="text-lg font-semibold">{positionTitle} Candidates</h1>
-                        <h3 className="text-sm">
-                            {candidates.length}{' '}
-                            {candidates.length === 1 ? 'candidate' : 'candidates'}
-                        </h3>
+                <div className="sticky flex items-center gap-4">
+                    <div className="flex flex-1 items-center gap-4">
+                        <div className="max-w-[680px] flex-1">
+                            <Search placeholder="Type to search for a position" />
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                            <button className="border-sarge-gray-200 text-sarge-gray-600 hover:bg-sarge-gray-100 flex items-center gap-2 rounded-lg border bg-white px-3 py-2.5">
+                                <ArrowUpDown className="size-5" />
+                                <span className="text-label-s">Sort</span>
+                            </button>
+                            <button className="border-sarge-gray-200 text-sarge-gray-600 hover:bg-sarge-gray-100 flex items-center gap-2 rounded-lg border bg-white px-3 py-2.5">
+                                <SlidersHorizontal className="size-5" />
+                                <span className="text-label-s">Filter</span>
+                            </button>
+                        </div>
                     </div>
-                    <div className="flex gap-x-4">
+                    <div className="flex shrink-0 gap-x-4">
                         <Button
                             variant="secondary"
                             className="px-4 py-2"
