@@ -167,7 +167,7 @@ function CreateOrganizationContent({
                 type="text"
                 name="Enter a name for your organization"
                 id="Name"
-                className="bg-sarge-gray-50 text-sarge-gray-800 placeholder:text-sarge-gray-500 border-sarge-gray-200 h-[44px] rounded-lg border px-3 py-1"
+                className="bg-sarge-gray-50 text-sarge-gray-800 placeholder:text-sarge-gray-500 border-sarge-gray-200 h-[44px] rounded-md border px-3 py-1"
                 placeholder="Enter a name for your organization"
                 value={organizationName}
                 onChange={(e) => setOrganizationName(e.target.value)}
