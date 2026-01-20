@@ -1,6 +1,16 @@
 'use client';
 
-import { Home, File, ListChecks, Users, Book, Archive, Settings, ChevronDown } from 'lucide-react';
+import {
+    Home,
+    File,
+    ListChecks,
+    Users,
+    Book,
+    Archive,
+    Settings,
+    ChevronDown,
+    Circle,
+} from 'lucide-react';
 import { useAuth } from '@/lib/auth/auth-context';
 import Image from 'next/image';
 import useOnboardingState from '@/lib/hooks/useOnboardingState';
@@ -14,6 +24,7 @@ import { useIsMobile } from '@/lib/hooks/useIsMobileShadcn';
 import { Button } from '@/lib/components/ui/Button';
 import { Input } from '@/lib/components/ui/Input';
 import { Separator } from '@/lib/components/ui/Separator';
+import HelmetLogoFull from '@/../.assets/HelmetLogoFull.png';
 import {
     Sheet,
     SheetContent,
@@ -28,6 +39,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from '@/lib/components/ui/Tooltip';
+import { text } from 'stream/consumers';
 
 const SIDEBAR_COOKIE_NAME = 'sidebar_state';
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -272,7 +284,7 @@ export function SidebarTrigger({
             }}
             {...props}
         >
-            <PanelLeftIcon />
+            <PanelLeftIcon className="stroke-sarge-gray-600" />
             <span className="sr-only">Toggle Sidebar</span>
         </Button>
     );
@@ -333,7 +345,7 @@ export function SidebarHeader({ className, ...props }: React.ComponentProps<'div
         <div
             data-slot="sidebar-header"
             data-sidebar="header"
-            className={cn('flex flex-col gap-2 px-4 pt-3', className)}
+            className={cn('flex flex-col gap-3 px-4 pt-3', className)}
             {...props}
         />
     );
@@ -721,16 +733,30 @@ export function Sidebar() {
     return (
         <ShadSidebar
             className={cn(
-                'border-sarge-primary-100 bg-sarge-primary-100 !top-[var(--navbar-height)] !h-[calc(100vh-var(--navbar-height))] border-r-4',
+                'border-sarge-primary-100 bg-sarge-primary-100 border-r-4',
                 isOnboarding && 'opacity-0'
             )}
             collapsible="icon"
         >
-            <SidebarHeader className="group-data-[collapsible=icon]:px-1 group-data-[collapsible=icon]:pb-2">
+            <SidebarHeader className="group group-data-[collapsible=icon]:px-1 group-data-[collapsible=icon]:pb-2">
+                <Image
+                    src="/Sarge_logo.svg"
+                    alt="Sarge Logo"
+                    width={67}
+                    height={28}
+                    className="group-data-[collapsible=icon]:hidden"
+                />
+                <Image
+                    src="/Helmet_Logomark.svg"
+                    alt="Sarge Logo"
+                    width={67}
+                    height={28}
+                    className="hidden h-7 w-7 justify-center fill-[#5D5BF7] group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:inline"
+                />
                 <div className="flex items-center justify-between gap-3 group-data-[collapsible=icon]:w-full group-data-[collapsible=icon]:justify-center">
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-1 items-center gap-2">
                         <div
-                            className={`h-7 w-7 overflow-hidden rounded group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:h-5 group-data-[collapsible=icon]:w-5 ${
+                            className={`h-7 w-7 overflow-hidden rounded group-data-[collapsible=icon]:mx-auto ${
                                 !auth.activeOrganization?.logo ? 'bg-sarge-gray-500' : ''
                             }`}
                         >
@@ -738,7 +764,7 @@ export function Sidebar() {
                                 <Image
                                     src={auth.activeOrganization.logo}
                                     alt="Organization Logo"
-                                    width={28}
+                                    width={60}
                                     height={28}
                                     className="h-full w-full object-cover object-center"
                                 />
@@ -756,9 +782,11 @@ export function Sidebar() {
                         <p className="truncate text-xs font-semibold text-gray-900 group-data-[collapsible=icon]:hidden">
                             {auth.activeOrganization?.name ?? 'Organization Name'}
                         </p>
+
+                        <ChevronDown className="text-sarge-gray-600 ml-auto h-3 w-3 group-data-[collapsible=icon]:hidden" />
                     </div>
 
-                    <ChevronDown className="text-sarge-gray-600 h-3 w-3 group-data-[collapsible=icon]:hidden" />
+                    <SidebarTrigger className="bg-sarge-gray-100 hover:bg-sarge-primary-100 hidden items-center rounded-lg transition-all duration-200 group-hover:flex group-data-[collapsible=icon]:hidden" />
                 </div>
             </SidebarHeader>
             <SidebarContent>
@@ -769,10 +797,10 @@ export function Sidebar() {
                                 <SidebarMenuItem key={item.title}>
                                     <SidebarMenuButton
                                         tooltip={item.title}
-                                        className="hover:!bg-sarge-primary-100 focus:!bg-sarge-primary-200 [&:hover]:!bg-sarge-primary-100 !important group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8 group-data-[collapsible=icon]:p-0 hover:cursor-pointer"
+                                        className="hover:bg-sarge-primary-100 active:bg-sarge-primary-200 gap-x-3 p-2.5 transition-colors duration-600 ease-out group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8 group-data-[collapsible=icon]:p-0 hover:cursor-pointer"
                                         onClick={() => router.push(item.url)}
                                     >
-                                        <item.icon className="text-sarge-gray-600 !h-4 !w-4" />
+                                        <item.icon className="text-sarge-gray-600 h-4 w-4" />
                                         <span className="text-sarge-gray-800 text-xs font-medium">
                                             {item.title}
                                         </span>
@@ -788,12 +816,29 @@ export function Sidebar() {
                     <SidebarMenuItem>
                         <SidebarMenuButton
                             tooltip="Organization Settings"
-                            className="hover:!bg-sarge-primary-100 focus:!bg-sarge-primary-200 [&:hover]:!bg-sarge-primary-100 !important group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8 group-data-[collapsible=icon]:p-0 hover:cursor-pointer"
+                            className="hover:!bg-sarge-primary-100 active:!bg-sarge-primary-200 p-2.5 transition-colors duration-600 ease-out group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8 group-data-[collapsible=icon]:p-0 hover:cursor-pointer"
                         >
                             <Settings className="text-sarge-gray-600 !h-4 !w-4" />
                             <span className="text-sarge-gray-800 text-xs font-medium">
                                 Organization Settings
                             </span>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                </SidebarMenu>
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton
+                            tooltip="Profile"
+                            className="hover:!bg-sarge-primary-100 active:!bg-sarge-primary-200 p-2.5 transition-colors duration-600 ease-out group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8 group-data-[collapsible=icon]:p-0 hover:cursor-pointer"
+                        >
+                            {auth.user?.email === '' ? (
+                                <Image src={''} alt={''} />
+                            ) : (
+                                <div className="bg-sarge-gray-200 text-sarge-gray-600 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-medium group-data-[collapsible=icon]:mx-auto">
+                                    {auth.user?.name[0]}
+                                </div>
+                            )}
+                            <span className="text-sarge-gray-800 text-xs font-medium">Profile</span>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
