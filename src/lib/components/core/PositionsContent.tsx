@@ -43,16 +43,6 @@ export default function PositionsContent() {
                         </button>
                     </div>
 
-                    <div className="border-sarge-gray-200 flex items-center rounded-lg border bg-white">
-                        <button className="text-sarge-gray-600 hover:bg-sarge-gray-100 flex items-center justify-center p-3">
-                            <Rows3 className="size-5" />
-                        </button>
-                        <div className="bg-sarge-gray-200 h-6 w-px" />
-                        <button className="text-sarge-gray-600 hover:bg-sarge-gray-100 flex items-center justify-center p-3">
-                            <LayoutGrid className="size-5" />
-                        </button>
-                    </div>
-
                     <Button
                         type="button"
                         variant="primary"
