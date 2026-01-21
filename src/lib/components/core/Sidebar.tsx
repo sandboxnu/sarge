@@ -831,8 +831,14 @@ export function Sidebar() {
                             tooltip="Profile"
                             className="hover:!bg-sarge-primary-100 active:!bg-sarge-primary-200 p-2.5 transition-colors duration-600 ease-out group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8 group-data-[collapsible=icon]:p-0 hover:cursor-pointer"
                         >
-                            {auth.user?.email === '' ? (
-                                <Image src={''} alt={''} />
+                            {auth.user?.image ? (
+                                <Image
+                                    src={auth.user.image}
+                                    alt={'Profile Picture'}
+                                    height={20}
+                                    width={20}
+                                    className="group-data-[collapsible=icon]:mx-auto"
+                                />
                             ) : (
                                 <div className="bg-sarge-gray-200 text-sarge-gray-600 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-medium group-data-[collapsible=icon]:mx-auto">
                                     {auth.user?.name[0]}
