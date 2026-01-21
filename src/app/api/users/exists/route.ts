@@ -21,6 +21,8 @@ export async function GET(req: Request) {
             headers: { 'content-type': 'application/json' },
         });
     } catch (e) {
+        console.error('error:', e);
+
         return new Response(JSON.stringify({ exists: false }), {
             status: 500,
             headers: { 'content-type': 'application/json' },
