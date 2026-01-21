@@ -1,16 +1,6 @@
 'use client';
 
-import {
-    Home,
-    File,
-    ListChecks,
-    Users,
-    Book,
-    Archive,
-    Settings,
-    ChevronDown,
-    Circle,
-} from 'lucide-react';
+import { Home, File, ListChecks, Users, Book, Archive, Settings, ChevronDown } from 'lucide-react';
 import { useAuth } from '@/lib/auth/auth-context';
 import Image from 'next/image';
 import useOnboardingState from '@/lib/hooks/useOnboardingState';
@@ -24,7 +14,6 @@ import { useIsMobile } from '@/lib/hooks/useIsMobileShadcn';
 import { Button } from '@/lib/components/ui/Button';
 import { Input } from '@/lib/components/ui/Input';
 import { Separator } from '@/lib/components/ui/Separator';
-import HelmetLogoFull from '@/../.assets/HelmetLogoFull.png';
 import {
     Sheet,
     SheetContent,
@@ -39,8 +28,6 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from '@/lib/components/ui/Tooltip';
-import { text } from 'stream/consumers';
-
 const SIDEBAR_COOKIE_NAME = 'sidebar_state';
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 const SIDEBAR_WIDTH = '16rem';
