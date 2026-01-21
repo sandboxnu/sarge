@@ -16,7 +16,7 @@ export async function GET(req: Request) {
 
         const user = await prisma.user.findUnique({ where: { email } });
 
-        return new Response(JSON.stringify({ exists: !!user }), {
+        return new Response(JSON.stringify({ exists: user }), {
             status: 200,
             headers: { 'content-type': 'application/json' },
         });

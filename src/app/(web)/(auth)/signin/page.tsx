@@ -25,9 +25,6 @@ export default function SignInPage() {
     });
 
     const onSubmit = async (data: FormData) => {
-        // checks if email/user exists before anything else
-        // to separate email not found vs invalid password errors
-        // on a side note, i think betterauth only shows generic errors for both cases for security reasons
         let emailExists = false;
         const emailToCheck = data.email.trim().toLowerCase();
         if (emailToCheck) {
