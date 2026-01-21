@@ -33,14 +33,14 @@ export default function PositionsContent() {
                     </div>
 
                     <div className="flex items-center gap-3">
-                        <button className="border-sarge-gray-200 text-sarge-gray-600 hover:bg-sarge-gray-100 flex items-center gap-2 rounded-lg border bg-white px-3 py-2.5">
+                        <Button variant="secondary" className="gap-2 px-3 py-2.5">
                             <ArrowUpDown className="size-5" />
                             <span className="text-label-s">Sort</span>
-                        </button>
-                        <button className="border-sarge-gray-200 text-sarge-gray-600 hover:bg-sarge-gray-100 flex items-center gap-2 rounded-lg border bg-white px-3 py-2.5">
+                        </Button>
+                        <Button variant="secondary" className="gap-2 px-3 py-2.5">
                             <SlidersHorizontal className="size-5" />
                             <span className="text-label-s">Filter</span>
-                        </button>
+                        </Button>
                     </div>
 
                     <Button
@@ -54,14 +54,16 @@ export default function PositionsContent() {
                     </Button>
                 </div>
 
-                <TabsList className="h-auto gap-5 bg-transparent p-0">
-                    <UnderlineTabsTrigger value="active">
-                        Active ({active.length ?? 0})
-                    </UnderlineTabsTrigger>
-                    <UnderlineTabsTrigger value="archived">
-                        Archived ({archived.length})
-                    </UnderlineTabsTrigger>
-                </TabsList>
+                <div className="border-b border-sarge-gray-200">
+                    <TabsList className="h-auto gap-5 bg-transparent p-0">
+                        <UnderlineTabsTrigger value="active">
+                            Active ({active.length ?? 0})
+                        </UnderlineTabsTrigger>
+                        <UnderlineTabsTrigger value="archived">
+                            Archived ({archived.length})
+                        </UnderlineTabsTrigger>
+                    </TabsList>
+                </div>
 
                 <TabsContent value="active" className="flex flex-col gap-4">
                     {active.length > 0 ? (
