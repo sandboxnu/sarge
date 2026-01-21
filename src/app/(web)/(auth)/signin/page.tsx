@@ -25,6 +25,27 @@ export default function SignInPage() {
     });
 
     const onSubmit = async (data: FormData) => {
+        // checks if email/user exists before anything else
+        // to separate email not found vs invalid password errors
+        // on a side note, i think betterauth only shows generic errors for both cases for security reasons
+        let emailExists = false;
+        const emailToCheck = data.email.trim().toLowerCase();
+        if (emailToCheck) {
+            const validEmail = await fetch(
+                `/api/users/exists?email=${encodeURIComponent(emailToCheck)}`
+            );
+            if (validEmail.ok) {
+                const json = await validEmail.json();
+                if (json && json.exists === false) {
+                    form.setError('email', { message: 'Invalid email or password.' });
+                    return;
+                }
+                if (json && json.exists === true) {
+                    emailExists = true;
+                }
+            }
+        }
+
         const result = await signIn.email({
             email: data.email.trim().toLowerCase(),
             password: data.password,
@@ -33,6 +54,11 @@ export default function SignInPage() {
         if (result.error) {
             const message = result.error.message ?? 'Invalid email or password';
             const lowerMessage = message.toLowerCase();
+
+            if (emailExists) {
+                form.setError('password', { message });
+                return;
+            }
 
             if (lowerMessage.includes('email') || lowerMessage.includes('not found')) {
                 form.setError('email', { message });
@@ -76,7 +102,7 @@ export default function SignInPage() {
 
                     {form.formState.errors.root && (
                         <div className="border-sarge-error-700 bg-sarge-error-200 mb-6 rounded-lg border p-3">
-                            <p className="text-body-s text-sarge-error-700">
+                            <p className="text-sarge-error-700">
                                 {form.formState.errors.root.message}
                             </p>
                         </div>

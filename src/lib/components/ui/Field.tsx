@@ -31,7 +31,7 @@ const FieldError = React.forwardRef<
     if (!errors?.length) return null;
     return (
         <div ref={ref} className={cn('min-h-5', className)} {...props}>
-            <p className="text-sarge-error-700 text-sm">{errors[0]?.message}</p>
+            <p className="text-sarge-error-700 text-body-xs">{errors[0]?.message}</p>
         </div>
     );
 });
