@@ -162,16 +162,18 @@ function CreateOrganizationContent({
                 </div>
             </div>
 
-            <div className="pt-2 pb-1 font-medium">Organization name</div>
-            <input
-                type="text"
-                name="Enter a name for your organization"
-                id="Name"
-                className="bg-sarge-gray-50 text-sarge-gray-800 placeholder:text-sarge-gray-500 border-sarge-gray-200 h-[44px] rounded-md border px-3 py-1"
-                placeholder="Enter a name for your organization"
-                value={organizationName}
-                onChange={(e) => setOrganizationName(e.target.value)}
-            />
+            <div className="flex flex-col gap-2">
+                <div className="font-medium">Organization name</div>
+                <input
+                    type="text"
+                    name="Enter a name for your organization"
+                    id="Name"
+                    className="bg-sarge-gray-50 text-sarge-gray-800 placeholder:text-sarge-gray-500 border-sarge-gray-200 h-[44px] rounded-md border px-3 py-1"
+                    placeholder="Enter a name for your organization"
+                    value={organizationName}
+                    onChange={(e) => setOrganizationName(e.target.value)}
+                />
+            </div>
             {error && (
                 <div className="text-sarge-error-700 text-body-s mt-2 flex items-center gap-2">
                     <AlertCircle className="size-4" />
