@@ -57,7 +57,7 @@ export default function PositionCard({
                     : undefined
             }
         >
-            <div className="flex items-start justify-between gap-2 -mr-4">
+            <div className="-mr-4 flex items-start justify-between gap-2">
                 <div className="flex min-w-0 flex-[1_0_0] flex-col items-start gap-1 px-1">
                     <h3 className="text-label-s text-sarge-gray-800 line-clamp-2" title={title}>
                         {title}
