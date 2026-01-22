@@ -33,12 +33,12 @@ export default function PositionsContent() {
                     </div>
 
                     <div className="flex items-center gap-3">
-                        <Button variant="secondary" className="gap-2 px-3 py-2.5">
-                            <ArrowUpDown className="size-5" />
+                        <Button variant="primary" className="gap-2 px-3 py-2.5 bg-sarge-gray-100 text-sarge-gray-600 hover:bg-sarge-gray-200 border border-sarge-gray-200">
+                            <ArrowUpDown className="size-5 !text-sarge-gray-600" />
                             <span className="text-label-s">Sort</span>
                         </Button>
-                        <Button variant="secondary" className="gap-2 px-3 py-2.5">
-                            <SlidersHorizontal className="size-5" />
+                        <Button variant="primary" className="gap-2 px-3 py-2.5 bg-sarge-gray-100 text-sarge-gray-600 hover:bg-sarge-gray-200 border border-sarge-gray-200">
+                            <SlidersHorizontal className="size-5 !text-sarge-gray-600" />
                             <span className="text-label-s">Filter</span>
                         </Button>
                     </div>
