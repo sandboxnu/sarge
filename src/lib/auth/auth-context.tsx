@@ -32,6 +32,7 @@ type UserData = {
     id: string;
     email: string;
     name: string;
+    image?: string | null | undefined;
 };
 
 type MemberData = {
