@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/lib/components/ui/Button';
-import { Plus, ArrowUpDown, SlidersHorizontal, Rows3, LayoutGrid } from 'lucide-react';
+import { Plus, ArrowUpDown, SlidersHorizontal } from 'lucide-react';
 import PositionCard from '@/lib/components/core/PositionCard';
 import { Search } from '@/lib/components/core/Search';
 import { type PositionWithCounts } from '@/lib/types/position.types';
