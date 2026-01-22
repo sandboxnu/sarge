@@ -729,8 +729,8 @@ export function Sidebar() {
                 <Image
                     src="/Sarge_logo.svg"
                     alt="Sarge Logo"
-                    width={67}
-                    height={28}
+                    width={85}
+                    height={35}
                     className="group-data-[collapsible=icon]:hidden"
                 />
                 <Image
@@ -738,7 +738,7 @@ export function Sidebar() {
                     alt="Sarge Logo"
                     width={67}
                     height={28}
-                    className="hidden h-7 w-7 justify-center fill-[#5D5BF7] group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:inline"
+                    className="hidden h-7 w-7 justify-center group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:inline"
                 />
                 <div className="flex items-center justify-between gap-3 group-data-[collapsible=icon]:w-full group-data-[collapsible=icon]:justify-center">
                     <div className="flex flex-1 items-center gap-2">
@@ -784,7 +784,7 @@ export function Sidebar() {
                                 <SidebarMenuItem key={item.title}>
                                     <SidebarMenuButton
                                         tooltip={item.title}
-                                        className="hover:bg-sarge-primary-100 active:bg-sarge-primary-200 gap-x-3 p-2.5 transition-colors duration-600 ease-out group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8 group-data-[collapsible=icon]:p-0 hover:cursor-pointer"
+                                        className="hover:bg-sarge-primary-100 focus:bg-sarge-primary-200 gap-x-3 p-2.5 transition-colors duration-600 ease-out group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8 group-data-[collapsible=icon]:p-0 hover:cursor-pointer"
                                         onClick={() => router.push(item.url)}
                                     >
                                         <item.icon className="text-sarge-gray-600 h-4 w-4" />
@@ -803,7 +803,7 @@ export function Sidebar() {
                     <SidebarMenuItem>
                         <SidebarMenuButton
                             tooltip="Organization Settings"
-                            className="hover:!bg-sarge-primary-100 active:!bg-sarge-primary-200 p-2.5 transition-colors duration-600 ease-out group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8 group-data-[collapsible=icon]:p-0 hover:cursor-pointer"
+                            className="hover:!bg-sarge-primary-100 focus:!bg-sarge-primary-200 p-2.5 transition-colors duration-600 ease-out group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8 group-data-[collapsible=icon]:p-0 hover:cursor-pointer"
                         >
                             <Settings className="text-sarge-gray-600 !h-4 !w-4" />
                             <span className="text-sarge-gray-800 text-xs font-medium">
@@ -816,7 +816,7 @@ export function Sidebar() {
                     <SidebarMenuItem>
                         <SidebarMenuButton
                             tooltip="Profile"
-                            className="hover:!bg-sarge-primary-100 active:!bg-sarge-primary-200 p-2.5 transition-colors duration-600 ease-out group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8 group-data-[collapsible=icon]:p-0 hover:cursor-pointer"
+                            className="hover:!bg-sarge-primary-100 focus:!bg-sarge-primary-200 p-2.5 transition-colors duration-600 ease-out group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8 group-data-[collapsible=icon]:p-0 hover:cursor-pointer"
                         >
                             {auth.user?.image ? (
                                 <Image
