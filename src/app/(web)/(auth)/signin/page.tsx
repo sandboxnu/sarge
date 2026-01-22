@@ -25,24 +25,6 @@ export default function SignInPage() {
     });
 
     const onSubmit = async (data: FormData) => {
-        let emailExists = false;
-        const emailToCheck = data.email.trim().toLowerCase();
-        if (emailToCheck) {
-            const validEmail = await fetch(
-                `/api/users/exists?email=${encodeURIComponent(emailToCheck)}`
-            );
-            if (validEmail.ok) {
-                const json = await validEmail.json();
-                if (json && json.exists === false) {
-                    form.setError('email', { message: 'Invalid email or password.' });
-                    return;
-                }
-                if (json && json.exists === true) {
-                    emailExists = true;
-                }
-            }
-        }
-
         const result = await signIn.email({
             email: data.email.trim().toLowerCase(),
             password: data.password,
@@ -52,12 +34,11 @@ export default function SignInPage() {
             const message = result.error.message ?? 'Invalid email or password';
             const lowerMessage = message.toLowerCase();
 
-            if (emailExists) {
-                form.setError('password', { message });
-                return;
-            }
-
-            if (lowerMessage.includes('email') || lowerMessage.includes('not found')) {
+            if (lowerMessage.includes('email') && lowerMessage.includes('password')) {
+                form.setError('email', { type: 'manual' });
+                form.setError('password', { type: 'manual' });
+                form.setError('root', { message });
+            } else if (lowerMessage.includes('email') || lowerMessage.includes('not found')) {
                 form.setError('email', { message });
             } else if (lowerMessage.includes('password') || lowerMessage.includes('invalid')) {
                 form.setError('password', { message });
@@ -96,14 +77,6 @@ export default function SignInPage() {
                     <div className="mb-8 flex justify-center">
                         <h1 className="text-display-xs text-sarge-gray-800">Sign in to Sarge</h1>
                     </div>
-
-                    {form.formState.errors.root && (
-                        <div className="border-sarge-error-700 bg-sarge-error-200 mb-6 rounded-lg border p-3">
-                            <p className="text-sarge-error-700">
-                                {form.formState.errors.root.message}
-                            </p>
-                        </div>
-                    )}
 
                     <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
                         <FieldGroup className="gap-4">
@@ -183,6 +156,12 @@ export default function SignInPage() {
                         >
                             {form.formState.isSubmitting ? 'Logging in...' : 'Continue'}
                         </Button>
+
+                        {form.formState.errors.root && (
+                            <p className="text-sarge-error-700 text-body-xs">
+                                {form.formState.errors.root.message}
+                            </p>
+                        )}
 
                         <div className="flex items-center gap-1 py-1">
                             <p className="text-label-xs text-sarge-gray-600">

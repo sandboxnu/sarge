@@ -28,10 +28,11 @@ const FieldError = React.forwardRef<
     HTMLDivElement,
     React.HTMLAttributes<HTMLDivElement> & { errors?: Array<{ message?: string }> }
 >(({ className, errors, ...props }, ref) => {
-    if (!errors?.length) return null;
+    const message = errors?.[0]?.message;
+    if (!message) return null;
     return (
         <div ref={ref} className={cn('min-h-5', className)} {...props}>
-            <p className="text-sarge-error-700 text-body-xs">{errors[0]?.message}</p>
+            <p className="text-sarge-error-700 text-body-xs">{message}</p>
         </div>
     );
 });
