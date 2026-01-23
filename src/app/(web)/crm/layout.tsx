@@ -1,6 +1,5 @@
 import { Sidebar, SidebarInset, SidebarProvider } from '@/lib/components/core/Sidebar';
 import { Toaster } from '@/lib/components/ui/Sonner';
-import { Navbar } from '@/lib/components/core/Navbar';
 
 export default function CRMLayout({
     children,
@@ -9,8 +8,7 @@ export default function CRMLayout({
 }>) {
     return (
         <div className="flex h-full w-full flex-col">
-            <Navbar />
-            <div className="flex flex-1 overflow-hidden">
+            <div className="flex overflow-hidden">
                 <SidebarProvider>
                     <Toaster />
                     <Sidebar />

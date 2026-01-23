@@ -112,7 +112,7 @@ export default function SignupPage() {
                                             placeholder="Enter Your Full Name"
                                             aria-invalid={fieldState.invalid}
                                             disabled={form.formState.isSubmitting}
-                                            className="text-body-s border-sarge-gray-200 bg-sarge-gray-50 text-sarge-gray-800 placeholder:text-sarge-gray-800 h-11 rounded-lg border px-3 py-1"
+                                            className="text-body-s h-11"
                                         />
                                         <FieldError
                                             errors={
@@ -141,7 +141,7 @@ export default function SignupPage() {
                                             placeholder="Enter Your Email Address"
                                             aria-invalid={fieldState.invalid}
                                             disabled={form.formState.isSubmitting}
-                                            className="text-body-s border-sarge-gray-200 bg-sarge-gray-50 text-sarge-gray-800 placeholder:text-sarge-gray-800 h-11 rounded-lg border px-3 py-1"
+                                            className="text-body-s h-11"
                                         />
                                         <FieldError
                                             errors={
@@ -170,7 +170,7 @@ export default function SignupPage() {
                                             placeholder="Your Password"
                                             aria-invalid={fieldState.invalid}
                                             disabled={form.formState.isSubmitting}
-                                            className="text-body-s border-sarge-gray-200 bg-sarge-gray-50 text-sarge-gray-800 placeholder:text-sarge-gray-800 h-11 rounded-lg border px-3 py-1"
+                                            className="text-body-s h-11"
                                         />
                                         {!fieldState.error && (
                                             <FieldDescription className="text-body-xs text-sarge-gray-500">
