@@ -114,7 +114,9 @@ function useCreateCandidateModal({ onOpenChange, onCreate }: CreateCandidateModa
             setGithub('');
             setNotes('');
             onOpenChange(false);
-        } catch {
+        } catch (err) {
+            // if we reach here, it is a server/database error, we need to show a generic error message
+            // TODO: handle errors in backend to provide more specific messages
             const errorMsg = 'Failed to add candidate. Please try again.';
             setLocalError(errorMsg);
         } finally {
