@@ -30,6 +30,7 @@ export default function CreateCandidateModal({
         resume,
         linkedin,
         github,
+        notes,
 
         setFullName,
         setEmail,
@@ -38,6 +39,7 @@ export default function CreateCandidateModal({
         setResume,
         setLinkedin,
         setGithub,
+        setNotes,
 
         isCreating,
         localError,
@@ -149,6 +151,7 @@ export default function CreateCandidateModal({
                                     placeholder="Paste link"
                                     value={resume}
                                     onChange={(e) => setResume(e.target.value)}
+                                    aria-invalid={fieldErrors.resume || undefined}
                                     className="h-11 flex-1"
                                 />
                             </div>
@@ -162,6 +165,7 @@ export default function CreateCandidateModal({
                                     placeholder="Paste link"
                                     value={linkedin}
                                     onChange={(e) => setLinkedin(e.target.value)}
+                                    aria-invalid={fieldErrors.linkedin || undefined}
                                     className="h-11 flex-1"
                                 />
                             </div>
@@ -175,7 +179,20 @@ export default function CreateCandidateModal({
                                     placeholder="Paste link"
                                     value={github}
                                     onChange={(e) => setGithub(e.target.value)}
+                                    aria-invalid={fieldErrors.github || undefined}
                                     className="h-11 flex-1"
+                                />
+                            </div>
+
+                            <div className="flex w-full flex-col gap-2">
+                                <FieldLabel className="text-label-m text-sarge-gray-700 font-medium uppercase">
+                                    Notes
+                                </FieldLabel>
+                                <textarea
+                                    placeholder="Notes"
+                                    value={notes}
+                                    onChange={(e) => setNotes(e.target.value)}
+                                    className="bg-sarge-gray-50 text-sarge-gray-800 border-sarge-gray-200 placeholder:text-sarge-gray-500 min-h-[120px] w-full resize-none rounded-lg border px-3 py-2 transition-colors hover:border-sarge-gray-300 focus:border-sarge-gray-300 focus:outline-none"
                                 />
                             </div>
                         </div>

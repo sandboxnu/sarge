@@ -62,9 +62,8 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
             toast.success('Candidate created successfully');
         } catch (err) {
             const message = (err as Error).message;
-            // TODO (design question): do we want to toast here?
             setError(message);
-            toast.error(message);
+            throw err;
         } finally {
             setLoading(false);
         }
