@@ -192,11 +192,10 @@ export default function CreateCandidateModal({
                                     placeholder="Notes"
                                     value={notes}
                                     onChange={(e) => setNotes(e.target.value)}
-                                    className="bg-sarge-gray-50 text-sarge-gray-800 border-sarge-gray-200 placeholder:text-sarge-gray-500 min-h-[120px] w-full resize-none rounded-lg border px-3 py-2 transition-colors hover:border-sarge-gray-300 focus:border-sarge-gray-300 focus:outline-none"
+                                    className="bg-sarge-gray-50 text-sarge-gray-800 border-sarge-gray-200 placeholder:text-sarge-gray-500 hover:border-sarge-gray-300 focus:border-sarge-gray-300 min-h-[120px] w-full resize-none rounded-lg border px-3 py-2 transition-colors focus:outline-none"
                                 />
                             </div>
                         </div>
-
                     </div>
 
                     <div className="flex w-full items-center justify-between">
