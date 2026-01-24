@@ -35,24 +35,26 @@ export default function PositionsContent() {
                     <div className="flex items-center gap-3">
                         <Button
                             variant="primary"
-                            className="bg-sarge-gray-100 text-sarge-gray-600 hover:bg-sarge-gray-200 border-sarge-gray-200 gap-2 border px-3 py-2.5"
+                            className="h-11 bg-sarge-gray-100 text-sarge-gray-600 hover:bg-sarge-gray-200 border-sarge-gray-200 gap-2 border px-3"
                         >
                             <ArrowUpDown className="!text-sarge-gray-600 size-5" />
                             <span className="text-label-s">Sort</span>
                         </Button>
                         <Button
                             variant="primary"
-                            className="bg-sarge-gray-100 text-sarge-gray-600 hover:bg-sarge-gray-200 border-sarge-gray-200 gap-2 border px-3 py-2.5"
+                            className="h-11 bg-sarge-gray-100 text-sarge-gray-600 hover:bg-sarge-gray-200 border-sarge-gray-200 gap-2 border px-3"
                         >
                             <SlidersHorizontal className="!text-sarge-gray-600 size-5" />
                             <span className="text-label-s">Filter</span>
                         </Button>
                     </div>
 
+                    <div className='w-25'/>
+
                     <Button
                         type="button"
                         variant="primary"
-                        className="gap-2 px-4 py-2.5"
+                        className="h-11 gap-2 border border-transparent px-4"
                         onClick={() => setIsCreateModalOpen(true)}
                     >
                         <Plus className="size-5" />
