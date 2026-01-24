@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/lib/components/ui/Button';
-import { Plus, ArrowUpDown, SlidersHorizontal, Rows3, LayoutGrid } from 'lucide-react';
+import { Plus, ArrowUpDown, SlidersHorizontal } from 'lucide-react';
 import PositionCard from '@/lib/components/core/PositionCard';
 import { Search } from '@/lib/components/core/Search';
 import { type PositionWithCounts } from '@/lib/types/position.types';
@@ -33,30 +33,28 @@ export default function PositionsContent() {
                     </div>
 
                     <div className="flex items-center gap-3">
-                        <button className="border-sarge-gray-200 text-sarge-gray-600 hover:bg-sarge-gray-100 flex items-center gap-2 rounded-lg border bg-white px-3 py-2.5">
-                            <ArrowUpDown className="size-5" />
+                        <Button
+                            variant="primary"
+                            className="bg-sarge-gray-100 text-sarge-gray-600 hover:bg-sarge-gray-200 border-sarge-gray-200 h-11 gap-2 border px-3"
+                        >
+                            <ArrowUpDown className="!text-sarge-gray-600 size-5" />
                             <span className="text-label-s">Sort</span>
-                        </button>
-                        <button className="border-sarge-gray-200 text-sarge-gray-600 hover:bg-sarge-gray-100 flex items-center gap-2 rounded-lg border bg-white px-3 py-2.5">
-                            <SlidersHorizontal className="size-5" />
+                        </Button>
+                        <Button
+                            variant="primary"
+                            className="bg-sarge-gray-100 text-sarge-gray-600 hover:bg-sarge-gray-200 border-sarge-gray-200 h-11 gap-2 border px-3"
+                        >
+                            <SlidersHorizontal className="!text-sarge-gray-600 size-5" />
                             <span className="text-label-s">Filter</span>
-                        </button>
+                        </Button>
                     </div>
 
-                    <div className="border-sarge-gray-200 flex items-center rounded-lg border bg-white">
-                        <button className="text-sarge-gray-600 hover:bg-sarge-gray-100 flex items-center justify-center p-3">
-                            <Rows3 className="size-5" />
-                        </button>
-                        <div className="bg-sarge-gray-200 h-6 w-px" />
-                        <button className="text-sarge-gray-600 hover:bg-sarge-gray-100 flex items-center justify-center p-3">
-                            <LayoutGrid className="size-5" />
-                        </button>
-                    </div>
+                    <div className="w-25" />
 
                     <Button
                         type="button"
                         variant="primary"
-                        className="gap-2 px-4 py-2.5"
+                        className="h-11 gap-2 border border-transparent px-4"
                         onClick={() => setIsCreateModalOpen(true)}
                     >
                         <Plus className="size-5" />
@@ -64,14 +62,16 @@ export default function PositionsContent() {
                     </Button>
                 </div>
 
-                <TabsList className="h-auto gap-5 bg-transparent p-0">
-                    <UnderlineTabsTrigger value="active">
-                        Active ({active.length ?? 0})
-                    </UnderlineTabsTrigger>
-                    <UnderlineTabsTrigger value="archived">
-                        Archived ({archived.length})
-                    </UnderlineTabsTrigger>
-                </TabsList>
+                <div className="border-sarge-gray-200 border-b">
+                    <TabsList className="h-auto gap-5 bg-transparent p-0">
+                        <UnderlineTabsTrigger value="active">
+                            Active ({active.length ?? 0})
+                        </UnderlineTabsTrigger>
+                        <UnderlineTabsTrigger value="archived">
+                            Archived ({archived.length})
+                        </UnderlineTabsTrigger>
+                    </TabsList>
+                </div>
 
                 <TabsContent value="active" className="flex flex-col gap-4">
                     {active.length > 0 ? (
