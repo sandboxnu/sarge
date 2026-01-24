@@ -178,24 +178,22 @@ export default function CreateCandidateModal({
                     </div>
 
                     <div className="flex w-full items-center justify-between">
-                        <div className="flex flex-1 items-center justify-end gap-5">
-                            <button
-                                type="button"
-                                onClick={handleCancel}
-                                className="text-label-s text-sarge-primary-600 hover:text-sarge-primary-700 px-0 py-2 font-medium transition-colors hover:cursor-pointer"
-                            >
-                                Cancel
-                            </button>
-                            <Button
-                                type="button"
-                                variant="primary"
-                                onClick={handleCreate}
-                                disabled={isCreating}
-                                className="h-9 w-[125px] px-4 py-2"
-                            >
-                                {isCreating ? 'Creating...' : 'Create'}
-                            </Button>
-                        </div>
+                        <button
+                            type="button"
+                            onClick={handleCancel}
+                            className="text-label-s text-sarge-primary-600 hover:text-sarge-primary-700 px-0 py-2 font-medium transition-colors hover:cursor-pointer"
+                        >
+                            Cancel
+                        </button>
+                        <Button
+                            type="button"
+                            variant="primary"
+                            onClick={handleCreate}
+                            disabled={isCreating}
+                            className="h-9 w-[125px] px-4 py-2"
+                        >
+                            {isCreating ? 'Creating...' : 'Create'}
+                        </Button>
                     </div>
                 </div>
             </DialogContent>
