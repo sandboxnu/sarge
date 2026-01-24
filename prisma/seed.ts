@@ -237,22 +237,27 @@ async function seedAssessments() {
 
     const applications = await prisma.application.findMany();
 
-    for (const assessmentData of assessmentsData) {
-        const randomApplication = applications[Math.floor(Math.random() * applications.length)];
+    for (let i = 0; i < assessmentsData.length; i++) {
+        const assessmentData = assessmentsData[i];
+        const application = applications[i];
 
         await prisma.assessment.upsert({
-            where: { id: assessmentData.id },
-            update: {},
+            where: { applicationId: application.id },
+            update: {
+                assessmentTemplateId: assessmentData.assessmentTemplateId,
+                uniqueLink: assessmentData.uniqueLink,
+                deadline: assessmentData.deadline,
+            },
             create: {
                 id: assessmentData.id,
-                applicationId: randomApplication.id,
+                applicationId: application.id,
                 assessmentTemplateId: assessmentData.assessmentTemplateId,
                 uniqueLink: assessmentData.uniqueLink,
                 deadline: assessmentData.deadline,
             },
         });
 
-        console.log(`  Created assessment: ${assessmentData.id}`);
+        console.log(`  Created assessment for application: ${application.id}`);
     }
 }
 
