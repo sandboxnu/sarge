@@ -12,21 +12,34 @@ function useCreateCandidateModal({ onOpenChange, onCreate }: CreateCandidateModa
     const [github, setGithub] = useState('');
     const [isCreating, setIsCreating] = useState(false);
     const [localError, setLocalError] = useState<string | null>(null);
+    const [fieldErrors, setFieldErrors] = useState({
+        fullName: false,
+        email: false,
+        major: false,
+    });
+
+    const clearFieldError = (field: keyof typeof fieldErrors) => {
+        setFieldErrors((prev) => (prev[field] ? { ...prev, [field]: false } : prev));
+    };
 
     const handleCreate = async () => {
         if (isCreating) return;
 
-        if (!fullName.trim()) {
-            setLocalError('Full name is required');
-            return;
-        }
-        if (!email.trim()) {
-            setLocalError('Email is required');
+        const nextErrors = {
+            fullName: !fullName.trim(),
+            email: !email.trim(),
+            major: !major.trim(),
+        };
+
+        if (nextErrors.fullName || nextErrors.email || nextErrors.major) {
+            setFieldErrors(nextErrors);
+            setLocalError('Please fill out all required fields.');
             return;
         }
 
         setIsCreating(true);
         setLocalError(null);
+        setFieldErrors({ fullName: false, email: false, major: false });
         try {
             await onCreate({
                 name: fullName,
@@ -65,6 +78,7 @@ function useCreateCandidateModal({ onOpenChange, onCreate }: CreateCandidateModa
         setLinkedin('');
         setGithub('');
         setLocalError(null);
+        setFieldErrors({ fullName: false, email: false, major: false });
         onOpenChange(false);
     };
 
@@ -76,15 +90,25 @@ function useCreateCandidateModal({ onOpenChange, onCreate }: CreateCandidateModa
         resume,
         linkedin,
         github,
-        setFullName,
-        setEmail,
-        setMajor,
+        setFullName: (value: string) => {
+            setFullName(value);
+            clearFieldError('fullName');
+        },
+        setEmail: (value: string) => {
+            setEmail(value);
+            clearFieldError('email');
+        },
+        setMajor: (value: string) => {
+            setMajor(value);
+            clearFieldError('major');
+        },
         setGraduationYear,
         setResume,
         setLinkedin,
         setGithub,
         isCreating,
         localError,
+        fieldErrors,
         handleCreate,
         handleCancel,
     };

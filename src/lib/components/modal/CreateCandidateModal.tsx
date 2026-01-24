@@ -41,6 +41,7 @@ export default function CreateCandidateModal({
 
         isCreating,
         localError,
+        fieldErrors,
 
         handleCreate,
         handleCancel,
@@ -78,41 +79,51 @@ export default function CreateCandidateModal({
                         </div>
                     </div>
 
+                    {localError && (
+                        <div className="text-sarge-error-700 mb-4 flex w-full items-center gap-2 text-sm">
+                            <AlertCircle className="size-4" />
+                            {localError}
+                        </div>
+                    )}
+
                     <div className="mb-6 flex w-full flex-col gap-6">
                         <div className="flex flex-col gap-[10px]">
                             <div className="flex w-full items-center justify-between">
                                 <FieldLabel className="text-label-m text-sarge-gray-700 w-[222px] font-medium uppercase">
-                                    Full Name
+                                    Full Name<span className="text-sarge-gray-700">*</span>
                                 </FieldLabel>
                                 <Input
                                     placeholder="Full name"
                                     value={fullName}
                                     onChange={(e) => setFullName(e.target.value)}
+                                    aria-invalid={fieldErrors.fullName || undefined}
                                     className="h-11 flex-1"
                                 />
                             </div>
 
                             <div className="flex w-full items-center justify-center">
                                 <FieldLabel className="text-label-m text-sarge-gray-700 w-[222px] font-medium uppercase">
-                                    Major
+                                    Major<span className="text-sarge-gray-700">*</span>
                                 </FieldLabel>
                                 <Input
                                     placeholder="Major"
                                     value={major}
                                     onChange={(e) => setMajor(e.target.value)}
+                                    aria-invalid={fieldErrors.major || undefined}
                                     className="h-11 flex-1"
                                 />
                             </div>
 
                             <div className="flex w-full items-center justify-center">
                                 <FieldLabel className="text-label-m text-sarge-gray-700 w-[222px] font-medium uppercase">
-                                    Email
+                                    Email<span className="text-sarge-gray-700">*</span>
                                 </FieldLabel>
                                 <Input
                                     type="email"
                                     placeholder="Email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
+                                    aria-invalid={fieldErrors.email || undefined}
                                     className="h-11 flex-1"
                                 />
                             </div>
@@ -169,12 +180,6 @@ export default function CreateCandidateModal({
                             </div>
                         </div>
 
-                        {localError && (
-                            <div className="text-sarge-error-700 flex items-center gap-2 text-sm">
-                                <AlertCircle className="size-4" />
-                                {localError}
-                            </div>
-                        )}
                     </div>
 
                     <div className="flex w-full items-center justify-between">
