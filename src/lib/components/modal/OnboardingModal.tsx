@@ -5,7 +5,7 @@ import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { type RefObject } from 'react';
 import { Button } from '@/lib/components/ui/Button';
 import Image from 'next/image';
-import { SquarePen, AlertCircle } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 import useOnboardingModal from '@/lib/hooks/useOnboardingModal';
 
 export default function OnboardingModal() {
@@ -70,16 +70,20 @@ function WelcomeContent({ onCreate }: { onCreate: () => void }) {
                 Get started by creating or joining an organization. You&apos;ll be able to manage
                 tasks, assessments, and candidates all in one place.
             </p>
-            <div className="mt-[24px] h-[72px] w-[415px]">
+            <div className="mt-[24px] flex w-[415px] flex-col gap-2">
                 <Button
-                    className="flex w-106 justify-center"
+                    className="flex h-[36px] w-full justify-center px-4 py-2"
                     size="default"
                     variant="primary"
                     onClick={onCreate}
                 >
                     Create Organization
                 </Button>
-                <Button className="flex w-106 justify-center" size="default" variant="tertiary">
+                <Button
+                    className="flex h-[36px] w-full justify-center px-4 py-2"
+                    size="default"
+                    variant="tertiary"
+                >
                     Join Organization
                 </Button>
             </div>
@@ -126,7 +130,7 @@ function CreateOrganizationContent({
 
             <div className="mt-4 mb-2 flex w-full content-center justify-center">
                 <div
-                    className="bg-sarge-gray-200 flex h-[65px] w-[65px] items-center justify-center overflow-hidden rounded-md hover:cursor-pointer hover:ring-2 hover:ring-black/40"
+                    className="bg-sarge-gray-200 group flex h-[65px] w-[65px] items-center justify-center overflow-hidden rounded-md hover:cursor-pointer hover:ring-2 hover:ring-black/40"
                     onClick={handleProfileImageClick}
                 >
                     {preview ? (
@@ -138,21 +142,38 @@ function CreateOrganizationContent({
                             className="h-full w-full object-cover object-center"
                         />
                     ) : (
-                        <SquarePen className="text-sarge-gray-500" />
+                        <div className="relative h-full w-full">
+                            <Image
+                                src="/CreateOrgIcon.svg"
+                                width={65}
+                                height={65}
+                                alt="Create organization"
+                                className="absolute inset-0 h-full w-full object-contain opacity-100 transition-opacity duration-150 group-hover:opacity-0"
+                            />
+                            <Image
+                                src="/CreateOrgHoverIcon.svg"
+                                width={65}
+                                height={65}
+                                alt="Create organization"
+                                className="absolute inset-0 h-full w-full object-contain opacity-0 transition-opacity duration-150 group-hover:opacity-100"
+                            />
+                        </div>
                     )}
                 </div>
             </div>
 
-            <div className="pt-2 pb-1 font-bold">Organization name</div>
-            <input
-                type="text"
-                name="Enter a name for your organization"
-                id="Name"
-                className="bg-sarge-gray-50 text-sarge-gray-800 placeholder:text-sarge-gray-500 border-sarge-gray-200 h-[44px] rounded-lg border px-3 py-1"
-                placeholder="Enter a name for your organization"
-                value={organizationName}
-                onChange={(e) => setOrganizationName(e.target.value)}
-            />
+            <div className="flex flex-col gap-2">
+                <div className="font-medium">Organization name</div>
+                <input
+                    type="text"
+                    name="Enter a name for your organization"
+                    id="Name"
+                    className="bg-sarge-gray-50 text-sarge-gray-800 placeholder:text-sarge-gray-500 border-sarge-gray-200 h-[44px] rounded-md border px-3 py-1"
+                    placeholder="Enter a name for your organization"
+                    value={organizationName}
+                    onChange={(e) => setOrganizationName(e.target.value)}
+                />
+            </div>
             {error && (
                 <div className="text-sarge-error-700 text-body-s mt-2 flex items-center gap-2">
                     <AlertCircle className="size-4" />
