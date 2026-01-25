@@ -308,7 +308,7 @@ model Tag {
   id           String   @id @unique @default(cuid())
   name         String
   orgId        String
-  colorHexCode String?
+  colorHexCode String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
