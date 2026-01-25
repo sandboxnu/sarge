@@ -79,11 +79,7 @@ export function CandidateTable({ candidates }: CandidateTableProps) {
                 accessorKey: 'candidate.gradYear',
                 header: () => <HeaderLabel>GRAD YEAR</HeaderLabel>,
                 cell: ({ row }) => {
-                    const grad =
-                        (row.original.candidate as any).gradYear ??
-                        (row.original.candidate as any).gradDate ??
-                        (row.original.candidate as any).graduationDate ??
-                        '—';
+                    const grad = row.original.candidate.graduationDate ?? '—';
                     return (
                         <span className="text-body-s text-sarge-gray-800 font-normal tracking-[0.406px]">
                             {grad}
