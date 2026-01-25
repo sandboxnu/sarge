@@ -1,5 +1,5 @@
 'use client';
-import { FileText, MoreVertical } from 'lucide-react';
+import { MoreVertical } from 'lucide-react';
 import { PositionAssessmentCard } from '@/lib/components/core/PositionAssessmentCard';
 import { cn } from '@/lib/utils/cn.utils';
 import { Chip } from '@/lib/components/ui/Chip';
@@ -8,7 +8,7 @@ import { getSubmissionVariant } from '@/lib/utils/status.utils';
 type PositionCardProps = {
     title: string;
     candidateCount: number;
-    assessmentName: string;
+    assessmentName?: string;
     assignedCount?: number;
     submittedCount?: number;
     totalAssigned?: number;
@@ -19,7 +19,6 @@ type PositionCardProps = {
 export default function PositionCard({
     title,
     candidateCount,
-    assessmentName,
     assignedCount = 0,
     submittedCount = 0,
     totalAssigned = 0,

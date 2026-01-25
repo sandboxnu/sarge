@@ -133,12 +133,11 @@ export function CandidateTable({ candidates }: CandidateTableProps) {
                     ),
             },
             {
-                accessorKey: 'decisionMaker.name',
+                accessorKey: 'decidedByUser.name',
                 header: () => <HeaderLabel>GRADER</HeaderLabel>,
-                // TODO: add correct way to get grader name
                 cell: ({ row }) => (
                     <span className="text-body-s text-sarge-gray-800 font-normal tracking-[0.406px]">
-                        {'—'}
+                        {row.original.decidedByUser?.name ?? '—'}
                     </span>
                 ),
             },
