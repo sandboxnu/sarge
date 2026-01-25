@@ -313,9 +313,11 @@ model Tag {
   updatedAt    DateTime @updatedAt
 
   organization  Organization   @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+
+  // These are taggable items. 
   taskTemplates TaskTemplate[] @relation("TaskTemplateTags")
   positions Position[] @relation("PositionTags")
-  // We can add more taggable items if needed ^
 
   @@unique([name, orgId])
   @@index([orgId])
