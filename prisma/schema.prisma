@@ -314,7 +314,6 @@ model Tag {
 
   organization  Organization   @relation(fields: [orgId], references: [id], onDelete: Cascade)
 
-
   // These are taggable items. 
   taskTemplates TaskTemplate[] @relation("TaskTemplateTags")
   positions Position[] @relation("PositionTags")
