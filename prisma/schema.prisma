@@ -61,6 +61,7 @@ model Position {
   applications Application[]
   organization Organization  @relation(fields: [orgId], references: [id])
   creator      User          @relation("CreatedPositions", fields: [createdById], references: [id])
+  tags         Tag[]        @relation("PositionTags")
 }
 
 // An external applicant who applies to positions within an organization. Candidates do not authenticate and may apply to multiple positions.
@@ -307,12 +308,15 @@ model Tag {
   id           String   @id @unique @default(cuid())
   name         String
   orgId        String
-  colorHexCode String?
+  colorHexCode String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
   organization  Organization   @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  // These are taggable items. 
   taskTemplates TaskTemplate[] @relation("TaskTemplateTags")
+  positions Position[] @relation("PositionTags")
 
   @@unique([name, orgId])
   @@index([orgId])
