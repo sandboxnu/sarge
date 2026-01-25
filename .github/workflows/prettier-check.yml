@@ -27,3 +27,5 @@ jobs:
               run: pnpm install
             - name: Run prettier check
               run: pnpm prettier:check
+            - name: Run Prisma format check
+              run: npx prisma format --check
