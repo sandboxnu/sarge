@@ -14,3 +14,6 @@ ALTER TABLE "public"."_PositionTags" ADD CONSTRAINT "_PositionTags_A_fkey" FOREI
 
 -- AddForeignKey
 ALTER TABLE "public"."_PositionTags" ADD CONSTRAINT "_PositionTags_B_fkey" FOREIGN KEY ("B") REFERENCES "public"."Tag"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- MakeTagHexRequired
+ALTER TABLE "public"."Tag" ALTER COLUMN "colorHexCode" SET NOT NULL;
