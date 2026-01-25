@@ -61,6 +61,7 @@ model Position {
   applications Application[]
   organization Organization  @relation(fields: [orgId], references: [id])
   creator      User          @relation("CreatedPositions", fields: [createdById], references: [id])
+  tags         Tag[]        @relation("PositionTags")
 }
 
 // An external applicant who applies to positions within an organization. Candidates do not authenticate and may apply to multiple positions.
