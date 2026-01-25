@@ -10,7 +10,7 @@ export function getAssessmentStatusVariant(status: AssessmentStatus): ChipVarian
             return 'success'; // Green chip per Figma Position Preview Modal
         case 'SUBMITTED':
             return 'primary'; // Purple chip per Figma Position Preview Modal
-        case 'ASSIGNED':
+        case 'NOT_STARTED':
             return 'neutral'; // Gray chip per Figma design
         case 'EXPIRED':
             return 'error';
@@ -29,7 +29,7 @@ export function getAssessmentStatusLabel(status: AssessmentStatus): string {
             return 'Graded';
         case 'SUBMITTED':
             return 'Submitted';
-        case 'ASSIGNED':
+        case 'NOT_STARTED':
             return 'Sent';
         case 'EXPIRED':
             return 'Expired';
@@ -93,7 +93,7 @@ export function getStatusBadgeColor(status: AssessmentStatus | DecisionStatus | 
     if (status === 'REJECTED' || status === 'EXPIRED') {
         return 'bg-sarge-error-200 text-sarge-error-700';
     }
-    if (status === 'ASSIGNED') {
+    if (status === 'NOT_STARTED') {
         return 'bg-sarge-gray-200 text-sarge-gray-600'; // Gray per Figma design
     }
     if (status === 'SUBMITTED') {

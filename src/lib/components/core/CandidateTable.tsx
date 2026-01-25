@@ -24,16 +24,15 @@ const getAssessmentBadgeClasses = (status: string) => {
     const s = (status ?? '').toUpperCase();
     if (s === 'SUBMITTED') return 'bg-sarge-success-100 text-sarge-success-800';
     if (s === 'EXPIRED') return 'bg-sarge-error-200 text-sarge-error-700';
-    if (s === 'ASSIGNED') return 'bg-sarge-warning-100 text-sarge-warning-500';
     if (s === 'GRADED') return 'bg-sarge-primary-200 text-sarge-primary-700';
-    return 'bg-sarge-gray-200 text-sarge-gray-600';
+    return 'bg-sarge-gray-200 text-sarge-gray-600'; // NOT_ASSIGNED or NOT_STARTED
 };
 
 const getAssessmentLabel = (status?: string) => {
     const s = (status ?? '').toUpperCase();
     if (s === 'GRADED') return 'Graded';
     if (s === 'SUBMITTED') return 'Submitted';
-    if (s === 'ASSIGNED') return 'Assigned';
+    if (s === 'NOT_STARTED') return 'Not started';
     if (s === 'NOT_ASSIGNED') return 'Not assigned';
     if (s === 'EXPIRED') return 'Expired';
     return status ?? 'N/A';
