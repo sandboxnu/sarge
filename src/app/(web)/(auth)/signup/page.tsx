@@ -86,7 +86,7 @@ export default function SignupPage() {
 
                     {form.formState.errors.root && (
                         <div className="border-sarge-error-700 bg-sarge-error-200 mb-6 rounded-lg border p-3">
-                            <p className="text-body-s text-sarge-error-700">
+                            <p className="text-sarge-error-700">
                                 {form.formState.errors.root.message}
                             </p>
                         </div>
