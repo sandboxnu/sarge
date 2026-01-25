@@ -22,9 +22,9 @@ const getDecisionBadgeClasses = (status: string) => {
 
 const getAssessmentBadgeClasses = (status: string) => {
     const s = (status ?? '').toUpperCase();
-    if (s === 'SUBMITTED') return 'bg-sarge-success-100 text-sarge-success-800';
+    if (s === 'SUBMITTED') return 'bg-sarge-primary-200 text-sarge-primary-600';
     if (s === 'EXPIRED') return 'bg-sarge-error-200 text-sarge-error-700';
-    if (s === 'GRADED') return 'bg-sarge-primary-200 text-sarge-primary-700';
+    if (s === 'GRADED') return 'bg-sarge-success-100 text-sarge-success-800';
     return 'bg-sarge-gray-200 text-sarge-gray-600'; // NOT_ASSIGNED or NOT_STARTED
 };
 

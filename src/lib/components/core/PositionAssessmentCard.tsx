@@ -23,13 +23,14 @@ export function PositionAssessmentCard({
             onClick={onClick}
             className={cn(
                 'border-sarge-gray-200 bg-sarge-gray-0',
-                'inline-flex items-center gap-2 rounded-lg border p-2',
+                'inline-flex items-center gap-2.5 rounded-lg border p-2',
+                'overflow-hidden',
                 'transition-colors',
                 className
             )}
         >
             <FileText className={cn('text-sarge-gray-600 h-5 w-5 shrink-0', iconClassName)} />
-            <div className="flex items-center gap-1.5">{children}</div>
+            <div className="flex min-w-0 items-center gap-1.5">{children}</div>
         </button>
     );
 }
