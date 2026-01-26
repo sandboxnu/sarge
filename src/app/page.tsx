@@ -14,7 +14,7 @@ export default function Home() {
                     priority
                 />
 
-                <p className="text-display-xs text-sarge-gray-800 text-center">
+                <p className="text-display-xs text-center text-sarge-gray-800">
                     This isn&apos;t a drill, Sarge. Log in.
                 </p>
 

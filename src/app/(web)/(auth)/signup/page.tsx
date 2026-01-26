@@ -61,7 +61,7 @@ export default function SignupPage() {
     return (
         <div className="flex min-h-screen w-full overflow-hidden">
             <div className="relative hidden overflow-hidden bg-white lg:flex lg:w-1/2">
-                <div className="from-sarge-primary-100 absolute -top-[42px] left-0 h-[calc(100%+84px)] w-full rounded-r-2xl bg-linear-to-b to-white" />
+                <div className="absolute -top-[42px] left-0 h-[calc(100%+84px)] w-full rounded-r-2xl bg-linear-to-b from-sarge-primary-100 to-white" />
 
                 <div className="absolute top-0 left-0 z-10 pt-6 pr-6">
                     <Image src="/HelmetLogoFull.png" alt="Sarge" width={200} height={61} priority />
@@ -69,7 +69,7 @@ export default function SignupPage() {
 
                 <div className="relative flex flex-1 items-center justify-center px-8 pt-24 pb-10 lg:px-12">
                     <div className="flex h-full max-w-md flex-col">
-                        <p className="text-body-m text-sarge-gray-800 mb-10">
+                        <p className="text-body-m mb-10 text-sarge-gray-800">
                             With Sarge you&apos;ll be able to manage tasks, assessments, and
                             candidates <span className="font-bold">all in one place.</span>
                         </p>
@@ -85,7 +85,7 @@ export default function SignupPage() {
                     </div>
 
                     {form.formState.errors.root && (
-                        <div className="border-sarge-error-700 bg-sarge-error-200 mb-6 rounded-lg border p-3">
+                        <div className="mb-6 rounded-lg border border-sarge-error-700 bg-sarge-error-200 p-3">
                             <p className="text-body-s text-sarge-error-700">
                                 {form.formState.errors.root.message}
                             </p>
@@ -110,9 +110,9 @@ export default function SignupPage() {
                                             id="fullName"
                                             type="text"
                                             placeholder="Enter Your Full Name"
-                                            aria-invalid={fieldState.invalid}
+                                            error={fieldState.invalid}
                                             disabled={form.formState.isSubmitting}
-                                            className="text-body-s h-11"
+                                            className="text-body-s"
                                         />
                                         <FieldError
                                             errors={
@@ -139,9 +139,9 @@ export default function SignupPage() {
                                             id="email"
                                             type="email"
                                             placeholder="Enter Your Email Address"
-                                            aria-invalid={fieldState.invalid}
+                                            error={fieldState.invalid}
                                             disabled={form.formState.isSubmitting}
-                                            className="text-body-s h-11"
+                                            className="text-body-s"
                                         />
                                         <FieldError
                                             errors={
@@ -168,9 +168,9 @@ export default function SignupPage() {
                                             id="password"
                                             type="password"
                                             placeholder="Your Password"
-                                            aria-invalid={fieldState.invalid}
+                                            error={fieldState.invalid}
                                             disabled={form.formState.isSubmitting}
-                                            className="text-body-s h-11"
+                                            className="text-body-s"
                                         />
                                         {!fieldState.error && (
                                             <FieldDescription className="text-body-xs text-sarge-gray-500">
@@ -192,7 +192,7 @@ export default function SignupPage() {
                             variant="primary"
                             size="default"
                             disabled={form.formState.isSubmitting}
-                            className="text-label-s bg-sarge-primary-500 text-sarge-gray-50 hover:bg-sarge-primary-600 h-11 w-full rounded-lg px-4 py-2 transition-colors disabled:opacity-50"
+                            className="text-label-s h-11 w-full rounded-lg bg-sarge-primary-500 px-4 py-2 text-sarge-gray-50 transition-colors hover:bg-sarge-primary-600 disabled:opacity-50"
                         >
                             {form.formState.isSubmitting ? 'Creating account...' : 'Continue'}
                         </Button>

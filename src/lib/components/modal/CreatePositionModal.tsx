@@ -35,10 +35,9 @@ export default function CreatePositionModal({
                             placeholder="Enter a position name"
                             value={positionName}
                             onChange={handleInputChange}
-                            className="h-11"
                         />
                         {localError && (
-                            <div className="text-sarge-error-700 text-body-s mt-1 flex items-center gap-2">
+                            <div className="text-body-s mt-1 flex items-center gap-2 text-sarge-error-700">
                                 <AlertCircle className="size-4" />
                                 {localError}
                             </div>
@@ -47,7 +46,7 @@ export default function CreatePositionModal({
 
                     <div className="flex items-center justify-between">
                         <p
-                            className="text-sarge-primary-500 hover:text-sarge-primary-600 hover:cursor-pointer"
+                            className="text-sarge-primary-500 hover:cursor-pointer hover:text-sarge-primary-600"
                             onClick={handleCancel}
                         >
                             Back
