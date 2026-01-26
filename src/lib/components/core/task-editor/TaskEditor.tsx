@@ -32,7 +32,6 @@ export function TaskEditor({ initialTemplate }: TaskEditorProps) {
         setRecommendedTimeMinutes,
         testCases,
         currentLanguage,
-        selectedTestCaseId,
         isSaving,
         isRunning,
         testOutput,
@@ -41,7 +40,6 @@ export function TaskEditor({ initialTemplate }: TaskEditorProps) {
         handleDeleteTestCase,
         handleUpdateTestCase,
         handleToggleTestCaseVisibility,
-        handleSelectTestCase,
         handleEditorMount,
         handleLanguageChange,
         handleRunCode,
@@ -83,8 +81,6 @@ export function TaskEditor({ initialTemplate }: TaskEditorProps) {
                     onEditorMount={handleEditorMount}
                     editorRef={editorRef}
                     testCases={testCases}
-                    selectedTestCaseId={selectedTestCaseId}
-                    onSelectTestCase={handleSelectTestCase}
                     onAddTestCase={handleAddTestCase}
                     onDeleteTestCase={handleDeleteTestCase}
                     onUpdateTestCase={handleUpdateTestCase}
@@ -103,18 +99,21 @@ export function TaskEditor({ initialTemplate }: TaskEditorProps) {
         }),
         [
             title,
+            setTitle,
             description,
+            setDescription,
             tags,
+            setTags,
             selectedLanguages,
+            setSelectedLanguages,
+            recommendedTimeMinutes,
+            setRecommendedTimeMinutes,
             currentLanguage,
             testCases,
-            selectedTestCaseId,
             isRunning,
             testOutput,
-            recommendedTimeMinutes,
             handleLanguageChange,
             handleEditorMount,
-            handleSelectTestCase,
             handleAddTestCase,
             handleDeleteTestCase,
             handleUpdateTestCase,

@@ -1,6 +1,6 @@
 import type { PartialBlock } from '@blocknote/core';
 
-export type BlockNoteContent = PartialBlock<any, any, any>[];
+export type BlockNoteContent = PartialBlock[];
 
 export interface Tag {
     id: string;

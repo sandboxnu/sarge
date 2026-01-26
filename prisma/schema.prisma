@@ -137,12 +137,12 @@ model AssessmentTemplate {
 model TaskTemplate {
   id               String @id @unique @default(cuid())
   title            String
-  description      Json @default("[]")
+  description      Json   @default("[]")
   publicTestCases  Json[]
   privateTestCases Json[]
   orgId            String
 
-  starterCodes   StarterCode[]
+  starterCodes StarterCode[]
 
   organization Organization @relation(fields: [orgId], references: [id])
   tasks        Task[]       @relation("derivedFromTaskTemplate")
@@ -150,11 +150,12 @@ model TaskTemplate {
 }
 
 model StarterCode {
-  id String @id @unique @default(cuid())
-  language String
-  code String @db.Text
+  id             String       @id @unique @default(cuid())
+  language       String
+  code           String       @db.Text
   taskTemplateId String
-  taskTemplate TaskTemplate @relation(fields: [taskTemplateId], references: [id])
+  taskTemplate   TaskTemplate @relation(fields: [taskTemplateId], references: [id])
+
   @@unique([taskTemplateId, language])
 }
 

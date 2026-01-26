@@ -25,7 +25,7 @@ export function useTaskEditorActions({ onDelete }: UseTaskEditorActionsProps) {
             try {
                 await onDelete();
                 toast.success('Task deleted');
-            } catch (error) {
+            } catch {
                 toast.error('Failed to delete task');
             }
         } else {

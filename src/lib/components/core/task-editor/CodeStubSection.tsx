@@ -30,7 +30,7 @@ export function CodeStubSection({
     onLanguageChange,
     onEditorMount,
 }: CodeStubSectionProps) {
-    const monacoLanguage = currentLanguage === 'cpp' ? 'cpp' : currentLanguage;
+    const monacoLanguageId = currentLanguage === 'cpp' ? 'cpp' : currentLanguage;
 
     if (selectedLanguages.length === 0) {
         return (
@@ -73,9 +73,9 @@ export function CodeStubSection({
                         <SelectValue placeholder="Select language" />
                     </SelectTrigger>
                     <SelectContent>
-                        {selectedLanguages.map((slug) => (
-                            <SelectItem key={slug} value={slug}>
-                                {JUDGE0_LANGUAGE_NAME_MAP[slug] ?? slug}
+                        {selectedLanguages.map((languageId) => (
+                            <SelectItem key={languageId} value={languageId}>
+                                {JUDGE0_LANGUAGE_NAME_MAP[languageId] ?? languageId}
                             </SelectItem>
                         ))}
                     </SelectContent>
@@ -88,7 +88,7 @@ export function CodeStubSection({
             <div className="min-h-0 flex-1">
                 <MonacoEditor
                     height="100%"
-                    language={monacoLanguage}
+                    language={monacoLanguageId}
                     theme="light"
                     onMount={onEditorMount}
                     options={MONACO_EDITOR_DEFAULT_OPTIONS}

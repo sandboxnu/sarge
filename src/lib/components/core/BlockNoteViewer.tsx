@@ -43,9 +43,9 @@ export default function BlockNoteViewer({
         // Only update if content actually changed
         if (!fastDeepEqual(content, previousContentRef.current)) {
             if (editor.document.length > 0) {
-                editor.replaceBlocks(editor.document, (content.length > 0 ? content : []) as any);
+                editor.replaceBlocks(editor.document, content.length > 0 ? content : []);
             } else if (content.length > 0) {
-                editor.insertBlocks(content as any, editor.document[0] || undefined);
+                editor.insertBlocks(content, editor.document[0] || undefined);
             }
             previousContentRef.current = content;
         }

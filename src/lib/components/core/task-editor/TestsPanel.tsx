@@ -9,8 +9,6 @@ import { TestCaseAccordion } from '@/lib/components/core/task-editor/TestCaseAcc
 
 export interface TestsPanelProps {
     testCases: EditableTestCase[];
-    selectedTestCaseId: string | null;
-    onSelectTestCase: (id: string) => void;
     onAddTestCase: (seed?: Pick<EditableTestCase, 'input' | 'output' | 'isPublic'>) => string;
     onDeleteTestCase: (id: string) => void;
     onUpdateTestCase: (id: string, field: 'input' | 'output', value: string) => void;
@@ -25,8 +23,6 @@ export interface TestsPanelProps {
 
 export function TestsPanel({
     testCases,
-    selectedTestCaseId,
-    onSelectTestCase,
     onAddTestCase,
     onDeleteTestCase,
     onUpdateTestCase,
@@ -42,20 +38,20 @@ export function TestsPanel({
     const [pendingFocusId, setPendingFocusId] = useState<string | null>(null);
 
     const handleAddTestCase = useCallback(() => {
-        const newId = onAddTestCase();
-        setPendingFocusId(newId);
+        const newTestCaseId = onAddTestCase();
+        setPendingFocusId(newTestCaseId);
         setActiveTab('cases');
         onExpandedChange(true);
     }, [onAddTestCase, onExpandedChange]);
 
     const handleDuplicateTestCase = useCallback(
         (testCase: EditableTestCase) => {
-            const newId = onAddTestCase({
+            const newTestCaseId = onAddTestCase({
                 input: testCase.input,
                 output: testCase.output,
                 isPublic: testCase.isPublic,
             });
-            setPendingFocusId(newId);
+            setPendingFocusId(newTestCaseId);
             setActiveTab('cases');
             onExpandedChange(true);
         },
@@ -196,8 +192,6 @@ export function TestsPanel({
                                         key={testCase.id}
                                         testCase={testCase}
                                         index={index}
-                                        isSelected={testCase.id === selectedTestCaseId}
-                                        onSelect={() => onSelectTestCase(testCase.id)}
                                         onUpdate={(field, value) =>
                                             onUpdateTestCase(testCase.id, field, value)
                                         }

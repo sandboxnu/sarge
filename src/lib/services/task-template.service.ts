@@ -132,7 +132,7 @@ async function updateTaskTemplate(input: UpdateTaskTemplateDTO): Promise<TaskTem
         },
         data: {
             title,
-            description: description ?? undefined,
+            description,
             publicTestCases,
             privateTestCases,
             tags: tags

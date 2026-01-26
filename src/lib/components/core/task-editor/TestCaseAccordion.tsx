@@ -9,8 +9,6 @@ import type { EditableTestCase } from '@/lib/types/task-template.types';
 export interface TestCaseAccordionProps {
     testCase: EditableTestCase;
     index: number;
-    isSelected: boolean;
-    onSelect: () => void;
     onUpdate: (field: 'input' | 'output', value: string) => void;
     onToggleVisibility: () => void;
     onDuplicate: () => void;
@@ -22,8 +20,6 @@ export interface TestCaseAccordionProps {
 export function TestCaseAccordion({
     testCase,
     index,
-    isSelected,
-    onSelect,
     onUpdate,
     onToggleVisibility,
     onDuplicate,
@@ -58,13 +54,11 @@ export function TestCaseAccordion({
                 tabIndex={0}
                 onClick={() => {
                     setIsExpanded(!isExpanded);
-                    onSelect();
                 }}
                 onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
                         setIsExpanded(!isExpanded);
-                        onSelect();
                     }
                 }}
                 className="flex w-full cursor-pointer items-center justify-between rounded-t-lg px-4 py-3 text-left transition-colors hover:bg-sarge-gray-50 focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:outline-none"

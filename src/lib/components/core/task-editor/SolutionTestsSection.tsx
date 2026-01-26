@@ -36,8 +36,6 @@ interface SolutionTestsSectionProps {
     onEditorMount: OnMount;
     editorRef: React.RefObject<editor.IStandaloneCodeEditor | null>;
     testCases: EditableTestCase[];
-    selectedTestCaseId: string | null;
-    onSelectTestCase: (id: string) => void;
     onAddTestCase: (seed?: Pick<EditableTestCase, 'input' | 'output' | 'isPublic'>) => string;
     onDeleteTestCase: (id: string) => void;
     onUpdateTestCase: (id: string, field: 'input' | 'output', value: string) => void;
@@ -53,8 +51,6 @@ export function SolutionTestsSection({
     onLanguageChange,
     onEditorMount,
     testCases,
-    selectedTestCaseId,
-    onSelectTestCase,
     onAddTestCase,
     onDeleteTestCase,
     onUpdateTestCase,
@@ -67,9 +63,9 @@ export function SolutionTestsSection({
     const panelRef = useRef<ImperativePanelHandle | null>(null);
     const hasInitialized = useRef(false);
 
-    const monacoLanguage = currentLanguage === 'cpp' ? 'cpp' : currentLanguage;
+    const monacoLanguageId = currentLanguage === 'cpp' ? 'cpp' : currentLanguage;
 
-    const hasLanguages = selectedLanguages.length > 0;
+    const hasSelectedLanguages = selectedLanguages.length > 0;
 
     useEffect(() => {
         if (hasInitialized.current) return;
@@ -89,7 +85,7 @@ export function SolutionTestsSection({
         }
     }, []);
 
-    if (!hasLanguages) {
+    if (!hasSelectedLanguages) {
         return (
             <div className="flex min-h-0 flex-1 items-center justify-center p-4">
                 <div className="rounded-lg border border-dashed border-border bg-muted/30">
@@ -122,9 +118,9 @@ export function SolutionTestsSection({
                         <SelectValue placeholder="Select language" />
                     </SelectTrigger>
                     <SelectContent>
-                        {selectedLanguages.map((slug) => (
-                            <SelectItem key={slug} value={slug}>
-                                {JUDGE0_LANGUAGE_NAME_MAP[slug] ?? slug}
+                        {selectedLanguages.map((languageId) => (
+                            <SelectItem key={languageId} value={languageId}>
+                                {JUDGE0_LANGUAGE_NAME_MAP[languageId] ?? languageId}
                             </SelectItem>
                         ))}
                     </SelectContent>
@@ -142,7 +138,7 @@ export function SolutionTestsSection({
                 >
                     <MonacoEditor
                         height="100%"
-                        language={monacoLanguage}
+                        language={monacoLanguageId}
                         theme="light"
                         onMount={onEditorMount}
                         options={MONACO_EDITOR_DEFAULT_OPTIONS}
@@ -163,8 +159,6 @@ export function SolutionTestsSection({
                 >
                     <TestsPanel
                         testCases={testCases}
-                        selectedTestCaseId={selectedTestCaseId}
-                        onSelectTestCase={onSelectTestCase}
                         onAddTestCase={onAddTestCase}
                         onDeleteTestCase={onDeleteTestCase}
                         onUpdateTestCase={onUpdateTestCase}
@@ -181,8 +175,6 @@ export function SolutionTestsSection({
             {!isPanelExpanded && (
                 <TestsPanel
                     testCases={testCases}
-                    selectedTestCaseId={selectedTestCaseId}
-                    onSelectTestCase={onSelectTestCase}
                     onAddTestCase={onAddTestCase}
                     onDeleteTestCase={onDeleteTestCase}
                     onUpdateTestCase={onUpdateTestCase}
