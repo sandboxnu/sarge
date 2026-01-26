@@ -40,7 +40,7 @@ FieldError.displayName = 'FieldError';
 
 const FieldDescription = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
     ({ className, ...props }, ref) => (
-        <div ref={ref} className={cn('text-sarge-gray-600 text-xs', className)} {...props} />
+        <div ref={ref} className={cn('text-xs text-sarge-gray-600', className)} {...props} />
     )
 );
 FieldDescription.displayName = 'FieldDescription';

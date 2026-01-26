@@ -44,7 +44,7 @@ export default function AvatarGroup({
         return (
             <div
                 className={cn(
-                    'border-sarge-gray-300 rounded-full border border-dashed',
+                    'rounded-full border border-dashed border-sarge-gray-300',
                     sizeClasses[size]
                 )}
             />
@@ -58,7 +58,7 @@ export default function AvatarGroup({
                     <TooltipTrigger asChild>
                         <div
                             className={cn(
-                                'bg-sarge-gray-200 text-sarge-gray-800 relative flex items-center justify-center rounded-full ring-2 ring-white',
+                                'relative flex items-center justify-center rounded-full bg-sarge-gray-200 text-sarge-gray-800 ring-2 ring-white',
                                 sizeClasses[size]
                             )}
                         >
@@ -84,7 +84,7 @@ export default function AvatarGroup({
                     <TooltipTrigger asChild>
                         <div
                             className={cn(
-                                'bg-sarge-gray-200 text-sarge-gray-800 flex items-center justify-center rounded-full ring-2 ring-white',
+                                'flex items-center justify-center rounded-full bg-sarge-gray-200 text-sarge-gray-800 ring-2 ring-white',
                                 sizeClasses[size]
                             )}
                         >
