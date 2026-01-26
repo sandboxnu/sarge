@@ -11,14 +11,27 @@ const buttonVariants = cva(
         variants: {
             variant: {
                 primary:
-                    'bg-sarge-primary-500 hover:bg-sarge-primary-600 text-sarge-gray-50 [&_svg]:text-sarge-gray-50 transition-colors duration-200 disabled:opacity-50',
+                    'bg-sarge-primary-500 text-sarge-gray-50 transition-colors duration-200 hover:bg-sarge-primary-600 disabled:opacity-50 [&_svg]:text-sarge-gray-50',
                 secondary:
-                    'bg-sarge-gray-50 border-sarge-primary-500 hover:bg-sarge-primary-100 text-sarge-primary-500 [&_svg]:text-sarge-primary-500 border transition-colors duration-200 disabled:opacity-50',
+                    'border border-sarge-primary-500 bg-sarge-gray-50 text-sarge-primary-500 transition-colors duration-200 hover:bg-sarge-primary-100 disabled:opacity-50 [&_svg]:text-sarge-primary-500',
                 tertiary:
-                    'hover:bg-sarge-primary-100 [&_svg]:text-sarge-primary-500 text-sarge-primary-500 transition-colors duration-200 disabled:opacity-50',
+                    'text-sarge-primary-500 transition-colors duration-200 hover:bg-sarge-primary-100 disabled:opacity-50 [&_svg]:text-sarge-primary-500',
+                success:
+                    'bg-sarge-success-500 text-white transition-colors duration-200 hover:bg-sarge-success-800 disabled:opacity-50 [&_svg]:text-white',
+                'success-outline':
+                    'border border-sarge-success-500 bg-transparent text-sarge-success-500 transition-colors duration-200 hover:bg-sarge-success-100 disabled:opacity-50 [&_svg]:text-sarge-success-500',
+                destructive:
+                    'bg-destructive text-destructive-foreground transition-colors duration-200 hover:bg-destructive/90 disabled:opacity-50 [&_svg]:text-destructive-foreground',
+                'destructive-outline':
+                    'border border-border bg-transparent text-muted-foreground transition-colors duration-200 hover:bg-muted disabled:opacity-50',
+                link:
+                    'text-sarge-primary-500 underline-offset-4 hover:underline disabled:opacity-50 [&_svg]:text-sarge-primary-500',
             },
             size: {
-                default: 'gap-[10px] rounded-lg px-1 py-2',
+                default:
+                    'gap-[10px] rounded-lg px-4 py-2 text-sm leading-5 font-medium tracking-design',
+                sm: 'gap-2 rounded-md px-3 py-1.5 text-sm leading-5 font-medium tracking-design',
+                md: 'gap-2 rounded-lg px-6 py-2.5 text-sm leading-5 font-medium tracking-design',
             },
         },
         defaultVariants: {
