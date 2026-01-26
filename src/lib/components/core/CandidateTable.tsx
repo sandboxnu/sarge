@@ -58,6 +58,8 @@ const HeaderLabel = ({ children }: { children: string }) => (
     </span>
 );
 
+const chipPaddingClass = 'px-2 py-1';
+
 export function CandidateTable({ candidates }: CandidateTableProps) {
     const columns = useMemo<ColumnDef<ApplicationDisplayInfo>[]>(
         () => [
@@ -105,7 +107,7 @@ export function CandidateTable({ candidates }: CandidateTableProps) {
                         >
                             <span
                                 className={cn(
-                                    'inline-flex items-center rounded-md px-3 py-1 text-xs font-medium',
+                                    `inline-flex items-center rounded-md ${chipPaddingClass} text-xs font-medium`,
                                     getAssessmentBadgeClasses(label)
                                 )}
                             >
@@ -150,7 +152,7 @@ export function CandidateTable({ candidates }: CandidateTableProps) {
                     return (
                         <span
                             className={cn(
-                                'inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium',
+                                `inline-flex items-center gap-1 rounded-md ${chipPaddingClass} text-xs font-medium`,
                                 getDecisionBadgeClasses(decision)
                             )}
                         >
