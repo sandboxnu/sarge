@@ -137,14 +137,25 @@ model AssessmentTemplate {
 model TaskTemplate {
   id               String @id @unique @default(cuid())
   title            String
-  content          String @db.Text
+  description      Json @default("[]")
   publicTestCases  Json[]
   privateTestCases Json[]
   orgId            String
 
+  starterCodes   StarterCode[]
+
   organization Organization @relation(fields: [orgId], references: [id])
   tasks        Task[]       @relation("derivedFromTaskTemplate")
   tags         Tag[]        @relation("TaskTemplateTags")
+}
+
+model StarterCode {
+  id String @id @unique @default(cuid())
+  language String
+  code String @db.Text
+  taskTemplateId String
+  taskTemplate TaskTemplate @relation(fields: [taskTemplateId], references: [id])
+  @@unique([taskTemplateId, language])
 }
 
 // A task within an assessment, containing the candidate's submitted code.

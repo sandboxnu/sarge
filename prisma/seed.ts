@@ -5,6 +5,7 @@ import { usersData } from './seed-data/users.seed';
 import { positionsData } from './seed-data/positions.seed';
 import { candidatesData } from './seed-data/candidates.seed';
 import { taskTemplatesData } from './seed-data/task-template.seed';
+import { tagsData } from './seed-data/tags.seed';
 import { assessmentTemplatesData } from './seed-data/assessment-template.seed';
 import { assessmentsData } from './seed-data/assessment.seed';
 
@@ -189,16 +190,60 @@ async function seedApplications() {
 }
 
 /**
+ * Seed Tags
+ */
+async function seedTags() {
+    console.log('Seeding tags...');
+
+    const orgId = organizationsData[0].id;
+
+    for (const tagData of tagsData) {
+        await prisma.tag.upsert({
+            where: { id: tagData.id },
+            update: {},
+            create: {
+                id: tagData.id,
+                name: tagData.name,
+                colorHexCode: tagData.colorHexCode,
+                orgId,
+            },
+        });
+
+        console.log(`  Created tag: ${tagData.name}`);
+    }
+}
+
+/**
  * Seed Task Templates
  */
 async function seedTaskTemplates() {
     console.log('Seeding task templates...');
 
+    const orgId = organizationsData[0].id;
+
     for (const taskTemplateData of taskTemplatesData) {
+        const { tagIds, starterCodes, ...restData } = taskTemplateData;
+
         await prisma.taskTemplate.upsert({
             where: { id: taskTemplateData.id },
             update: {},
-            create: taskTemplateData,
+            create: {
+                ...restData,
+                orgId,
+                tags: tagIds
+                    ? {
+                          connect: tagIds.map((id: string) => ({ id })),
+                      }
+                    : undefined,
+                starterCodes: starterCodes
+                    ? {
+                          create: starterCodes.map((sc: { language: string; code: string }) => ({
+                              language: sc.language,
+                              code: sc.code,
+                          })),
+                      }
+                    : undefined,
+            },
         });
 
         console.log(`  Created task template: ${taskTemplateData.title}`);
@@ -273,6 +318,7 @@ async function main() {
     await seedPositions();
     await seedCandidates();
     await seedApplications();
+    await seedTags();
     await seedTaskTemplates();
     await seedAssessmentTemplates();
     await seedAssessments();
