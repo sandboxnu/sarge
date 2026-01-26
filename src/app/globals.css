@@ -1,9 +1,6 @@
 @import 'tailwindcss';
 
 :root {
-    /* Layout */
-    --navbar-height: 43px;
-
     /* Modal */
     --onboarding-modal-width: 544px;
     --onboarding-modal-height: 309px;
@@ -196,7 +193,7 @@
         @apply overflow-hidden;
     }
     body {
-        @apply bg-background text-foreground font-sans;
+        @apply bg-background font-sans text-foreground;
         @apply text-base leading-normal;
     }
 }
@@ -204,58 +201,84 @@
 @layer components {
     /* Display Styles */
     .text-display-l {
-        @apply text-foreground tracking-design font-sans text-5xl leading-16 font-bold;
+        @apply font-sans text-5xl leading-16 font-bold tracking-design text-foreground;
     }
 
     .text-display-m {
-        @apply text-foreground tracking-design font-sans text-4xl leading-12 font-bold;
+        @apply font-sans text-4xl leading-12 font-bold tracking-design text-foreground;
     }
 
     .text-display-s {
-        @apply text-foreground tracking-design font-sans text-[1.75rem] leading-8 font-bold;
+        @apply font-sans text-[1.75rem] leading-8 font-bold tracking-design text-foreground;
     }
 
     .text-display-xs {
-        @apply text-foreground tracking-design font-sans text-xl leading-7 font-bold;
+        @apply font-sans text-xl leading-7 font-bold tracking-design text-foreground;
     }
 
     /* Body Styles */
     .text-body-xl {
-        @apply text-foreground tracking-design font-sans text-xl leading-7 font-normal;
+        @apply font-sans text-xl leading-7 font-normal tracking-design text-foreground;
     }
 
     .text-body-l {
-        @apply text-foreground tracking-design font-sans text-lg leading-6 font-normal;
+        @apply font-sans text-lg leading-6 font-normal tracking-design text-foreground;
     }
 
     .text-body-m {
-        @apply text-foreground tracking-design font-sans text-base leading-4.5 font-normal;
+        @apply font-sans text-base leading-4.5 font-normal tracking-design text-foreground;
     }
 
     .text-body-s {
-        @apply text-foreground tracking-design font-sans text-sm leading-4.5 font-normal;
+        @apply font-sans text-sm leading-4.5 font-normal tracking-design text-foreground;
     }
 
     .text-body-xs {
-        @apply text-foreground tracking-design font-sans text-xs leading-4 font-normal;
+        @apply font-sans text-xs leading-4 font-normal tracking-design text-foreground;
     }
 
     /* Label Styles */
     .text-label-l {
-        @apply text-foreground tracking-design font-sans text-xl leading-7 font-medium;
+        @apply font-sans text-xl leading-7 font-medium tracking-design text-foreground;
     }
 
     .text-label-m {
-        @apply text-foreground tracking-design font-sans text-lg leading-6 font-medium;
+        @apply font-sans text-lg leading-6 font-medium tracking-design text-foreground;
     }
 
     .text-label-s {
-        @apply text-foreground tracking-design font-sans text-sm leading-4.5 font-medium;
+        @apply font-sans text-sm leading-4.5 font-medium tracking-design text-foreground;
     }
 
     .text-label-xs {
-        @apply text-foreground tracking-design font-sans text-xs leading-4 font-medium;
+        @apply font-sans text-xs leading-4 font-medium tracking-design text-foreground;
     }
+}
+
+/* BlockNote styling - add padding when side menu is disabled */
+[data-blocknote-no-side-menu] .bn-editor {
+    padding: 12px 16px;
+}
+
+/* BlockNote suggestion menu (slash menu) size customization */
+[data-blocknote-no-side-menu] .bn-suggestion-menu {
+    max-height: 300px;
+    width: 280px;
+    font-size: 14px;
+}
+
+[data-blocknote-no-side-menu] .bn-suggestion-menu-item {
+    padding: 6px 8px;
+    font-size: 14px;
+    min-height: 32px;
+}
+
+[data-blocknote-no-side-menu] .bn-suggestion-menu-item .bn-suggestion-menu-item-title {
+    font-size: 14px;
+}
+
+[data-blocknote-no-side-menu] .bn-suggestion-menu-item .bn-suggestion-menu-item-subtext {
+    font-size: 12px;
 }
 
 /* https://www.joshwcomeau.com/css/surprising-truth-about-pixels-and-accessibility/ */
