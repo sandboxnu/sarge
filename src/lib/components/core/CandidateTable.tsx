@@ -39,10 +39,10 @@ export function CandidateTable({ candidates }: CandidateTableProps) {
                 header: 'NAME/MAJOR',
                 cell: ({ row }) => (
                     <div className="flex flex-col">
-                        <span className="text-sarge-gray-800 text-lg">
+                        <span className="text-lg text-sarge-gray-800">
                             {row.original.candidate.name}
                         </span>
-                        <span className="text-sarge-gray-600 text-sm">
+                        <span className="text-sm text-sarge-gray-600">
                             {row.original.candidate.major ?? 'N/A'}
                         </span>
                     </div>
@@ -78,7 +78,7 @@ export function CandidateTable({ candidates }: CandidateTableProps) {
                             onClick={(e) => isDisabled && e.preventDefault()}
                             className={`inline-flex items-center gap-1.5 ${
                                 isDisabled
-                                    ? 'text-sarge-primary-300 cursor-not-allowed'
+                                    ? 'cursor-not-allowed text-sarge-primary-300'
                                     : 'text-sarge-primary-500 hover:text-sarge-primary-600'
                             }`}
                         >
@@ -96,7 +96,7 @@ export function CandidateTable({ candidates }: CandidateTableProps) {
                             href={ensureAbsoluteUrl(row.original.candidate.resumeUrl)}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-sarge-primary-500 hover:text-sarge-primary-600 inline-flex items-center gap-1.5"
+                            className="inline-flex items-center gap-1.5 text-sarge-primary-500 hover:text-sarge-primary-600"
                         >
                             Link to Resume <ExternalLink className="size-4" />
                         </a>

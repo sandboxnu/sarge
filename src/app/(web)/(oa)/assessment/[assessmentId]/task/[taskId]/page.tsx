@@ -56,14 +56,19 @@ export default function TaskPage({
             <ResizablePanelGroup direction="horizontal" className="min-h-screen">
                 <ResizablePanel defaultSize={20} minSize={20}>
                     <div className="flex h-full max-h-screen flex-col overflow-y-auto border-1 p-4">
-                        <MarkdownViewer content={taskTemplate.content ?? 'Loading problem...'} />
+                        {/*
+                          TODO: Update this to use BlockNoteViewer instead of MarkdownViewer.
+                          The `description` field is now a BlockNote JSON array (not a string).
+                          See: src/lib/components/core/BlockNoteViewer.tsx
+                        */}
+                        <MarkdownViewer content={'Loading problem...'} />
                     </div>
                 </ResizablePanel>
                 <ResizableHandle />
                 <ResizablePanel defaultSize={80} minSize={20}>
                     <ResizablePanelGroup direction="vertical" className="min-h-screen">
                         <ResizablePanel defaultSize={70} minSize={20}>
-                            <div className="bg-sarge-gray-50 border-sarge-gray-200 w-full items-center border-b p-3">
+                            <div className="w-full items-center border-b border-sarge-gray-200 bg-sarge-gray-50 p-3">
                                 <div className="flex justify-between">
                                     <div>
                                         <DropdownMenu>

@@ -55,9 +55,13 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                     </div>
                 </div>
 
-                {loading && <p>Loading candidates...</p>}
-                {error && <p className="text-sarge-error-700">Error: {error}</p>}
-                {!loading && !error && <CandidateTable candidates={candidates} />}
+                {loading ? (
+                    <p>Loading candidates...</p>
+                ) : error ? (
+                    <p className="text-sarge-error-700">Error: {error}</p>
+                ) : (
+                    <CandidateTable candidates={candidates} />
+                )}
             </div>
 
             <CreateCandidateModal

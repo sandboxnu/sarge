@@ -175,7 +175,7 @@ function CreateOrganizationContent({
                 />
             </div>
             {error && (
-                <div className="text-sarge-error-700 text-body-s mt-2 flex items-center gap-2">
+                <div className="text-body-s mt-2 flex items-center gap-2 text-sarge-error-700">
                     <AlertCircle className="size-4" />
                     {error}
                 </div>
@@ -183,7 +183,7 @@ function CreateOrganizationContent({
 
             <div className="mt-4 flex items-center justify-between">
                 <p
-                    className="text-sarge-primary-500 hover:text-sarge-primary-600 hover:cursor-pointer"
+                    className="text-sarge-primary-500 hover:cursor-pointer hover:text-sarge-primary-600"
                     onClick={onBack}
                 >
                     Back
@@ -207,7 +207,7 @@ function LoadingContent() {
         <div className="flex flex-col items-center justify-center gap-1 self-stretch">
             <Image src="/CreateOrgLoading.gif" alt="Loading GIF" width={66} height={66} />
 
-            <p className="text-sarge-gray-800 text-base leading-tight font-medium tracking-wide">
+            <p className="text-base leading-tight font-medium tracking-wide text-sarge-gray-800">
                 Creating organization...
             </p>
         </div>

@@ -59,7 +59,7 @@ export default function PositionCard({
         >
             <div className="-mr-4 flex items-start justify-between gap-2">
                 <div className="flex min-w-0 flex-[1_0_0] flex-col items-start gap-1 px-1">
-                    <h3 className="text-label-s text-sarge-gray-800 line-clamp-2" title={title}>
+                    <h3 className="text-label-s line-clamp-2 text-sarge-gray-800" title={title}>
                         {title}
                     </h3>
 
@@ -70,7 +70,7 @@ export default function PositionCard({
 
                 <button
                     data-menu-button
-                    className="text-sarge-gray-800 grid min-h-[44px] min-w-[44px] place-items-center"
+                    className="grid min-h-[44px] min-w-[44px] place-items-center text-sarge-gray-800"
                     onClick={(e) => e.stopPropagation()}
                 >
                     <MoreVertical className="h-5 w-5" />
@@ -79,10 +79,10 @@ export default function PositionCard({
             <div className="border-sarge-gray-200 bg-sarge-gray-0 mt-4 w-full rounded-md border p-3">
                 <div className="flex flex-col items-start gap-2">
                     <div className="flex w-full min-w-0 items-start gap-3">
-                        <FileText className="text-sarge-gray-600 h-5 w-5 shrink-0" />
+                        <FileText className="h-5 w-5 shrink-0 text-sarge-gray-600" />
                         <div className="min-w-0 flex-1">
                             <div
-                                className="text-label-s text-sarge-gray-800 truncate"
+                                className="text-label-s truncate text-sarge-gray-800"
                                 title={assessmentName}
                             >
                                 {assessmentName}

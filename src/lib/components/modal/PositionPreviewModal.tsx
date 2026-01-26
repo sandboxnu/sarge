@@ -26,7 +26,7 @@ function CandidateTable({ candidates }: { candidates: Candidate[] }) {
         <div className="max-h-[400px] overflow-y-auto bg-white [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <table className="w-full">
                 <thead className="sticky top-0 z-10 bg-white">
-                    <tr className="border-sarge-gray-200 border-b">
+                    <tr className="border-b border-sarge-gray-200">
                         <th className="text-sarge-gray-700 text-body-s px-4 py-3 text-left tracking-wider uppercase">
                             NAME/MAJOR
                         </th>
@@ -52,7 +52,7 @@ function CandidateTable({ candidates }: { candidates: Candidate[] }) {
                     {isEmpty ? (
                         <tr>
                             <td colSpan={6} className="px-4 py-8 text-center">
-                                <p className="text-body-s text-sarge-gray-600 mb-1">
+                                <p className="text-body-s mb-1 text-sarge-gray-600">
                                     No candidates in this position yet
                                 </p>
                                 <p className="text-body-xs text-sarge-gray-600">
@@ -64,7 +64,7 @@ function CandidateTable({ candidates }: { candidates: Candidate[] }) {
                         rows.map(({ entry, graders, hasSubmission }) => (
                             <tr
                                 key={entry.id}
-                                className="border-sarge-gray-200 border-b last:border-b-0"
+                                className="border-b border-sarge-gray-200 last:border-b-0"
                             >
                                 <td className="px-4 py-4">
                                     <div className="flex flex-col">
@@ -110,12 +110,12 @@ function CandidateTable({ candidates }: { candidates: Candidate[] }) {
                                                 href={entry.assessment.uniqueLink}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="text-sarge-primary-500 hover:text-sarge-primary-600 transition-colors"
+                                                className="text-sarge-primary-500 transition-colors hover:text-sarge-primary-600"
                                             >
                                                 <ExternalLink className="size-5" />
                                             </a>
                                         ) : (
-                                            <ExternalLink className="text-sarge-gray-300 size-5 opacity-50" />
+                                            <ExternalLink className="size-5 text-sarge-gray-300 opacity-50" />
                                         )}
                                     </div>
                                 </td>
@@ -141,7 +141,7 @@ export default function PositionPreviewModal({
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent
-                className="bg-sarge-gray-50 flex max-h-[85vh] w-full max-w-5xl flex-col gap-0 overflow-hidden p-0 sm:max-w-5xl"
+                className="flex max-h-[85vh] w-full max-w-5xl flex-col gap-0 overflow-hidden bg-sarge-gray-50 p-0 sm:max-w-5xl"
                 showCloseButton={true}
             >
                 <div className="relative flex flex-shrink-0 items-start px-6 pt-6 pr-[72px] pb-2">
@@ -163,7 +163,7 @@ export default function PositionPreviewModal({
                     {!isPending && !error && position && (
                         <button
                             onClick={openFullPosition}
-                            className="text-sarge-gray-600 hover:text-sarge-primary-500 absolute top-4 right-12 rounded-xs opacity-70 transition-colors hover:cursor-pointer hover:opacity-100"
+                            className="absolute top-4 right-12 rounded-xs text-sarge-gray-600 opacity-70 transition-colors hover:cursor-pointer hover:text-sarge-primary-500 hover:opacity-100"
                             aria-label="Open position in new tab"
                         >
                             <SquareArrowOutUpRightIcon className="size-4" />
@@ -188,12 +188,12 @@ export default function PositionPreviewModal({
                         <div className="flex flex-shrink-0 flex-col gap-2 px-6 pt-2 pb-6">
                             <span className="text-label-s text-sarge-gray-800">Assessment</span>
 
-                            <div className="border-sarge-gray-200 overflow-hidden rounded-lg border">
+                            <div className="overflow-hidden rounded-lg border border-sarge-gray-200">
                                 {position.assessmentTemplate ? (
-                                    <div className="border-sarge-gray-200 border-b bg-white p-3">
+                                    <div className="border-b border-sarge-gray-200 bg-white p-3">
                                         <div className="flex flex-col gap-2">
                                             <div className="flex items-center gap-2">
-                                                <FileText className="text-sarge-gray-600 size-5" />
+                                                <FileText className="size-5 text-sarge-gray-600" />
                                                 <span className="text-label-xs text-sarge-gray-800">
                                                     {position.assessmentTemplate.title}
                                                 </span>
@@ -219,8 +219,8 @@ export default function PositionPreviewModal({
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className="border-sarge-gray-200 border-b bg-white p-4">
-                                        <p className="text-body-s text-sarge-gray-600 text-center">
+                                    <div className="border-b border-sarge-gray-200 bg-white p-4">
+                                        <p className="text-body-s text-center text-sarge-gray-600">
                                             No assessment assigned to this position
                                         </p>
                                     </div>

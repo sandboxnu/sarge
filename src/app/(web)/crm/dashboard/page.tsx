@@ -23,7 +23,7 @@ export default function DashboardPage() {
                         height={900}
                         priority
                     />
-                    <p className="text-sarge-primary-700 text-xl">Coming 2026...</p>
+                    <p className="text-xl text-sarge-primary-700">Coming 2026...</p>
                 </div>
             )}
         </div>
