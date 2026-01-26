@@ -39,7 +39,7 @@ export default function PositionCard({
         <div
             className={cn(
                 'min-h-[160px] w-[384px]',
-                'border-sarge-gray-200 bg-sarge-gray-50 rounded-md border p-4',
+                'rounded-md border border-sarge-gray-200 bg-sarge-gray-50 p-4',
                 onClick && 'cursor-pointer transition-shadow hover:shadow-md',
                 className
             )}
@@ -76,7 +76,7 @@ export default function PositionCard({
                     <MoreVertical className="h-5 w-5" />
                 </button>
             </div>
-            <div className="border-sarge-gray-200 bg-sarge-gray-0 mt-4 w-full rounded-md border p-3">
+            <div className="mt-4 w-full rounded-md border border-sarge-gray-200 bg-sarge-gray-0 p-3">
                 <div className="flex flex-col items-start gap-2">
                     <div className="flex w-full min-w-0 items-start gap-3">
                         <FileText className="h-5 w-5 shrink-0 text-sarge-gray-600" />

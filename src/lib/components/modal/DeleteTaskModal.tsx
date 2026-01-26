@@ -17,12 +17,7 @@ interface DeleteTaskModalProps {
     onConfirm: () => void;
 }
 
-export function DeleteTaskModal({
-    open,
-    onOpenChange,
-    taskName,
-    onConfirm,
-}: DeleteTaskModalProps) {
+export function DeleteTaskModal({ open, onOpenChange, taskName, onConfirm }: DeleteTaskModalProps) {
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent showCloseButton={false}>

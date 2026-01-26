@@ -9,7 +9,7 @@ export default async function TaskTemplatesPage() {
     const templates = await TaskTemplateService.getAllTaskTemplatesByOrgId(
         session.activeOrganizationId
     );
-    
+
     return (
         <div className="flex flex-col gap-3 pt-4 pr-5 pb-5 pl-7">
             <div className="flex items-center gap-2">

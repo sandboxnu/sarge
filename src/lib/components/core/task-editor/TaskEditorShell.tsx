@@ -11,7 +11,10 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/lib/components/ui/Dropdown';
-import { TASK_EDITOR_SECTIONS, type TaskEditorSectionId } from '@/lib/constants/task-editor.constants';
+import {
+    TASK_EDITOR_SECTIONS,
+    type TaskEditorSectionId,
+} from '@/lib/constants/task-editor.constants';
 import { cn } from '@/lib/utils/cn.utils';
 import { useTaskEditorActions } from '@/lib/hooks/useTaskEditorActions';
 import { DeleteTaskModal } from '@/lib/components/modal/DeleteTaskModal';
@@ -54,7 +57,7 @@ export function TaskEditorShell({
                         <Button
                             asChild
                             variant="link"
-                            className="w-full justify-start text-label-xs"
+                            className="text-label-xs w-full justify-start"
                         >
                             <Link
                                 href="/crm/task-templates"

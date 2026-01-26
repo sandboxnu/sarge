@@ -24,8 +24,7 @@ const buttonVariants = cva(
                     'bg-destructive text-destructive-foreground transition-colors duration-200 hover:bg-destructive/90 disabled:opacity-50 [&_svg]:text-destructive-foreground',
                 'destructive-outline':
                     'border border-border bg-transparent text-muted-foreground transition-colors duration-200 hover:bg-muted disabled:opacity-50',
-                link:
-                    'text-sarge-primary-500 underline-offset-4 hover:underline disabled:opacity-50 [&_svg]:text-sarge-primary-500',
+                link: 'text-sarge-primary-500 underline-offset-4 hover:underline disabled:opacity-50 [&_svg]:text-sarge-primary-500',
             },
             size: {
                 default:

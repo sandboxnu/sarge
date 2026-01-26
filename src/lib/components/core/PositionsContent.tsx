@@ -35,16 +35,16 @@ export default function PositionsContent() {
                     <div className="flex items-center gap-3">
                         <Button
                             variant="primary"
-                            className="bg-sarge-gray-100 text-sarge-gray-600 hover:bg-sarge-gray-200 border-sarge-gray-200 h-11 gap-2 border px-3"
+                            className="bg-sarge-gray-100 h-11 gap-2 border border-sarge-gray-200 px-3 text-sarge-gray-600 hover:bg-sarge-gray-200"
                         >
-                            <ArrowUpDown className="!text-sarge-gray-600 size-5" />
+                            <ArrowUpDown className="size-5 !text-sarge-gray-600" />
                             <span className="text-label-s">Sort</span>
                         </Button>
                         <Button
                             variant="primary"
-                            className="bg-sarge-gray-100 text-sarge-gray-600 hover:bg-sarge-gray-200 border-sarge-gray-200 h-11 gap-2 border px-3"
+                            className="bg-sarge-gray-100 h-11 gap-2 border border-sarge-gray-200 px-3 text-sarge-gray-600 hover:bg-sarge-gray-200"
                         >
-                            <SlidersHorizontal className="!text-sarge-gray-600 size-5" />
+                            <SlidersHorizontal className="size-5 !text-sarge-gray-600" />
                             <span className="text-label-s">Filter</span>
                         </Button>
                     </div>
@@ -62,7 +62,7 @@ export default function PositionsContent() {
                     </Button>
                 </div>
 
-                <div className="border-sarge-gray-200 border-b">
+                <div className="border-b border-sarge-gray-200">
                     <TabsList className="h-auto gap-5 bg-transparent p-0">
                         <UnderlineTabsTrigger value="active">
                             Active ({active.length ?? 0})

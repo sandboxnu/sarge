@@ -158,7 +158,7 @@ export default function SignInPage() {
                         </Button>
 
                         {form.formState.errors.root && (
-                            <p className="text-sarge-error-700 text-body-xs">
+                            <p className="text-body-xs text-sarge-error-700">
                                 {form.formState.errors.root.message}
                             </p>
                         )}

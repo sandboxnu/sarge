@@ -126,9 +126,7 @@ export function LanguagesSection({
             </p>
 
             <div className="mt-7 flex items-center justify-between">
-                <label className="text-label-s text-sarge-gray-600">
-                    Search language
-                </label>
+                <label className="text-label-s text-sarge-gray-600">Search language</label>
 
                 <div className="flex items-center">
                     <Button
@@ -230,13 +228,14 @@ export function LanguagesSection({
             <div className={cn('mt-10', isStubGeneratorDisabled && 'opacity-60')}>
                 <div className="flex items-center gap-2">
                     <h3 className="text-label-m text-foreground">Code Stub Generator</h3>
-                    <span className="rounded-md bg-sarge-gray-200 px-2 py-0.5 text-label-xs text-sarge-gray-600">
+                    <span className="text-label-xs rounded-md bg-sarge-gray-200 px-2 py-0.5 text-sarge-gray-600">
                         Optional
                     </span>
                 </div>
 
                 <p className="text-body-m mt-4 text-sarge-gray-600">
-                    Define a function signature to auto-generate starter code for all selected languages.
+                    Define a function signature to auto-generate starter code for all selected
+                    languages.
                 </p>
 
                 <div className="mt-6 grid gap-3" style={{ gridTemplateColumns: '1fr 1fr 46px' }}>
@@ -330,7 +329,11 @@ export function LanguagesSection({
                                             </label>
                                         )}
                                         <Input
-                                            ref={index === parameters.length - 1 ? newParamInputRef : undefined}
+                                            ref={
+                                                index === parameters.length - 1
+                                                    ? newParamInputRef
+                                                    : undefined
+                                            }
                                             type="text"
                                             placeholder="Parameter name..."
                                             value={param.name}

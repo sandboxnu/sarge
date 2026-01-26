@@ -16,10 +16,7 @@ export function Search({ className, placeholder, value, onChange }: SearchProps)
             <Input
                 type="text"
                 placeholder={placeholder ?? 'Type to search'}
-                className={cn(
-                    'w-full rounded-lg bg-white pl-10 placeholder:italic',
-                    className
-                )}
+                className={cn('w-full rounded-lg bg-white pl-10 placeholder:italic', className)}
                 aria-label="Search"
                 value={value}
                 onChange={onChange}

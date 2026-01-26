@@ -35,7 +35,7 @@ export default function OnboardingModal() {
             </VisuallyHidden>
 
             <DialogContent
-                className="w-onboarding-modal-width h-onboarding-modal-height"
+                className="h-onboarding-modal-height w-onboarding-modal-width"
                 showCloseButton={false}
                 onInteractOutside={(event) => {
                     event.preventDefault();
@@ -130,7 +130,7 @@ function CreateOrganizationContent({
 
             <div className="mt-4 mb-2 flex w-full content-center justify-center">
                 <div
-                    className="bg-sarge-gray-200 group flex h-[65px] w-[65px] items-center justify-center overflow-hidden rounded-md hover:cursor-pointer hover:ring-2 hover:ring-black/40"
+                    className="group flex h-[65px] w-[65px] items-center justify-center overflow-hidden rounded-md bg-sarge-gray-200 hover:cursor-pointer hover:ring-2 hover:ring-black/40"
                     onClick={handleProfileImageClick}
                 >
                     {preview ? (
@@ -168,7 +168,7 @@ function CreateOrganizationContent({
                     type="text"
                     name="Enter a name for your organization"
                     id="Name"
-                    className="bg-sarge-gray-50 text-sarge-gray-800 placeholder:text-sarge-gray-500 border-sarge-gray-200 h-[44px] rounded-md border px-3 py-1"
+                    className="h-[44px] rounded-md border border-sarge-gray-200 bg-sarge-gray-50 px-3 py-1 text-sarge-gray-800 placeholder:text-sarge-gray-500"
                     placeholder="Enter a name for your organization"
                     value={organizationName}
                     onChange={(e) => setOrganizationName(e.target.value)}
