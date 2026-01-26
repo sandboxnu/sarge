@@ -123,6 +123,7 @@ model Application {
   @@index([positionId, decisionStatus]) // For filtering by decision
 }
 
+// Represents an assessment composed of tasks (questions) that could be assigned to a position.
 model AssessmentTemplate {
   id            String   @id @unique @default(cuid())
   title         String
@@ -134,6 +135,7 @@ model AssessmentTemplate {
   assessments  Assessment[] @relation("derivedFromAssessmentTemplate")
 }
 
+// A task (question) that could be asked in an assessment. Contains test cases, description, and starter code.
 model TaskTemplate {
   id               String @id @unique @default(cuid())
   title            String
