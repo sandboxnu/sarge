@@ -1,9 +1,9 @@
-import { type TaskTemplate } from '@/generated/prisma';
+import type { TaskTemplateDetail } from '@/lib/types/task-template.types';
 
 /**
  * GET /api/task-templates/:taskTemplateId
  */
-export async function getTaskTemplate(taskTemplateId: string): Promise<TaskTemplate> {
+export async function getTaskTemplate(taskTemplateId: string): Promise<TaskTemplateDetail> {
     const res = await fetch(`/api/task-templates/${taskTemplateId}`);
 
     const json = await res.json();
