@@ -63,7 +63,6 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
         } catch (err) {
             const message = (err as Error).message;
             setError(message);
-            throw err;
         } finally {
             setLoading(false);
         }
