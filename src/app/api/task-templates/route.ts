@@ -13,3 +13,12 @@ export async function POST(request: NextRequest) {
         return handleError(err);
     }
 }
+
+export async function GET() {
+    try {
+        const templates = await TaskTemplateService.getAllTaskTemplates();
+        return Response.json({ data: templates }, { status: 200 });
+    } catch (err) {
+        return handleError(err);
+    }
+}

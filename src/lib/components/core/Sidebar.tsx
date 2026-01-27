@@ -685,14 +685,9 @@ const sidebarMenuItems = [
         icon: Home,
     },
     {
-        title: 'Assessment Templates',
-        url: '#',
+        title: 'Templates',
+        url: '/crm/templates',
         icon: File,
-    },
-    {
-        title: 'Coding Tasks',
-        url: '#',
-        icon: ListChecks,
     },
     {
         title: 'Positions',

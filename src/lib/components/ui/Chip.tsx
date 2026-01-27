@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils/cn.utils';
 
 export type ChipVariant = 'neutral' | 'success' | 'error' | 'warning' | 'primary';
 
-interface ChipProps {
+export interface ChipProps {
     children: React.ReactNode;
     variant?: ChipVariant;
     className?: string;

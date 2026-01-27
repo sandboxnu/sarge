@@ -1,4 +1,4 @@
-import { type TaskTemplate } from '@/generated/prisma';
+import type { TaskTemplate, Tag } from '@/generated/prisma';
 import {
     type UpdateTaskTemplateDTO,
     type CreateTaskTemplateDTO,
@@ -21,6 +21,15 @@ async function getTaskTemplate(id: string): Promise<TaskTemplate> {
     }
 
     return foundTaskTemplate;
+}
+
+async function getAllTaskTemplates(): Promise<Array<TaskTemplate & { tags: Tag[] }>> {
+    const templates = await prisma.taskTemplate.findMany({
+        include: {
+            tags: true,
+        },
+    });
+    return templates;
 }
 
 async function createTaskTemplate(taskTemplate: CreateTaskTemplateDTO): Promise<TaskTemplate> {
@@ -126,6 +135,7 @@ async function getAllTaskTemplates(orgId: string): Promise<TaskTemplate[]> {
 
 const TaskTemplateService = {
     getTaskTemplate,
+    getAllTaskTemplates,
     createTaskTemplate,
     deleteTaskTemplate,
     updateTaskTemplate,
