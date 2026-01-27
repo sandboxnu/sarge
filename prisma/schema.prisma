@@ -107,7 +107,7 @@ model Application {
   // Canonical assessment workflow state for the application. Other assessment fields (submittedAt, reviews, deadline) are derived indicators.
   assessmentStatus AssessmentStatus @default(NOT_ASSIGNED)
   decisionStatus   DecisionStatus   @default(PENDING)
-  decidedBy        String?
+  graderId         String?
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -116,7 +116,7 @@ model Application {
   candidate     Candidate   @relation(fields: [candidateId], references: [id], onDelete: Cascade)
   position      Position    @relation(fields: [positionId], references: [id], onDelete: Cascade)
   assessment    Assessment?
-  decidedByUser User?       @relation("ApplicationDecision", fields: [decidedBy], references: [id], onDelete: SetNull)
+  grader        User?       @relation("ApplicationDecision", fields: [graderId], references: [id], onDelete: SetNull)
 
   @@unique([candidateId, positionId])
   @@index([positionId, assessmentStatus]) // For position stats queries
