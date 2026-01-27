@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { toast } from 'sonner';
 import { type CreateCandidateModalProps } from '@/lib/components/modal/CreateCandidateModal';
+import { createCandidateSchema } from '@/lib/schemas/candidate.schema';
 
 function useCreateCandidateModal({ onOpenChange, onCreate }: CreateCandidateModalProps) {
     const [fullName, setFullName] = useState('');
@@ -10,32 +10,100 @@ function useCreateCandidateModal({ onOpenChange, onCreate }: CreateCandidateModa
     const [resume, setResume] = useState('');
     const [linkedin, setLinkedin] = useState('');
     const [github, setGithub] = useState('');
+    const [notes, setNotes] = useState('');
     const [isCreating, setIsCreating] = useState(false);
     const [localError, setLocalError] = useState<string | null>(null);
+    const [fieldErrors, setFieldErrors] = useState({
+        fullName: false,
+        email: false,
+        major: false,
+        resume: false,
+        linkedin: false,
+        github: false,
+    });
+
+    const clearFieldError = (field: keyof typeof fieldErrors) => {
+        setFieldErrors((prev) => (prev[field] ? { ...prev, [field]: false } : prev));
+    };
+
+    const normalizeOptional = (value: string) => {
+        const trimmed = value.trim();
+        return trimmed ? trimmed : undefined;
+    };
 
     const handleCreate = async () => {
         if (isCreating) return;
 
-        if (!fullName.trim()) {
-            setLocalError('Full name is required');
+        const nextErrors = {
+            fullName: !fullName.trim(),
+            email: !email.trim(),
+            major: !major.trim(),
+            resume: false,
+            linkedin: false,
+            github: false,
+        };
+
+        if (nextErrors.fullName || nextErrors.email || nextErrors.major) {
+            setFieldErrors(nextErrors);
+            setLocalError('Please fill out all required fields.');
             return;
         }
-        if (!email.trim()) {
-            setLocalError('Email is required');
+
+        const candidatePayload = {
+            name: fullName,
+            email,
+            major: normalizeOptional(major),
+            graduationDate: normalizeOptional(graduationYear),
+            resumeUrl: normalizeOptional(resume),
+            linkedinUrl: normalizeOptional(linkedin),
+            githubUrl: normalizeOptional(github),
+        };
+
+        const parsed = createCandidateSchema.safeParse(candidatePayload);
+        if (!parsed.success) {
+            const nextFieldErrorsFromSchema = {
+                fullName: false,
+                email: false,
+                major: false,
+                resume: false,
+                linkedin: false,
+                github: false,
+            };
+
+            for (const issue of parsed.error.issues) {
+                const field = issue.path[0];
+                if (field === 'name') nextFieldErrorsFromSchema.fullName = true;
+                if (field === 'email') nextFieldErrorsFromSchema.email = true;
+                if (field === 'major') nextFieldErrorsFromSchema.major = true;
+                if (field === 'resumeUrl') nextFieldErrorsFromSchema.resume = true;
+                if (field === 'linkedinUrl') nextFieldErrorsFromSchema.linkedin = true;
+                if (field === 'githubUrl') nextFieldErrorsFromSchema.github = true;
+            }
+
+            setFieldErrors(nextFieldErrorsFromSchema);
+            setLocalError(parsed.error.issues[0]?.message ?? 'Please check the form fields.');
             return;
         }
 
         setIsCreating(true);
         setLocalError(null);
+        setFieldErrors({
+            fullName: false,
+            email: false,
+            major: false,
+            resume: false,
+            linkedin: false,
+            github: false,
+        });
         try {
             await onCreate({
-                name: fullName,
-                email,
-                ...(major && { major }),
-                ...(graduationYear && { graduationDate: graduationYear }),
-                ...(resume && { resumeUrl: resume }),
-                ...(linkedin && { linkedinUrl: linkedin }),
-                ...(github && { githubUrl: github }),
+                name: parsed.data.name,
+                email: parsed.data.email,
+                ...(parsed.data.major && { major: parsed.data.major }),
+                ...(parsed.data.graduationDate && { graduationDate: parsed.data.graduationDate }),
+                ...(parsed.data.resumeUrl && { resumeUrl: parsed.data.resumeUrl }),
+                ...(parsed.data.linkedinUrl && { linkedinUrl: parsed.data.linkedinUrl }),
+                ...(parsed.data.githubUrl && { githubUrl: parsed.data.githubUrl }),
             });
             setFullName('');
             setEmail('');
@@ -44,13 +112,11 @@ function useCreateCandidateModal({ onOpenChange, onCreate }: CreateCandidateModa
             setResume('');
             setLinkedin('');
             setGithub('');
+            setNotes('');
             onOpenChange(false);
-        } catch {
-            const errorMsg = 'Failed to add candidate. Please try again.';
+        } catch (err) {
+            const errorMsg = err instanceof Error ? err.message : 'An unexpected error occurred.';
             setLocalError(errorMsg);
-            toast.error('Creation failed', {
-                description: errorMsg,
-            });
         } finally {
             setIsCreating(false);
         }
@@ -64,7 +130,16 @@ function useCreateCandidateModal({ onOpenChange, onCreate }: CreateCandidateModa
         setResume('');
         setLinkedin('');
         setGithub('');
+        setNotes('');
         setLocalError(null);
+        setFieldErrors({
+            fullName: false,
+            email: false,
+            major: false,
+            resume: false,
+            linkedin: false,
+            github: false,
+        });
         onOpenChange(false);
     };
 
@@ -76,15 +151,38 @@ function useCreateCandidateModal({ onOpenChange, onCreate }: CreateCandidateModa
         resume,
         linkedin,
         github,
-        setFullName,
-        setEmail,
-        setMajor,
-        setGraduationYear,
-        setResume,
-        setLinkedin,
-        setGithub,
+        notes,
+        setFullName: (value: string) => {
+            setFullName(value);
+            clearFieldError('fullName');
+        },
+        setEmail: (value: string) => {
+            setEmail(value);
+            clearFieldError('email');
+        },
+        setMajor: (value: string) => {
+            setMajor(value);
+            clearFieldError('major');
+        },
+        setGraduationYear: (value: string) => {
+            setGraduationYear(value);
+        },
+        setResume: (value: string) => {
+            setResume(value);
+            clearFieldError('resume');
+        },
+        setLinkedin: (value: string) => {
+            setLinkedin(value);
+            clearFieldError('linkedin');
+        },
+        setGithub: (value: string) => {
+            setGithub(value);
+            clearFieldError('github');
+        },
+        setNotes,
         isCreating,
         localError,
+        fieldErrors,
         handleCreate,
         handleCancel,
     };

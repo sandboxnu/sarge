@@ -69,6 +69,49 @@ export class InternalServerException extends HttpException {
     }
 }
 
+// We need this because Prisma errors instsanceof is not reliable at runtime
+type PrismaKnownErrorLike = {
+    code: string;
+    meta?: { target?: unknown };
+    name?: string;
+};
+
+function isPrismaKnownError(err: unknown): err is PrismaKnownErrorLike {
+    if (!err || typeof err !== 'object') return false;
+    if (!('code' in err)) return false;
+    return typeof (err as { code?: unknown }).code === 'string';
+}
+
+function getPrismaTargetStrings(target: unknown): string[] {
+    if (Array.isArray(target)) return target.map((t) => String(t));
+    if (typeof target === 'string') return [target];
+    return [];
+}
+
+function formatPrismaP2002Message(err: PrismaKnownErrorLike): string {
+    const targets = getPrismaTargetStrings(err.meta?.target);
+    const targetText = targets.join(' ');
+
+    const duplicateApplication =
+        (targets.includes('candidateId') && targets.includes('positionId')) ||
+        (targetText.includes('candidateId') && targetText.includes('positionId')) ||
+        targetText.includes('Application_candidateId_positionId_key');
+
+    if (duplicateApplication) {
+        return 'This candidate is already added to this position.';
+    }
+
+    const duplicateCandidateByEmailOrg =
+        (targets.includes('email') && targets.includes('orgId')) ||
+        targetText.includes('Candidate_email_orgId_key');
+
+    if (duplicateCandidateByEmailOrg) {
+        return 'A candidate with this email already exists in your organization.';
+    }
+
+    return 'A record with the same unique fields already exists.';
+}
+
 export function handleError(err: unknown): Response {
     if (err instanceof HttpException) {
         return Response.json(
@@ -78,6 +121,44 @@ export function handleError(err: unknown): Response {
             },
             { status: err.status }
         );
+    }
+
+    if (isPrismaKnownError(err)) {
+        if (err.code === 'P2002') {
+            return Response.json(
+                {
+                    message: formatPrismaP2002Message(err),
+                    data: null,
+                    debug:
+                        process.env.NODE_ENV === 'development'
+                            ? {
+                                  errorName: err.name,
+                                  errorCode: err.code,
+                                  errorMeta: err.meta,
+                              }
+                            : undefined,
+                },
+                { status: 409 }
+            );
+        }
+
+        if (err.code === 'P2025') {
+            return Response.json(
+                {
+                    message: 'The requested record could not be found.',
+                    data: null,
+                    debug:
+                        process.env.NODE_ENV === 'development'
+                            ? {
+                                  errorName: err.name,
+                                  errorCode: err.code,
+                                  errorMeta: err.meta,
+                              }
+                            : undefined,
+                },
+                { status: 404 }
+            );
+        }
     }
 
     if (err instanceof z.ZodError) {
