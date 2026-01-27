@@ -7,6 +7,7 @@ import { candidatesData } from './seed-data/candidates.seed';
 import { taskTemplatesData } from './seed-data/task-template.seed';
 import { assessmentTemplatesData } from './seed-data/assessment-template.seed';
 import { assessmentsData } from './seed-data/assessment.seed';
+import { tagsData } from './seed-data/tags.seed';
 
 /**
  * Seed Organizations
@@ -206,6 +207,52 @@ async function seedTaskTemplates() {
 }
 
 /**
+ * Seed Tags
+ */
+async function seedTags() {
+    console.log('Seeding tags...');
+
+    // Create tags
+    for (const tag of tagsData) {
+        await prisma.tag.upsert({
+            where: { id: tag.id },
+            update: {},
+            create: tag,
+        });
+
+        console.log(`  Created tag: ${tag.name}`);
+    }
+
+    // Assign tags to task templates
+    await prisma.taskTemplate.update({
+        where: { id: taskTemplatesData[0].id },
+        data: {
+            tags: {
+                connect: tagsData.map((tag) => ({ id: tag.id })),
+            },
+        },
+    });
+
+    await prisma.taskTemplate.update({
+        where: { id: taskTemplatesData[1].id },
+        data: {
+            tags: {
+                connect: [{ id: tagsData[0].id }, { id: tagsData[1].id }],
+            },
+        },
+    });
+
+    await prisma.taskTemplate.update({
+        where: { id: taskTemplatesData[2].id },
+        data: {
+            tags: {
+                connect: [{ id: tagsData[2].id }],
+            },
+        },
+    });
+}
+
+/**
  * Seed Assessment Templates
  */
 async function seedAssessmentTemplates() {
@@ -274,6 +321,7 @@ async function main() {
     await seedCandidates();
     await seedApplications();
     await seedTaskTemplates();
+    await seedTags();
     await seedAssessmentTemplates();
     await seedAssessments();
 
