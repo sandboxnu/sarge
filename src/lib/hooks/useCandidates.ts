@@ -61,7 +61,7 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
             setCandidates((prev) => [...prev, created]);
             toast.success('Candidate created successfully');
         } catch (err) {
-            // We throw here so so we catch the error properly in useCreateCandidateModal handleCreate 
+            // We throw here so so we catch the error properly in useCreateCandidateModal handleCreate
             // and display the error on the modal instead of resolving the onCreate promise and closing the modal.
             // If we were to setError here, the error would be visible on the position page instead.
             throw err;
