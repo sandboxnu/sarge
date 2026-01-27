@@ -115,8 +115,6 @@ function useCreateCandidateModal({ onOpenChange, onCreate }: CreateCandidateModa
             setNotes('');
             onOpenChange(false);
         } catch (err) {
-            // if we reach here, it is a server/database error, we need to show a generic error message
-            // TODO: handle errors in backend to provide more specific messages
             const errorMsg = err instanceof Error ? err.message : 'An unexpected error occurred.';
             setLocalError(errorMsg);
         } finally {
