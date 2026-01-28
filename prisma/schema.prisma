@@ -113,10 +113,10 @@ model Application {
   updatedAt DateTime  @updatedAt
   decidedAt DateTime?
 
-  candidate     Candidate   @relation(fields: [candidateId], references: [id], onDelete: Cascade)
-  position      Position    @relation(fields: [positionId], references: [id], onDelete: Cascade)
-  assessment    Assessment?
-  grader        User?       @relation("ApplicationDecision", fields: [graderId], references: [id], onDelete: SetNull)
+  candidate  Candidate   @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  position   Position    @relation(fields: [positionId], references: [id], onDelete: Cascade)
+  assessment Assessment?
+  grader     User?       @relation("ApplicationDecision", fields: [graderId], references: [id], onDelete: SetNull)
 
   @@unique([candidateId, positionId])
   @@index([positionId, assessmentStatus]) // For position stats queries
