@@ -5,7 +5,7 @@ import { Button } from '@/lib/components/ui/Button';
 import { DropdownMenu } from '@/lib/components/ui/Dropdown';
 import { Tabs, TabsList, UnderlineTabsTrigger } from '@/lib/components/ui/Tabs';
 import { ArrowDownUp, ChevronDown, Plus, SlidersHorizontal } from 'lucide-react';
-import { useTaskList } from '@/lib/hooks/useTaskList';
+import { useTaskTemplateList } from '@/lib/hooks/useTaskList';
 import TaskCard from '@/lib/components/core/TaskCard';
 import type { TaskTemplateWithTagsDTO } from '@/lib/schemas/task-template.schema';
 import {
@@ -14,9 +14,10 @@ import {
     DropdownMenuLabel,
     DropdownMenuTrigger,
 } from '@radix-ui/react-dropdown-menu';
+import Image from 'next/image';
 
 export default function TemplatesPage() {
-    const { taskList, isLoading, error } = useTaskList();
+    const { taskTemplateList, isLoading, error } = useTaskTemplateList();
 
     return (
         <div className="flex h-full flex-col">
@@ -27,7 +28,7 @@ export default function TemplatesPage() {
                         <Tabs defaultValue="tasks">
                             <TabsList className="h-auto gap-5 bg-transparent p-0">
                                 <UnderlineTabsTrigger value="tasks">
-                                    Tasks ({taskList?.length})
+                                    Tasks ({taskTemplateList?.length})
                                 </UnderlineTabsTrigger>
                                 <UnderlineTabsTrigger value="assessments">
                                     Assessments
@@ -81,12 +82,23 @@ export default function TemplatesPage() {
                             </Button>
                         </div>
                     </div>
-                    <div className="flex flex-col gap-2.5">
+                    <div className="flex h-full w-full flex-col gap-2.5">
                         {isLoading && <div className="">Loading</div>}
-                        {error && <div className="">Loading</div>}
+                        {error && <div className="">Error</div>}
+                        {taskTemplateList && taskTemplateList.length === 0 && (
+                            <div className="text-sarge-gray-300 flex h-full w-full flex-col items-center justify-center">
+                                <Image
+                                    src={'../Winston Logomark.svg'}
+                                    height={200}
+                                    width={200}
+                                    alt={'Winston Logo'}
+                                />
+                                You currently have no tasks
+                            </div>
+                        )}
                         {/* eslint-disable-next-line @typescript-eslint/prefer-optional-chain */}
-                        {taskList &&
-                            taskList.map((task: TaskTemplateWithTagsDTO, idx: number) => {
+                        {taskTemplateList &&
+                            taskTemplateList.map((task: TaskTemplateWithTagsDTO, idx: number) => {
                                 return (
                                     <TaskCard
                                         key={idx}

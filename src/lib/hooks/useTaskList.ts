@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import type { TaskTemplateWithTagsDTO } from '@/lib/schemas/task-template.schema';
 
-export function useTaskList() {
-    const [taskList, setTaskList] = useState<TaskTemplateWithTagsDTO[] | null>(null);
+export function useTaskTemplateList() {
+    const [taskTemplateList, setTaskTemplateList] = useState<TaskTemplateWithTagsDTO[] | null>(
+        null
+    );
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error | null>(null);
 
@@ -21,7 +23,7 @@ export function useTaskList() {
                 }
 
                 const body = await response.json();
-                setTaskList(body.data);
+                setTaskTemplateList(body.data);
             } catch (error) {
                 setError(error as Error);
             } finally {
@@ -33,7 +35,7 @@ export function useTaskList() {
     }, []);
 
     return {
-        taskList,
+        taskTemplateList,
         isLoading,
         error,
     };
