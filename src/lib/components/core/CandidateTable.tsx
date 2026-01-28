@@ -105,6 +105,15 @@ export function CandidateTable({ candidates }: CandidateTableProps) {
                     ),
             },
             {
+                accessorKey: 'graderName',
+                header: 'GRADER',
+                cell: ({ row }) => (
+                    <span className="text-sarge-gray-800 inline-flex items-center gap-1.5 text-sm">
+                        {row.original.graderName ?? '-'}
+                    </span>
+                ),
+            },
+            {
                 accessorKey: 'decisionMaker.name',
                 header: 'DECISION',
                 cell: ({ row }) => (

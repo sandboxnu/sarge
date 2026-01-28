@@ -75,7 +75,7 @@ async function addApplicationToPosition(
                     submittedAt: true,
                 },
             },
-            decidedByUser: {
+            grader: {
                 select: {
                     id: true,
                     name: true,
@@ -154,7 +154,7 @@ async function batchAddApplicationsToPosition(
                     submittedAt: true,
                 },
             },
-            decidedByUser: {
+            grader: {
                 select: {
                     id: true,
                     name: true,
@@ -164,11 +164,16 @@ async function batchAddApplicationsToPosition(
         },
     });
 
+    const applicationsWithDisplayName = applications.map((app) => ({
+        ...app,
+        graderName: app.grader?.name ?? '-',
+    }));
+
     return {
         candidatesCreated: candidatesCreated.count,
         entriesCreated: applicationsCreated.count,
         totalProcessed: candidates.length,
-        candidates: applications,
+        candidates: applicationsWithDisplayName,
     };
 }
 
@@ -203,7 +208,7 @@ async function getPositionApplications(
                     submittedAt: true,
                 },
             },
-            decidedByUser: {
+            grader: {
                 select: {
                     id: true,
                     name: true,
@@ -214,7 +219,11 @@ async function getPositionApplications(
         orderBy: { assessmentStatus: 'desc' },
     });
 
-    return applications;
+    // Ensure a ready-to-render display name is provided
+    return applications.map((app) => ({
+        ...app,
+        graderName: app.grader?.name ?? '-',
+    }));
 }
 
 /**
