@@ -2,6 +2,7 @@ import { type NextRequest } from 'next/server';
 import { handleError } from '@/lib/utils/errors.utils';
 import TaskTemplateService from '@/lib/services/task-template.service';
 import { createTaskTemplateSchema } from '@/lib/schemas/task-template.schema';
+import { getSession } from '@/lib/utils/auth.utils';
 
 export async function POST(request: NextRequest) {
     try {
@@ -16,7 +17,10 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
     try {
-        const templates = await TaskTemplateService.getAllTaskTemplates();
+        const session = await getSession();
+        const templates = await TaskTemplateService.getAllTaskTemplates(
+            session.activeOrganizationId
+        );
         return Response.json({ data: templates }, { status: 200 });
     } catch (err) {
         return handleError(err);

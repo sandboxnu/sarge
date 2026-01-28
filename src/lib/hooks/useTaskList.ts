@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import type { TaskTemplateDTO } from '@/lib/schemas/task-template.schema';
+import type { TaskTemplateWithTagsDTO } from '@/lib/schemas/task-template.schema';
 
 export function useTaskList() {
-    const [taskList, setTaskList] = useState<TaskTemplateDTO[] | null>(null);
+    const [taskList, setTaskList] = useState<TaskTemplateWithTagsDTO[] | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error | null>(null);
 

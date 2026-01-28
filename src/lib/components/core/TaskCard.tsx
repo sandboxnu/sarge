@@ -1,10 +1,11 @@
 import { Chip } from '@/lib/components/ui/Chip';
+import type { TagDTO } from '@/lib/schemas/tag.schema';
 import { Square } from 'lucide-react';
 
 export interface TaskCardProps {
     title: string;
     subtitle: string;
-    chips: string[];
+    chips: TagDTO[];
     selected: boolean;
 }
 
@@ -22,10 +23,14 @@ export default function TaskCard(taskCardProps: TaskCardProps) {
                     </div>
                 </div>
                 <div className="flex gap-1">
-                    {taskCardProps.chips.map((txt, idx) => {
+                    {taskCardProps.chips.map((chip, idx) => {
                         return (
-                            <Chip key={idx} className="rounded-md px-2 py-1 text-xs">
-                                {txt}
+                            <Chip
+                                key={idx}
+                                className="rounded-md px-2 py-1 text-xs text-black"
+                                style={{ backgroundColor: chip.colorHexCode }}
+                            >
+                                {chip.name}
                             </Chip>
                         );
                     })}
