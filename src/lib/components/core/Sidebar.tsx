@@ -1,6 +1,6 @@
 'use client';
 
-import { Home, File, ListChecks, Users, Book, Archive, Settings, ChevronDown } from 'lucide-react';
+import { Home, File, Users, Book, Archive, Settings, ChevronDown } from 'lucide-react';
 import { useAuth } from '@/lib/auth/auth-context';
 import Image from 'next/image';
 import useOnboardingState from '@/lib/hooks/useOnboardingState';
