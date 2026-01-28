@@ -76,7 +76,7 @@ async function addCandidateToPosition(
                     submittedAt: true,
                 },
             },
-            decidedByUser: {
+            grader: {
                 select: {
                     id: true,
                     name: true,
@@ -153,7 +153,7 @@ async function batchAddCandidatesToPosition(
                     submittedAt: true,
                 },
             },
-            decidedByUser: {
+            grader: {
                 select: {
                     id: true,
                     name: true,
@@ -202,7 +202,7 @@ async function getPositionCandidates(
                     submittedAt: true,
                 },
             },
-            decidedByUser: {
+            grader: {
                 select: {
                     id: true,
                     name: true,

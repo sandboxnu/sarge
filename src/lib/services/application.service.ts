@@ -75,7 +75,7 @@ async function addApplicationToPosition(
                     submittedAt: true,
                 },
             },
-            decidedByUser: {
+            grader: {
                 select: {
                     id: true,
                     name: true,
@@ -154,7 +154,7 @@ async function batchAddApplicationsToPosition(
                     submittedAt: true,
                 },
             },
-            decidedByUser: {
+            grader: {
                 select: {
                     id: true,
                     name: true,
@@ -168,7 +168,10 @@ async function batchAddApplicationsToPosition(
         candidatesCreated: candidatesCreated.count,
         entriesCreated: applicationsCreated.count,
         totalProcessed: candidates.length,
-        candidates: applications,
+        candidates: applications.map((app) => ({
+            ...app,
+            graderName: app.grader?.name ?? '-',
+        })),
     };
 }
 
@@ -203,7 +206,7 @@ async function getPositionApplications(
                     submittedAt: true,
                 },
             },
-            decidedByUser: {
+            grader: {
                 select: {
                     id: true,
                     name: true,
@@ -214,7 +217,10 @@ async function getPositionApplications(
         orderBy: { assessmentStatus: 'desc' },
     });
 
-    return applications;
+    return applications.map((app) => ({
+        ...app,
+        graderName: app.grader?.name ?? '-',
+    }));
 }
 
 /**

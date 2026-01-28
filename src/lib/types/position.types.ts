@@ -25,10 +25,11 @@ export interface ApplicationDisplayInfo {
         uniqueLink: string;
         submittedAt: Date | null;
     } | null;
-    decidedByUser: {
+    grader: {
         name: string;
         email: string;
     } | null;
+    graderName?: string;
 }
 
 export interface BatchAddResult {
