@@ -164,16 +164,14 @@ async function batchAddApplicationsToPosition(
         },
     });
 
-    const applicationsWithDisplayName = applications.map((app) => ({
-        ...app,
-        graderName: app.grader?.name ?? '-',
-    }));
-
     return {
         candidatesCreated: candidatesCreated.count,
         entriesCreated: applicationsCreated.count,
         totalProcessed: candidates.length,
-        candidates: applicationsWithDisplayName,
+        candidates: applications.map((app) => ({
+            ...app,
+            graderName: app.grader?.name ?? '-',
+        })),
     };
 }
 
@@ -219,7 +217,6 @@ async function getPositionApplications(
         orderBy: { assessmentStatus: 'desc' },
     });
 
-    // Ensure a ready-to-render display name is provided
     return applications.map((app) => ({
         ...app,
         graderName: app.grader?.name ?? '-',
