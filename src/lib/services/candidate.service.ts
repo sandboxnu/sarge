@@ -86,10 +86,7 @@ async function addCandidateToPosition(
         },
     });
 
-    return {
-        ...application,
-        graderDisplayName: application.grader?.name ?? '-',
-    };
+    return application;
 }
 
 /**
@@ -166,17 +163,11 @@ async function batchAddCandidatesToPosition(
         },
     });
 
-
-    const mapped = applications.map((a) => ({
-        ...a,
-        graderDisplayName: a.grader?.name ?? '-',
-    }));
-
     return {
         candidatesCreated: candidatesCreated.count,
         entriesCreated: applicationsCreated.count,
         totalProcessed: candidates.length,
-        candidates: mapped,
+        candidates: applications,
     };
 }
 
@@ -222,10 +213,7 @@ async function getPositionCandidates(
         orderBy: { assessmentStatus: 'desc' },
     });
 
-    return applications.map((a) => ({
-        ...a,
-        graderDisplayName: a.grader?.name ?? '-',
-    }));
+    return applications;
 }
 
 /**
