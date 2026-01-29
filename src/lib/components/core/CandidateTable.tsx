@@ -8,25 +8,11 @@ import { DataTable } from '@/lib/components/ui/DataTable';
 import type { ApplicationDisplayInfo } from '@/lib/types/position.types';
 import { PositionAssessmentCard } from '@/lib/components/core/PositionAssessmentCard';
 import { cn } from '@/lib/utils/cn.utils';
+import { getStatusBadgeColor } from '@/lib/utils/status.utils';
 
 interface CandidateTableProps {
     candidates: ApplicationDisplayInfo[];
 }
-
-const getDecisionBadgeClasses = (status: string) => {
-    const s = (status ?? '').toUpperCase();
-    if (s === 'ACCEPTED') return 'bg-sarge-success-100 text-sarge-success-800';
-    if (s === 'REJECTED') return 'bg-sarge-error-200 text-sarge-error-700';
-    return 'bg-sarge-gray-200 text-sarge-gray-600';
-};
-
-const getAssessmentBadgeClasses = (status: string) => {
-    const s = (status ?? '').toUpperCase();
-    if (s === 'SUBMITTED') return 'bg-sarge-primary-200 text-sarge-primary-600';
-    if (s === 'EXPIRED') return 'bg-sarge-error-200 text-sarge-error-700';
-    if (s === 'GRADED') return 'bg-sarge-success-100 text-sarge-success-800';
-    return 'bg-sarge-gray-200 text-sarge-gray-600'; // NOT_ASSIGNED or NOT_STARTED
-};
 
 const getAssessmentLabel = (status?: string) => {
     const s = (status ?? '').toUpperCase();
@@ -98,7 +84,8 @@ export function CandidateTable({ candidates }: CandidateTableProps) {
                         return <span className="text-body-s text-sarge-gray-600">N/A</span>;
                     }
 
-                    const label = getAssessmentLabel(row.original.assessmentStatus);
+                    const assessmentStatus = row.original.assessmentStatus;
+                    const label = getAssessmentLabel(assessmentStatus);
                     return (
                         <PositionAssessmentCard
                             onClick={() => undefined}
@@ -108,7 +95,7 @@ export function CandidateTable({ candidates }: CandidateTableProps) {
                             <span
                                 className={cn(
                                     `inline-flex items-center rounded-md ${chipPaddingClass} text-xs font-medium`,
-                                    getAssessmentBadgeClasses(label)
+                                    getStatusBadgeColor(assessmentStatus)
                                 )}
                             >
                                 {label}
@@ -153,7 +140,7 @@ export function CandidateTable({ candidates }: CandidateTableProps) {
                         <span
                             className={cn(
                                 `inline-flex items-center gap-1 rounded-md ${chipPaddingClass} text-xs font-medium`,
-                                getDecisionBadgeClasses(decision)
+                                getStatusBadgeColor(decision)
                             )}
                         >
                             {decisionLabel}

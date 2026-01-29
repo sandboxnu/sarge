@@ -83,8 +83,6 @@ export function getSubmissionVariant(submitted: number, total: number): ChipVari
 
 /**
  * Get Tailwind CSS classes for status badge color
- * Legacy function for backwards compatibility with existing code
- * @deprecated Use getAssessmentStatusVariant or getDecisionStatusVariant with Chip component instead
  */
 export function getStatusBadgeColor(status: AssessmentStatus | DecisionStatus | string): string {
     if (status === 'ACCEPTED' || status === 'GRADED') {
@@ -93,7 +91,7 @@ export function getStatusBadgeColor(status: AssessmentStatus | DecisionStatus | 
     if (status === 'REJECTED' || status === 'EXPIRED') {
         return 'bg-sarge-error-200 text-sarge-error-700';
     }
-    if (status === 'NOT_STARTED') {
+    if (status === 'NOT_STARTED' || status === 'NOT_ASSIGNED') {
         return 'bg-sarge-gray-200 text-sarge-gray-600'; // Gray per Figma design
     }
     if (status === 'SUBMITTED') {
