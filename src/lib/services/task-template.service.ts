@@ -24,7 +24,11 @@ async function getTaskTemplate(id: string): Promise<TaskTemplate> {
     return foundTaskTemplate;
 }
 
-async function getAllTaskTemplates(orgId: string): Promise<TaskTemplateWithTagsDTO[]> {
+async function getAllTaskTemplates(
+    orgId: string,
+    page: number,
+    limit: number
+): Promise<TaskTemplateWithTagsDTO[]> {
     const templates = await prisma.taskTemplate.findMany({
         where: {
             orgId,
@@ -32,6 +36,8 @@ async function getAllTaskTemplates(orgId: string): Promise<TaskTemplateWithTagsD
         include: {
             tags: true,
         },
+        skip: page * limit, // look into cursor pagination (prisma docs say better at scale) we are not at scale
+        take: limit,
     });
     /**
      * I put this here because there is a type issue between prisma and our zod schema

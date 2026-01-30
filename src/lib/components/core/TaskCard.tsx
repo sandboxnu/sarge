@@ -11,7 +11,7 @@ export interface TaskCardProps {
 
 export default function TaskCard(taskCardProps: TaskCardProps) {
     return (
-        <div className="border-sarge-gray-200 flex gap-4.5 rounded-xl border-1 p-4">
+        <div className="border-sarge-gray-200 hover:bg-sarge-primary-100 hover:border-sarge-primary-400 flex gap-4.5 rounded-xl border-1 p-4">
             <div className="flex items-center">
                 <Square className="h-5 w-5" />
             </div>
@@ -22,7 +22,7 @@ export default function TaskCard(taskCardProps: TaskCardProps) {
                         {taskCardProps.subtitle}
                     </div>
                 </div>
-                <div className="flex gap-1">
+                <div className="flex flex-wrap gap-1">
                     {taskCardProps.chips.map((chip, idx) => {
                         return (
                             <Chip

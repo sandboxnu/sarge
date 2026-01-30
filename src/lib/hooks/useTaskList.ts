@@ -7,11 +7,13 @@ export function useTaskTemplateList() {
     );
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error | null>(null);
+    const [limit, setLimit] = useState<number>(10);
+    const [page, setPage] = useState<number>(0);
 
     useEffect(() => {
         async function fetchTaskList() {
             try {
-                const response = await fetch('/api/task-templates', {
+                const response = await fetch(`/api/task-templates?page=${page}&limit=${limit}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -32,10 +34,12 @@ export function useTaskTemplateList() {
         }
 
         fetchTaskList();
-    }, []);
+    }, [limit, page]);
 
     return {
         taskTemplateList,
+        setLimit,
+        setPage,
         isLoading,
         error,
     };

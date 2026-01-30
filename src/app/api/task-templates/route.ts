@@ -15,11 +15,20 @@ export async function POST(request: NextRequest) {
     }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
     try {
         const session = await getSession();
+        const searchParams = request.nextUrl.searchParams;
+        const pageParam = searchParams.get('page') ?? '0';
+        const limitParam = searchParams.get('limit') ?? '10';
+
+        const page = isNaN(parseInt(pageParam)) ? 0 : parseInt(pageParam);
+        const limit = isNaN(parseInt(limitParam)) ? 10 : parseInt(limitParam);
+
         const templates = await TaskTemplateService.getAllTaskTemplates(
-            session.activeOrganizationId
+            'org_nextlab_001',
+            page,
+            limit
         );
         return Response.json({ data: templates }, { status: 200 });
     } catch (err) {
