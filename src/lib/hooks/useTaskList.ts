@@ -38,6 +38,8 @@ export function useTaskTemplateList() {
 
     return {
         taskTemplateList,
+        limit,
+        page,
         setLimit,
         setPage,
         isLoading,

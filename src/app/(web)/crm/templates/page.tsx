@@ -15,9 +15,11 @@ import {
     DropdownMenuTrigger,
 } from '@radix-ui/react-dropdown-menu';
 import Image from 'next/image';
+import Pager from '@/lib/components/ui/Pager';
 
 export default function TemplatesPage() {
-    const { taskTemplateList, isLoading, error, setLimit, setPage } = useTaskTemplateList();
+    const { taskTemplateList, isLoading, error, limit, page, setLimit, setPage } =
+        useTaskTemplateList();
 
     return (
         <div className="flex h-full flex-col">
@@ -120,6 +122,15 @@ export default function TemplatesPage() {
                             <Button className="flex-1 px-4 py-2" variant="secondary">
                                 Create Assessment
                             </Button>
+                        </div>
+                        <div className="flex justify-end">
+                            <Pager
+                                page={page}
+                                limit={limit}
+                                total={limit}
+                                changePage={setPage}
+                                changeLimit={setLimit}
+                            />
                         </div>
                     </div>
                 </div>
