@@ -67,7 +67,7 @@ async function getPositionsByOrgId(orgId: string): Promise<PositionWithCounts[]>
                 },
             },
             applications: {
-                where: { assessmentStatus: AssessmentStatus.ASSIGNED },
+                where: { assessmentStatus: AssessmentStatus.NOT_STARTED },
                 select: { id: true },
             },
         },

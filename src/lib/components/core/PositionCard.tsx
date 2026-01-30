@@ -1,5 +1,6 @@
 'use client';
-import { FileText, MoreVertical } from 'lucide-react';
+import { MoreVertical } from 'lucide-react';
+import { PositionAssessmentCard } from '@/lib/components/core/PositionAssessmentCard';
 import { cn } from '@/lib/utils/cn.utils';
 import { Chip } from '@/lib/components/ui/Chip';
 import { getSubmissionVariant } from '@/lib/utils/status.utils';
@@ -7,7 +8,7 @@ import { getSubmissionVariant } from '@/lib/utils/status.utils';
 type PositionCardProps = {
     title: string;
     candidateCount: number;
-    assessmentName: string;
+    assessmentName?: string;
     assignedCount?: number;
     submittedCount?: number;
     totalAssigned?: number;
@@ -18,7 +19,6 @@ type PositionCardProps = {
 export default function PositionCard({
     title,
     candidateCount,
-    assessmentName,
     assignedCount = 0,
     submittedCount = 0,
     totalAssigned = 0,
@@ -76,28 +76,17 @@ export default function PositionCard({
                     <MoreVertical className="h-5 w-5" />
                 </button>
             </div>
-            <div className="border-sarge-gray-200 bg-sarge-gray-0 mt-4 w-full rounded-md border p-3">
-                <div className="flex flex-col items-start gap-2">
-                    <div className="flex w-full min-w-0 items-start gap-3">
-                        <FileText className="text-sarge-gray-600 h-5 w-5 shrink-0" />
-                        <div className="min-w-0 flex-1">
-                            <div
-                                className="text-label-s text-sarge-gray-800 truncate"
-                                title={assessmentName}
-                            >
-                                {assessmentName}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="flex flex-wrap items-center gap-1">
-                        <Chip variant="neutral">{assignedCount} sent</Chip>
-                        <Chip variant={submissionVariant}>
-                            {submittedCount}/{totalAssigned} submitted
-                        </Chip>
-                    </div>
-                </div>
-            </div>
+            <PositionAssessmentCard
+                className="mt-4 w-full"
+                onClick={() => {
+                    // TODO: implement on click? currently if you click in this button it does whatever the outer card does
+                }}
+            >
+                <Chip variant="neutral">{assignedCount} sent</Chip>
+                <Chip variant={submissionVariant}>
+                    {submittedCount}/{totalAssigned} submitted
+                </Chip>
+            </PositionAssessmentCard>
         </div>
     );
 }
