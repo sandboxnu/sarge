@@ -125,14 +125,17 @@ model Application {
 
 // Represents an assessment composed of tasks (questions) that could be assigned to a position.
 model AssessmentTemplate {
-  id            String   @id @unique @default(cuid())
-  title         String
-  description   String
-  orgId         String
-  taskTemplates String[]
+  id          String @id @unique @default(cuid())
+  title       String
+  description String
+  orgId       String
 
   organization Organization @relation(fields: [orgId], references: [id])
   assessments  Assessment[] @relation("derivedFromAssessmentTemplate")
+
+  tasks AssessmentTemplateTask[]
+
+  @@index([title])
 }
 
 // A task (question) that could be asked in an assessment. Contains test cases, description, and starter code.
@@ -147,6 +150,25 @@ model TaskTemplate {
   organization Organization @relation(fields: [orgId], references: [id])
   tasks        Task[]       @relation("derivedFromTaskTemplate")
   tags         Tag[]        @relation("TaskTemplateTags")
+
+  assessments AssessmentTemplateTask[]
+
+  @@index([title])
+}
+
+// Mapping table between task templates and assessment templates that includes the order in which task templates
+// should be displayed to the candidate
+model AssessmentTemplateTask {
+  assessmentTemplateId String
+  taskTemplateId       String
+  order                Int
+
+  assessmentTemplate AssessmentTemplate @relation(fields: [assessmentTemplateId], references: [id])
+  taskTemplate       TaskTemplate       @relation(fields: [taskTemplateId], references: [id])
+
+  @@id([assessmentTemplateId, taskTemplateId])
+  @@unique([assessmentTemplateId, order])
+  @@index([assessmentTemplateId, order])
 }
 
 // A task within an assessment, containing the candidate's submitted code.
@@ -316,7 +338,7 @@ model Tag {
 
   organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
 
-  // These are taggable items. 
+  // These are taggable items.
   taskTemplates TaskTemplate[] @relation("TaskTemplateTags")
   positions     Position[]     @relation("PositionTags")
 
