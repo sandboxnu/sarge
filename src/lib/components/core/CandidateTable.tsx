@@ -122,8 +122,17 @@ export function CandidateTable({ candidates }: CandidateTableProps) {
                     ),
             },
             {
-                accessorKey: 'decidedByUser.name',
-                header: () => <HeaderLabel>GRADER</HeaderLabel>,
+                accessorKey: 'graderName',
+                header: 'GRADER',
+                cell: ({ row }) => (
+                    <span className="text-sarge-gray-800 inline-flex items-center gap-1.5 text-sm">
+                        {row.original.graderName ?? '-'}
+                    </span>
+                ),
+            },
+            {
+                accessorKey: 'decisionMaker.name',
+                header: 'DECISION',
                 cell: ({ row }) => (
                     <span className="text-body-s text-sarge-gray-800 font-normal tracking-[0.406px]">
                         {row.original.decidedByUser?.name ?? '—'}
