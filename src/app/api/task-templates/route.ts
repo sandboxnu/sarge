@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
         const limit = isNaN(parseInt(limitParam)) ? 10 : parseInt(limitParam);
 
         const templates = await TaskTemplateService.getAllTaskTemplates(
-            'org_nextlab_001',
+            session.activeOrganizationId,
             page,
             limit
         );

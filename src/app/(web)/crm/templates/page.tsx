@@ -16,6 +16,7 @@ import {
 } from '@radix-ui/react-dropdown-menu';
 import Image from 'next/image';
 import Pager from '@/lib/components/ui/Pager';
+import GreyWinstonLogoMark from '@/../public/GreyWinstonLogoMark.svg';
 
 export default function TemplatesPage() {
     const { taskTemplateList, isLoading, error, limit, page, setLimit, setPage } =
@@ -77,11 +78,11 @@ export default function TemplatesPage() {
                         )}
                         {error && <div className="">Error</div>}
                         {taskTemplateList && taskTemplateList.length === 0 && (
-                            <div className="text-sarge-gray-300 flex h-full w-full flex-col items-center justify-center">
+                            <div className="text-sarge-gray-500 flex h-full w-full flex-col items-center justify-center gap-4">
                                 <Image
-                                    src={'../Winston Logomark.svg'}
-                                    height={200}
-                                    width={200}
+                                    src={GreyWinstonLogoMark}
+                                    height={78}
+                                    width={140}
                                     alt={'Winston Logo'}
                                 />
                                 You currently have no tasks
