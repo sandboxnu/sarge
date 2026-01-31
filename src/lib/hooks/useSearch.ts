@@ -28,7 +28,7 @@ export default function useSearch<T extends SearchType>(type: T) {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
-    const debouncedQuery = useDebounce(query, 300);
+    const debouncedQuery = useDebounce(query, 500);
 
     const isSearchPending = query.trim().length >= 1 && query !== debouncedQuery;
 
