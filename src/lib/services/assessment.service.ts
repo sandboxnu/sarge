@@ -14,7 +14,11 @@ async function getAssessmentWithRelations(id: string): Promise<AssessmentWithRel
         },
         include: {
             application: true,
-            assessmentTemplate: true,
+            assessmentTemplate: {
+                include: {
+                    tasks: true,
+                },
+            },
         },
     });
 
