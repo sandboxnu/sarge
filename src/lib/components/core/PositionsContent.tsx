@@ -25,29 +25,24 @@ export default function PositionsContent() {
         handlePositionClick,
     } = usePositionContent();
 
-    const {
-        value,
-        onChange,
-        data,
-        loading,
-    } = useSearch('positions')
+    const { value, onChange, data, loading } = useSearch('positions');
 
     const isSearching = value.trim().length >= 2;
 
-    const displayedActivePositions = isSearching
-        ? data.filter((p) => !p.archived)
-        : active;
+    const displayedActivePositions = isSearching ? data.filter((p) => !p.archived) : active;
 
-    const displayedArchivedPositions = isSearching
-        ? data.filter((p) => p.archived)
-        : archived;
+    const displayedArchivedPositions = isSearching ? data.filter((p) => p.archived) : archived;
 
     return (
         <>
             <Tabs defaultValue="active" className="flex flex-col gap-3">
                 <div className="flex items-center gap-4">
                     <div className="flex-1">
-                        <Search value={value} onChange={onChange} placeholder="Type to search for a position" />
+                        <Search
+                            value={value}
+                            onChange={onChange}
+                            placeholder="Type to search for a position"
+                        />
                     </div>
 
                     <div className="flex items-center gap-3">
@@ -93,7 +88,7 @@ export default function PositionsContent() {
 
                 <TabsContent value="active" className="flex flex-col gap-4">
                     {loading ? (
-                        <div className="py-10 text-center text-sarge-gray-500">
+                        <div className="text-sarge-gray-500 py-10 text-center">
                             Searching positions…
                         </div>
                     ) : displayedActivePositions.length > 0 ? (
@@ -118,22 +113,29 @@ export default function PositionsContent() {
 
                 <TabsContent value="archived" className="flex flex-col gap-4">
                     {loading ? (
-                        <div className="py-10 text-center text-sarge-gray-500">
+                        <div className="text-sarge-gray-500 py-10 text-center">
                             Searching positions…
                         </div>
-                    ) :
-                        displayedArchivedPositions.length > 0 ? (
-                            <PositionCardGrid
-                                positions={displayedArchivedPositions}
-                                onPositionClick={handlePositionClick}
-                            />
-                        ) : (
-                            <EmptyState
-                                imageSrc="/No_Archive.svg"
-                                title="You have no archived positions"
-                                description="Archive positions to keep your workspace organized"
-                            />
-                        )}
+                    ) : displayedArchivedPositions.length > 0 ? (
+                        <PositionCardGrid
+                            positions={displayedArchivedPositions}
+                            onPositionClick={handlePositionClick}
+                        />
+                    ) : (
+                        <EmptyState
+                            imageSrc="/No_Archive.svg"
+                            title={
+                                isSearching
+                                    ? 'No positions found'
+                                    : 'You have no archived positions'
+                            }
+                            description={
+                                isSearching
+                                    ? 'Try a different search term'
+                                    : 'Archive positions to keep your workspace organized'
+                            }
+                        />
+                    )}
                 </TabsContent>
             </Tabs>
 
