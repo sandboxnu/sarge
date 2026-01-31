@@ -100,7 +100,7 @@ async function updateTaskTemplate(taskTemplate: UpdateTaskTemplateDTO): Promise<
     return updatedTaskTemplate;
 }
 
-async function getTaskTemplateByTitle(title: string, orgId: string): Promise<TaskTemplate[]> {
+async function getTaskTemplatesByTitle(title: string, orgId: string): Promise<TaskTemplate[]> {
     const taskTemplatesWithTitle = await prisma.taskTemplate.findMany({
         where: {
             orgId,
@@ -129,7 +129,7 @@ const TaskTemplateService = {
     createTaskTemplate,
     deleteTaskTemplate,
     updateTaskTemplate,
-    getTaskTemplateByTitle,
+    getTaskTemplatesByTitle,
     getAllTaskTemplates,
 };
 

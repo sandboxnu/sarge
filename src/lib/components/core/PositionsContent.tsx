@@ -10,6 +10,7 @@ import CreatePositionModal from '@/lib/components/modal/CreatePositionModal';
 import PositionPreviewModal from '@/lib/components/modal/PositionPreviewModal';
 import Image from 'next/image';
 import usePositionContent from '@/lib/hooks/usePositionsContent';
+import useSearch from '@/lib/hooks/useSearch';
 
 export default function PositionsContent() {
     const {
@@ -24,12 +25,29 @@ export default function PositionsContent() {
         handlePositionClick,
     } = usePositionContent();
 
+    const {
+        value,
+        onChange,
+        data,
+        loading,
+    } = useSearch('positions')
+
+    const isSearching = value.trim().length >= 2;
+
+    const displayedActivePositions = isSearching
+        ? data.filter((p) => !p.archived)
+        : active;
+
+    const displayedArchivedPositions = isSearching
+        ? data.filter((p) => p.archived)
+        : archived;
+
     return (
         <>
             <Tabs defaultValue="active" className="flex flex-col gap-3">
                 <div className="flex items-center gap-4">
                     <div className="flex-1">
-                        <Search placeholder="Type to search for a position" />
+                        <Search value={value} onChange={onChange} placeholder="Type to search for a position" />
                     </div>
 
                     <div className="flex items-center gap-3">
@@ -65,42 +83,57 @@ export default function PositionsContent() {
                 <div className="border-sarge-gray-200 border-b">
                     <TabsList className="h-auto gap-5 bg-transparent p-0">
                         <UnderlineTabsTrigger value="active">
-                            Active ({active.length ?? 0})
+                            Active ({displayedActivePositions.length ?? 0})
                         </UnderlineTabsTrigger>
                         <UnderlineTabsTrigger value="archived">
-                            Archived ({archived.length})
+                            Archived ({displayedArchivedPositions.length})
                         </UnderlineTabsTrigger>
                     </TabsList>
                 </div>
 
                 <TabsContent value="active" className="flex flex-col gap-4">
-                    {active.length > 0 ? (
+                    {loading ? (
+                        <div className="py-10 text-center text-sarge-gray-500">
+                            Searching positions…
+                        </div>
+                    ) : displayedActivePositions.length > 0 ? (
                         <PositionCardGrid
-                            positions={active}
+                            positions={displayedActivePositions}
                             onPositionClick={handlePositionClick}
                         />
                     ) : (
                         <EmptyState
                             imageSrc="/User_empty.svg"
-                            title="You have no active positions"
-                            description="Create a position to upload candidates"
+                            title={
+                                isSearching ? 'No positions found' : 'You have no active positions'
+                            }
+                            description={
+                                isSearching
+                                    ? 'Try a different search term'
+                                    : 'Create a position to upload candidates'
+                            }
                         />
                     )}
                 </TabsContent>
 
                 <TabsContent value="archived" className="flex flex-col gap-4">
-                    {archived.length > 0 ? (
-                        <PositionCardGrid
-                            positions={archived}
-                            onPositionClick={handlePositionClick}
-                        />
-                    ) : (
-                        <EmptyState
-                            imageSrc="/No_Archive.svg"
-                            title="You have no archived positions"
-                            description="Archive positions to keep your workspace organized"
-                        />
-                    )}
+                    {loading ? (
+                        <div className="py-10 text-center text-sarge-gray-500">
+                            Searching positions…
+                        </div>
+                    ) :
+                        displayedArchivedPositions.length > 0 ? (
+                            <PositionCardGrid
+                                positions={displayedArchivedPositions}
+                                onPositionClick={handlePositionClick}
+                            />
+                        ) : (
+                            <EmptyState
+                                imageSrc="/No_Archive.svg"
+                                title="You have no archived positions"
+                                description="Archive positions to keep your workspace organized"
+                            />
+                        )}
                 </TabsContent>
             </Tabs>
 

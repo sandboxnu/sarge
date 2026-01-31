@@ -74,7 +74,7 @@ async function updateAssessmentTemplate(
     });
 }
 
-async function getAssessmentTemplateByTitle(
+async function getAssessmentTemplatesByTitle(
     title: string,
     orgId: string
 ): Promise<AssessmentTemplate[]> {
@@ -106,7 +106,7 @@ const AssessmentTemplateService = {
     createAssessmentTemplate,
     deleteAssessmentTemplate,
     updateAssessmentTemplate,
-    getAssessmentTemplateByTitle,
+    getAssessmentTemplatesByTitle,
     getAllAssessmentTemplates,
 };
 

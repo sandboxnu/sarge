@@ -155,3 +155,18 @@ export async function getPositionPreview(positionId: string): Promise<PositionPr
 
     return json.data;
 }
+
+/**
+ * GET /api/positions/search/?title=...
+ */
+export async function searchPositions(title: string): Promise<PositionWithCounts[]> {
+    const res = await fetch(`/api/positions/search/?title=${title}`);
+
+    const json = await res.json();
+
+    if (!res.ok) {
+        throw new Error(json.message);
+    }
+
+    return json.data;
+}

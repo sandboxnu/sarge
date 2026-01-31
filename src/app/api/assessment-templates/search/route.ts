@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
             return Response.json({ data: taskTemplates }, { status: 200 });
         }
 
-        const taskTemplates = await AssessmentTemplateService.getAssessmentTemplateByTitle(
+        const taskTemplates = await AssessmentTemplateService.getAssessmentTemplatesByTitle(
             title,
             orgId
         );
