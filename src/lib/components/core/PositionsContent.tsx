@@ -27,7 +27,7 @@ export default function PositionsContent() {
 
     const { value, onChange, data, loading } = useSearch('positions');
 
-    const isSearching = value.trim().length >= 2;
+    const isSearching = value.trim().length >= 1;
 
     const displayedActivePositions = isSearching ? data.filter((p) => !p.archived) : active;
 
