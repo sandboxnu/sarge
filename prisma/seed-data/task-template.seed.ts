@@ -47,6 +47,9 @@ Constraints:
             },
         ],
         orgId: 'org_nextlab_001',
+        taskType: 'Algorithm',
+        supportedLanguages: ['Python', 'Java', 'JavaScript', 'C'],
+        createdById: 'user_prof_fontenot_001',
     },
     {
         id: 'task_template_reverse_string_001',
@@ -83,7 +86,11 @@ Constraints:
             },
         ],
         orgId: 'org_nextlab_001',
+        taskType: 'String Manipulation',
+        supportedLanguages: ['Python'],
+        createdById: 'user_prof_fontenot_001',
     },
+    // Valid Palindrome: 1 tag (varying case)
     {
         id: 'task_template_palindrome_001',
         title: 'Valid Palindrome',
@@ -131,5 +138,36 @@ Constraints:
             },
         ],
         orgId: 'org_nextlab_001',
+        taskType: 'String Manipulation',
+        supportedLanguages: ['Python', 'Java', 'JavaScript'],
+        createdById: 'user_prof_fontenot_001',
+    },
+    {
+        id: 'task_template_fizzbuzz_001',
+        title: 'Fizzbuzz',
+        content: `Consider the following problem:
+Write a short program that prints each number from 1 to 100 on a new line.
+For each multiple of 3, print "Fizz" instead of the number.
+For each multiple of 5, print "Buzz" instead of the number.
+For numbers which are multiples of both 3 and 5, print "FizzBuzz" instead of the number.
+
+Write a solution (or reduce an existing one) so it has as few characters as possible.`,
+        publicTestCases: [{ input: {}, expected: null }],
+        privateTestCases: [{ input: {}, expected: null }],
+        orgId: 'org_nextlab_001',
+        taskType: 'Single Function',
+        supportedLanguages: ['Python', 'Java', 'C', 'Javascript'],
+        createdById: 'user_prof_fontenot_001',
+    },
+    {
+        id: 'task_template_quick_warmup_001',
+        title: 'Quick Warmup',
+        content: '',
+        publicTestCases: [{ input: {}, expected: null }],
+        privateTestCases: [],
+        orgId: 'org_nextlab_001',
+        taskType: null,
+        supportedLanguages: [],
+        createdById: null,
     },
 ];

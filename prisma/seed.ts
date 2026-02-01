@@ -250,6 +250,15 @@ async function seedTags() {
             },
         },
     });
+
+    await prisma.taskTemplate.update({
+        where: { id: taskTemplatesData[3].id },
+        data: {
+            tags: {
+                connect: [{ id: tagsData[3].id }, { id: tagsData[4].id }],
+            },
+        },
+    });
 }
 
 /**
@@ -261,14 +270,26 @@ async function seedAssessmentTemplates() {
     const orgId = organizationsData[0].id;
 
     for (const assessmentTemplateData of assessmentTemplatesData) {
+        const taskTemplateIds = assessmentTemplateData.taskTemplates;
+        const tasksCreate = taskTemplateIds.map((taskTemplateId, index) => ({
+            taskTemplateId,
+            order: index,
+        }));
+
         await prisma.assessmentTemplate.upsert({
             where: { id: assessmentTemplateData.id },
-            update: {},
+            update: {
+                tasks: {
+                    deleteMany: {},
+                    create: tasksCreate,
+                },
+            },
             create: {
                 id: assessmentTemplateData.id,
                 title: assessmentTemplateData.title,
                 description: assessmentTemplateData.description,
                 orgId,
+                tasks: { create: tasksCreate },
             },
         });
 

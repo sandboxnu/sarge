@@ -25,12 +25,12 @@ export async function GET(request: NextRequest) {
         const page = isNaN(parseInt(pageParam)) ? 0 : parseInt(pageParam);
         const limit = isNaN(parseInt(limitParam)) ? 10 : parseInt(limitParam);
 
-        const templates = await TaskTemplateService.getAllTaskTemplates(
+        const result = await TaskTemplateService.getAllTaskTemplates(
             session.activeOrganizationId,
             page,
             limit
         );
-        return Response.json({ data: templates }, { status: 200 });
+        return Response.json({ data: result.data, total: result.total }, { status: 200 });
     } catch (err) {
         return handleError(err);
     }

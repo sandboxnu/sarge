@@ -12,7 +12,9 @@ export default function CRMLayout({
                 <SidebarProvider>
                     <Toaster />
                     <Sidebar />
-                    <SidebarInset className="overflow-y-auto">{children}</SidebarInset>
+                    <SidebarInset className="min-w-0 flex-1 overflow-y-auto">
+                        {children}
+                    </SidebarInset>
                 </SidebarProvider>
             </div>
         </div>
