@@ -14,6 +14,7 @@ type PositionCardProps = {
     totalAssigned?: number;
     className?: string;
     onClick?: () => void;
+    onAssessmentClick?: () => void;
 };
 
 export default function PositionCard({
@@ -24,10 +25,11 @@ export default function PositionCard({
     totalAssigned = 0,
     className,
     onClick,
+    onAssessmentClick,
 }: PositionCardProps) {
     const submissionVariant = getSubmissionVariant(submittedCount, totalAssigned);
 
-    const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const handleHeaderClick = (e: React.MouseEvent<HTMLDivElement>) => {
         // Don't trigger if clicking the menu button
         if ((e.target as HTMLElement).closest('[data-menu-button]')) {
             return;
@@ -40,24 +42,29 @@ export default function PositionCard({
             className={cn(
                 'min-h-[160px] w-[384px]',
                 'border-sarge-gray-200 bg-sarge-gray-50 rounded-md border p-4',
-                onClick && 'cursor-pointer transition-shadow hover:shadow-md',
+                onClick && 'transition-shadow hover:shadow-md',
                 className
             )}
-            onClick={handleCardClick}
-            role={onClick ? 'button' : undefined}
-            tabIndex={onClick ? 0 : undefined}
-            onKeyDown={
-                onClick
-                    ? (e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                              e.preventDefault();
-                              onClick();
-                          }
-                      }
-                    : undefined
-            }
         >
-            <div className="-mr-4 flex items-start justify-between gap-2">
+            <div
+                className={cn(
+                    '-mr-4 flex items-start justify-between gap-2',
+                    onClick && 'cursor-pointer'
+                )}
+                onClick={handleHeaderClick}
+                role={onClick ? 'button' : undefined}
+                tabIndex={onClick ? 0 : undefined}
+                onKeyDown={
+                    onClick
+                        ? (e) => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                  e.preventDefault();
+                                  onClick();
+                              }
+                          }
+                        : undefined
+                }
+            >
                 <div className="flex min-w-0 flex-[1_0_0] flex-col items-start gap-1 px-1">
                     <h3 className="text-label-s text-sarge-gray-800 line-clamp-2" title={title}>
                         {title}
@@ -78,9 +85,7 @@ export default function PositionCard({
             </div>
             <PositionAssessmentCard
                 className="mt-4 w-full"
-                onClick={() => {
-                    // TODO: implement on click? currently if you click in this button it does whatever the outer card does
-                }}
+                onClick={onAssessmentClick}
             >
                 <Chip variant="neutral">{assignedCount} sent</Chip>
                 <Chip variant={submissionVariant}>
