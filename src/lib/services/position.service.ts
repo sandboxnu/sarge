@@ -238,37 +238,6 @@ async function getPositionsByTitle(title: string, orgId: string): Promise<Positi
     }));
 }
 
-async function getAllPositions(orgId: string): Promise<PositionWithCounts[]> {
-    const positions = await prisma.position.findMany({
-        where: {
-            orgId,
-        },
-        select: {
-            id: true,
-            title: true,
-            createdAt: true,
-            archived: true,
-            _count: {
-                select: {
-                    applications: true,
-                },
-            },
-            applications: {
-                select: { id: true },
-            },
-        },
-    });
-
-    return positions.map((p) => ({
-        id: p.id,
-        title: p.title,
-        archived: p.archived,
-        numCandidates: p._count.applications,
-        numAssigned: p.applications.length,
-        createdAt: p.createdAt,
-    }));
-}
-
 const PositionService = {
     createPosition,
     deletePosition,
@@ -277,7 +246,6 @@ const PositionService = {
     getPositionPreview,
     updatePosition,
     getPositionsByTitle,
-    getAllPositions,
 };
 
 export default PositionService;

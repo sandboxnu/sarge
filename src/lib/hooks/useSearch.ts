@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useDebounce } from './useDebounce';
+import { useDebounce } from '@/lib/hooks/useDebounce';
 import { searchTaskTemplates } from '@/lib/api/task-templates';
 import { searchAssessmentTemplates } from '@/lib/api/assessment-templates';
 import { searchPositions } from '@/lib/api/positions';

@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
         const title = searchParams.get('title');
 
         if (!title) {
-            const positions = await PositionService.getAllPositions(orgId);
+            const positions = await PositionService.getPositionsByOrgId(orgId);
             return Response.json({ data: positions }, { status: 200 });
         }
 
