@@ -1,9 +1,10 @@
 'use client';
 
+import { useRef } from 'react';
 import { Dialog } from '@radix-ui/react-dialog';
 import { DialogContent, DialogTitle } from '@/lib/components/ui/Modal';
 import { Button } from '@/lib/components/ui/Button';
-import { ExternalLink, Import, X } from 'lucide-react';
+import { ExternalLink, FileText, X } from 'lucide-react';
 import { DataTable } from '@/lib/components/ui/DataTable';
 import type { AddApplicationWithCandidateDataDTO } from '@/lib/schemas/application.schema';
 import { useUploadCSV } from '@/lib/hooks/useUploadCSV';
@@ -24,6 +25,7 @@ export default function UploadCSVModal({
     onCreate,
     onSwitchModal,
 }: UploadCSVModalProps) {
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
     const {
         selectedFile,
         isDragging,
@@ -57,6 +59,10 @@ export default function UploadCSVModal({
         onOpenChange(false);
     };
 
+    const openFilePicker = () => {
+        fileInputRef.current?.click();
+    };
+
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogContent
@@ -68,25 +74,22 @@ export default function UploadCSVModal({
                 <div className="flex w-full flex-col gap-4">
                     <div className="flex w-full items-start justify-between">
                         <div className="flex flex-col gap-1">
-                            <DialogTitle className="text-label-m text-sarge-gray-800 font-medium">
-                                Import CSV
+                            <DialogTitle className="text-label-m text-sarge-gray-800 font-bold">
+                                Import candidates
                             </DialogTitle>
-                            <a
-                                href="/example-candidates.csv"
-                                download="example-candidates.csv"
-                                className="text-label-xs text-sarge-primary-600 hover:text-sarge-primary-700 flex items-center gap-2 px-0 py-2 pr-4 text-left font-medium transition-colors"
-                            >
-                                View example CSV
-                                <ExternalLink className="size-5" />
-                            </a>
+                            <div className="text-label-xs text-sarge-gray-600 flex items-center gap-2">
+                                <span>Upload a CSV to import candidates.</span>
+                                <a
+                                    href="/example-candidates.csv"
+                                    download="example-candidates.csv"
+                                    className="text-label-xs text-sarge-primary-600 hover:text-sarge-primary-700 flex items-center gap-2 px-0 py-2 pr-4 text-left font-medium transition-colors"
+                                >
+                                    View sample CSV
+                                    <ExternalLink className="size-4" />
+                                </a>
+                            </div>
                         </div>
                         <div className="flex items-center gap-2">
-                            <button
-                                onClick={onSwitchModal}
-                                className="text-label-xs text-sarge-primary-600 hover:text-sarge-primary-700 px-1 py-0 font-medium transition-colors hover:cursor-pointer"
-                            >
-                                Add details manually
-                            </button>
                             <button
                                 onClick={() => onOpenChange(false)}
                                 className="hover:bg-sarge-gray-200 rounded p-0.5 transition-colors"
@@ -101,6 +104,15 @@ export default function UploadCSVModal({
                             onDragOver={handleDragOver}
                             onDragLeave={handleDragLeave}
                             onDrop={handleDrop}
+                            onClick={openFilePicker}
+                            role="button"
+                            tabIndex={0}
+                            onKeyDown={(event) => {
+                                if (event.key === 'Enter' || event.key === ' ') {
+                                    event.preventDefault();
+                                    openFilePicker();
+                                }
+                            }}
                             className={`border-sarge-gray-300 flex h-[252px] w-full cursor-pointer flex-col items-center justify-center gap-2.5 border-[1.5px] border-dashed transition-colors ${
                                 isDragging ? 'bg-sarge-gray-50 border-sarge-primary-500' : ''
                             }`}
@@ -111,27 +123,52 @@ export default function UploadCSVModal({
                                 onChange={handleFileSelect}
                                 className="hidden"
                                 id="csv-upload"
+                                ref={fileInputRef}
                             />
-                            <label
-                                htmlFor="csv-upload"
-                                className="flex h-full w-full cursor-pointer flex-col items-center justify-center gap-2.5"
-                            >
-                                <Import className="text-sarge-gray-600 size-6" />
-                                <p className="text-label-s text-sarge-gray-600 text-center font-medium">
+                            <div className="flex h-full w-full cursor-pointer flex-col items-center justify-center gap-2.5">
+                                <FileText className="text-sarge-gray-600 size-5" />
+                                <div className="flex flex-col items-center gap-2 text-center">
                                     {selectedFile ? (
                                         <span className="text-sarge-gray-800">
                                             {selectedFile.name}
                                         </span>
                                     ) : (
                                         <>
-                                            Drop CSV file here or{' '}
-                                            <span className="text-sarge-primary-600">
-                                                click to browse
-                                            </span>
+                                            <p className="text-label-s text-sarge-gray-800 font-bold">
+                                                Drag CSV here to import candidates
+                                            </p>
+                                            <p className="text-label-xs text-sarge-gray-600 font-medium">
+                                                or{' '}
+                                                <button
+                                                    type="button"
+                                                    onClick={(event) => {
+                                                        event.stopPropagation();
+                                                        openFilePicker();
+                                                    }}
+                                                    className="text-sarge-primary-600 hover:text-sarge-primary-700 transition-colors"
+                                                >
+                                                    click to browse
+                                                </button>
+                                                , up to (_ MB max)
+                                            </p>
+                                            {/* TODO: add max file size info ^^ */}
                                         </>
                                     )}
-                                </p>
-                            </label>
+                                </div>
+                                {!selectedFile && (
+                                    <Button
+                                        type="button"
+                                        variant="secondary"
+                                        onClick={(event) => {
+                                            event.stopPropagation();
+                                            openFilePicker();
+                                        }}
+                                        className="h-9 rounded-md px-4"
+                                    >
+                                        Browse files
+                                    </Button>
+                                )}
+                            </div>
                         </div>
                     )}
                     {step === 'confirm' && (
@@ -164,7 +201,7 @@ export default function UploadCSVModal({
                             {isUploading
                                 ? 'Uploading...'
                                 : step === 'uploadCSV'
-                                  ? 'Continue'
+                                  ? 'Import'
                                   : 'Create'}
                         </Button>
                     </div>
