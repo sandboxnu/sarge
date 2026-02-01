@@ -4,7 +4,7 @@ import { useRef } from 'react';
 import { Dialog } from '@radix-ui/react-dialog';
 import { DialogContent, DialogTitle } from '@/lib/components/ui/Modal';
 import { Button } from '@/lib/components/ui/Button';
-import { ExternalLink, FileText, X } from 'lucide-react';
+import { ExternalLink, FileText, Trash, X, Download, Users } from 'lucide-react';
 import { DataTable } from '@/lib/components/ui/DataTable';
 import type { AddApplicationWithCandidateDataDTO } from '@/lib/schemas/application.schema';
 import { useUploadCSV } from '@/lib/hooks/useUploadCSV';
@@ -59,6 +59,16 @@ export default function UploadCSVModal({
         onOpenChange(false);
     };
 
+    const formatFileSize = (bytes: number) => {
+        if (!Number.isFinite(bytes)) return '';
+        const mb = bytes / (1024 * 1024);
+        if (mb >= 1) {
+            return `${mb >= 10 ? Math.round(mb) : mb.toFixed(1)} MB`;
+        }
+        const kb = bytes / 1024;
+        return `${kb >= 10 ? Math.round(kb) : kb.toFixed(1)} KB`;
+    };
+
     const openFilePicker = () => {
         fileInputRef.current?.click();
     };
@@ -84,8 +94,8 @@ export default function UploadCSVModal({
                                     download="example-candidates.csv"
                                     className="text-label-xs text-sarge-primary-600 hover:text-sarge-primary-700 flex items-center gap-2 px-0 py-2 pr-4 text-left font-medium transition-colors"
                                 >
-                                    View sample CSV
-                                    <ExternalLink className="size-4" />
+                                    Download sample CSV
+                                    <Download className="size-4" />
                                 </a>
                             </div>
                         </div>
@@ -125,35 +135,22 @@ export default function UploadCSVModal({
                                 id="csv-upload"
                                 ref={fileInputRef}
                             />
-                            <div className="flex h-full w-full cursor-pointer flex-col items-center justify-center gap-2.5">
-                                <FileText className="text-sarge-gray-600 size-5" />
-                                <div className="flex flex-col items-center gap-2 text-center">
-                                    {selectedFile ? (
-                                        <span className="text-sarge-gray-800">
-                                            {selectedFile.name}
-                                        </span>
-                                    ) : (
-                                        <>
-                                            <p className="text-label-s text-sarge-gray-800 font-bold">
-                                                Drag CSV here to import candidates
-                                            </p>
-                                            <p className="text-label-xs text-sarge-gray-600 font-medium">
-                                                or{' '}
-                                                <button
-                                                    type="button"
-                                                    onClick={(event) => {
-                                                        event.stopPropagation();
-                                                        openFilePicker();
-                                                    }}
-                                                    className="text-sarge-primary-600 hover:text-sarge-primary-700 transition-colors"
-                                                >
-                                                    click to browse
-                                                </button>
-                                                , up to (_ MB max)
-                                            </p>
-                                            {/* TODO: add max file size info ^^ */}
-                                        </>
-                                    )}
+                            <div className="flex h-full w-full cursor-pointer flex-col items-center justify-center gap-5">
+                                <div className="flex flex-col items-center gap-2.5 text-center">
+                                    <Users className="text-sarge-gray-600 size-5" />
+                                    <div className="flex flex-col items-center gap-2 text-center">
+                                        {selectedFile ? (
+                                            <span className="text-sarge-gray-800">
+                                                {selectedFile.name}
+                                            </span>
+                                        ) : (
+                                            <>
+                                                <p className="text-label-s text-sarge-gray-800 font-bold">
+                                                    Drag CSV here to import candidates
+                                                </p>
+                                            </>
+                                        )}
+                                    </div>
                                 </div>
                                 {!selectedFile && (
                                     <Button
@@ -173,10 +170,33 @@ export default function UploadCSVModal({
                     )}
                     {step === 'confirm' && (
                         <div className="flex flex-col gap-4">
-                            <div className="">
+                            {selectedFile && (
+                                <div className="border-sarge-gray-200 bg-sarge-gray-50 flex items-center justify-between rounded-md border px-4 py-3">
+                                    <div className="flex items-center gap-3">
+                                        <FileText className="text-sarge-gray-600 mt-[2px] size-4 self-start" />
+                                        <div className="flex flex-col">
+                                            <span className="text-label-s text-sarge-gray-800 font-medium">
+                                                {selectedFile.name}
+                                            </span>
+                                            <span className="text-label-xs text-sarge-gray-600">
+                                                {formatFileSize(selectedFile.size)}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={handleCancel}
+                                        className="text-sarge-gray-600 hover:text-sarge-gray-800 transition-colors hover:cursor-pointer"
+                                        aria-label="Remove file"
+                                    >
+                                        <Trash className="size-5" />
+                                    </button>
+                                </div>
+                            )}
+                            <div className="flex flex-col gap-1">
                                 <div className="text-lg font-bold">Preview</div>
                                 <div className="text-sm font-light">
-                                    {candidates?.length} Candidates will be added
+                                    {candidates?.length ?? 0} candidates
                                 </div>
                             </div>
                             <div className="max-h-[500px] overflow-y-auto">
@@ -198,11 +218,7 @@ export default function UploadCSVModal({
                             disabled={!selectedFile || isUploading}
                             className="h-9 w-[125px] px-4 py-2 disabled:opacity-50"
                         >
-                            {isUploading
-                                ? 'Uploading...'
-                                : step === 'uploadCSV'
-                                  ? 'Import'
-                                  : 'Create'}
+                            {isUploading ? 'Uploading...' : 'Import'}
                         </Button>
                     </div>
                 </div>
@@ -216,97 +232,121 @@ function UploadCandidateTable({
 }: {
     candidates: AddApplicationWithCandidateDataDTO[];
 }) {
+    const ensureAbsoluteUrl = (url?: string | null) => {
+        if (!url || url === '-') return '';
+        return url.startsWith('http://') || url.startsWith('https://') ? url : `https://${url}`;
+    };
+
+    const HeaderLabel = ({ children }: { children: string }) => (
+        <span className="text-body-s text-sarge-gray-700 font-normal tracking-[0.406px] normal-case">
+            {children}
+        </span>
+    );
+
     const columns: ColumnDef<AddApplicationWithCandidateDataDTO>[] = [
         {
             accessorKey: 'name',
-            header: 'NAME/MAJOR',
+            header: () => <HeaderLabel>NAME/MAJOR</HeaderLabel>,
             cell: ({ row }) => (
-                <div className="flex flex-col">
-                    <span className="text-sarge-gray-800 text-lg">{row.original.name}</span>
-                    <span className="text-sarge-gray-600 text-sm">
+                <div className="flex flex-col gap-1">
+                    <span className="text-body-s text-sarge-gray-800 font-normal tracking-[0.406px]">
+                        {row.original.name}
+                    </span>
+                    <span className="text-body-xs text-sarge-gray-800 font-normal tracking-[0.406px]">
                         {row.original.major && row.original.major !== '-'
                             ? row.original.major
-                            : 'N/A'}
+                            : '—'}
                     </span>
                 </div>
             ),
         },
         {
-            accessorKey: 'email',
-            header: 'EMAIL',
+            accessorKey: 'graduationDate',
+            header: () => <HeaderLabel>GRAD YEAR</HeaderLabel>,
             cell: ({ row }) => (
-                <span className="text-sarge-gray-800 text-sm">{row.original.email}</span>
+                <span className="text-body-s text-sarge-gray-800 font-normal tracking-[0.406px]">
+                    {row.original.graduationDate && row.original.graduationDate !== '-'
+                        ? row.original.graduationDate
+                        : '—'}
+                </span>
             ),
         },
         {
-            accessorKey: 'graduationDate',
-            header: 'GRADUATION DATE',
+            accessorKey: 'email',
+            header: () => <HeaderLabel>EMAIL</HeaderLabel>,
             cell: ({ row }) => (
-                <span className="text-sarge-gray-800 text-sm">
-                    {row.original.graduationDate && row.original.graduationDate !== '-'
-                        ? row.original.graduationDate
-                        : 'N/A'}
+                <span className="text-body-s text-sarge-gray-800 font-normal tracking-[0.406px]">
+                    {row.original.email}
                 </span>
             ),
         },
         {
             accessorKey: 'resumeUrl',
-            header: 'RESUME',
+            header: () => <HeaderLabel>RESUME</HeaderLabel>,
             cell: ({ row }) => {
-                const url = row.original.resumeUrl;
+                const url = ensureAbsoluteUrl(row.original.resumeUrl);
                 return url ? (
                     <a
                         href={url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sarge-primary-500 hover:text-sarge-primary-600 inline-flex items-center gap-1.5"
+                        className="text-label-s text-sarge-primary-500 hover:text-sarge-primary-600 inline-flex items-center gap-1.5 font-medium tracking-[0.406px]"
                     >
-                        Link to Resume <ExternalLink className="size-4" />
+                        Link to resume <ExternalLink className="size-4" />
                     </a>
                 ) : (
-                    'N/A'
-                );
-            },
-        },
-        {
-            accessorKey: 'linkedinUrl',
-            header: 'LINKEDIN',
-            cell: ({ row }) => {
-                const url = row.original.linkedinUrl;
-                return url ? (
-                    <a
-                        href={url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sarge-primary-500 hover:text-sarge-primary-600 inline-flex items-center gap-1.5"
-                    >
-                        Link to LinkedIn <ExternalLink className="size-4" />
-                    </a>
-                ) : (
-                    'N/A'
+                    <span className="text-body-s text-sarge-gray-600">—</span>
                 );
             },
         },
         {
             accessorKey: 'githubUrl',
-            header: 'GITHUB',
+            header: () => <HeaderLabel>GITHUB</HeaderLabel>,
             cell: ({ row }) => {
-                const url = row.original.githubUrl;
+                const url = ensureAbsoluteUrl(row.original.githubUrl);
                 return url ? (
                     <a
                         href={url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sarge-primary-500 hover:text-sarge-primary-600 inline-flex items-center gap-1.5"
+                        className="text-label-s text-sarge-primary-500 hover:text-sarge-primary-600 inline-flex items-center gap-1.5 font-medium tracking-[0.406px]"
                     >
                         Link to GitHub <ExternalLink className="size-4" />
                     </a>
                 ) : (
-                    'N/A'
+                    <span className="text-body-s text-sarge-gray-600">—</span>
+                );
+            },
+        },
+        {
+            accessorKey: 'linkedinUrl',
+            header: () => <HeaderLabel>LINKEDIN</HeaderLabel>,
+            cell: ({ row }) => {
+                const url = ensureAbsoluteUrl(row.original.linkedinUrl);
+                return url ? (
+                    <a
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-label-s text-sarge-primary-500 hover:text-sarge-primary-600 inline-flex items-center gap-1.5 font-medium tracking-[0.406px]"
+                    >
+                        Link to LinkedIn <ExternalLink className="size-4" />
+                    </a>
+                ) : (
+                    <span className="text-body-s text-sarge-gray-600">—</span>
                 );
             },
         },
     ];
 
-    return <DataTable columns={columns} data={candidates} />;
+    return (
+        <div className="candidate-table border-sarge-gray-200 bg-sarge-gray-0 border">
+            <DataTable columns={columns} data={candidates} />
+            <style jsx>{`
+                .candidate-table :global(thead) {
+                    background: var(--sarge-gray-50);
+                }
+            `}</style>
+        </div>
+    );
 }

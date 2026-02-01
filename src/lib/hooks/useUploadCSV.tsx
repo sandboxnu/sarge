@@ -11,6 +11,9 @@ export function useUploadCSV(positionId: string) {
     const [candidates, setCandidates] = useState<AddApplicationWithCandidateDataDTO[] | null>(null);
     const [step, setStep] = useState<'uploadCSV' | 'confirm'>('uploadCSV');
 
+    const isCsvFile = (file: File) =>
+        file.type.toLowerCase().includes('csv') || file.name.toLowerCase().endsWith('.csv');
+
     const handleDragOver = (e: React.DragEvent) => {
         e.preventDefault();
         setIsDragging(true);
@@ -24,15 +27,15 @@ export function useUploadCSV(positionId: string) {
         e.preventDefault();
         setIsDragging(false);
         const files = e.dataTransfer.files;
-        if (files.length > 0 && files[0].type === 'text/csv') {
-            setSelectedFile(files[0]);
+        if (files.length > 0 && isCsvFile(files[0])) {
+            void handleSelectedFile(files[0]);
         }
     };
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
-        if (files && files.length > 0) {
-            setSelectedFile(files[0]);
+        if (files && files.length > 0 && isCsvFile(files[0])) {
+            void handleSelectedFile(files[0]);
         }
     };
 
@@ -46,11 +49,21 @@ export function useUploadCSV(positionId: string) {
             setCandidates(candidates);
 
             setError(null);
+            return true;
         } catch (error) {
             setError(error as Error);
             toast.error('Error uploading CSV');
+            return false;
         } finally {
             setIsUploading(false);
+        }
+    };
+
+    const handleSelectedFile = async (file: File) => {
+        setSelectedFile(file);
+        const uploaded = await uploadCSV(file);
+        if (uploaded) {
+            setStep('confirm');
         }
     };
 
@@ -61,8 +74,10 @@ export function useUploadCSV(positionId: string) {
         setIsUploading(true);
         try {
             if (step === 'uploadCSV') {
-                await uploadCSV(selectedFile);
-                setStep('confirm');
+                const uploaded = await uploadCSV(selectedFile);
+                if (uploaded) {
+                    setStep('confirm');
+                }
             } else if (candidates) {
                 await onCreate(candidates);
                 setSelectedFile(null);
@@ -82,6 +97,7 @@ export function useUploadCSV(positionId: string) {
     const handleCancel = () => {
         setSelectedFile(null);
         setCandidates(null);
+        setError(null);
         setStep('uploadCSV');
     };
 
