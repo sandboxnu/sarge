@@ -10,8 +10,6 @@ function usePositionContent() {
     const activeOrganizationId = session?.session.activeOrganizationId;
 
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-    const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
-    const [selectedPositionId, setSelectedPositionId] = useState<string | null>(null);
     const [active, setActive] = useState<PositionWithCounts[]>([]);
     const [archived, setArchived] = useState<PositionWithCounts[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
@@ -45,17 +43,16 @@ function usePositionContent() {
     }, [activeOrganizationId]);
 
     function handlePositionClick(positionId: string) {
-        setSelectedPositionId(positionId);
-        setIsPreviewModalOpen(true);
+        if (typeof window === 'undefined') {
+            return;
+        }
+
+        window.open(`/crm/positions/${positionId}`, '_blank', 'noopener,noreferrer');
     }
 
     return {
         isCreateModalOpen,
         setIsCreateModalOpen,
-        isPreviewModalOpen,
-        setIsPreviewModalOpen,
-        selectedPositionId,
-        setSelectedPositionId,
         active,
         archived,
         setActive,

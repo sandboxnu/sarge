@@ -7,7 +7,6 @@ import { Search } from '@/lib/components/core/Search';
 import { type PositionWithCounts } from '@/lib/types/position.types';
 import { Tabs, TabsContent, TabsList, UnderlineTabsTrigger } from '@/lib/components/ui/Tabs';
 import CreatePositionModal from '@/lib/components/modal/CreatePositionModal';
-import PositionPreviewModal from '@/lib/components/modal/PositionPreviewModal';
 import Image from 'next/image';
 import usePositionContent from '@/lib/hooks/usePositionsContent';
 
@@ -15,9 +14,6 @@ export default function PositionsContent() {
     const {
         isCreateModalOpen,
         setIsCreateModalOpen,
-        isPreviewModalOpen,
-        setIsPreviewModalOpen,
-        selectedPositionId,
         active,
         setActive,
         archived,
@@ -109,12 +105,6 @@ export default function PositionsContent() {
                 onOpenChange={setIsCreateModalOpen}
                 setActive={setActive}
             />
-
-            <PositionPreviewModal
-                open={isPreviewModalOpen}
-                onOpenChange={setIsPreviewModalOpen}
-                positionId={selectedPositionId}
-            />
         </>
     );
 }
@@ -134,7 +124,7 @@ function PositionCardGrid({
                     title={position.title}
                     candidateCount={position.numCandidates}
                     assessmentName={''}
-                    onClick={() => onPositionClick(position.id)}
+                    onPositionClick={() => onPositionClick(position.id)}
                 />
             ))}
         </div>
