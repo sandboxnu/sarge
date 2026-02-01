@@ -5,16 +5,24 @@ class SESConnector {
     private client: SESClient;
 
     constructor() {
+        const region = process.env.AWS_REGION;
+        const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
+        const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
+
+        if (!region || !accessKeyId || !secretAccessKey) {
+            throw new Error('Missing required AWS SES environment variables');
+        }
+
         this.client = new SESClient({
-            region: process.env.AWS_REGION,
+            region,
             credentials: {
-                accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-                secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+                accessKeyId,
+                secretAccessKey,
             },
         });
     }
 
-    async sendEmail(to: string, from: string, subject: string, body: string): Promise<void> {
+    async sendEmail(to: string, from: string, subject: string, body: string): Promise<boolean> {
         try {
             const params = {
                 Source: from,
@@ -32,10 +40,11 @@ class SESConnector {
                     },
                 },
             };
-            const data = await this.client.send(new SendEmailCommand(params));
-            console.log('Email sent successfully:', data);
+            await this.client.send(new SendEmailCommand(params));
+            return true;
         } catch (error) {
             handleError(error);
+            return false;
         }
     }
 }
