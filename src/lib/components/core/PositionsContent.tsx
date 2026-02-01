@@ -124,7 +124,7 @@ function PositionCardGrid({
                     title={position.title}
                     candidateCount={position.numCandidates}
                     assessmentName={''}
-                    onClick={() => onPositionClick(position.id)}
+                    onPositionClick={() => onPositionClick(position.id)}
                 />
             ))}
         </div>

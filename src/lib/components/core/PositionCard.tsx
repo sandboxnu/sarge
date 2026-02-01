@@ -13,7 +13,7 @@ type PositionCardProps = {
     submittedCount?: number;
     totalAssigned?: number;
     className?: string;
-    onClick?: () => void;
+    onPositionClick?: () => void;
     onAssessmentClick?: () => void;
 };
 
@@ -24,7 +24,7 @@ export default function PositionCard({
     submittedCount = 0,
     totalAssigned = 0,
     className,
-    onClick,
+    onPositionClick,
     onAssessmentClick,
 }: PositionCardProps) {
     const submissionVariant = getSubmissionVariant(submittedCount, totalAssigned);
@@ -34,23 +34,25 @@ export default function PositionCard({
             className={cn(
                 'min-h-[160px] w-[384px]',
                 'border-sarge-gray-200 bg-sarge-gray-50 rounded-md border p-4',
-                onClick && 'cursor-pointer transition-shadow hover:shadow-md',
+                onPositionClick && 'cursor-pointer transition-shadow hover:shadow-md',
                 className
             )}
             onClick={(e) => {
+                // checks whether click came from inside menu button, on which we should return
+                // since this should trigger onAssessmentClick only
                 if ((e.target as HTMLElement).closest('[data-menu-button]')) {
                     return;
                 }
-                onClick?.();
+                onPositionClick?.();
             }}
-            role={onClick ? 'button' : undefined}
-            tabIndex={onClick ? 0 : undefined}
+            role={onPositionClick ? 'button' : undefined}
+            tabIndex={onPositionClick ? 0 : undefined}
             onKeyDown={
-                onClick
+                onPositionClick
                     ? (e) => {
                           if (e.key === 'Enter' || e.key === ' ') {
                               e.preventDefault();
-                              onClick();
+                              onPositionClick();
                           }
                       }
                     : undefined
