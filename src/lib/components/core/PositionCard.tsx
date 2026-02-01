@@ -29,41 +29,35 @@ export default function PositionCard({
 }: PositionCardProps) {
     const submissionVariant = getSubmissionVariant(submittedCount, totalAssigned);
 
-    const handleHeaderClick = (e: React.MouseEvent<HTMLDivElement>) => {
-        // Don't trigger if clicking the menu button
-        if ((e.target as HTMLElement).closest('[data-menu-button]')) {
-            return;
-        }
-        onClick?.();
-    };
-
     return (
         <div
             className={cn(
                 'min-h-[160px] w-[384px]',
                 'border-sarge-gray-200 bg-sarge-gray-50 rounded-md border p-4',
-                onClick && 'transition-shadow hover:shadow-md',
+                onClick && 'cursor-pointer transition-shadow hover:shadow-md',
                 className
             )}
+            onClick={(e) => {
+                if ((e.target as HTMLElement).closest('[data-menu-button]')) {
+                    return;
+                }
+                onClick?.();
+            }}
+            role={onClick ? 'button' : undefined}
+            tabIndex={onClick ? 0 : undefined}
+            onKeyDown={
+                onClick
+                    ? (e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              onClick();
+                          }
+                      }
+                    : undefined
+            }
         >
             <div
-                className={cn(
-                    '-mr-4 flex items-start justify-between gap-2',
-                    onClick && 'cursor-pointer'
-                )}
-                onClick={handleHeaderClick}
-                role={onClick ? 'button' : undefined}
-                tabIndex={onClick ? 0 : undefined}
-                onKeyDown={
-                    onClick
-                        ? (e) => {
-                              if (e.key === 'Enter' || e.key === ' ') {
-                                  e.preventDefault();
-                                  onClick();
-                              }
-                          }
-                        : undefined
-                }
+                className={cn('-mr-4 flex items-start justify-between gap-2')}
             >
                 <div className="flex min-w-0 flex-[1_0_0] flex-col items-start gap-1 px-1">
                     <h3 className="text-label-s text-sarge-gray-800 line-clamp-2" title={title}>
@@ -85,7 +79,10 @@ export default function PositionCard({
             </div>
             <PositionAssessmentCard
                 className="mt-4 w-full"
-                onClick={onAssessmentClick}
+                onClick={(event) => {
+                    event.stopPropagation();
+                    onAssessmentClick?.();
+                }}
             >
                 <Chip variant="neutral">{assignedCount} sent</Chip>
                 <Chip variant={submissionVariant}>

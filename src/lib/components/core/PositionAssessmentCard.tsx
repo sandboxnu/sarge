@@ -8,7 +8,7 @@ type PositionAssessmentCardProps = {
     children: React.ReactNode;
     className?: string;
     iconClassName?: string;
-    onClick?: () => void;
+    onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 };
 
 export function PositionAssessmentCard({
