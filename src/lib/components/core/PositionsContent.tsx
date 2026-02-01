@@ -105,7 +105,6 @@ export default function PositionsContent() {
                 onOpenChange={setIsCreateModalOpen}
                 setActive={setActive}
             />
-
         </>
     );
 }
