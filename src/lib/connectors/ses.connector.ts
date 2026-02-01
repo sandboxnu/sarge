@@ -40,11 +40,10 @@ class SESConnector {
                     },
                 },
             };
-            await this.client.send(new SendEmailCommand(params));
-            return true;
+            const res = await this.client.send(new SendEmailCommand(params));
+            return res.MessageId ? true : false;
         } catch (error) {
-            handleError(error);
-            return false;
+            throw error;
         }
     }
 }
