@@ -1,5 +1,4 @@
 import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
-import { handleError } from '@/lib/utils/errors.utils';
 
 class SESConnector {
     private client: SESClient;
