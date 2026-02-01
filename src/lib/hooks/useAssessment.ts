@@ -19,6 +19,8 @@ export default function useAssessment(id: string, currentTaskId?: string) {
                 setError(null);
 
                 const data = await getAssessment(id);
+                data.assessmentTemplate.tasks.sort((a, b) => a.order - b.order);
+
                 setAssessment(data);
             } catch (err) {
                 setError(err as Error);
@@ -35,12 +37,15 @@ export default function useAssessment(id: string, currentTaskId?: string) {
     }
 
     function goToNextTask() {
-        const currentTaskIndex = getCurrentTaskIndex();
-        const nextTaskIndex = currentTaskIndex + 1;
-        const taskList = assessment?.assessmentTemplate.taskTemplates ?? [];
+        const tasks = assessment?.assessmentTemplate.tasks ?? [];
+        const currentIndex = tasks.findIndex((task) => task.taskTemplateId === currentTaskId);
 
-        if (nextTaskIndex < taskList.length) {
-            router.push(`/assessment/${id}/task/${taskList[nextTaskIndex]}`);
+        if (currentIndex === -1) return;
+
+        const nextTask = tasks[currentIndex + 1];
+
+        if (nextTask) {
+            router.push(`/assessment/${id}/task/${nextTask.taskTemplateId}`);
         } else {
             router.push(`/assessment/${id}/outro`);
         }
@@ -90,14 +95,6 @@ export default function useAssessment(id: string, currentTaskId?: string) {
             setLoading(false);
         }
     }
-
-    const getCurrentTaskIndex = () => {
-        if (!currentTaskId || !assessment?.assessmentTemplate.taskTemplates) {
-            return -1;
-        }
-
-        return assessment.assessmentTemplate.taskTemplates.indexOf(currentTaskId);
-    };
 
     return {
         loading,

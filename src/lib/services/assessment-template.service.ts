@@ -1,8 +1,8 @@
 import {
     type CreateAssessmentTemplateDTO,
-    type AssessmentTemplate,
     type UpdateAssessmentTemplateDTO,
 } from '@/lib/schemas/assessment-template.schema';
+import { type AssessmentTemplate } from '@/generated/prisma';
 import { NotFoundException } from '@/lib/utils/errors.utils';
 import { prisma } from '@/lib/prisma';
 
@@ -74,11 +74,40 @@ async function updateAssessmentTemplate(
     });
 }
 
+async function getAssessmentTemplatesByTitle(
+    title: string,
+    orgId: string
+): Promise<AssessmentTemplate[]> {
+    const assessmentTemplatesWithTitle = await prisma.assessmentTemplate.findMany({
+        where: {
+            orgId,
+            title: {
+                contains: title,
+                mode: 'insensitive',
+            },
+        },
+    });
+
+    return assessmentTemplatesWithTitle;
+}
+
+async function getAllAssessmentTemplates(orgId: string): Promise<AssessmentTemplate[]> {
+    const assessmentTemplates = await prisma.assessmentTemplate.findMany({
+        where: {
+            orgId,
+        },
+    });
+
+    return assessmentTemplates;
+}
+
 const AssessmentTemplateService = {
     getAssessmentTemplate,
     createAssessmentTemplate,
     deleteAssessmentTemplate,
     updateAssessmentTemplate,
+    getAssessmentTemplatesByTitle,
+    getAllAssessmentTemplates,
 };
 
 export default AssessmentTemplateService;

@@ -67,7 +67,6 @@ async function getPositionsByOrgId(orgId: string): Promise<PositionWithCounts[]>
                 },
             },
             applications: {
-                where: { assessmentStatus: AssessmentStatus.NOT_STARTED },
                 select: { id: true },
             },
         },
@@ -204,6 +203,41 @@ async function getPositionPreview(positionId: string): Promise<PositionPreviewDa
     };
 }
 
+async function getPositionsByTitle(title: string, orgId: string): Promise<PositionWithCounts[]> {
+    const positions = await prisma.position.findMany({
+        where: {
+            orgId,
+            title: {
+                contains: title,
+                mode: 'insensitive',
+            },
+        },
+        select: {
+            id: true,
+            title: true,
+            createdAt: true,
+            archived: true,
+            _count: {
+                select: {
+                    applications: true,
+                },
+            },
+            applications: {
+                select: { id: true },
+            },
+        },
+    });
+
+    return positions.map((p) => ({
+        id: p.id,
+        title: p.title,
+        archived: p.archived,
+        numCandidates: p._count.applications,
+        numAssigned: p.applications.length,
+        createdAt: p.createdAt,
+    }));
+}
+
 const PositionService = {
     createPosition,
     deletePosition,
@@ -211,6 +245,7 @@ const PositionService = {
     getPositionsByOrgId,
     getPositionPreview,
     updatePosition,
+    getPositionsByTitle,
 };
 
 export default PositionService;
