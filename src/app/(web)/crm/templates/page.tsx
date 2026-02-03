@@ -59,7 +59,7 @@ export default function TemplatesPage() {
             <div className="flex min-h-0 flex-1 flex-row">
                 <div className="border-sarge-gray-200 flex w-96 flex-col gap-2.5 border-r-1">
                     <div className="flex items-center gap-2.5 px-3 pt-3">
-                        <Search className="border-none" />
+                        <Search className="border-none" placeholder="Type to search" />
                         <div className="flex">
                             <Button
                                 variant="secondary"
@@ -75,7 +75,7 @@ export default function TemplatesPage() {
                             </Button>
                         </div>
                     </div>
-                    <div className="flex min-h-0 w-full flex-1 flex-col gap-2.5 overflow-scroll px-3">
+                    <div className="flex min-h-0 w-full flex-1 flex-col gap-2.5 overflow-scroll px-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                         {isLoading && (
                             <div className="flex h-full w-full items-center justify-center">
                                 <Image
@@ -87,7 +87,7 @@ export default function TemplatesPage() {
                             </div>
                         )}
                         {error && <div className="">Error</div>}
-                        {taskTemplateList && taskTemplateList.length === 0 && (
+                        {!isLoading && taskTemplateList && taskTemplateList.length === 0 && (
                             <div className="text-sarge-gray-500 flex h-full w-full flex-col items-center justify-center gap-4">
                                 <Image
                                     src={GreyWinstonLogoMark}
