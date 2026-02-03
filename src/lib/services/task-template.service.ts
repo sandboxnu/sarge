@@ -24,11 +24,14 @@ async function getTaskTemplate(id: string): Promise<TaskTemplate> {
     return foundTaskTemplate;
 }
 
-async function getAllTaskTemplates(
+async function getTaskTemplates(
     orgId: string,
-    page: number,
-    limit: number
+    page?: number,
+    limit?: number
 ): Promise<{ data: TaskTemplateWithTagsDTO[]; total: number }> {
+    page = page ?? 0; // not sure if this is the kind of solution we are looking for (essentially grab all if not defined)
+    limit = limit ?? Number.MAX_SAFE_INTEGER;
+
     const [templates, total] = await prisma.$transaction([
         prisma.taskTemplate.findMany({
             where: { orgId },
@@ -132,7 +135,7 @@ async function getTaskTemplatesByTitle(title: string, orgId: string): Promise<Ta
 
 const TaskTemplateService = {
     getTaskTemplate,
-    getAllTaskTemplates,
+    getAllTaskTemplates: getTaskTemplates,
     createTaskTemplate,
     deleteTaskTemplate,
     updateTaskTemplate,

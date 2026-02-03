@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { TaskTemplateWithTagsDTO } from '@/lib/schemas/task-template.schema';
+import { getTaskList } from '@/lib/api/task-templates';
 
 export function useTaskTemplateList() {
     const [allTaskTemplates, setAllTaskTemplates] = useState<TaskTemplateWithTagsDTO[]>([]);
@@ -13,20 +14,10 @@ export function useTaskTemplateList() {
     useEffect(() => {
         async function fetchTaskList() {
             try {
-                const response = await fetch(`/api/task-templates?page=${page}&limit=${limit}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
+                const response = await getTaskList(page, limit);
 
-                if (!response.ok) {
-                    throw new Error('fetch unsuccessful');
-                }
-
-                const body = await response.json();
-                updateTemplatesForPage(page, limit, body.data);
-                setTotal(body.total);
+                updateTemplatesForPage(page, limit, response.data);
+                setTotal(response.total);
             } catch (error) {
                 setError(error as Error);
             } finally {
