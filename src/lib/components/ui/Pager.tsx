@@ -19,7 +19,7 @@ export interface PagerProps {
 }
 
 function canChangePage(newPage: number, limit: number, total: number): boolean {
-    if (newPage < 0) return false;
+    if (newPage < 0 || total == 0) return false;
     if (newPage * limit >= total && total > 0) return false;
     return true;
 }

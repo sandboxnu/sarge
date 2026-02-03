@@ -115,6 +115,15 @@ export default function TemplatesPage() {
                             })}
                     </div>
                     <div className="border-sarge-gray-200 flex flex-col gap-2.5 border-t-1 p-3">
+                        <div className="flex justify-end">
+                            <Pager
+                                page={page}
+                                limit={limit}
+                                total={total}
+                                changePage={setPage}
+                                changeLimit={setLimit}
+                            />
+                        </div>
                         <div className="flex w-full items-center gap-2.5">
                             <div className="text-sarge-primary-500 hover:cursor-pointer">
                                 <DropdownMenu>
@@ -148,15 +157,6 @@ export default function TemplatesPage() {
                             <Button className="flex-1 px-4 py-2" variant="secondary">
                                 Create Assessment
                             </Button>
-                        </div>
-                        <div className="flex justify-end">
-                            <Pager
-                                page={page}
-                                limit={limit}
-                                total={total}
-                                changePage={setPage}
-                                changeLimit={setLimit}
-                            />
                         </div>
                     </div>
                 </div>
