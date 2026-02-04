@@ -115,7 +115,7 @@ export default function TemplatesPage() {
                             })}
                     </div>
                     <div className="border-sarge-gray-200 flex flex-col gap-2.5 border-t-1 p-3">
-                        <div className="flex justify-end">
+                        <div className="flex-1 justify-end">
                             <Pager
                                 page={page}
                                 limit={limit}
