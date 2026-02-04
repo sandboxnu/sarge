@@ -37,16 +37,16 @@ model User {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  reviews             Review[]
-  comments            Comment[]
-  sessions            Session[]
-  accounts            Account[]
-  verifications       Verification[]
-  members             Member[]
-  invitations            Invitation[]    @relation("Inviter")
-  positions              Position[]      @relation("CreatedPositions")
-  decidedApplications    Application[]   @relation("ApplicationDecision")
-  createdTaskTemplates   TaskTemplate[]  @relation("CreatedTaskTemplates")
+  reviews              Review[]
+  comments             Comment[]
+  sessions             Session[]
+  accounts             Account[]
+  verifications        Verification[]
+  members              Member[]
+  invitations          Invitation[]   @relation("Inviter")
+  positions            Position[]     @relation("CreatedPositions")
+  decidedApplications  Application[]  @relation("ApplicationDecision")
+  createdTaskTemplates TaskTemplate[] @relation("CreatedTaskTemplates")
 }
 
 // A role or position that an organization is hiring for (e.g. "Software Engineer"). Positions collect applications from candidates.
@@ -141,20 +141,20 @@ model AssessmentTemplate {
 
 // A task (question) that could be asked in an assessment. Contains test cases, description, and starter code.
 model TaskTemplate {
-  id                 String    @id @unique @default(cuid())
+  id                 String   @id @unique @default(cuid())
   title              String
-  content            String    @db.Text
+  content            String   @db.Text
   publicTestCases    Json[]
   privateTestCases   Json[]
   orgId              String
   taskType           String?
-  supportedLanguages String[]  @default([])
+  supportedLanguages String[] @default([])
   createdById        String
 
   organization Organization @relation(fields: [orgId], references: [id])
-  creator      User          @relation("CreatedTaskTemplates", fields: [createdById], references: [id], onDelete: Restrict)
-  tasks        Task[]        @relation("derivedFromTaskTemplate")
-  tags         Tag[]         @relation("TaskTemplateTags")
+  creator      User         @relation("CreatedTaskTemplates", fields: [createdById], references: [id], onDelete: Restrict)
+  tasks        Task[]       @relation("derivedFromTaskTemplate")
+  tags         Tag[]        @relation("TaskTemplateTags")
 
   assessments AssessmentTemplateTask[]
 
