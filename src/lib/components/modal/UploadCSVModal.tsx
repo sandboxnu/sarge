@@ -1,11 +1,11 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, type ReactNode } from 'react';
 import { Dialog } from '@radix-ui/react-dialog';
 import { DialogContent, DialogTitle } from '@/lib/components/ui/Modal';
 import { Button } from '@/lib/components/ui/Button';
 import Image from 'next/image';
-import { Download, ExternalLink, FileText, Trash, X, Users } from 'lucide-react';
+import { Download, FileText, Trash, X, Users, ExternalLink } from 'lucide-react';
 import { DataTable } from '@/lib/components/ui/DataTable';
 import type { AddApplicationWithCandidateDataDTO } from '@/lib/schemas/application.schema';
 import { useUploadCSV } from '@/lib/hooks/useUploadCSV';
@@ -58,16 +58,6 @@ export default function UploadCSVModal({
     const onCancelClick = () => {
         handleCancel();
         onOpenChange(false);
-    };
-
-    const formatFileSize = (bytes: number) => {
-        if (!Number.isFinite(bytes)) return '';
-        const mb = bytes / (1024 * 1024);
-        if (mb >= 1) {
-            return `${mb >= 10 ? Math.round(mb) : mb.toFixed(1)} MB`;
-        }
-        const kb = bytes / 1024;
-        return `${kb >= 10 ? Math.round(kb) : kb.toFixed(1)} KB`;
     };
 
     const openFilePicker = () => {
@@ -171,36 +161,14 @@ export default function UploadCSVModal({
                     )}
                     {step === 'uploading' && (
                         <div className="flex flex-col gap-4">
-                            {selectedFile && (
-                                <div className="border-sarge-gray-200 bg-sarge-gray-50 flex items-center justify-between rounded-md border px-4 py-3">
-                                    <div className="flex w-full items-center gap-3">
-                                        <FileText className="text-sarge-gray-600 mt-[2px] size-4 self-start" />
-                                        <div className="flex w-full flex-col gap-2">
-                                            <div className="flex w-full items-start justify-between">
-                                                <div className="flex flex-col">
-                                                    <span className="text-label-s text-sarge-gray-800 font-medium">
-                                                        {selectedFile.name}
-                                                    </span>
-                                                    <span className="text-label-xs text-sarge-gray-600">
-                                                        {formatFileSize(selectedFile.size)}
-                                                    </span>
-                                                </div>
-                                                <button
-                                                    type="button"
-                                                    onClick={handleCancel}
-                                                    className="text-sarge-gray-600 hover:text-sarge-gray-800 transition-colors hover:cursor-pointer"
-                                                    aria-label="Cancel upload"
-                                                >
-                                                    <X className="size-5" />
-                                                </button>
-                                            </div>
-                                            <div className="bg-sarge-gray-200 h-2 w-full rounded-full">
-                                                <div className="bg-sarge-primary-500 h-2 w-2/3 rounded-full animate-pulse" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
+                            <UploadedFileCallout
+                                file={selectedFile}
+                                fallbackName="File name.csv"
+                                fallbackSize={15 * 1024 * 1024}
+                                actionLabel="Cancel upload"
+                                onAction={handleCancel}
+                                actionIcon={<X className="size-5" />}
+                            />
                             <div className="border-sarge-gray-300 flex h-[252px] w-full flex-col items-center justify-center gap-5 border-[1.5px] border-dashed">
                                 <Image
                                     src="/CreateOrgLoading.gif"
@@ -225,27 +193,12 @@ export default function UploadCSVModal({
                     {step === 'confirm' && (
                         <div className="flex flex-col gap-4">
                             {selectedFile && (
-                                <div className="border-sarge-gray-200 bg-sarge-gray-50 flex items-center justify-between rounded-md border px-4 py-3">
-                                    <div className="flex items-center gap-3">
-                                        <FileText className="text-sarge-gray-600 mt-[2px] size-4 self-start" />
-                                        <div className="flex flex-col">
-                                            <span className="text-label-s text-sarge-gray-800 font-medium">
-                                                {selectedFile.name}
-                                            </span>
-                                            <span className="text-label-xs text-sarge-gray-600">
-                                                {formatFileSize(selectedFile.size)}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <button
-                                        type="button"
-                                        onClick={handleCancel}
-                                        className="text-sarge-gray-600 hover:text-sarge-gray-800 transition-colors hover:cursor-pointer"
-                                        aria-label="Remove file"
-                                    >
-                                        <Trash className="size-5" />
-                                    </button>
-                                </div>
+                                <UploadedFileCallout
+                                    file={selectedFile}
+                                    actionLabel="Remove file"
+                                    onAction={handleCancel}
+                                    actionIcon={<Trash className="size-5" />}
+                                />
                             )}
                             <div className="flex flex-col gap-1">
                                 <div className="text-lg font-bold">Preview</div>
@@ -403,4 +356,54 @@ function UploadCandidateTable({
             `}</style>
         </div>
     );
+}
+
+function UploadedFileCallout({
+    file,
+    fallbackName,
+    fallbackSize,
+    actionLabel,
+    onAction,
+    actionIcon,
+}: {
+    file: File | null;
+    fallbackName?: string;
+    fallbackSize?: number;
+    actionLabel: string;
+    onAction: () => void;
+    actionIcon: ReactNode;
+}) {
+    const fileName = file?.name ?? fallbackName ?? '';
+    const fileSize = file?.size ?? fallbackSize;
+    return (
+        <div className="border-sarge-gray-200 bg-sarge-gray-50 flex items-center justify-between rounded-md border px-4 py-3">
+            <div className="flex items-center gap-3">
+                <FileText className="text-sarge-gray-600 mt-[2px] size-4 self-start" />
+                <div className="flex flex-col">
+                    <span className="text-label-s text-sarge-gray-800 font-medium">{fileName}</span>
+                    <span className="text-label-xs text-sarge-gray-600">
+                        {formatFileSize(fileSize)}
+                    </span>
+                </div>
+            </div>
+            <button
+                type="button"
+                onClick={onAction}
+                className="text-sarge-gray-600 hover:text-sarge-gray-800 transition-colors hover:cursor-pointer"
+                aria-label={actionLabel}
+            >
+                {actionIcon}
+            </button>
+        </div>
+    );
+}
+
+function formatFileSize(bytes?: number) {
+    if (!Number.isFinite(bytes)) return '';
+    const mb = (bytes ?? 0) / (1024 * 1024);
+    if (mb >= 1) {
+        return `${mb >= 10 ? Math.round(mb) : mb.toFixed(1)} MB`;
+    }
+    const kb = (bytes ?? 0) / 1024;
+    return `${kb >= 10 ? Math.round(kb) : kb.toFixed(1)} KB`;
 }
