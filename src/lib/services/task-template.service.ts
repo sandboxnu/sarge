@@ -1,7 +1,8 @@
-import { type TaskTemplate } from '@/generated/prisma';
-import {
-    type UpdateTaskTemplateDTO,
-    type CreateTaskTemplateDTO,
+import type { TaskTemplate } from '@/generated/prisma';
+import type {
+    UpdateTaskTemplateDTO,
+    CreateTaskTemplateDTO,
+    TaskTemplateWithTagsDTO,
 } from '@/lib/schemas/task-template.schema';
 import { prisma } from '@/lib/prisma';
 import { NotFoundException, ConflictException } from '@/lib/utils/errors.utils';
@@ -23,6 +24,32 @@ async function getTaskTemplate(id: string): Promise<TaskTemplate> {
     return foundTaskTemplate;
 }
 
+async function getTaskTemplates(
+    orgId: string,
+    page?: number,
+    limit?: number
+): Promise<{ data: TaskTemplateWithTagsDTO[]; total: number }> {
+    page = page ?? 0; // not sure if this is the kind of solution we are looking for (essentially grab all if not defined)
+    limit = limit ?? Number.MAX_SAFE_INTEGER;
+
+    const [templates, total] = await prisma.$transaction([
+        prisma.taskTemplate.findMany({
+            where: { orgId },
+            include: { tags: true },
+            skip: page * limit,
+            take: limit,
+        }),
+        prisma.taskTemplate.count({
+            where: { orgId },
+        }),
+    ]);
+
+    return {
+        data: templates as TaskTemplateWithTagsDTO[],
+        total,
+    };
+}
+
 async function createTaskTemplate(taskTemplate: CreateTaskTemplateDTO): Promise<TaskTemplate> {
     const org = await prisma.organization.findFirst({
         where: {
@@ -37,9 +64,6 @@ async function createTaskTemplate(taskTemplate: CreateTaskTemplateDTO): Promise<
     const createdTaskTemplate = await prisma.taskTemplate.create({
         data: {
             ...taskTemplate,
-            tags: taskTemplate.tags?.length
-                ? { connect: taskTemplate.tags.map((id) => ({ id })) }
-                : undefined,
         },
     });
     return createdTaskTemplate;
@@ -63,7 +87,7 @@ async function deleteTaskTemplate(id: string): Promise<TaskTemplate> {
 }
 
 async function updateTaskTemplate(taskTemplate: UpdateTaskTemplateDTO): Promise<TaskTemplate> {
-    const { id, title, content, publicTestCases, privateTestCases, tags } = taskTemplate;
+    const { id, title, content, publicTestCases, privateTestCases } = taskTemplate;
 
     const current = await prisma.taskTemplate.findUnique({ where: { id } });
     if (!current) throw new NotFoundException('Task Template', id);
@@ -90,11 +114,6 @@ async function updateTaskTemplate(taskTemplate: UpdateTaskTemplateDTO): Promise<
             content,
             publicTestCases,
             privateTestCases,
-            tags: tags
-                ? {
-                      set: tags.map((tag) => ({ id: tag })),
-                  }
-                : undefined,
         },
     });
     return updatedTaskTemplate;
@@ -114,23 +133,13 @@ async function getTaskTemplatesByTitle(title: string, orgId: string): Promise<Ta
     return taskTemplatesWithTitle;
 }
 
-async function getAllTaskTemplates(orgId: string): Promise<TaskTemplate[]> {
-    const taskTemplates = await prisma.taskTemplate.findMany({
-        where: {
-            orgId,
-        },
-    });
-
-    return taskTemplates;
-}
-
 const TaskTemplateService = {
     getTaskTemplate,
+    getAllTaskTemplates: getTaskTemplates,
     createTaskTemplate,
     deleteTaskTemplate,
     updateTaskTemplate,
     getTaskTemplatesByTitle,
-    getAllTaskTemplates,
 };
 
 export default TaskTemplateService;

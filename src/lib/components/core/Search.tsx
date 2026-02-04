@@ -13,7 +13,7 @@ export function Search({ className, ...inputProps }: SearchProps) {
             <Input
                 type="text"
                 {...inputProps}
-                className={`h-11 w-full rounded-lg bg-white pl-10 ${className ?? ''}`}
+                className={`h-11 w-full rounded-lg bg-white pl-10 italic ${className ?? ''}`}
                 aria-label="Search"
             />
         </div>
