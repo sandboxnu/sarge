@@ -31,6 +31,7 @@ export default function UploadCSVModal({
         selectedFile,
         isDragging,
         isUploading,
+        error,
         candidates,
         step,
         handleDragOver,
@@ -100,7 +101,14 @@ export default function UploadCSVModal({
                         </div>
                     </div>
 
-                    {step === 'uploadCSV' && (
+                    {step === 'uploadCSV' && error && (
+                        <ErrorFileCallout
+                            file={selectedFile}
+                            message={error.message || 'CSV not formatted correctly'}
+                            onDismiss={handleCancel}
+                        />
+                    )}
+                    {step === 'uploadCSV' && !error && (
                         <div
                             onDragOver={handleDragOver}
                             onDragLeave={handleDragLeave}
@@ -222,7 +230,7 @@ export default function UploadCSVModal({
                         <Button
                             variant="primary"
                             onClick={onCreateClick}
-                            disabled={!selectedFile || isUploading}
+                            disabled={!selectedFile || isUploading || Boolean(error)}
                             className="h-9 w-[125px] px-4 py-2 disabled:opacity-50"
                         >
                             {isUploading ? 'Uploading...' : 'Import'}
@@ -354,6 +362,38 @@ function UploadCandidateTable({
                     background: var(--sarge-gray-50);
                 }
             `}</style>
+        </div>
+    );
+}
+
+function ErrorFileCallout({
+    file,
+    message,
+    onDismiss,
+}: {
+    file: File | null;
+    message: string;
+    onDismiss: () => void;
+}) {
+    return (
+        <div className="border-sarge-error-400 flex items-center justify-between rounded-md border px-4 py-3">
+            <div className="flex items-start gap-3">
+                <FileText className="text-sarge-error-700 mt-[2px] size-4" />
+                <div className="flex flex-col">
+                    <span className="text-label-s text-sarge-error-700 font-medium">
+                        {file?.name ?? 'File name.csv'}
+                    </span>
+                    <span className="text-label-xs text-sarge-error-700">{message}</span>
+                </div>
+            </div>
+            <button
+                type="button"
+                onClick={onDismiss}
+                className="text-sarge-error-700 hover:opacity-80 transition-opacity hover:cursor-pointer"
+                aria-label="Dismiss error"
+            >
+                <X className="size-5" />
+            </button>
         </div>
     );
 }

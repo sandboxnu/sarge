@@ -1,7 +1,6 @@
 import { useRef, useState } from 'react';
 import { type AddApplicationWithCandidateDataDTO } from '@/lib/schemas/application.schema';
 import { csvCreateCandidates } from '@/lib/api/positions';
-import { toast } from 'sonner';
 
 export function useUploadCSV(positionId: string) {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -59,7 +58,6 @@ export function useUploadCSV(positionId: string) {
                 return false;
             }
             setError(error as Error);
-            toast.error('Error uploading CSV');
             return false;
         } finally {
             if (uploadTokenRef.current === token) {
