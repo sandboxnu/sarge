@@ -42,12 +42,13 @@ export function TaskTemplatePreviewPanel({
                     )}
                 </div>
                 <div className="flex shrink-0 items-center gap-1">
-                    <Button variant="icon" className="h-10 w-10 p-0" asChild>
+                    <Button variant="secondary" className="px-4 py-2" asChild>
                         <Link
                             href={`/crm/task-templates/${taskTemplatePreview.id}/edit`}
                             aria-label="Edit task template"
                         >
                             <SquarePen className="size-5" />
+                            Edit details
                         </Link>
                     </Button>
                     <DropdownMenu>
@@ -118,11 +119,7 @@ export function TaskTemplatePreviewPanel({
                     <div className="border-sarge-gray-200 bg-background mt-2 rounded-lg border p-4">
                         <div className="flex flex-wrap gap-1.5">
                             {supportedLanguages.map((language) => (
-                                <Chip
-                                    key={language}
-                                    variant="neutral"
-                                    className="border-sarge-gray-300 bg-sarge-gray-200 text-body-s text-sarge-gray-800 rounded-md border px-2 py-1"
-                                >
+                                <Chip key={language} variant="outline">
                                     {language}
                                 </Chip>
                             ))}
