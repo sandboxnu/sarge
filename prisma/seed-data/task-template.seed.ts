@@ -47,6 +47,9 @@ Constraints:
             },
         ],
         orgId: 'org_nextlab_001',
+        taskType: 'Single Function',
+        supportedLanguages: ['Python', 'Java', 'JavaScript', 'C'],
+        createdById: 'user_prof_fontenot_001',
     },
     {
         id: 'task_template_reverse_string_001',
@@ -83,6 +86,9 @@ Constraints:
             },
         ],
         orgId: 'org_nextlab_001',
+        taskType: 'Single Function',
+        supportedLanguages: ['Python'],
+        createdById: 'user_prof_fontenot_001',
     },
     {
         id: 'task_template_palindrome_001',
@@ -131,48 +137,106 @@ Constraints:
             },
         ],
         orgId: 'org_nextlab_001',
+        taskType: 'Single Function',
+        supportedLanguages: ['Python', 'Java', 'JavaScript'],
+        createdById: 'user_prof_fontenot_001',
     },
     {
-        id: 'task_template_contains_duplicate_001',
-        title: 'Contains Duplicate',
-        content: `Given an integer array nums, return true if any value appears at least twice in the array, and return false if every element is distinct.
+        id: 'task_template_fizzbuzz_001',
+        title: 'Fizzbuzz',
+        content: `Consider the following problem:
+Write a short program that prints each number from 1 to 100 on a new line.
+For each multiple of 3, print "Fizz" instead of the number.
+For each multiple of 5, print "Buzz" instead of the number.
+For numbers which are multiples of both 3 and 5, print "FizzBuzz" instead of the number.
+
+Write a solution (or reduce an existing one) so it has as few characters as possible.`,
+        publicTestCases: [{ input: {}, expected: null }],
+        privateTestCases: [{ input: {}, expected: null }],
+        orgId: 'org_nextlab_001',
+        taskType: 'Single Function',
+        supportedLanguages: ['Python', 'Java', 'C', 'Javascript'],
+        createdById: 'user_prof_fontenot_001',
+    },
+    {
+        id: 'task_template_quick_warmup_001',
+        title: 'Quick Warmup',
+        content: '',
+        publicTestCases: [{ input: {}, expected: null }],
+        privateTestCases: [],
+        orgId: 'org_nextlab_001',
+        taskType: null,
+        supportedLanguages: [],
+        createdById: 'user_prof_fontenot_001',
+    },
+    {
+        id: 'task_template_max_subarray_001',
+        title: 'Maximum Subarray',
+        content: `Given an integer array nums, find the subarray with the largest sum, and return its sum.
 
 Example 1:
-Input: nums = [1,2,3,1]
-Output: true
+Input: nums = [-2,1,-3,4,-1,2,1,-5,4]
+Output: 6
+Explanation: The subarray [4,-1,2,1] has the largest sum 6.
 
 Example 2:
-Input: nums = [1,2,3,4]
-Output: false
+Input: nums = [1]
+Output: 1
 
 Example 3:
-Input: nums = [99,99]
-Output: true
+Input: nums = [5,4,-1,7,8]
+Output: 23
+Explanation: The subarray [5,4,-1,7,8] has the largest sum 23.
 
 Constraints:
 - 1 <= nums.length <= 10^5
-- -10^9 <= nums[i] <= 10^9`,
+- -10^4 <= nums[i] <= 10^4`,
         publicTestCases: [
-            {
-                input: { nums: [1, 2, 3, 1] },
-                expected: true,
-            },
-            {
-                input: { nums: [1, 2, 3, 4] },
-                expected: false,
-            },
+            { input: { nums: [-2, 1, -3, 4, -1, 2, 1, -5, 4] }, expected: 6 },
+            { input: { nums: [1] }, expected: 1 },
         ],
         privateTestCases: [
-            {
-                input: { nums: [99, 99] },
-                expected: true,
-            },
-            {
-                input: { nums: [1, 2, 3, 4, 5] },
-                expected: false,
-            },
+            { input: { nums: [5, 4, -1, 7, 8] }, expected: 23 },
+            { input: { nums: [-1, -2, -3] }, expected: -1 },
         ],
         orgId: 'org_nextlab_001',
+        taskType: 'Single Function',
+        supportedLanguages: ['Python', 'Java', 'JavaScript', 'C'],
+        createdById: 'user_prof_fontenot_001',
+    },
+    {
+        id: 'task_template_binary_search_001',
+        title: 'Binary Search',
+        content: `Given a sorted array of integers nums and an integer target, find the index of target in nums. If target does not exist, return -1.
+
+You must write an algorithm with O(log n) runtime complexity.
+
+Example 1:
+Input: nums = [-1,0,3,5,9,12], target = 9
+Output: 4
+Explanation: 9 exists in nums and its index is 4.
+
+Example 2:
+Input: nums = [-1,0,3,5,9,12], target = 2
+Output: -1
+Explanation: 2 does not exist in nums so return -1.
+
+Constraints:
+- 1 <= nums.length <= 10^4
+- -10^4 < nums[i], target < 10^4
+- nums is sorted in ascending order.`,
+        publicTestCases: [
+            { input: { nums: [-1, 0, 3, 5, 9, 12], target: 9 }, expected: 4 },
+            { input: { nums: [-1, 0, 3, 5, 9, 12], target: 2 }, expected: -1 },
+        ],
+        privateTestCases: [
+            { input: { nums: [5], target: 5 }, expected: 0 },
+            { input: { nums: [2, 5], target: 5 }, expected: 1 },
+        ],
+        orgId: 'org_nextlab_001',
+        taskType: 'Single Function',
+        supportedLanguages: ['Python', 'Java', 'JavaScript', 'C'],
+        createdById: 'user_prof_fontenot_001',
     },
     {
         id: 'task_template_valid_parentheses_001',
@@ -198,157 +262,99 @@ Output: false
 
 Constraints:
 - 1 <= s.length <= 10^4
-- s consists of parentheses only '()[]{}' `,
+- s consists of parentheses only '()[]{}'.`,
         publicTestCases: [
-            {
-                input: { s: '()' },
-                expected: true,
-            },
-            {
-                input: { s: '()[]{}' },
-                expected: true,
-            },
+            { input: { s: '()' }, expected: true },
+            { input: { s: '()[]{}' }, expected: true },
+            { input: { s: '(]' }, expected: false },
         ],
         privateTestCases: [
-            {
-                input: { s: '(]' },
-                expected: false,
-            },
-            {
-                input: { s: '({[]})' },
-                expected: true,
-            },
+            { input: { s: '([)]' }, expected: false },
+            { input: { s: '{[]}' }, expected: true },
         ],
         orgId: 'org_nextlab_001',
+        taskType: 'Single Function',
+        supportedLanguages: ['Python', 'Java', 'JavaScript', 'C'],
+        createdById: 'user_prof_fontenot_001',
     },
     {
-        id: 'task_template_merge_sorted_arrays_001',
-        title: 'Merge Sorted Array',
-        content: `You are given two integer arrays nums1 and nums2, sorted in non-decreasing order, and two integers m and n, representing the number of valid elements in nums1 and nums2 respectively.
+        id: 'task_template_merge_sorted_001',
+        title: 'Merge Two Sorted Lists',
+        content: `You are given the heads of two sorted linked lists list1 and list2.
 
-Merge nums2 into nums1 as one sorted array. The final sorted array should not be returned by the function, but instead be stored inside the array nums1. To accommodate this, nums1 has a length of m + n, with the last n elements set to 0 and should be ignored. nums2 has a length of n.
+Merge the two lists into one sorted list. The list should be made by splicing together the nodes of the first two lists.
 
-Example 1:
-Input: nums1 = [1,2,3,0,0,0], m = 3, nums2 = [2,5,6], n = 3
-Output: [1,2,2,3,5,6]
-
-Example 2:
-Input: nums1 = [1], m = 1, nums2 = [], n = 0
-Output: [1]
-
-Constraints:
-- nums1.length == m + n
-- nums2.length == n
-- 0 <= m, n <= 200
-- 1 <= m + n <= 200
-- -10^9 <= nums1[i], nums2[j] <= 10^9`,
-        publicTestCases: [
-            {
-                input: { nums1: [1, 2, 3, 0, 0, 0], m: 3, nums2: [2, 5, 6], n: 3 },
-                expected: [1, 2, 2, 3, 5, 6],
-            },
-            {
-                input: { nums1: [1], m: 1, nums2: [], n: 0 },
-                expected: [1],
-            },
-        ],
-        privateTestCases: [
-            {
-                input: { nums1: [4, 5, 6, 0, 0, 0], m: 3, nums2: [1, 2, 3], n: 3 },
-                expected: [1, 2, 3, 4, 5, 6],
-            },
-            {
-                input: { nums1: [0], m: 0, nums2: [1], n: 1 },
-                expected: [1],
-            },
-        ],
-        orgId: 'org_nextlab_001',
-    },
-    {
-        id: 'task_template_majority_element_001',
-        title: 'Majority Element',
-        content: `Given an array nums of size n, return the majority element.
-
-The majority element is the element that appears more than ⌊n / 2⌋ times. You may assume that the majority element always exists in the array.
+Return the head of the merged linked list.
 
 Example 1:
-Input: nums = [3,2,3]
-Output: 3
+Input: list1 = [1,2,4], list2 = [1,3,4]
+Output: [1,1,2,3,4,4]
 
 Example 2:
-Input: nums = [2,2,1,1,1,2,2]
-Output: 2
-
-Constraints:
-- n == nums.length
-- 1 <= n <= 5 * 10^4
-- -10^9 <= nums[i] <= 10^9
-
-Follow-up: Could you solve the problem in linear time and in O(1) space?`,
-        publicTestCases: [
-            {
-                input: { nums: [3, 2, 3] },
-                expected: 3,
-            },
-            {
-                input: { nums: [2, 2, 1, 1, 1, 2, 2] },
-                expected: 2,
-            },
-        ],
-        privateTestCases: [
-            {
-                input: { nums: [1] },
-                expected: 1,
-            },
-            {
-                input: { nums: [2, 1, 1, 1, 4, 5, 8] },
-                expected: 1,
-            },
-        ],
-        orgId: 'org_nextlab_001',
-    },
-    {
-        id: 'task_template_single_number_001',
-        title: 'Single Number',
-        content: `Given a non-empty array of integers nums, every element appears twice except for one element that appears once. Find that single element.
-
-You must implement a solution with a linear runtime complexity and use only constant extra space.
-
-Example 1:
-Input: nums = [2,2,1]
-Output: 1
-
-Example 2:
-Input: nums = [4,1,2,1,2]
-Output: 4
+Input: list1 = [], list2 = []
+Output: []
 
 Example 3:
-Input: nums = [1]
-Output: 1
+Input: list1 = [], list2 = [0]
+Output: [0]
 
 Constraints:
-- 1 <= nums.length <= 3 * 10^4
-- Each element in the array appears twice except for one element which appears only once.`,
+- The number of nodes in both lists is in the range [0, 50].
+- -100 <= Node.val <= 100
+- Both list1 and list2 are sorted in non-decreasing order.`,
         publicTestCases: [
             {
-                input: { nums: [2, 2, 1] },
-                expected: 1,
+                input: { list1: [1, 2, 4], list2: [1, 3, 4] },
+                expected: [1, 1, 2, 3, 4, 4],
+            },
+            { input: { list1: [], list2: [] }, expected: [] },
+        ],
+        privateTestCases: [
+            { input: { list1: [], list2: [0] }, expected: [0] },
+            { input: { list1: [1], list2: [2] }, expected: [1, 2] },
+        ],
+        orgId: 'org_nextlab_001',
+        taskType: 'Single Function',
+        supportedLanguages: ['Python', 'Java', 'JavaScript'],
+        createdById: 'user_prof_fontenot_001',
+    },
+    {
+        id: 'task_template_longest_prefix_001',
+        title: 'Longest Common Prefix',
+        content: `Write a function to find the longest common prefix string amongst an array of strings.
+
+If there is no common prefix, return an empty string "".
+
+Example 1:
+Input: strs = ["flower","flow","flight"]
+Output: "fl"
+
+Example 2:
+Input: strs = ["dog","racecar","car"]
+Output: ""
+Explanation: There is no common prefix among the input strings.
+
+Constraints:
+- 1 <= strs.length <= 200
+- 0 <= strs[i].length <= 200
+- strs[i] consists of only lowercase English letters.`,
+        publicTestCases: [
+            {
+                input: { strs: ['flower', 'flow', 'flight'] },
+                expected: 'fl',
             },
             {
-                input: { nums: [4, 1, 2, 1, 2] },
-                expected: 4,
+                input: { strs: ['dog', 'racecar', 'car'] },
+                expected: '',
             },
         ],
         privateTestCases: [
-            {
-                input: { nums: [1] },
-                expected: 1,
-            },
-            {
-                input: { nums: [3, 3, 5, 5, 7] },
-                expected: 7,
-            },
+            { input: { strs: ['a'] }, expected: 'a' },
+            { input: { strs: ['ab', 'a'] }, expected: 'a' },
         ],
         orgId: 'org_nextlab_001',
+        taskType: 'Single Function',
+        supportedLanguages: ['Python', 'Java', 'JavaScript', 'C'],
+        createdById: 'user_prof_fontenot_001',
     },
 ];
