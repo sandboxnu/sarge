@@ -1,5 +1,8 @@
 import { type TaskTemplate } from '@/generated/prisma';
-import { type TaskTemplateWithTagsDTO } from '@/lib/schemas/task-template.schema';
+import type {
+    TaskTemplatePreviewDTO,
+    TaskTemplateWithTagsDTO,
+} from '@/lib/schemas/task-template.schema';
 
 /**
  * GET /api/task-templates/:taskTemplateId
@@ -28,6 +31,20 @@ export async function searchTaskTemplates(title: string): Promise<TaskTemplate[]
         throw new Error(json.message);
     }
 
+    return json.data;
+}
+
+/**
+ * GET /api/task-templates/:taskTemplateId/preview
+ */
+export async function getTaskTemplatePreview(
+    taskTemplateId: string
+): Promise<TaskTemplatePreviewDTO> {
+    const res = await fetch(`/api/task-templates/${taskTemplateId}/preview`);
+    const json = await res.json();
+    if (!res.ok) {
+        throw new Error(json.message);
+    }
     return json.data;
 }
 

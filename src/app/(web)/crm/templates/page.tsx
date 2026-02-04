@@ -1,12 +1,14 @@
 'use client';
 
+import { useState } from 'react';
 import { Search } from '@/lib/components/core/Search';
 import { Button } from '@/lib/components/ui/Button';
 import { DropdownMenu } from '@/lib/components/ui/Dropdown';
 import { Tabs, TabsList, UnderlineTabsTrigger } from '@/lib/components/ui/Tabs';
 import { ArrowDownUp, Plus, SlidersHorizontal } from 'lucide-react';
-import { useTaskTemplateList } from '@/lib/hooks/useTaskList';
+import { useTaskTemplateList, useTaskTemplatePreview } from '@/lib/hooks/useTaskList';
 import TaskCard from '@/lib/components/core/TaskCard';
+import { TaskTemplatePreviewPanel } from '@/lib/components/core/TaskTemplatePreviewPanel';
 import type { TaskTemplateWithTagsDTO } from '@/lib/schemas/task-template.schema';
 import {
     DropdownMenuContent,
@@ -19,6 +21,7 @@ import Pager from '@/lib/components/ui/Pager';
 import GreyWinstonLogoMark from '@/../public/GreyWinstonLogoMark.svg';
 
 export default function TemplatesPage() {
+    const [selectedTaskTemplateId, setSelectedTaskTemplateId] = useState<string | null>(null);
     const {
         taskTemplateList,
         isLoading,
@@ -31,6 +34,11 @@ export default function TemplatesPage() {
         handleSelectTask,
         total,
     } = useTaskTemplateList();
+    const {
+        taskTemplatePreview,
+        isLoading: isPreviewLoading,
+        error: previewLoadError,
+    } = useTaskTemplatePreview(selectedTaskTemplateId);
 
     return (
         <div className="flex h-full flex-col">
@@ -101,15 +109,19 @@ export default function TemplatesPage() {
                         {/* eslint-disable-next-line @typescript-eslint/prefer-optional-chain */}
                         {taskTemplateList &&
                             taskTemplateList.map((task: TaskTemplateWithTagsDTO, idx: number) => {
+                                const absoluteIdx = page * limit + idx;
                                 return (
                                     <TaskCard
-                                        key={idx}
+                                        key={task.id}
                                         title={task.title}
-                                        subtitle={'subtitle'}
+                                        subtitle={task.taskType ?? ''}
                                         chips={task.tags ?? []}
-                                        selected={selected?.includes(idx) ?? false}
+                                        selected={selected?.includes(absoluteIdx) ?? false}
                                         setSelected={handleSelectTask}
                                         index={idx}
+                                        taskTemplateId={task.id}
+                                        isPreviewSelected={selectedTaskTemplateId === task.id}
+                                        onPreviewSelect={() => setSelectedTaskTemplateId(task.id)}
                                     />
                                 );
                             })}
@@ -139,10 +151,11 @@ export default function TemplatesPage() {
                                     >
                                         <DropdownMenuGroup>
                                             {selected && selected.length > 0 ? (
-                                                selected.map((idx) => (
-                                                    <DropdownMenuLabel key={idx}>
-                                                        {taskTemplateList?.[idx]?.title ??
-                                                            `Item ${idx}`}
+                                                selected.map((absoluteIdx) => (
+                                                    <DropdownMenuLabel key={absoluteIdx}>
+                                                        {taskTemplateList?.[
+                                                            absoluteIdx - page * limit
+                                                        ]?.title ?? `Item ${absoluteIdx}`}
                                                     </DropdownMenuLabel>
                                                 ))
                                             ) : (
@@ -160,7 +173,31 @@ export default function TemplatesPage() {
                         </div>
                     </div>
                 </div>
-                <div className="flex-start gap-3.5 p-7.5"></div>
+                <div className="flex w-0 min-w-0 flex-1 flex-col overflow-hidden p-[30px]">
+                    {!selectedTaskTemplateId && (
+                        <div className="text-body-m text-muted-foreground flex h-full items-center justify-center">
+                            Select a task template to preview
+                        </div>
+                    )}
+                    {selectedTaskTemplateId && isPreviewLoading && (
+                        <div className="flex h-full items-center justify-center">
+                            <Image
+                                src="/CreateOrgLoading.gif"
+                                alt="Loading preview"
+                                width={66}
+                                height={66}
+                            />
+                        </div>
+                    )}
+                    {selectedTaskTemplateId && previewLoadError && !isPreviewLoading && (
+                        <div className="text-body-m text-sarge-error-700 flex h-full items-center justify-center">
+                            Failed to load preview
+                        </div>
+                    )}
+                    {selectedTaskTemplateId && taskTemplatePreview && !isPreviewLoading && (
+                        <TaskTemplatePreviewPanel taskTemplatePreview={taskTemplatePreview} />
+                    )}
+                </div>
             </div>
         </div>
     );

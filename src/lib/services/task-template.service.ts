@@ -3,6 +3,7 @@ import type {
     UpdateTaskTemplateDTO,
     CreateTaskTemplateDTO,
     TaskTemplateWithTagsDTO,
+    TaskTemplatePreviewDTO,
 } from '@/lib/schemas/task-template.schema';
 import { prisma } from '@/lib/prisma';
 import { NotFoundException, ConflictException } from '@/lib/utils/errors.utils';
@@ -50,7 +51,9 @@ async function getTaskTemplates(
     };
 }
 
-async function createTaskTemplate(taskTemplate: CreateTaskTemplateDTO): Promise<TaskTemplate> {
+async function createTaskTemplate(
+    taskTemplate: CreateTaskTemplateDTO & { createdById: string }
+): Promise<TaskTemplate> {
     const org = await prisma.organization.findFirst({
         where: {
             id: taskTemplate.orgId,
@@ -67,6 +70,28 @@ async function createTaskTemplate(taskTemplate: CreateTaskTemplateDTO): Promise<
         },
     });
     return createdTaskTemplate;
+}
+
+async function getTaskTemplateForPreview(taskTemplateId: string): Promise<TaskTemplatePreviewDTO> {
+    const taskTemplate = await prisma.taskTemplate.findFirst({
+        where: { id: taskTemplateId },
+        include: {
+            tags: true,
+            creator: { select: { id: true, name: true } },
+            _count: { select: { assessments: true } },
+        },
+    });
+
+    if (!taskTemplate) {
+        throw new NotFoundException('Task Template', taskTemplateId);
+    }
+
+    const { creator, _count, ...rest } = taskTemplate;
+    return {
+        ...rest,
+        creator,
+        assessmentTemplatesCount: _count.assessments,
+    } as TaskTemplatePreviewDTO;
 }
 
 async function deleteTaskTemplate(id: string): Promise<TaskTemplate> {
@@ -137,6 +162,7 @@ const TaskTemplateService = {
     getTaskTemplate,
     getAllTaskTemplates: getTaskTemplates,
     createTaskTemplate,
+    getTaskTemplateForPreview,
     deleteTaskTemplate,
     updateTaskTemplate,
     getTaskTemplatesByTitle,
