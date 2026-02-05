@@ -134,14 +134,9 @@ model AssessmentTemplate {
 
   organization Organization @relation(fields: [orgId], references: [id])
   assessments  Assessment[] @relation("derivedFromAssessmentTemplate")
-<<<<<<< Updated upstream
-
   tasks AssessmentTemplateTask[]
-
   @@index([title])
-=======
   positions    Position[]   @relation("derivedFromPosition")
->>>>>>> Stashed changes
 }
 
 // A task (question) that could be asked in an assessment. Contains test cases, description, and starter code.
