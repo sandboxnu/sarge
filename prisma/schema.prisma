@@ -50,20 +50,20 @@ model User {
 
 // A role or position that an organization is hiring for (e.g. "Software Engineer"). Positions collect applications from candidates.
 model Position {
-  id            String   @id @unique @default(cuid())
-  title         String
-  orgId         String
-  archived      Boolean  @default(false)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  createdById   String
-  assessmentId  String?
+  id           String   @id @unique @default(cuid())
+  title        String
+  orgId        String
+  archived     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  createdById  String
+  assessmentId String?
 
-  applications Application[]
-  organization Organization       @relation(fields: [orgId], references: [id])
-  creator      User               @relation("CreatedPositions", fields: [createdById], references: [id])
-  tags         Tag[]              @relation("PositionTags")
-  assessment   AssessmentTemplate? @relation("derivedFromPosition", fields: [assessmentId], references: [id])
+  applications       Application[]
+  organization       Organization        @relation(fields: [orgId], references: [id])
+  creator            User                @relation("CreatedPositions", fields: [createdById], references: [id])
+  tags               Tag[]               @relation("PositionTags")
+  assessmentTemplate AssessmentTemplate? @relation("derivedFromPosition", fields: [assessmentId], references: [id])
 }
 
 // An external applicant who applies to positions within an organization. Candidates do not authenticate and may apply to multiple positions.
@@ -132,11 +132,12 @@ model AssessmentTemplate {
   description String
   orgId       String
 
-  organization Organization @relation(fields: [orgId], references: [id])
-  assessments  Assessment[] @relation("derivedFromAssessmentTemplate")
-  tasks AssessmentTemplateTask[]
+  organization Organization             @relation(fields: [orgId], references: [id])
+  assessments  Assessment[]             @relation("derivedFromAssessmentTemplate")
+  tasks        AssessmentTemplateTask[]
+  positions    Position[]               @relation("derivedFromPosition")
+
   @@index([title])
-  positions    Position[]   @relation("derivedFromPosition")
 }
 
 // A task (question) that could be asked in an assessment. Contains test cases, description, and starter code.
