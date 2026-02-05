@@ -5,8 +5,9 @@ import { Dialog } from '@radix-ui/react-dialog';
 import { DialogContent, DialogTitle } from '@/lib/components/ui/Modal';
 import { Button } from '@/lib/components/ui/Button';
 import Image from 'next/image';
-import { Download, FileText, Trash, X, Users, ExternalLink } from 'lucide-react';
+import { Download, FileText, Trash, X, Users } from 'lucide-react';
 import { DataTable } from '@/lib/components/ui/DataTable';
+import { LinkButton } from '@/lib/components/ui/LinkButton';
 import type { AddApplicationWithCandidateDataDTO } from '@/lib/schemas/application.schema';
 import { useUploadCSV } from '@/lib/hooks/useUploadCSV';
 import type { ColumnDef } from '@tanstack/react-table';
@@ -16,7 +17,6 @@ export type UploadCSVModalProps = {
     positionId: string;
     onOpenChange: (open: boolean) => void;
     onCreate: (candidates: AddApplicationWithCandidateDataDTO[]) => Promise<void>;
-    onSwitchModal?: () => void;
 };
 
 export default function UploadCSVModal({
@@ -24,7 +24,6 @@ export default function UploadCSVModal({
     positionId,
     onOpenChange,
     onCreate,
-    onSwitchModal,
 }: UploadCSVModalProps) {
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const {
@@ -79,7 +78,7 @@ export default function UploadCSVModal({
                             <DialogTitle className="text-label-m text-sarge-gray-800 font-bold">
                                 Import candidates
                             </DialogTitle>
-                            <div className="text-label-xs text-sarge-gray-600 flex items-center gap-2">
+                            <div className="text-label-xs text-sarge-gray-800 flex items-center gap-2">
                                 <span>Upload a CSV to import candidates.</span>
                                 <a
                                     href="/example-candidates.csv"
@@ -210,7 +209,7 @@ export default function UploadCSVModal({
                             )}
                             <div className="flex flex-col gap-1">
                                 <div className="text-lg font-bold">Preview</div>
-                                <div className="text-sm font-light">
+                                <div className="text-body-s text-sarge-gray-800 font-normal tracking-[0.406px]">
                                     {candidates?.length ?? 0} candidates
                                 </div>
                             </div>
@@ -250,6 +249,18 @@ function UploadCandidateTable({
     const ensureAbsoluteUrl = (url?: string | null) => {
         if (!url || url === '-') return '';
         return url.startsWith('http://') || url.startsWith('https://') ? url : `https://${url}`;
+    };
+
+    const getLinkLabel = (url: string, fallback: string) => {
+        if (!url) return fallback;
+        try {
+            const cleaned = url.split('?')[0]?.split('#')[0] ?? '';
+            const lastSegment = cleaned.split('/').filter(Boolean).pop();
+            if (lastSegment) return decodeURIComponent(lastSegment);
+            return fallback;
+        } catch {
+            return fallback;
+        }
     };
 
     const HeaderLabel = ({ children }: { children: string }) => (
@@ -301,14 +312,10 @@ function UploadCandidateTable({
             cell: ({ row }) => {
                 const url = ensureAbsoluteUrl(row.original.resumeUrl);
                 return url ? (
-                    <a
+                    <LinkButton
                         href={url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-label-s text-sarge-primary-500 hover:text-sarge-primary-600 inline-flex items-center gap-1.5 font-medium tracking-[0.406px]"
-                    >
-                        Link to resume <ExternalLink className="size-4" />
-                    </a>
+                        label={getLinkLabel(row.original.resumeUrl ?? '', 'resume')}
+                    />
                 ) : (
                     <span className="text-body-s text-sarge-gray-600">—</span>
                 );
@@ -320,14 +327,10 @@ function UploadCandidateTable({
             cell: ({ row }) => {
                 const url = ensureAbsoluteUrl(row.original.githubUrl);
                 return url ? (
-                    <a
+                    <LinkButton
                         href={url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-label-s text-sarge-primary-500 hover:text-sarge-primary-600 inline-flex items-center gap-1.5 font-medium tracking-[0.406px]"
-                    >
-                        Link to GitHub <ExternalLink className="size-4" />
-                    </a>
+                        label={getLinkLabel(row.original.githubUrl ?? '', 'github')}
+                    />
                 ) : (
                     <span className="text-body-s text-sarge-gray-600">—</span>
                 );
@@ -339,14 +342,10 @@ function UploadCandidateTable({
             cell: ({ row }) => {
                 const url = ensureAbsoluteUrl(row.original.linkedinUrl);
                 return url ? (
-                    <a
+                    <LinkButton
                         href={url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-label-s text-sarge-primary-500 hover:text-sarge-primary-600 inline-flex items-center gap-1.5 font-medium tracking-[0.406px]"
-                    >
-                        Link to LinkedIn <ExternalLink className="size-4" />
-                    </a>
+                        label={getLinkLabel(row.original.linkedinUrl ?? '', 'linkedin')}
+                    />
                 ) : (
                     <span className="text-body-s text-sarge-gray-600">—</span>
                 );
@@ -389,7 +388,7 @@ function ErrorFileCallout({
             <button
                 type="button"
                 onClick={onDismiss}
-                className="text-sarge-error-700 hover:opacity-80 transition-opacity hover:cursor-pointer"
+                className="text-sarge-error-700 transition-opacity hover:cursor-pointer hover:opacity-80"
                 aria-label="Dismiss error"
             >
                 <X className="size-5" />

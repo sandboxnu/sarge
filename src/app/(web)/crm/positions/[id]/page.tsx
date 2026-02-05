@@ -101,10 +101,6 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                 positionId={id}
                 onOpenChange={setIsCSVModalOpen}
                 onCreate={batchCreateCandidates}
-                onSwitchModal={() => {
-                    setIsCSVModalOpen(false);
-                    setIsModalManualOpen(true);
-                }}
             />
         </>
     );

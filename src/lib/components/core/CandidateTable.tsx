@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 import type { ColumnDef } from '@tanstack/react-table';
-import { ExternalLink } from 'lucide-react';
+import { LinkButton } from '@/lib/components/ui/LinkButton';
 
 import { DataTable } from '@/lib/components/ui/DataTable';
 import type { ApplicationDisplayInfo } from '@/lib/types/position.types';
@@ -36,6 +36,18 @@ const formatDecisionLabel = (status?: string) => {
 const ensureAbsoluteUrl = (url: string) => {
     if (!url) return '';
     return url.startsWith('http://') || url.startsWith('https://') ? url : `https://${url}`;
+};
+
+const getLinkLabel = (url: string, fallback: string) => {
+    if (!url) return fallback;
+    try {
+        const cleaned = url.split('?')[0]?.split('#')[0] ?? '';
+        const lastSegment = cleaned.split('/').filter(Boolean).pop();
+        if (lastSegment) return decodeURIComponent(lastSegment);
+        return fallback;
+    } catch {
+        return fallback;
+    }
 };
 
 const HeaderLabel = ({ children }: { children: string }) => (
@@ -109,14 +121,10 @@ export function CandidateTable({ candidates }: CandidateTableProps) {
                 header: () => <HeaderLabel>RESUME</HeaderLabel>,
                 cell: ({ row }) =>
                     row.original.candidate.resumeUrl ? (
-                        <a
+                        <LinkButton
                             href={ensureAbsoluteUrl(row.original.candidate.resumeUrl)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-label-s text-sarge-primary-500 hover:text-sarge-primary-600 inline-flex items-center gap-1.5 font-medium tracking-[0.406px]"
-                        >
-                            Link to resume <ExternalLink className="size-4" />
-                        </a>
+                            label={getLinkLabel(row.original.candidate.resumeUrl, 'resume')}
+                        />
                     ) : (
                         <span className="text-body-s text-sarge-gray-600">—</span>
                     ),
