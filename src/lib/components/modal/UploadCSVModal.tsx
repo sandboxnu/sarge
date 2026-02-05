@@ -67,12 +67,12 @@ export default function UploadCSVModal({
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogContent
-                className={`border-sarge-gray-200 !max-w-[95vw] gap-0 px-7 py-6 ${
+                className={`border-sarge-gray-200 !max-w-[85vw] max-h-[85vh] overflow-hidden gap-0 px-7 py-6 ${
                     step === 'confirm' ? 'w-[1200px]' : 'w-[650px]'
                 }`}
                 showCloseButton={false}
             >
-                <div className="flex w-full flex-col gap-4">
+                <div className="flex h-full w-full flex-col gap-4">
                     <div className="flex w-full items-start justify-between">
                         <div className="flex flex-col gap-1">
                             <DialogTitle className="text-label-m text-sarge-gray-800 font-bold">
@@ -198,7 +198,7 @@ export default function UploadCSVModal({
                         </div>
                     )}
                     {step === 'confirm' && (
-                        <div className="flex flex-col gap-4">
+                        <div className="flex min-h-0 flex-col gap-4">
                             {selectedFile && (
                                 <UploadedFileCallout
                                     file={selectedFile}
@@ -213,7 +213,7 @@ export default function UploadCSVModal({
                                     {candidates?.length ?? 0} candidates
                                 </div>
                             </div>
-                            <div className="max-h-[500px] overflow-y-auto">
+                            <div className="max-h-[calc(85vh-320px)] overflow-auto">
                                 <UploadCandidateTable candidates={candidates ?? []} />
                             </div>
                         </div>
