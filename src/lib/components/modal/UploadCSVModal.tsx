@@ -67,7 +67,7 @@ export default function UploadCSVModal({
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogContent
-                className={`border-sarge-gray-200 !max-w-[85vw] max-h-[85vh] overflow-hidden gap-0 px-7 py-6 ${
+                className={`border-sarge-gray-200 max-h-[85vh] !max-w-[85vw] gap-0 overflow-hidden px-7 py-6 ${
                     step === 'confirm' ? 'w-[1200px]' : 'w-[650px]'
                 }`}
                 showCloseButton={false}
