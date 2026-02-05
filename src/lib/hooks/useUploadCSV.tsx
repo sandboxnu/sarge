@@ -1,7 +1,6 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { type AddApplicationWithCandidateDataDTO } from '@/lib/schemas/application.schema';
 import { csvCreateCandidates } from '@/lib/api/positions';
-import { toast } from 'sonner';
 
 export function useUploadCSV(positionId: string) {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -9,7 +8,11 @@ export function useUploadCSV(positionId: string) {
     const [isUploading, setIsUploading] = useState(false);
     const [error, setError] = useState<Error | null>(null);
     const [candidates, setCandidates] = useState<AddApplicationWithCandidateDataDTO[] | null>(null);
-    const [step, setStep] = useState<'uploadCSV' | 'confirm'>('uploadCSV');
+    const [step, setStep] = useState<'uploadCSV' | 'uploading' | 'confirm'>('uploadCSV');
+    const uploadTokenRef = useRef(0);
+
+    const isCsvFile = (file: File) =>
+        file.type.toLowerCase().includes('csv') || file.name.toLowerCase().endsWith('.csv');
 
     const handleDragOver = (e: React.DragEvent) => {
         e.preventDefault();
@@ -24,33 +27,54 @@ export function useUploadCSV(positionId: string) {
         e.preventDefault();
         setIsDragging(false);
         const files = e.dataTransfer.files;
-        if (files.length > 0 && files[0].type === 'text/csv') {
-            setSelectedFile(files[0]);
+        if (files.length > 0 && isCsvFile(files[0])) {
+            void handleSelectedFile(files[0]);
         }
     };
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
-        if (files && files.length > 0) {
-            setSelectedFile(files[0]);
+        if (files && files.length > 0 && isCsvFile(files[0])) {
+            void handleSelectedFile(files[0]);
         }
     };
 
-    const uploadCSV = async (file: File) => {
+    const uploadCSV = async (file: File, token: number) => {
         setIsUploading(true);
         try {
             const formData = new FormData();
             formData.append('file', file);
 
             const candidates = await csvCreateCandidates(positionId, formData);
+            if (uploadTokenRef.current !== token) {
+                return false;
+            }
             setCandidates(candidates);
 
             setError(null);
+            return true;
         } catch (error) {
+            if (uploadTokenRef.current !== token) {
+                return false;
+            }
             setError(error as Error);
-            toast.error('Error uploading CSV');
+            return false;
         } finally {
-            setIsUploading(false);
+            if (uploadTokenRef.current === token) {
+                setIsUploading(false);
+            }
+        }
+    };
+
+    const handleSelectedFile = async (file: File) => {
+        const token = ++uploadTokenRef.current;
+        setSelectedFile(file);
+        setStep('uploading');
+        const uploaded = await uploadCSV(file, token);
+        if (uploaded) {
+            setStep('confirm');
+        } else if (uploadTokenRef.current === token) {
+            setStep('uploadCSV');
         }
     };
 
@@ -61,8 +85,14 @@ export function useUploadCSV(positionId: string) {
         setIsUploading(true);
         try {
             if (step === 'uploadCSV') {
-                await uploadCSV(selectedFile);
-                setStep('confirm');
+                const token = ++uploadTokenRef.current;
+                setStep('uploading');
+                const uploaded = await uploadCSV(selectedFile, token);
+                if (uploaded) {
+                    setStep('confirm');
+                } else if (uploadTokenRef.current === token) {
+                    setStep('uploadCSV');
+                }
             } else if (candidates) {
                 await onCreate(candidates);
                 setSelectedFile(null);
@@ -80,8 +110,11 @@ export function useUploadCSV(positionId: string) {
     };
 
     const handleCancel = () => {
+        uploadTokenRef.current += 1;
         setSelectedFile(null);
         setCandidates(null);
+        setError(null);
+        setIsUploading(false);
         setStep('uploadCSV');
     };
 
