@@ -37,16 +37,16 @@ model User {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  reviews              Review[]
-  comments             Comment[]
-  sessions             Session[]
-  accounts             Account[]
-  verifications        Verification[]
-  members              Member[]
-  invitations          Invitation[]   @relation("Inviter")
-  positions            Position[]     @relation("CreatedPositions")
-  decidedApplications  Application[]  @relation("ApplicationDecision")
-  createdTaskTemplates TaskTemplate[] @relation("CreatedTaskTemplates")
+  reviews               Review[]
+  comments              Comment[]
+  sessions              Session[]
+  accounts              Account[]
+  verifications         Verification[]
+  members               Member[]
+  invitations           Invitation[]   @relation("Inviter")
+  positions             Position[]     @relation("CreatedPositions")
+  decidedApplications   Application[]  @relation("ApplicationDecision")
+  authoredTaskTemplates TaskTemplate[] @relation("AuthoredTaskTemplates")
 }
 
 // A role or position that an organization is hiring for (e.g. "Software Engineer"). Positions collect applications from candidates.
@@ -149,10 +149,10 @@ model TaskTemplate {
   orgId              String
   taskType           String?
   supportedLanguages String[] @default([])
-  createdById        String
+  authorId           String
 
   organization Organization @relation(fields: [orgId], references: [id])
-  creator      User         @relation("CreatedTaskTemplates", fields: [createdById], references: [id], onDelete: Restrict)
+  author       User         @relation("AuthoredTaskTemplates", fields: [authorId], references: [id], onDelete: Restrict)
   tasks        Task[]       @relation("derivedFromTaskTemplate")
   tags         Tag[]        @relation("TaskTemplateTags")
 

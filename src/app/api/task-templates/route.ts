@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
         const parsed = createTaskTemplateSchema.parse(body);
         const result = await TaskTemplateService.createTaskTemplate({
             ...parsed,
-            createdById: session.userId,
+            authorId: session.userId,
         });
         return Response.json({ data: result }, { status: 201 });
     } catch (err) {

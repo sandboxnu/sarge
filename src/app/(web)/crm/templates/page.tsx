@@ -6,10 +6,10 @@ import { Button } from '@/lib/components/ui/Button';
 import { DropdownMenu } from '@/lib/components/ui/Dropdown';
 import { Tabs, TabsList, UnderlineTabsTrigger } from '@/lib/components/ui/Tabs';
 import { ArrowDownUp, Plus, SlidersHorizontal } from 'lucide-react';
-import { useTaskTemplateList, useTaskTemplatePreview } from '@/lib/hooks/useTaskList';
+import { useTaskTemplateList } from '@/lib/hooks/useTaskList';
 import TaskCard from '@/lib/components/core/TaskCard';
 import { TaskTemplatePreviewPanel } from '@/lib/components/core/TaskTemplatePreviewPanel';
-import type { TaskTemplateWithTagsDTO } from '@/lib/schemas/task-template.schema';
+import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
 import {
     DropdownMenuContent,
     DropdownMenuGroup,
@@ -21,7 +21,8 @@ import Pager from '@/lib/components/ui/Pager';
 import GreyWinstonLogoMark from '@/../public/GreyWinstonLogoMark.svg';
 
 export default function TemplatesPage() {
-    const [selectedTaskTemplateId, setSelectedTaskTemplateId] = useState<string | null>(null);
+    const [selectedTaskTemplate, setSelectedTaskTemplate] =
+        useState<TaskTemplateListItemDTO | null>(null);
     const {
         taskTemplateList,
         isLoading,
@@ -34,11 +35,6 @@ export default function TemplatesPage() {
         handleSelectTask,
         total,
     } = useTaskTemplateList();
-    const {
-        taskTemplatePreview,
-        isLoading: isPreviewLoading,
-        error: previewLoadError,
-    } = useTaskTemplatePreview(selectedTaskTemplateId);
 
     return (
         <div className="flex h-full flex-col">
@@ -108,7 +104,7 @@ export default function TemplatesPage() {
                         )}
                         {/* eslint-disable-next-line @typescript-eslint/prefer-optional-chain */}
                         {taskTemplateList &&
-                            taskTemplateList.map((task: TaskTemplateWithTagsDTO, idx: number) => {
+                            taskTemplateList.map((task: TaskTemplateListItemDTO, idx: number) => {
                                 const absoluteIdx = page * limit + idx;
                                 return (
                                     <TaskCard
@@ -120,8 +116,8 @@ export default function TemplatesPage() {
                                         setSelected={handleSelectTask}
                                         index={idx}
                                         taskTemplateId={task.id}
-                                        isPreviewSelected={selectedTaskTemplateId === task.id}
-                                        onPreviewSelect={() => setSelectedTaskTemplateId(task.id)}
+                                        isPreviewSelected={selectedTaskTemplate?.id === task.id}
+                                        onPreviewSelect={() => setSelectedTaskTemplate(task)}
                                     />
                                 );
                             })}
@@ -174,28 +170,13 @@ export default function TemplatesPage() {
                     </div>
                 </div>
                 <div className="flex w-0 min-w-0 flex-1 flex-col overflow-hidden p-[30px]">
-                    {!selectedTaskTemplateId && (
+                    {!selectedTaskTemplate && (
                         <div className="text-body-m text-muted-foreground flex h-full items-center justify-center">
                             Select a task template to preview
                         </div>
                     )}
-                    {selectedTaskTemplateId && isPreviewLoading && (
-                        <div className="flex h-full items-center justify-center">
-                            <Image
-                                src="/CreateOrgLoading.gif"
-                                alt="Loading preview"
-                                width={66}
-                                height={66}
-                            />
-                        </div>
-                    )}
-                    {selectedTaskTemplateId && previewLoadError && !isPreviewLoading && (
-                        <div className="text-body-m text-sarge-error-700 flex h-full items-center justify-center">
-                            Failed to load preview
-                        </div>
-                    )}
-                    {selectedTaskTemplateId && taskTemplatePreview && !isPreviewLoading && (
-                        <TaskTemplatePreviewPanel taskTemplatePreview={taskTemplatePreview} />
+                    {selectedTaskTemplate && (
+                        <TaskTemplatePreviewPanel taskTemplatePreview={selectedTaskTemplate} />
                     )}
                 </div>
             </div>

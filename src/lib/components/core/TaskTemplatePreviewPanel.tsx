@@ -12,10 +12,10 @@ import {
 } from '@/lib/components/ui/Dropdown';
 import { Button } from '@/lib/components/ui/Button';
 import MarkdownViewer from '@/lib/components/core/Markdown';
-import type { TaskTemplatePreviewDTO } from '@/lib/schemas/task-template.schema';
+import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
 
 export interface TaskTemplatePreviewPanelProps {
-    taskTemplatePreview: TaskTemplatePreviewDTO;
+    taskTemplatePreview: TaskTemplateListItemDTO;
     onDuplicate?: (taskTemplateId: string) => void;
     onDelete?: (taskTemplateId: string) => void;
 }
@@ -125,7 +125,7 @@ export function TaskTemplatePreviewPanel({
                 </section>
                 <div className="mb-0">
                     <p className="text-body-s text-muted-foreground">
-                        Created by {taskTemplatePreview.creator?.name ?? '—'}
+                        Authored by {taskTemplatePreview.author?.name ?? '—'}
                     </p>
                     <Link
                         href="#"

@@ -2,8 +2,7 @@ import type { TaskTemplate } from '@/generated/prisma';
 import type {
     UpdateTaskTemplateDTO,
     CreateTaskTemplateDTO,
-    TaskTemplateWithTagsDTO,
-    TaskTemplatePreviewDTO,
+    TaskTemplateListItemDTO,
 } from '@/lib/schemas/task-template.schema';
 import { prisma } from '@/lib/prisma';
 import { NotFoundException, ConflictException } from '@/lib/utils/errors.utils';
@@ -29,14 +28,18 @@ async function getTaskTemplates(
     orgId: string,
     page?: number,
     limit?: number
-): Promise<{ data: TaskTemplateWithTagsDTO[]; total: number }> {
+): Promise<{ data: TaskTemplateListItemDTO[]; total: number }> {
     page = page ?? 0; // not sure if this is the kind of solution we are looking for (essentially grab all if not defined)
     limit = limit ?? Number.MAX_SAFE_INTEGER;
 
     const [templates, total] = await prisma.$transaction([
         prisma.taskTemplate.findMany({
             where: { orgId },
-            include: { tags: true },
+            include: {
+                tags: true,
+                author: { select: { id: true, name: true } },
+                _count: { select: { assessments: true } },
+            },
             skip: page * limit,
             take: limit,
         }),
@@ -45,14 +48,17 @@ async function getTaskTemplates(
         }),
     ]);
 
-    return {
-        data: templates as TaskTemplateWithTagsDTO[],
-        total,
-    };
+    const data = templates.map(({ author, _count, ...rest }) => ({
+        ...rest,
+        author,
+        assessmentTemplatesCount: _count.assessments,
+    })) as TaskTemplateListItemDTO[];
+
+    return { data, total };
 }
 
 async function createTaskTemplate(
-    taskTemplate: CreateTaskTemplateDTO & { createdById: string }
+    taskTemplate: CreateTaskTemplateDTO & { authorId: string }
 ): Promise<TaskTemplate> {
     const org = await prisma.organization.findFirst({
         where: {
@@ -70,28 +76,6 @@ async function createTaskTemplate(
         },
     });
     return createdTaskTemplate;
-}
-
-async function getTaskTemplateForPreview(taskTemplateId: string): Promise<TaskTemplatePreviewDTO> {
-    const taskTemplate = await prisma.taskTemplate.findFirst({
-        where: { id: taskTemplateId },
-        include: {
-            tags: true,
-            creator: { select: { id: true, name: true } },
-            _count: { select: { assessments: true } },
-        },
-    });
-
-    if (!taskTemplate) {
-        throw new NotFoundException('Task Template', taskTemplateId);
-    }
-
-    const { creator, _count, ...rest } = taskTemplate;
-    return {
-        ...rest,
-        creator,
-        assessmentTemplatesCount: _count.assessments,
-    } as TaskTemplatePreviewDTO;
 }
 
 async function deleteTaskTemplate(id: string): Promise<TaskTemplate> {
@@ -162,7 +146,6 @@ const TaskTemplateService = {
     getTaskTemplate,
     getAllTaskTemplates: getTaskTemplates,
     createTaskTemplate,
-    getTaskTemplateForPreview,
     deleteTaskTemplate,
     updateTaskTemplate,
     getTaskTemplatesByTitle,

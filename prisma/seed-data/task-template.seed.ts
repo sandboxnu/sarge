@@ -49,7 +49,7 @@ Constraints:
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
         supportedLanguages: ['Python', 'Java', 'JavaScript', 'C'],
-        createdById: 'user_prof_fontenot_001',
+        authorId: 'user_prof_fontenot_001',
     },
     {
         id: 'task_template_reverse_string_001',
@@ -88,7 +88,7 @@ Constraints:
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
         supportedLanguages: ['Python'],
-        createdById: 'user_prof_fontenot_001',
+        authorId: 'user_prof_fontenot_001',
     },
     {
         id: 'task_template_palindrome_001',
@@ -139,7 +139,7 @@ Constraints:
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
         supportedLanguages: ['Python', 'Java', 'JavaScript'],
-        createdById: 'user_prof_fontenot_001',
+        authorId: 'user_prof_fontenot_001',
     },
     {
         id: 'task_template_fizzbuzz_001',
@@ -156,7 +156,7 @@ Write a solution (or reduce an existing one) so it has as few characters as poss
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
         supportedLanguages: ['Python', 'Java', 'C', 'Javascript'],
-        createdById: 'user_prof_fontenot_001',
+        authorId: 'user_prof_fontenot_001',
     },
     {
         id: 'task_template_quick_warmup_001',
@@ -167,7 +167,7 @@ Write a solution (or reduce an existing one) so it has as few characters as poss
         orgId: 'org_nextlab_001',
         taskType: null,
         supportedLanguages: [],
-        createdById: 'user_prof_fontenot_001',
+        authorId: 'user_prof_fontenot_001',
     },
     {
         id: 'task_template_max_subarray_001',
@@ -202,7 +202,7 @@ Constraints:
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
         supportedLanguages: ['Python', 'Java', 'JavaScript', 'C'],
-        createdById: 'user_prof_fontenot_001',
+        authorId: 'user_prof_fontenot_001',
     },
     {
         id: 'task_template_binary_search_001',
@@ -236,7 +236,7 @@ Constraints:
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
         supportedLanguages: ['Python', 'Java', 'JavaScript', 'C'],
-        createdById: 'user_prof_fontenot_001',
+        authorId: 'user_prof_fontenot_001',
     },
     {
         id: 'task_template_valid_parentheses_001',
@@ -275,7 +275,7 @@ Constraints:
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
         supportedLanguages: ['Python', 'Java', 'JavaScript', 'C'],
-        createdById: 'user_prof_fontenot_001',
+        authorId: 'user_prof_fontenot_001',
     },
     {
         id: 'task_template_merge_sorted_001',
@@ -316,7 +316,7 @@ Constraints:
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
         supportedLanguages: ['Python', 'Java', 'JavaScript'],
-        createdById: 'user_prof_fontenot_001',
+        authorId: 'user_prof_fontenot_001',
     },
     {
         id: 'task_template_longest_prefix_001',
@@ -355,6 +355,6 @@ Constraints:
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
         supportedLanguages: ['Python', 'Java', 'JavaScript', 'C'],
-        createdById: 'user_prof_fontenot_001',
+        authorId: 'user_prof_fontenot_001',
     },
 ];
