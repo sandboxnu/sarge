@@ -1,5 +1,5 @@
 import { type TaskTemplate } from '@/generated/prisma';
-import { type TaskTemplateWithTagsDTO } from '@/lib/schemas/task-template.schema';
+import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
 
 /**
  * GET /api/task-templates/:taskTemplateId
@@ -37,7 +37,7 @@ export async function searchTaskTemplates(title: string): Promise<TaskTemplate[]
 export async function getTaskList(
     page: number,
     limit: number
-): Promise<{ data: TaskTemplateWithTagsDTO[]; total: number }> {
+): Promise<{ data: TaskTemplateListItemDTO[]; total: number }> {
     const results = await fetch(`/api/task-templates?page=${page}&limit=${limit}`);
 
     const json = await results.json();

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import type { TaskTemplateWithTagsDTO } from '@/lib/schemas/task-template.schema';
+import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
 import { getTaskList } from '@/lib/api/task-templates';
 
 export function useTaskTemplateList() {
-    const [allTaskTemplates, setAllTaskTemplates] = useState<TaskTemplateWithTagsDTO[]>([]);
+    const [allTaskTemplates, setAllTaskTemplates] = useState<TaskTemplateListItemDTO[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [selected, setSelected] = useState<number[] | null>(null);
     const [error, setError] = useState<Error | null>(null);
@@ -14,6 +14,7 @@ export function useTaskTemplateList() {
     useEffect(() => {
         async function fetchTaskList() {
             try {
+                setError(null);
                 const response = await getTaskList(page, limit);
 
                 updateTemplatesForPage(page, limit, response.data);
@@ -33,7 +34,7 @@ export function useTaskTemplateList() {
     const updateTemplatesForPage = (
         pageNum: number,
         limitNum: number,
-        newData: TaskTemplateWithTagsDTO[]
+        newData: TaskTemplateListItemDTO[]
     ) => {
         setAllTaskTemplates((prev) => {
             const startIdx = pageNum * limitNum;

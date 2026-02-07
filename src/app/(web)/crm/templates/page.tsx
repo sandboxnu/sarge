@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { Search } from '@/lib/components/core/Search';
 import { Button } from '@/lib/components/ui/Button';
 import { DropdownMenu } from '@/lib/components/ui/Dropdown';
@@ -7,7 +8,8 @@ import { Tabs, TabsList, UnderlineTabsTrigger } from '@/lib/components/ui/Tabs';
 import { ArrowDownUp, Plus, SlidersHorizontal } from 'lucide-react';
 import { useTaskTemplateList } from '@/lib/hooks/useTaskList';
 import TaskCard from '@/lib/components/core/TaskCard';
-import type { TaskTemplateWithTagsDTO } from '@/lib/schemas/task-template.schema';
+import { TaskTemplatePreviewPanel } from '@/lib/components/core/TaskTemplatePreviewPanel';
+import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
 import {
     DropdownMenuContent,
     DropdownMenuGroup,
@@ -19,6 +21,8 @@ import Pager from '@/lib/components/ui/Pager';
 import GreyWinstonLogoMark from '@/../public/GreyWinstonLogoMark.svg';
 
 export default function TemplatesPage() {
+    const [selectedTaskTemplate, setSelectedTaskTemplate] =
+        useState<TaskTemplateListItemDTO | null>(null);
     const {
         taskTemplateList,
         isLoading,
@@ -76,7 +80,7 @@ export default function TemplatesPage() {
                         </div>
                     </div>
                     <div className="flex min-h-0 w-full flex-1 flex-col gap-2.5 overflow-scroll px-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                        {isLoading && (
+                        {isLoading ? (
                             <div className="flex h-full w-full items-center justify-center">
                                 <Image
                                     src="/CreateOrgLoading.gif"
@@ -85,9 +89,9 @@ export default function TemplatesPage() {
                                     height={66}
                                 />
                             </div>
-                        )}
-                        {error && <div className="">Error</div>}
-                        {!isLoading && taskTemplateList && taskTemplateList.length === 0 && (
+                        ) : error ? (
+                            <div className="">Error: {error.message}</div>
+                        ) : taskTemplateList.length === 0 ? (
                             <div className="text-sarge-gray-500 flex h-full w-full flex-col items-center justify-center gap-4">
                                 <Image
                                     src={GreyWinstonLogoMark}
@@ -97,22 +101,25 @@ export default function TemplatesPage() {
                                 />
                                 You currently have no tasks
                             </div>
-                        )}
-                        {/* eslint-disable-next-line @typescript-eslint/prefer-optional-chain */}
-                        {taskTemplateList &&
-                            taskTemplateList.map((task: TaskTemplateWithTagsDTO, idx: number) => {
+                        ) : (
+                            taskTemplateList.map((task: TaskTemplateListItemDTO, idx: number) => {
+                                const absoluteIdx = page * limit + idx;
                                 return (
                                     <TaskCard
-                                        key={idx}
+                                        key={task.id}
                                         title={task.title}
-                                        subtitle={'subtitle'}
+                                        subtitle={task.taskType ?? ''}
                                         chips={task.tags ?? []}
-                                        selected={selected?.includes(idx) ?? false}
+                                        selected={selected?.includes(absoluteIdx) ?? false}
                                         setSelected={handleSelectTask}
                                         index={idx}
+                                        taskTemplateId={task.id}
+                                        isPreviewSelected={selectedTaskTemplate?.id === task.id}
+                                        onPreviewSelect={() => setSelectedTaskTemplate(task)}
                                     />
                                 );
-                            })}
+                            })
+                        )}
                     </div>
                     <div className="border-sarge-gray-200 flex flex-col gap-2.5 border-t-1 p-3">
                         <div className="flex-1 justify-end">
@@ -139,10 +146,11 @@ export default function TemplatesPage() {
                                     >
                                         <DropdownMenuGroup>
                                             {selected && selected.length > 0 ? (
-                                                selected.map((idx) => (
-                                                    <DropdownMenuLabel key={idx}>
-                                                        {taskTemplateList?.[idx]?.title ??
-                                                            `Item ${idx}`}
+                                                selected.map((absoluteIdx) => (
+                                                    <DropdownMenuLabel key={absoluteIdx}>
+                                                        {taskTemplateList?.[
+                                                            absoluteIdx - page * limit
+                                                        ]?.title ?? `Item ${absoluteIdx}`}
                                                     </DropdownMenuLabel>
                                                 ))
                                             ) : (
@@ -160,7 +168,16 @@ export default function TemplatesPage() {
                         </div>
                     </div>
                 </div>
-                <div className="flex-start gap-3.5 p-7.5"></div>
+                <div className="flex w-0 min-w-0 flex-1 flex-col overflow-hidden p-[30px]">
+                    {!selectedTaskTemplate && (
+                        <div className="text-body-m text-muted-foreground flex h-full items-center justify-center">
+                            Select a task template to preview
+                        </div>
+                    )}
+                    {selectedTaskTemplate && (
+                        <TaskTemplatePreviewPanel taskTemplatePreview={selectedTaskTemplate} />
+                    )}
+                </div>
             </div>
         </div>
     );

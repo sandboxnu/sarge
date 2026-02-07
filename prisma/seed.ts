@@ -212,7 +212,6 @@ async function seedTaskTemplates() {
 async function seedTags() {
     console.log('Seeding tags...');
 
-    // Create tags
     for (const tag of tagsData) {
         await prisma.tag.upsert({
             where: { id: tag.id },
@@ -223,7 +222,6 @@ async function seedTags() {
         console.log(`  Created tag: ${tag.name}`);
     }
 
-    // Assign tags to task templates
     await prisma.taskTemplate.update({
         where: { id: taskTemplatesData[0].id },
         data: {
@@ -246,7 +244,61 @@ async function seedTags() {
         where: { id: taskTemplatesData[2].id },
         data: {
             tags: {
-                connect: [{ id: tagsData[2].id }],
+                connect: [{ id: tagsData[2].id }, { id: tagsData[0].id }],
+            },
+        },
+    });
+
+    await prisma.taskTemplate.update({
+        where: { id: taskTemplatesData[3].id },
+        data: {
+            tags: {
+                connect: [{ id: tagsData[3].id }, { id: tagsData[4].id }],
+            },
+        },
+    });
+
+    await prisma.taskTemplate.update({
+        where: { id: taskTemplatesData[5].id },
+        data: {
+            tags: {
+                connect: [{ id: tagsData[0].id }, { id: tagsData[3].id }],
+            },
+        },
+    });
+
+    await prisma.taskTemplate.update({
+        where: { id: taskTemplatesData[6].id },
+        data: {
+            tags: {
+                connect: [{ id: tagsData[0].id }, { id: tagsData[1].id }],
+            },
+        },
+    });
+
+    await prisma.taskTemplate.update({
+        where: { id: taskTemplatesData[7].id },
+        data: {
+            tags: {
+                connect: [{ id: tagsData[1].id }, { id: tagsData[0].id }],
+            },
+        },
+    });
+
+    await prisma.taskTemplate.update({
+        where: { id: taskTemplatesData[8].id },
+        data: {
+            tags: {
+                connect: [{ id: tagsData[1].id }, { id: tagsData[0].id }],
+            },
+        },
+    });
+
+    await prisma.taskTemplate.update({
+        where: { id: taskTemplatesData[9].id },
+        data: {
+            tags: {
+                connect: [{ id: tagsData[0].id }, { id: tagsData[1].id }],
             },
         },
     });
@@ -261,14 +313,26 @@ async function seedAssessmentTemplates() {
     const orgId = organizationsData[0].id;
 
     for (const assessmentTemplateData of assessmentTemplatesData) {
+        const taskTemplateIds = assessmentTemplateData.taskTemplates;
+        const tasksCreate = taskTemplateIds.map((taskTemplateId, index) => ({
+            taskTemplateId,
+            order: index,
+        }));
+
         await prisma.assessmentTemplate.upsert({
             where: { id: assessmentTemplateData.id },
-            update: {},
+            update: {
+                tasks: {
+                    deleteMany: {},
+                    create: tasksCreate,
+                },
+            },
             create: {
                 id: assessmentTemplateData.id,
                 title: assessmentTemplateData.title,
                 description: assessmentTemplateData.description,
                 orgId,
+                tasks: { create: tasksCreate },
             },
         });
 
