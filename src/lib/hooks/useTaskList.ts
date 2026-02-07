@@ -14,6 +14,7 @@ export function useTaskTemplateList() {
     useEffect(() => {
         async function fetchTaskList() {
             try {
+                setError(null);
                 const response = await getTaskList(page, limit);
 
                 updateTemplatesForPage(page, limit, response.data);

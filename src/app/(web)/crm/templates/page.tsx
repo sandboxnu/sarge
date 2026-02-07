@@ -80,7 +80,7 @@ export default function TemplatesPage() {
                         </div>
                     </div>
                     <div className="flex min-h-0 w-full flex-1 flex-col gap-2.5 overflow-scroll px-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                        {isLoading && (
+                        {isLoading ? (
                             <div className="flex h-full w-full items-center justify-center">
                                 <Image
                                     src="/CreateOrgLoading.gif"
@@ -89,9 +89,9 @@ export default function TemplatesPage() {
                                     height={66}
                                 />
                             </div>
-                        )}
-                        {error && <div className="">Error</div>}
-                        {!isLoading && taskTemplateList && taskTemplateList.length === 0 && (
+                        ) : error ? (
+                            <div className="">Error: {error.message}</div>
+                        ) : taskTemplateList.length === 0 ? (
                             <div className="text-sarge-gray-500 flex h-full w-full flex-col items-center justify-center gap-4">
                                 <Image
                                     src={GreyWinstonLogoMark}
@@ -101,9 +101,7 @@ export default function TemplatesPage() {
                                 />
                                 You currently have no tasks
                             </div>
-                        )}
-                        {/* eslint-disable-next-line @typescript-eslint/prefer-optional-chain */}
-                        {taskTemplateList &&
+                        ) : (
                             taskTemplateList.map((task: TaskTemplateListItemDTO, idx: number) => {
                                 const absoluteIdx = page * limit + idx;
                                 return (
@@ -120,7 +118,8 @@ export default function TemplatesPage() {
                                         onPreviewSelect={() => setSelectedTaskTemplate(task)}
                                     />
                                 );
-                            })}
+                            })
+                        )}
                     </div>
                     <div className="border-sarge-gray-200 flex flex-col gap-2.5 border-t-1 p-3">
                         <div className="flex-1 justify-end">
