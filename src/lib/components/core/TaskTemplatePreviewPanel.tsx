@@ -125,7 +125,10 @@ export function TaskTemplatePreviewPanel({
                 </section>
                 <div className="mb-0">
                     <p className="text-body-s text-muted-foreground">
-                        Authored by {taskTemplatePreview.author?.name ?? '—'}
+                        Authored by{' '}
+                        <span className="text-label-xs text-muted-foreground font-bold">
+                            {taskTemplatePreview.author?.name ?? '—'}
+                        </span>
                     </p>
                     <Link
                         href="#"
