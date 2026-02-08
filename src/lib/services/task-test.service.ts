@@ -44,21 +44,21 @@ export async function waitForSubmissions(
         const results = await judge0Connector.getBatchSubmission(remainingTokens);
         attempts += 1;
 
-        const incompleteTokens: string[] = [];
+        const pendingTokens: string[] = [];
 
-        results.forEach((submissionStatus, index) => {
-            const isComplete = submissionStatus.status_id !== 1 && submissionStatus.status_id !== 2;
+        results.forEach((submissionResult, index) => {
+            const isComplete = submissionResult.status_id !== 1 && submissionResult.status_id !== 2;
             if (isComplete) {
-                allResults.push(submissionStatus);
+                allResults.push(submissionResult);
             } else {
-                incompleteTokens.push(remainingTokens[index]);
+                pendingTokens.push(remainingTokens[index]);
                 if (attempts === POLLING_MAX_ATTEMPTS) {
-                    allResults.push(submissionStatus);
+                    allResults.push(submissionResult);
                 }
             }
         });
 
-        remainingTokens = incompleteTokens;
+        remainingTokens = pendingTokens;
 
         if (remainingTokens.length > 0 && attempts < POLLING_MAX_ATTEMPTS) {
             await sleep(POLLING_DELAY_MS);
@@ -75,19 +75,19 @@ export async function waitForSubmissions(
         unknown: [],
     };
 
-    allResults.forEach((submissionStatus) => {
-        switch (submissionStatus.status_id) {
+    allResults.forEach((submissionResult) => {
+        switch (submissionResult.status_id) {
             case 3: // Accepted
-                categorizedResults.accepted.push(submissionStatus);
+                categorizedResults.accepted.push(submissionResult);
                 break;
             case 4: // Wrong Answer
-                categorizedResults.wrong.push(submissionStatus);
+                categorizedResults.wrong.push(submissionResult);
                 break;
             case 5: // Time Limit Exceeded
-                categorizedResults.timeout.push(submissionStatus);
+                categorizedResults.timeout.push(submissionResult);
                 break;
             case 6: // Compilation Error
-                categorizedResults.compilation_error.push(submissionStatus);
+                categorizedResults.compilation_error.push(submissionResult);
                 break;
             case 7: // Runtime Error (SIGSEGV)
             case 8: // Runtime Error (SIGXFSZ)
@@ -95,16 +95,16 @@ export async function waitForSubmissions(
             case 10: // Runtime Error (SIGABRT)
             case 11: // Runtime Error (NZEC)
             case 12: // Runtime Error (Other)
-                categorizedResults.runtime_error.push(submissionStatus);
+                categorizedResults.runtime_error.push(submissionResult);
                 break;
             case 13: // Internal Error
             case 14: // Exec Format Error
-                categorizedResults.system_error.push(submissionStatus);
+                categorizedResults.system_error.push(submissionResult);
                 break;
             case 1: // In Queue
             case 2: // Processing
             default:
-                categorizedResults.unknown.push(submissionStatus);
+                categorizedResults.unknown.push(submissionResult);
                 break;
         }
     });
