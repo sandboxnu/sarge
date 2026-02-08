@@ -27,7 +27,10 @@ export async function createSubmissions(
 
 // retrieves results from judge0 via polling
 // total timeout in milliseconds
-export async function waitForSubmissions(tokens: string[], totalTimeout: number): Promise<{
+export async function waitForSubmissions(
+    tokens: string[],
+    totalTimeout: number
+): Promise<{
     categorizedResults: Record<string, JudgeResultRequestBody[]>;
     allResults: JudgeResultRequestBody[];
 }> {
