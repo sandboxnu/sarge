@@ -32,8 +32,8 @@ export default function Pager({
     changeLimit,
     limitOptions = [5, 10, 15],
 }: PagerProps) {
-    const startItem = page * limit + 1;
-    const endItem = Math.min((page + 1) * limit, total);
+    const startItem = total === 0 ? 0 : page * limit + 1;
+    const endItem = total === 0 ? 0 : Math.min((page + 1) * limit, total);
 
     return (
         <div className="bg-sarge-gray-0 border-sarge-gray-200 flex items-center rounded-lg border-1">

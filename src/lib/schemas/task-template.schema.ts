@@ -17,9 +17,12 @@ export const TaskTemplateSchema = z.object({
     orgId: z.string(),
     publicTestCases: z.array(testCaseSchema).min(1, 'There must at least be one public test case'),
     privateTestCases: z.array(testCaseSchema).default([]),
+    taskType: z.string().optional(),
+    supportedLanguages: z.array(z.string()).default([]),
+    authorId: z.string(),
 });
 
-export const createTaskTemplateSchema = TaskTemplateSchema.omit({ id: true });
+export const createTaskTemplateSchema = TaskTemplateSchema.omit({ id: true, authorId: true });
 
 export const deleteTaskTemplateSchema = z.object({
     id: z.string(),
@@ -33,6 +36,16 @@ export const taskTemplateWithTagsSchema = TaskTemplateSchema.extend({
     tags: TagSchema.array(),
 });
 
+export const taskTemplateAuthorSchema = z.object({
+    id: z.string(),
+    name: z.string(),
+});
+
+export const taskTemplateListItemSchema = taskTemplateWithTagsSchema.extend({
+    author: taskTemplateAuthorSchema.nullable(),
+    assessmentTemplatesCount: z.number(),
+});
+
 export type TaskTemplateDTO = z.infer<typeof TaskTemplateSchema>;
 export type GetTaskTemplateDTO = z.infer<typeof getTaskTemplateSchema>;
 export type CreateTaskTemplateDTO = z.infer<typeof createTaskTemplateSchema>;
@@ -40,3 +53,4 @@ export type DeleteTaskTemplateDTO = z.infer<typeof deleteTaskTemplateSchema>;
 export type UpdateTaskTemplateDTO = z.infer<typeof updateTaskTemplateSchema>;
 export type TestCaseDTO = z.infer<typeof testCaseSchema>;
 export type TaskTemplateWithTagsDTO = z.infer<typeof taskTemplateWithTagsSchema>;
+export type TaskTemplateListItemDTO = z.infer<typeof taskTemplateListItemSchema>;
