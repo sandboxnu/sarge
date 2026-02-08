@@ -113,7 +113,8 @@ class Judge0Connector {
             const pendingTokens: string[] = [];
 
             results.forEach((submissionResult, index) => {
-                const isComplete = submissionResult.status_id !== 1 && submissionResult.status_id !== 2;
+                const isComplete =
+                    submissionResult.status_id !== 1 && submissionResult.status_id !== 2;
                 if (isComplete) {
                     allResults.push(submissionResult);
                 } else {
@@ -149,7 +150,7 @@ class Judge0Connector {
                     categorizedResults.wrong.push(submissionResult);
                     break;
                 case 1: // In Queue
-                case 2: // Processing            
+                case 2: // Processing
                 case 5: // Time Limit Exceeded
                     categorizedResults.timeout.push(submissionResult);
                     break;
