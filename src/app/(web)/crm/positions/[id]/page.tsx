@@ -80,6 +80,7 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
 
                         <TabsContent value="candidates">
                             <CandidateTable candidates={candidates} />
+                            <br />
                         </TabsContent>
 
                         <TabsContent value="assessment">{/* No content yet */}</TabsContent>

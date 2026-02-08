@@ -35,7 +35,7 @@ export function usePositionPreviewModal({ open, positionId }: UsePositionPreview
 
     const openFullPosition = () => {
         if (positionId) {
-            window.open(`/crm/positions/${positionId}`, '_blank');
+            window.open(`/crm/positions/${positionId}`, '_self');
         }
     };
 
