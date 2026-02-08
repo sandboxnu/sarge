@@ -5,12 +5,12 @@ import {
     type JudgeResultRequestBody,
     type JudgeSubmissionRequestBody,
 } from '@/lib/connectors/judge0.connector';
-import { sleep } from '@/lib/utils/utils';
 import { type TaskTemplate } from '@/generated/prisma';
 import { type CreateTaskDTO, type TaskDTO } from '@/lib/schemas/task.schema';
 import { type TestCaseDTO } from '@/lib/schemas/task-template.schema';
 import { createTask, updateTask } from '@/lib/api/tasks';
 import { getTaskTemplate } from '@/lib/api/task-templates';
+import { executeSubmissions } from '@/lib/services/task-test.service';
 
 const languageIds: Record<string, number> = {
     python: 100,
@@ -127,18 +127,7 @@ export function useTask(taskTemplateId: string, assessmentId: string) {
                 expected_output: testCase.output,
             }));
 
-            const tokens = await createSubmission(payload);
-            if (!tokens || tokens.length === 0) {
-                throw new Error(
-                    `No tokens received from Judge0 for payload ${JSON.stringify(payload, null, 2)}`
-                );
-            }
-            /**
-             * Link to ticket to improve polling mechanism:
-             * https://github.com/sandboxnu/sarge/issues/130
-             */
-            await sleep(5000);
-            const results = await getSubmission(tokens);
+            const results = await executeSubmissions(payload);
 
             setOutput(`Judge0 Results: ${JSON.stringify(results, null, 2)}`);
             return results;
@@ -223,32 +212,4 @@ export function useTask(taskTemplateId: string, assessmentId: string) {
         handleSubmitButton,
         languageIds,
     };
-}
-
-async function createSubmission(payload: JudgeSubmissionRequestBody[]): Promise<string[]> {
-    const response = await fetch('/api/judge', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-    });
-
-    if (!response.ok) {
-        throw new Error('fetch unsuccessful');
-    }
-
-    const body = await response.json();
-    return body.data;
-}
-
-async function getSubmission(tokens: string[]): Promise<JudgeResultRequestBody[]> {
-    const response = await fetch(`/api/judge?tokens=${tokens.join(',')}`);
-
-    if (!response.ok) {
-        throw new Error('fetch unsuccessful');
-    }
-
-    const body = await response.json();
-    return body;
 }
