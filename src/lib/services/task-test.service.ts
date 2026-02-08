@@ -5,7 +5,6 @@ import judge0Connector, {
 import { sleep } from '@/lib/utils/utils';
 
 const POLLING_MAX_ATTEMPTS = 4;
-const POLLING_DELAY_MS = 500;
 
 // batch create the provided submissions w/judge0
 export async function createSubmissions(
@@ -27,12 +26,14 @@ export async function createSubmissions(
 }
 
 // retrieves results from judge0 via polling
-export async function waitForSubmissions(tokens: string[]): Promise<{
+// total timeout in milliseconds
+export async function waitForSubmissions(tokens: string[], totalTimeout: number): Promise<{
     categorizedResults: Record<string, JudgeResultRequestBody[]>;
     allResults: JudgeResultRequestBody[];
 }> {
     let remainingTokens = [...tokens];
     let attempts = 0;
+    const POLLING_DELAY_MS = totalTimeout / POLLING_MAX_ATTEMPTS;
     const allResults: JudgeResultRequestBody[] = [];
 
     // running a call to judge0 to get statuses
@@ -109,10 +110,12 @@ export async function waitForSubmissions(tokens: string[]): Promise<{
 }
 
 // the hook will call this function
+// default timeout of 2 seconds for running all test cases
 export async function executeSubmissions(
-    submissions: JudgeSubmissionRequestBody[]
+    submissions: JudgeSubmissionRequestBody[],
+    totalTimeout: number = 2000
 ): Promise<JudgeResultRequestBody[]> {
     const tokens = await createSubmissions(submissions);
-    const { allResults } = await waitForSubmissions(tokens);
+    const { allResults } = await waitForSubmissions(tokens, totalTimeout);
     return allResults;
 }
