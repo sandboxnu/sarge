@@ -72,7 +72,6 @@ export async function waitForSubmissions(
         compilation_error: [],
         runtime_error: [],
         system_error: [],
-        unknown: [],
     };
 
     allResults.forEach((submissionResult) => {
@@ -83,6 +82,8 @@ export async function waitForSubmissions(
             case 4: // Wrong Answer
                 categorizedResults.wrong.push(submissionResult);
                 break;
+            case 1: // In Queue
+            case 2: // Processing            
             case 5: // Time Limit Exceeded
                 categorizedResults.timeout.push(submissionResult);
                 break;
@@ -101,10 +102,7 @@ export async function waitForSubmissions(
             case 14: // Exec Format Error
                 categorizedResults.system_error.push(submissionResult);
                 break;
-            case 1: // In Queue
-            case 2: // Processing
             default:
-                categorizedResults.unknown.push(submissionResult);
                 break;
         }
     });
