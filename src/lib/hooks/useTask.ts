@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { type editor } from 'monaco-editor';
 import { type Monaco } from '@monaco-editor/react';
-import {
+import judge0Connector, {
     type JudgeResultRequestBody,
     type JudgeSubmissionRequestBody,
 } from '@/lib/connectors/judge0.connector';
@@ -10,7 +10,6 @@ import { type CreateTaskDTO, type TaskDTO } from '@/lib/schemas/task.schema';
 import { type TestCaseDTO } from '@/lib/schemas/task-template.schema';
 import { createTask, updateTask } from '@/lib/api/tasks';
 import { getTaskTemplate } from '@/lib/api/task-templates';
-import { executeSubmissions } from '@/lib/services/task-test.service';
 
 const languageIds: Record<string, number> = {
     python: 100,
@@ -127,7 +126,7 @@ export function useTask(taskTemplateId: string, assessmentId: string) {
                 expected_output: testCase.output,
             }));
 
-            const results = await executeSubmissions(payload);
+            const results = await judge0Connector.executeSubmissions(payload);
 
             setOutput(`Judge0 Results: ${JSON.stringify(results, null, 2)}`);
             return results;
