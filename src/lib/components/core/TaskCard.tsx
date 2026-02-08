@@ -19,7 +19,7 @@ export default function TaskCard(props: TaskCardProps) {
     return (
         <div
             className={cn(
-                'flex gap-4.5 rounded-xl border-1 p-4',
+                'flex cursor-pointer gap-4.5 rounded-xl border-1 p-4',
                 props.isPreviewSelected
                     ? 'border-sarge-primary-500 bg-sarge-primary-50 ring-sarge-primary-200 ring-2 ring-inset'
                     : 'border-sarge-gray-200 hover:bg-sarge-primary-100 hover:border-sarge-primary-400'

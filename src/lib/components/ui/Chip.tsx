@@ -16,7 +16,8 @@ export function Chip({ children, variant = 'neutral', className, ...props }: Chi
         error: 'bg-sarge-error-200 text-sarge-error-700',
         warning: 'bg-sarge-warning-100 text-sarge-warning-500',
         primary: 'bg-sarge-primary-200 text-sarge-primary-600',
-        outline: 'bg-background border border-border text-muted-foreground rounded-md',
+        outline:
+            'rounded-md border border-sarge-gray-500 bg-sarge-gray-50 text-label-s !text-sarge-gray-600',
     };
 
     return (
