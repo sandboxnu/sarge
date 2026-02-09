@@ -127,7 +127,11 @@ class Judge0Connector {
 
             remainingTokens = pendingTokens;
 
-            if (remainingTokens.length > 0 && attempts < this.POLLING_MAX_ATTEMPTS) {
+            if (remainingTokens.length === 0) {
+                break;
+            }
+
+            if (attempts < this.POLLING_MAX_ATTEMPTS) {
                 await sleep(POLLING_DELAY_MS);
             }
         }
