@@ -22,7 +22,7 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
     return (
         <>
             <div className="flex max-h-screen flex-col gap-8 px-8 py-7 pb-20">
-                <div className="sticky flex items-center gap-4">
+                <div className="sticky flex items-center gap-2">
                     <button
                         onClick={() => router.push('/crm/positions')}
                         className="hover:bg-sarge-gray-100 rounded-lg p-2 hover:cursor-pointer"
