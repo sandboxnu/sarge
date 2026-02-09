@@ -20,7 +20,7 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
                     Opening task template editor...
                 </p>
             </div>
-        )
+        );
     }
 
     return (
@@ -36,18 +36,12 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
             </div>
 
             <div className="flex flex-1 overflow-hidden">
-                <div className="w-1/3 bg-yellow-100 p-4">
-                    {/* Tabs and Content Here */}
-                </div>
+                <div className="w-1/3 bg-yellow-100 p-4">{/* Tabs and Content Here */}</div>
 
                 <div className="flex w-2/3 flex-col">
-                    <div className="flex-1 bg-red-100 p-4">
-                        {/* Editor Here */}
-                    </div>
+                    <div className="flex-1 bg-red-100 p-4">{/* Editor Here */}</div>
 
-                    <div className="flex-1 bg-blue-100 p-4">
-                        {/* Tests Here */}
-                    </div>
+                    <div className="flex-1 bg-blue-100 p-4">{/* Tests Here */}</div>
                 </div>
             </div>
         </div>
