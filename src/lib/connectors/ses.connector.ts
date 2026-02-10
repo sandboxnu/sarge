@@ -21,10 +21,10 @@ class SESConnector {
         });
     }
 
-    async sendEmail(to: string, from: string, subject: string, body: string): Promise<boolean> {
+    async sendEmail(to: string, subject: string, body: string): Promise<boolean> {
         try {
             const params = {
-                Source: from,
+                Source: `no-reply@${process.env.EMAIL_DOMAIN}`,
                 Destination: {
                     ToAddresses: [to],
                 },
