@@ -22,7 +22,7 @@ export async function GET(req: Request) {
 
         if (!invitation) return NextResponse.json({ error: 'not found' }, { status: 404 });
         return NextResponse.json(invitation);
-    } catch (err) {
+    } catch {
         return NextResponse.json({ error: 'server error' }, { status: 500 });
     }
 }
@@ -64,7 +64,7 @@ export async function POST(req: Request) {
             invitation: { id: updatedInvitation.id, status: updatedInvitation.status },
             member,
         });
-    } catch (err) {
+    } catch {
         return NextResponse.json({ error: 'server error' }, { status: 500 });
     }
 }
