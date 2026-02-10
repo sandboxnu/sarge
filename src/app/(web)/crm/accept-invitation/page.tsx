@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 
 type Invitation = {
     id: string;
@@ -11,8 +12,9 @@ type Invitation = {
     expiresAt: string;
 };
 
-export default function AcceptInvitationPage({ params }: { params: { id: string } }) {
-    const { id } = params;
+export default function AcceptInvitationPage() {
+    const searchParams = useSearchParams();
+    const id = searchParams?.get('id') ?? null;
     const [inv, setInv] = useState<Invitation | null>(null);
     const [loading, setLoading] = useState(false);
 
