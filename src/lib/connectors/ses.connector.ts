@@ -4,8 +4,6 @@ class SESConnector {
     private client: SESClient;
 
     constructor() {
-        const region = process.env.AWS_REGION;
-
         // Use the SDK's default credential/provider chain.
         this.client = new SESClient({ region: 'us-east-2' });
     }
