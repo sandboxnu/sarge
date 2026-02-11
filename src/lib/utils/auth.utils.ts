@@ -14,9 +14,7 @@ export const generateSlugFromName = (name: string): string => {
         .replace(/^-+|-+$/g, '');
 };
 
-async function getSessionBase(
-    options: GetSessionOptions
-): Promise<{
+async function getSessionBase(options: GetSessionOptions): Promise<{
     id: string;
     userId: string;
     activeOrganizationId: string | null | undefined;
@@ -38,7 +36,7 @@ async function getSessionBase(
 
     const role = (
         response.activeOrganizationId != null
-            ? (
+            ? ((
                   await prisma.member.findUnique({
                       where: {
                           userId_organizationId: {
@@ -48,8 +46,8 @@ async function getSessionBase(
                       },
                       select: { role: true },
                   })
-              )?.role ?? null
-            : null;
+              )?.role ?? null)
+            : null
     ) as OrgRole | null;
 
     if (options.requireActiveOrg && !role) {

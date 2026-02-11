@@ -16,8 +16,7 @@ export async function POST(request: NextRequest) {
 
         const { type, key } = parsed;
 
-        const ownerId =
-            type === 'user' ? session.userId : session.activeOrganizationId;
+        const ownerId = type === 'user' ? session.userId : session.activeOrganizationId;
         if (!key.startsWith(`${type}/${ownerId}/`)) {
             throw new BadRequestException('Key does not match the provided ID');
         }

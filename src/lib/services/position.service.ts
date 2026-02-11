@@ -101,10 +101,7 @@ async function updatePosition(
     });
 }
 
-async function getPositionPreview(
-    positionId: string,
-    orgId: string
-): Promise<PositionPreviewData> {
+async function getPositionPreview(positionId: string, orgId: string): Promise<PositionPreviewData> {
     const position = await prisma.position.findFirst({
         where: { id: positionId, orgId },
         select: {

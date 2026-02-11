@@ -9,10 +9,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
     try {
         const session = await getSession();
         const id = (await params).id;
-        const result = await TaskTemplateService.getTaskTemplate(
-            id,
-            session.activeOrganizationId
-        );
+        const result = await TaskTemplateService.getTaskTemplate(id, session.activeOrganizationId);
         return Response.json({ data: result }, { status: 200 });
     } catch (err) {
         return handleError(err);

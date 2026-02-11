@@ -9,10 +9,7 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
     try {
         const session = await getSession();
         const positionId = (await params).id;
-        const result = await PositionService.getPosition(
-            positionId,
-            session.activeOrganizationId
-        );
+        const result = await PositionService.getPosition(positionId, session.activeOrganizationId);
         return Response.json({ data: result }, { status: 200 });
     } catch (err) {
         return handleError(err);

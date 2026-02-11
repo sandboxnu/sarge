@@ -26,12 +26,10 @@ export async function POST(request: NextRequest) {
     }
 }
 
-export async function GET(request: NextRequest) {
+export async function GET(_req: NextRequest) {
     try {
         const session = await getSession();
-        const positions = await PositionService.getPositionsByOrgId(
-            session.activeOrganizationId
-        );
+        const positions = await PositionService.getPositionsByOrgId(session.activeOrganizationId);
 
         return Response.json({ data: positions }, { status: 200 });
     } catch (err) {

@@ -28,10 +28,7 @@ export async function DELETE(
             throw new ForbiddenException('Recruiter role or above required');
         }
         const { id } = await params;
-        const result = await AssessmentService.deleteAssessment(
-            id,
-            session.activeOrganizationId
-        );
+        const result = await AssessmentService.deleteAssessment(id, session.activeOrganizationId);
         return Response.json({ data: result }, { status: 200 });
     } catch (err) {
         return handleError(err);

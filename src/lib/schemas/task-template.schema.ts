@@ -40,8 +40,8 @@ export const deleteTaskTemplateSchema = z.object({
 export const updateTaskTemplateSchema = TaskTemplateSchema.partial()
     .omit({ orgId: true, authorId: true })
     .extend({
-    id: z.string(),
-});
+        id: z.string(),
+    });
 
 export const taskTemplateWithTagsSchema = TaskTemplateSchema.extend({
     tags: TagSchema.array(),
