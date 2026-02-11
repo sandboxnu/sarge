@@ -7,10 +7,18 @@ import type {
 import { NotFoundException } from '@/lib/utils/errors.utils';
 import { type AssessmentWithRelations } from '@/lib/types/assessment.types';
 
-async function getAssessmentWithRelations(id: string): Promise<AssessmentWithRelations> {
+async function getAssessmentWithRelations(
+    id: string,
+    orgId: string
+): Promise<AssessmentWithRelations> {
     const foundAssessment = await prisma.assessment.findFirst({
         where: {
             id,
+            application: {
+                position: {
+                    orgId,
+                },
+            },
         },
         include: {
             application: true,
@@ -29,16 +37,23 @@ async function getAssessmentWithRelations(id: string): Promise<AssessmentWithRel
     return foundAssessment;
 }
 
-async function createAssessment(assessment: CreateAssessmentDTO): Promise<Assessment> {
+async function createAssessment(
+    assessment: CreateAssessmentDTO,
+    orgId: string
+): Promise<Assessment> {
     const application = await prisma.application.findFirst({
         where: {
             id: assessment.applicationId,
+            position: {
+                orgId,
+            },
         },
     });
 
     const assessmentTemplate = await prisma.assessmentTemplate.findFirst({
         where: {
             id: assessment.assessmentTemplateId,
+            orgId,
         },
     });
 
@@ -59,9 +74,16 @@ async function createAssessment(assessment: CreateAssessmentDTO): Promise<Assess
     return newAssessment;
 }
 
-async function deleteAssessment(id: string): Promise<Assessment> {
-    const existingAssessment = await prisma.assessment.findUnique({
-        where: { id },
+async function deleteAssessment(id: string, orgId: string): Promise<Assessment> {
+    const existingAssessment = await prisma.assessment.findFirst({
+        where: {
+            id,
+            application: {
+                position: {
+                    orgId,
+                },
+            },
+        },
     });
 
     if (!existingAssessment) {
@@ -77,9 +99,19 @@ async function deleteAssessment(id: string): Promise<Assessment> {
     return deletedAssessment;
 }
 
-async function updateAssessment(assessment: UpdateAssessmentDTO): Promise<Assessment> {
-    const existingAssessment = await prisma.assessment.findUnique({
-        where: { id: assessment.id },
+async function updateAssessment(
+    assessment: UpdateAssessmentDTO,
+    orgId: string
+): Promise<Assessment> {
+    const existingAssessment = await prisma.assessment.findFirst({
+        where: {
+            id: assessment.id,
+            application: {
+                position: {
+                    orgId,
+                },
+            },
+        },
     });
 
     if (!existingAssessment) {

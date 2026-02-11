@@ -1,8 +1,9 @@
 import ApplicationService from '@/lib/services/application.service';
-import { handleError } from '@/lib/utils/errors.utils';
+import { ForbiddenException, handleError } from '@/lib/utils/errors.utils';
 import { type NextRequest } from 'next/server';
 import { getSession } from '@/lib/utils/auth.utils';
 import { addApplicationWithCandidateDataSchema } from '@/lib/schemas/application.schema';
+import { isRecruiterOrAbove } from '@/lib/utils/role.utils';
 
 /**
  * POST /api/positions/[id]/candidates
@@ -11,6 +12,9 @@ import { addApplicationWithCandidateDataSchema } from '@/lib/schemas/application
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         const session = await getSession();
+        if (!isRecruiterOrAbove(session.role)) {
+            throw new ForbiddenException('Recruiter role or above required');
+        }
         const positionId = (await params).id;
         const body = await request.json();
         const parsed = addApplicationWithCandidateDataSchema.parse(body);
@@ -33,6 +37,9 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         const session = await getSession();
+        if (!isRecruiterOrAbove(session.role)) {
+            throw new ForbiddenException('Recruiter role or above required');
+        }
         const positionId = (await params).id;
         const result = await ApplicationService.getPositionApplications(
             positionId,

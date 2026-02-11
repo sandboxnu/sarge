@@ -1,12 +1,16 @@
 import { type NextRequest } from 'next/server';
-import { BadRequestException, ForbiddenException, handleError } from '@/lib/utils/errors.utils';
+import { ForbiddenException, handleError } from '@/lib/utils/errors.utils';
 import { getSession } from '@/lib/utils/auth.utils';
 import { createPositionSchema } from '@/lib/schemas/position.schema';
 import PositionService from '@/lib/services/position.service';
+import { isRecruiterOrAbove } from '@/lib/utils/role.utils';
 
 export async function POST(request: NextRequest) {
     try {
         const session = await getSession();
+        if (!isRecruiterOrAbove(session.role)) {
+            throw new ForbiddenException('Recruiter role or above required');
+        }
         const body = await request.json();
         const parsed = createPositionSchema.parse(body);
 
@@ -24,21 +28,10 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
     try {
-        const orgId = request.nextUrl.searchParams.get('orgId');
-
-        if (!orgId) {
-            throw new BadRequestException('orgId is required');
-        }
-
         const session = await getSession();
-
-        if (session.activeOrganizationId !== orgId) {
-            throw new ForbiddenException(
-                'Active organization ID must match the requested organization ID'
-            );
-        }
-
-        const positions = await PositionService.getPositionsByOrgId(orgId);
+        const positions = await PositionService.getPositionsByOrgId(
+            session.activeOrganizationId
+        );
 
         return Response.json({ data: positions }, { status: 200 });
     } catch (err) {

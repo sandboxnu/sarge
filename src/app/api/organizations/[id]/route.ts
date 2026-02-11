@@ -1,11 +1,19 @@
 import { type NextRequest } from 'next/server';
 import OrganizationService from '@/lib/services/organization.service';
 import { updateOrganizationSchema } from '@/lib/schemas/organization.schema';
-import { handleError } from '@/lib/utils/errors.utils';
+import { ForbiddenException, handleError } from '@/lib/utils/errors.utils';
+import { getSession } from '@/lib/utils/auth.utils';
+import { isRecruiterOrAbove } from '@/lib/utils/role.utils';
 
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
+        const session = await getSession();
         const orgId = (await params).id;
+        if (session.activeOrganizationId !== orgId) {
+            throw new ForbiddenException(
+                'Active organization ID must match the requested organization ID'
+            );
+        }
         const result = await OrganizationService.getOrganization(orgId);
         return Response.json({ data: result }, { status: 200 });
     } catch (err) {
@@ -15,9 +23,18 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
 
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
+        const session = await getSession();
+        if (!isRecruiterOrAbove(session.role)) {
+            throw new ForbiddenException('Recruiter role or above required');
+        }
         const body = await request.json();
         const parsed = updateOrganizationSchema.parse(body);
         const orgId = (await params).id;
+        if (session.activeOrganizationId !== orgId) {
+            throw new ForbiddenException(
+                'Active organization ID must match the requested organization ID'
+            );
+        }
         const result = await OrganizationService.updateOrganization(orgId, parsed);
         return Response.json({ data: result }, { status: 200 });
     } catch (err) {
@@ -30,7 +47,16 @@ export async function DELETE(
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const session = await getSession();
+        if (!isRecruiterOrAbove(session.role)) {
+            throw new ForbiddenException('Recruiter role or above required');
+        }
         const orgId = (await params).id;
+        if (session.activeOrganizationId !== orgId) {
+            throw new ForbiddenException(
+                'Active organization ID must match the requested organization ID'
+            );
+        }
         const result = await OrganizationService.deleteOrganization(orgId);
         return Response.json({ data: result }, { status: 200 });
     } catch (err) {

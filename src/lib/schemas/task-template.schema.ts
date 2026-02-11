@@ -18,7 +18,7 @@ export const TaskTemplateSchema = z.object({
     orgId: z.string(),
     publicTestCases: z.array(testCaseSchema).min(1, 'There must at least be one public test case'),
     privateTestCases: z.array(testCaseSchema).default([]),
-    taskType: z.string().optional(),
+    taskType: z.string().nullable(),
     authorId: z.string(),
 });
 
@@ -27,13 +27,19 @@ export const TaskTemplateEditorSchema = TaskTemplateSchema.extend({
     languages: TaskTemplateLanguageSchema.array(),
 });
 
-export const createTaskTemplateSchema = TaskTemplateSchema.omit({ id: true, authorId: true });
+export const createTaskTemplateSchema = TaskTemplateSchema.omit({
+    id: true,
+    authorId: true,
+    orgId: true,
+});
 
 export const deleteTaskTemplateSchema = z.object({
     id: z.string(),
 });
 
-export const updateTaskTemplateSchema = TaskTemplateSchema.partial().extend({
+export const updateTaskTemplateSchema = TaskTemplateSchema.partial()
+    .omit({ orgId: true, authorId: true })
+    .extend({
     id: z.string(),
 });
 

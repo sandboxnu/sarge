@@ -1,17 +1,22 @@
 import { type NextRequest } from 'next/server';
-import { handleError } from '@/lib/utils/errors.utils';
+import { ForbiddenException, handleError } from '@/lib/utils/errors.utils';
 import TaskTemplateService from '@/lib/services/task-template.service';
 import { createTaskTemplateSchema } from '@/lib/schemas/task-template.schema';
 import { getSession } from '@/lib/utils/auth.utils';
+import { isRecruiterOrAbove } from '@/lib/utils/role.utils';
 
 export async function POST(request: NextRequest) {
     try {
         const session = await getSession();
+        if (!isRecruiterOrAbove(session.role)) {
+            throw new ForbiddenException('Recruiter role or above required');
+        }
         const body = await request.json();
         const parsed = createTaskTemplateSchema.parse(body);
         const result = await TaskTemplateService.createTaskTemplate({
             ...parsed,
             authorId: session.userId,
+            orgId: session.activeOrganizationId,
         });
         return Response.json({ data: result }, { status: 201 });
     } catch (err) {

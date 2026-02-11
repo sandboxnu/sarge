@@ -1,9 +1,15 @@
 import { type NextRequest } from 'next/server';
-import { handleError, BadRequestException } from '@/lib/utils/errors.utils';
+import { handleError, BadRequestException, ForbiddenException } from '@/lib/utils/errors.utils';
 import { parseCandidateCsv } from '@/lib/utils/csv.utils';
+import { getSession } from '@/lib/utils/auth.utils';
+import { isRecruiterOrAbove } from '@/lib/utils/role.utils';
 
 export async function POST(request: NextRequest) {
     try {
+        const session = await getSession();
+        if (!isRecruiterOrAbove(session.role)) {
+            throw new ForbiddenException('Recruiter role or above required');
+        }
         const formData = await request.formData();
         const file = formData.get('file');
 
