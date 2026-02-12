@@ -128,7 +128,10 @@ async function updateTaskTemplate(taskTemplate: UpdateTaskTemplateDTO): Promise<
     return updatedTaskTemplate;
 }
 
-async function getTaskTemplatesByTitle(title: string, orgId: string): Promise<TaskTemplateListItemDTO[]> {
+async function getTaskTemplatesByTitle(
+    title: string,
+    orgId: string
+): Promise<TaskTemplateListItemDTO[]> {
     const templates = await prisma.taskTemplate.findMany({
         where: {
             orgId,

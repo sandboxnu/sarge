@@ -68,11 +68,12 @@ export default function TemplatesPage() {
             <div className="flex min-h-0 flex-1 flex-row">
                 <div className="border-sarge-gray-200 flex w-96 flex-col gap-2.5 border-r-1">
                     <div className="flex items-center gap-2.5 px-3 pt-3">
-                        <Search 
-                        className="border-none" 
-                        value={value}
-                        onChange={onChange}
-                        placeholder="Type to search" />
+                        <Search
+                            className="border-none"
+                            value={value}
+                            onChange={onChange}
+                            placeholder="Type to search"
+                        />
                         <div className="flex">
                             <Button
                                 variant="secondary"
@@ -89,7 +90,7 @@ export default function TemplatesPage() {
                         </div>
                     </div>
                     <div className="flex min-h-0 w-full flex-1 flex-col gap-2.5 overflow-scroll px-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                        {isLoading || loading? (
+                        {isLoading || loading ? (
                             <div className="flex h-full w-full items-center justify-center">
                                 <Image
                                     src="/CreateOrgLoading.gif"
@@ -108,26 +109,30 @@ export default function TemplatesPage() {
                                     width={140}
                                     alt={'Winston Logo'}
                                 />
-                                {isSearching ? "Could not find task" : "You currently have no tasks"}
+                                {isSearching
+                                    ? 'Could not find task'
+                                    : 'You currently have no tasks'}
                             </div>
                         ) : (
-                            (isSearching ? data : taskTemplateList).map((task: TaskTemplateListItemDTO, idx: number) => {
-                                const absoluteIdx = page * limit + idx;
-                                return (
-                                    <TaskCard
-                                        key={task.id}
-                                        title={task.title}
-                                        subtitle={task.taskType ?? ''}
-                                        chips={task.tags ?? []}
-                                        selected={selected?.includes(absoluteIdx) ?? false}
-                                        setSelected={handleSelectTask}
-                                        index={idx}
-                                        taskTemplateId={task.id}
-                                        isPreviewSelected={selectedTaskTemplate?.id === task.id}
-                                        onPreviewSelect={() => setSelectedTaskTemplate(task)}
-                                    />
-                                );
-                            })
+                            (isSearching ? data : taskTemplateList).map(
+                                (task: TaskTemplateListItemDTO, idx: number) => {
+                                    const absoluteIdx = page * limit + idx;
+                                    return (
+                                        <TaskCard
+                                            key={task.id}
+                                            title={task.title}
+                                            subtitle={task.taskType ?? ''}
+                                            chips={task.tags ?? []}
+                                            selected={selected?.includes(absoluteIdx) ?? false}
+                                            setSelected={handleSelectTask}
+                                            index={idx}
+                                            taskTemplateId={task.id}
+                                            isPreviewSelected={selectedTaskTemplate?.id === task.id}
+                                            onPreviewSelect={() => setSelectedTaskTemplate(task)}
+                                        />
+                                    );
+                                }
+                            )
                         )}
                     </div>
                     <div className="border-sarge-gray-200 flex flex-col gap-2.5 border-t-1 p-3">
