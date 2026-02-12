@@ -153,14 +153,33 @@ model TaskTemplate {
   supportedLanguages String[] @default([])
   authorId           String
 
-  organization Organization @relation(fields: [orgId], references: [id])
-  author       User         @relation("AuthoredTaskTemplates", fields: [authorId], references: [id], onDelete: Restrict)
-  tasks        Task[]       @relation("derivedFromTaskTemplate")
-  tags         Tag[]        @relation("TaskTemplateTags")
+  organization Organization           @relation(fields: [orgId], references: [id])
+  author       User                   @relation("AuthoredTaskTemplates", fields: [authorId], references: [id], onDelete: Restrict)
+  tasks        Task[]                 @relation("derivedFromTaskTemplate")
+  tags         Tag[]                  @relation("TaskTemplateTags")
+  languages    TaskTemplateLanguage[]
 
   assessments AssessmentTemplateTask[]
 
   @@index([title])
+}
+
+model TaskTemplateLanguage {
+  id             Int    @id @unique @default(autoincrement())
+  taskTemplateId String
+  solution       String
+  stub           String
+
+  language     ProgrammingLanguage
+  taskTemplate TaskTemplate        @relation(fields: [taskTemplateId], references: [id])
+}
+
+enum ProgrammingLanguage {
+  python
+  javascript
+  c
+  typescript
+  ruby
 }
 
 // Mapping table between task templates and assessment templates that includes the order in which task templates
