@@ -10,7 +10,11 @@ async function updateMemberRole(
     organizationId: string,
     headers: Headers
 ): Promise<Member> {
-    await assertPermission(headers, { member: ['update'] }, 'You are not an admin of this organization');
+    await assertPermission(
+        headers,
+        { member: ['update'] },
+        'You are not an admin of this organization'
+    );
 
     const existingMember = await prisma.member.findUnique({
         where: {
