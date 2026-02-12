@@ -153,11 +153,11 @@ model TaskTemplate {
   supportedLanguages String[] @default([])
   authorId           String
 
-  organization Organization @relation(fields: [orgId], references: [id])
-  author       User         @relation("AuthoredTaskTemplates", fields: [authorId], references: [id], onDelete: Restrict)
-  tasks        Task[]       @relation("derivedFromTaskTemplate")
-  tags         Tag[]        @relation("TaskTemplateTags")
-  languages TaskTemplateLanguage[]
+  organization Organization           @relation(fields: [orgId], references: [id])
+  author       User                   @relation("AuthoredTaskTemplates", fields: [authorId], references: [id], onDelete: Restrict)
+  tasks        Task[]                 @relation("derivedFromTaskTemplate")
+  tags         Tag[]                  @relation("TaskTemplateTags")
+  languages    TaskTemplateLanguage[]
 
   assessments AssessmentTemplateTask[]
 
@@ -165,13 +165,13 @@ model TaskTemplate {
 }
 
 model TaskTemplateLanguage {
-  id Int @id @unique @default(autoincrement())
+  id             Int    @id @unique @default(autoincrement())
   taskTemplateId String
-  solution String
-  stub String
+  solution       String
+  stub           String
 
-  language ProgrammingLanguage 
-  taskTemplate TaskTemplate @relation(fields: [taskTemplateId], references: [id])
+  language     ProgrammingLanguage
+  taskTemplate TaskTemplate        @relation(fields: [taskTemplateId], references: [id])
 }
 
 enum ProgrammingLanguage {
