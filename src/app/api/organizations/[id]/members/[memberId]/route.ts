@@ -3,7 +3,7 @@ import { ForbiddenException, handleError } from '@/lib/utils/errors.utils';
 import { updateRoleSchema } from '@/lib/schemas/role.schema';
 import MemberService from '@/lib/services/member.service';
 import { getSession } from '@/lib/utils/auth.utils';
-import { isRecruiterOrAbove } from '@/lib/utils/role.utils';
+import { assertRecruiterOrAbove } from '@/lib/utils/permissions.utils';
 
 export async function PATCH(
     request: NextRequest,
@@ -11,9 +11,7 @@ export async function PATCH(
 ) {
     try {
         const session = await getSession();
-        if (!isRecruiterOrAbove(session.role)) {
-            throw new ForbiddenException('Recruiter role or above required');
-        }
+        await assertRecruiterOrAbove(request.headers);
         const { id: orgId, memberId: memberIdToUpdate } = await params;
         if (session.activeOrganizationId !== orgId) {
             throw new ForbiddenException(

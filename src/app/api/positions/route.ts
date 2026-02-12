@@ -1,16 +1,14 @@
 import { type NextRequest } from 'next/server';
-import { ForbiddenException, handleError } from '@/lib/utils/errors.utils';
+import { handleError } from '@/lib/utils/errors.utils';
 import { getSession } from '@/lib/utils/auth.utils';
 import { createPositionSchema } from '@/lib/schemas/position.schema';
 import PositionService from '@/lib/services/position.service';
-import { isRecruiterOrAbove } from '@/lib/utils/role.utils';
+import { assertRecruiterOrAbove } from '@/lib/utils/permissions.utils';
 
 export async function POST(request: NextRequest) {
     try {
         const session = await getSession();
-        if (!isRecruiterOrAbove(session.role)) {
-            throw new ForbiddenException('Recruiter role or above required');
-        }
+        await assertRecruiterOrAbove(request.headers);
         const body = await request.json();
         const parsed = createPositionSchema.parse(body);
 

@@ -1,9 +1,9 @@
 import PositionService from '@/lib/services/position.service';
-import { ForbiddenException, handleError } from '@/lib/utils/errors.utils';
+import { handleError } from '@/lib/utils/errors.utils';
 import { type NextRequest } from 'next/server';
 import { updatePositionSchema } from '@/lib/schemas/position.schema';
 import { getSession } from '@/lib/utils/auth.utils';
-import { isRecruiterOrAbove } from '@/lib/utils/role.utils';
+import { assertRecruiterOrAbove } from '@/lib/utils/permissions.utils';
 
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
@@ -22,9 +22,7 @@ export async function DELETE(
 ) {
     try {
         const session = await getSession();
-        if (!isRecruiterOrAbove(session.role)) {
-            throw new ForbiddenException('Recruiter role or above required');
-        }
+        await assertRecruiterOrAbove(_request.headers);
         const positionId = (await params).id;
         const result = await PositionService.deletePosition(
             positionId,
@@ -39,9 +37,7 @@ export async function DELETE(
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         const session = await getSession();
-        if (!isRecruiterOrAbove(session.role)) {
-            throw new ForbiddenException('Recruiter role or above required');
-        }
+        await assertRecruiterOrAbove(request.headers);
         const positionId = (await params).id;
         const body = await request.json();
         const parsed = updatePositionSchema.parse(body);

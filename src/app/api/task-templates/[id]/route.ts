@@ -1,9 +1,9 @@
-import { ForbiddenException, handleError } from '@/lib/utils/errors.utils';
+import { handleError } from '@/lib/utils/errors.utils';
 import TaskTemplateService from '@/lib/services/task-template.service';
 import { type NextRequest } from 'next/server';
 import { updateTaskTemplateSchema } from '@/lib/schemas/task-template.schema';
 import { getSession } from '@/lib/utils/auth.utils';
-import { isRecruiterOrAbove } from '@/lib/utils/role.utils';
+import { assertRecruiterOrAbove } from '@/lib/utils/permissions.utils';
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
@@ -19,9 +19,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         const session = await getSession();
-        if (!isRecruiterOrAbove(session.role)) {
-            throw new ForbiddenException('Recruiter role or above required');
-        }
+        await assertRecruiterOrAbove(_req.headers);
         const id = (await params).id;
         const result = await TaskTemplateService.deleteTaskTemplate(
             id,
@@ -36,9 +34,7 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         const session = await getSession();
-        if (!isRecruiterOrAbove(session.role)) {
-            throw new ForbiddenException('Recruiter role or above required');
-        }
+        await assertRecruiterOrAbove(request.headers);
         const id = (await params).id;
         const body = await request.json();
         const parsed = updateTaskTemplateSchema.parse({ id, ...body });

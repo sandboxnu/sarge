@@ -1,8 +1,8 @@
 import ApplicationService from '@/lib/services/application.service';
-import { ForbiddenException, handleError } from '@/lib/utils/errors.utils';
+import { handleError } from '@/lib/utils/errors.utils';
 import { type NextRequest } from 'next/server';
 import { getSession } from '@/lib/utils/auth.utils';
-import { isRecruiterOrAbove } from '@/lib/utils/role.utils';
+import { assertRecruiterOrAbove } from '@/lib/utils/permissions.utils';
 
 /**
  * DELETE /api/positions/[id]/candidates/[candidateId]
@@ -15,9 +15,7 @@ export async function DELETE(
 ) {
     try {
         const session = await getSession();
-        if (!isRecruiterOrAbove(session.role)) {
-            throw new ForbiddenException('Recruiter role or above required');
-        }
+        await assertRecruiterOrAbove(_request.headers);
         const { id: positionId, candidateId } = await params;
         const result = await ApplicationService.removeApplicationFromPosition(
             candidateId,

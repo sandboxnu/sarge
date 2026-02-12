@@ -1,9 +1,9 @@
 import { UpdateAssessmentTemplateSchema } from '@/lib/schemas/assessment-template.schema';
 import AssessmentTemplateService from '@/lib/services/assessment-template.service';
-import { ForbiddenException, handleError } from '@/lib/utils/errors.utils';
+import { handleError } from '@/lib/utils/errors.utils';
 import { type NextRequest } from 'next/server';
 import { getSession } from '@/lib/utils/auth.utils';
-import { isRecruiterOrAbove } from '@/lib/utils/role.utils';
+import { assertRecruiterOrAbove } from '@/lib/utils/permissions.utils';
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
@@ -25,9 +25,7 @@ export async function DELETE(
 ) {
     try {
         const session = await getSession();
-        if (!isRecruiterOrAbove(session.role)) {
-            throw new ForbiddenException('Recruiter role or above required');
-        }
+        await assertRecruiterOrAbove(_request.headers);
         const { id } = await params;
         const result = await AssessmentTemplateService.deleteAssessmentTemplate(
             id,
@@ -42,9 +40,7 @@ export async function DELETE(
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         const session = await getSession();
-        if (!isRecruiterOrAbove(session.role)) {
-            throw new ForbiddenException('Recruiter role or above required');
-        }
+        await assertRecruiterOrAbove(request.headers);
         const { id } = await params;
         const body = await request.json();
         const parsed = UpdateAssessmentTemplateSchema.parse({ id, ...body });
