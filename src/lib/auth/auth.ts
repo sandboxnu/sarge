@@ -3,6 +3,7 @@ import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { organization } from 'better-auth/plugins';
 import { prisma } from '@/lib/prisma';
 import { ac, owner, admin, recruiter, reviewer, member } from '@/lib/auth/permissions';
+import sesConnector from '@/lib/connectors/ses.connector';
 
 const baseUrl =
     process.env.BETTER_AUTH_URL ??
@@ -74,6 +75,22 @@ export const auth = betterAuth({
             invitationExpiresIn: 60 * 60 * 48,
             invitationLimit: 100,
             cancelPendingInvitationsOnReInvite: false,
+
+            async sendInvitationEmail(data) {
+                const inviteLink = `${baseUrl}/accept-invitation?id=${data.invitation.id}`;
+                try {
+                    const emailSent = await sesConnector.sendEmail(
+                        data.invitation.email,
+                        `You're invited to join ${data.organization.name} on Sarge!`,
+                        `Hello!\n\nYou've been invited to join the organization "${data.organization.name}" on Sarge.\n\nPlease click the following link to accept the invitation:\n\n${inviteLink}`
+                    );
+                    if (!emailSent) {
+                        console.error('SES reported failure to send invitation email');
+                    }
+                } catch (error) {
+                    console.error('Failed to send invitation email:', error);
+                }
+            },
         }),
     ],
 });
