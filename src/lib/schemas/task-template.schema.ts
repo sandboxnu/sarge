@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { TagSchema } from './tag.schema';
+import { TaskTemplateLanguageSchema } from './task-template-language.schema';
 
 const testCaseSchema = z.object({
     input: z.string().min(1, 'Expected input required'),
@@ -18,8 +19,12 @@ export const TaskTemplateSchema = z.object({
     publicTestCases: z.array(testCaseSchema).min(1, 'There must at least be one public test case'),
     privateTestCases: z.array(testCaseSchema).default([]),
     taskType: z.string().optional(),
-    supportedLanguages: z.array(z.string()).default([]),
     authorId: z.string(),
+});
+
+export const TaskTemplateEditorSchema = TaskTemplateSchema.extend({
+    tags: TagSchema.array(),
+    languages: TaskTemplateLanguageSchema.array(),
 });
 
 export const createTaskTemplateSchema = TaskTemplateSchema.omit({ id: true, authorId: true });
@@ -44,6 +49,7 @@ export const taskTemplateAuthorSchema = z.object({
 export const taskTemplateListItemSchema = taskTemplateWithTagsSchema.extend({
     author: taskTemplateAuthorSchema.nullable(),
     assessmentTemplatesCount: z.number(),
+    languages: TaskTemplateLanguageSchema.array(),
 });
 
 export type TaskTemplateDTO = z.infer<typeof TaskTemplateSchema>;
@@ -54,3 +60,4 @@ export type UpdateTaskTemplateDTO = z.infer<typeof updateTaskTemplateSchema>;
 export type TestCaseDTO = z.infer<typeof testCaseSchema>;
 export type TaskTemplateWithTagsDTO = z.infer<typeof taskTemplateWithTagsSchema>;
 export type TaskTemplateListItemDTO = z.infer<typeof taskTemplateListItemSchema>;
+export type TaskTemplateEditorDTO = z.infer<typeof TaskTemplateEditorSchema>;

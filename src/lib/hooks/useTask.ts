@@ -5,9 +5,8 @@ import judge0Connector, {
     type JudgeResultRequestBody,
     type JudgeSubmissionRequestBody,
 } from '@/lib/connectors/judge0.connector';
-import { type TaskTemplate } from '@/generated/prisma';
 import { type CreateTaskDTO, type TaskDTO } from '@/lib/schemas/task.schema';
-import { type TestCaseDTO } from '@/lib/schemas/task-template.schema';
+import { type TestCaseDTO, type TaskTemplateDTO } from '@/lib/schemas/task-template.schema';
 import { createTask, updateTask } from '@/lib/api/tasks';
 import { getTaskTemplate } from '@/lib/api/task-templates';
 
@@ -18,7 +17,7 @@ const languageIds: Record<string, number> = {
 
 export function useTask(taskTemplateId: string, assessmentId: string) {
     const [task, setTask] = useState<TaskDTO | null>(null);
-    const [taskTemplate, setTaskTemplate] = useState<TaskTemplate | null>(null);
+    const [taskTemplate, setTaskTemplate] = useState<TaskTemplateDTO | null>(null);
     const [isLoading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error | null>(null);
     const [language, setLanguage] = useState<string>('python');
@@ -58,7 +57,7 @@ export function useTask(taskTemplateId: string, assessmentId: string) {
         }
     }
 
-    function getDefaultTestCaseIndexes(task: TaskTemplate): {
+    function getDefaultTestCaseIndexes(task: TaskTemplateDTO): {
         publicIndexes: number[];
         privateIndexes: number[];
     } {

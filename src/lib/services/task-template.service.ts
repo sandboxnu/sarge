@@ -3,17 +3,19 @@ import type {
     UpdateTaskTemplateDTO,
     CreateTaskTemplateDTO,
     TaskTemplateListItemDTO,
+    TaskTemplateEditorDTO,
 } from '@/lib/schemas/task-template.schema';
 import { prisma } from '@/lib/prisma';
 import { NotFoundException, ConflictException } from '@/lib/utils/errors.utils';
 
-async function getTaskTemplate(id: string): Promise<TaskTemplate> {
+async function getTaskTemplate(id: string): Promise<TaskTemplateEditorDTO> {
     const foundTaskTemplate = await prisma.taskTemplate.findFirst({
         where: {
             id,
         },
         include: {
             tags: true,
+            languages: true,
         },
     });
 
@@ -21,7 +23,9 @@ async function getTaskTemplate(id: string): Promise<TaskTemplate> {
         throw new NotFoundException('Task Template', id);
     }
 
-    return foundTaskTemplate;
+    // TODO typecasting as TaskTemplateEditorDTO due to JsonValue[] in prisma
+    // not including input and output fields
+    return foundTaskTemplate as TaskTemplateEditorDTO;
 }
 
 async function getTaskTemplates(
