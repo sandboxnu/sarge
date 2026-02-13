@@ -26,7 +26,7 @@ export function TaskTemplatePreviewPanel({
     onDelete,
 }: TaskTemplatePreviewPanelProps) {
     const tags = taskTemplatePreview.tags ?? [];
-    const supportedLanguages = taskTemplatePreview.supportedLanguages ?? [];
+    const languages = taskTemplatePreview.languages.map((l) => l.language) ?? []
 
     return (
         <div className="flex h-full w-full flex-col overflow-hidden">
@@ -115,7 +115,7 @@ export function TaskTemplatePreviewPanel({
                     </p>
                     <div className="border-border bg-background mt-2 rounded-lg border p-4">
                         <div className="flex flex-wrap gap-1.5">
-                            {supportedLanguages.map((language) => (
+                            {languages.map((language) => (
                                 <Chip key={language} variant="outline">
                                     {language}
                                 </Chip>

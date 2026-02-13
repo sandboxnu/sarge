@@ -49,6 +49,7 @@ export const taskTemplateAuthorSchema = z.object({
 export const taskTemplateListItemSchema = taskTemplateWithTagsSchema.extend({
     author: taskTemplateAuthorSchema.nullable(),
     assessmentTemplatesCount: z.number(),
+    languages: TaskTemplateLanguageSchema.array(),
 });
 
 export type TaskTemplateDTO = z.infer<typeof TaskTemplateSchema>;
