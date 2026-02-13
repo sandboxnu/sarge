@@ -57,6 +57,7 @@ export async function DELETE(
 ) {
     try {
         const session = await getSession();
+        await assertRecruiterOrAbove(_request.headers);
         const positionId = (await params).id;
         const result = await ApplicationService.removeAllApplicationsFromPosition(
             positionId,
