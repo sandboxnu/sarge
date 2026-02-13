@@ -1,6 +1,8 @@
 'use client';
 
-import { useEffect, useState, use } from 'react';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { authClient } from '@/lib/auth/auth-client';
 
 type Invitation = {
     id: string;
@@ -11,8 +13,9 @@ type Invitation = {
     expiresAt: string;
 };
 
-export default function AcceptInvitationPage({ params }: { params: Promise<{ id: string }> }) {
-    const { id } = use(params);
+export default function AcceptInvitationPage() {
+    const searchParams = useSearchParams();
+    const id = searchParams?.get('id') ?? null;
     const [inv, setInv] = useState<Invitation | null>(null);
     const [loading, setLoading] = useState(false);
 
@@ -29,11 +32,9 @@ export default function AcceptInvitationPage({ params }: { params: Promise<{ id:
         if (!id) return;
         setLoading(true);
         try {
-            const res = await fetch(`/api/invitations/accept?id=${encodeURIComponent(id)}`, {
-                method: 'POST',
-            });
-            const data = await res.json();
-            if (!res.ok || !data?.ok) throw new Error('Accept invitation failed');
+            const result = await authClient.organization.acceptInvitation({ invitationId: id });
+            setInv((v) => (v ? { ...v, status: 'ACCEPTED' } : v));
+            return result;
         } catch (err) {
             console.error(err);
         }

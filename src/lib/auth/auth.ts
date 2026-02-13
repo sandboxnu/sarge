@@ -76,32 +76,22 @@ export const auth = betterAuth({
             invitationLimit: 100,
             cancelPendingInvitationsOnReInvite: false,
 
-            organizationHooks: {
-                afterCreateInvitation: async (data) => {
-                    const invitation = data.invitation;
-                    const organization = data.organization;
-                    // find member info of inviter to check role
-                    const member = await prisma.member.findFirst({
-                        where: { userId: data.inviter.id, organizationId: organization.id },
-                        select: { role: true },
-                    });
-                    // authenticate user
-                    if (!member) {
-                        throw new Error('Inviter is not a member of the organization');
-                    } else if (member.role !== 'owner' && member.role !== 'admin') {
-                        throw new Error('Only owners and admins can send invitations');
+            async sendInvitationEmail(data) {
+                const inviteLink = `${baseUrl}/accept-invitation?id=${data.invitation.id}`;
+                try {
+                    const emailSent = await sesConnector.sendEmail(
+                        data.invitation.email,
+                        `You're invited to join ${data.organization.name} on Sarge!`,
+                        `Hello!\n\nYou've been invited to join the organization "${data.organization.name}" on Sarge.\n\nPlease click the following link to accept the invitation:\n\n${inviteLink}`
+                    );
+                    if (!emailSent) {
+                        console.error('SES reported failure to send invitation email');
+                    } else {
+                        console.log(`Invitation email sent to ${data.invitation.email}`);
                     }
-                    const inviteLink = `${baseUrl}/accept-invitation?id=${invitation.id}`;
-                    const to = invitation.email;
-                    const subject = `You're invited to join ${organization.name} on Sarge.`;
-                    const body = `Hello,\n\nYou've been invited to join the organization ${organization.name} on Sarge. Please click the following link to accept the invitation:\n\n${inviteLink}`;
-
-                    try {
-                        await sesConnector.sendEmail(to, subject, body);
-                    } catch (error) {
-                        console.error('Failed to send invitation email:', error);
-                    }
-                },
+                } catch (error) {
+                    console.error('Failed to send invitation email:', error);
+                }
             },
         }),
     ],
