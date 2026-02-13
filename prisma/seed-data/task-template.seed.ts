@@ -48,7 +48,7 @@ Constraints:
         ],
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
-        supportedLanguages: ['Python', 'Java', 'JavaScript', 'C'],
+
         authorId: 'user_prof_fontenot_001',
     },
     {
@@ -87,7 +87,7 @@ Constraints:
         ],
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
-        supportedLanguages: ['Python'],
+
         authorId: 'user_prof_fontenot_001',
     },
     {
@@ -138,7 +138,7 @@ Constraints:
         ],
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
-        supportedLanguages: ['Python', 'Java', 'JavaScript'],
+
         authorId: 'user_prof_fontenot_001',
     },
     {
@@ -155,7 +155,7 @@ Write a solution (or reduce an existing one) so it has as few characters as poss
         privateTestCases: [{ input: {}, expected: null }],
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
-        supportedLanguages: ['Python', 'Java', 'C', 'Javascript'],
+
         authorId: 'user_prof_fontenot_001',
     },
     {
@@ -166,7 +166,7 @@ Write a solution (or reduce an existing one) so it has as few characters as poss
         privateTestCases: [],
         orgId: 'org_nextlab_001',
         taskType: null,
-        supportedLanguages: [],
+
         authorId: 'user_prof_fontenot_001',
     },
     {
@@ -201,7 +201,7 @@ Constraints:
         ],
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
-        supportedLanguages: ['Python', 'Java', 'JavaScript', 'C'],
+
         authorId: 'user_prof_fontenot_001',
     },
     {
@@ -235,7 +235,7 @@ Constraints:
         ],
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
-        supportedLanguages: ['Python', 'Java', 'JavaScript', 'C'],
+
         authorId: 'user_prof_fontenot_001',
     },
     {
@@ -274,7 +274,7 @@ Constraints:
         ],
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
-        supportedLanguages: ['Python', 'Java', 'JavaScript', 'C'],
+
         authorId: 'user_prof_fontenot_001',
     },
     {
@@ -315,7 +315,6 @@ Constraints:
         ],
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
-        supportedLanguages: ['Python', 'Java', 'JavaScript'],
         authorId: 'user_prof_fontenot_001',
     },
     {
@@ -354,7 +353,6 @@ Constraints:
         ],
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
-        supportedLanguages: ['Python', 'Java', 'JavaScript', 'C'],
         authorId: 'user_prof_fontenot_001',
     },
 ];
