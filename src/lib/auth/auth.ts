@@ -86,8 +86,6 @@ export const auth = betterAuth({
                     );
                     if (!emailSent) {
                         console.error('SES reported failure to send invitation email');
-                    } else {
-                        console.log(`Invitation email sent to ${data.invitation.email}`);
                     }
                 } catch (error) {
                     console.error('Failed to send invitation email:', error);
