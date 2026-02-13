@@ -26,7 +26,7 @@ export function TaskTemplatePreviewPanel({
     onDelete,
 }: TaskTemplatePreviewPanelProps) {
     const tags = taskTemplatePreview.tags ?? [];
-    const languages = taskTemplatePreview.languages.map((l) => l.language) ?? []
+    const languages = taskTemplatePreview.languages.map((l) => l.language) ?? [];
 
     return (
         <div className="flex h-full w-full flex-col overflow-hidden">
