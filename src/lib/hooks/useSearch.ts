@@ -3,13 +3,14 @@ import { useDebounce } from '@/lib/hooks/useDebounce';
 import { searchTaskTemplates } from '@/lib/api/task-templates';
 import { searchAssessmentTemplates } from '@/lib/api/assessment-templates';
 import { searchPositions } from '@/lib/api/positions';
-import { type TaskTemplate, type AssessmentTemplate } from '@/generated/prisma';
+import { type AssessmentTemplate } from '@/generated/prisma';
 import { type PositionWithCounts } from '@/lib/types/position.types';
+import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
 
 export type SearchType = 'task-templates' | 'assessment-templates' | 'positions';
 
 type SearchTypeFunctionMap = {
-    'task-templates': TaskTemplate;
+    'task-templates': TaskTemplateListItemDTO;
     'assessment-templates': AssessmentTemplate;
     positions: PositionWithCounts;
 };
