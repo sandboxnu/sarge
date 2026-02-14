@@ -2,6 +2,7 @@ import ApplicationService from '@/lib/services/application.service';
 import { handleError } from '@/lib/utils/errors.utils';
 import { type NextRequest } from 'next/server';
 import { getSession } from '@/lib/utils/auth.utils';
+import { assertRecruiterOrAbove } from '@/lib/utils/permissions.utils';
 
 /**
  * DELETE /api/positions/[id]/candidates/[candidateId]
@@ -14,6 +15,7 @@ export async function DELETE(
 ) {
     try {
         const session = await getSession();
+        await assertRecruiterOrAbove(_request.headers);
         const { id: positionId, candidateId } = await params;
         const result = await ApplicationService.removeApplicationFromPosition(
             candidateId,

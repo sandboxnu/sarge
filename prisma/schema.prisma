@@ -325,10 +325,10 @@ model Member {
 }
 
 enum InvitationStatus {
-  PENDING
-  ACCEPTED
-  EXPIRED
-  REVOKED
+  pending
+  accepted
+  rejected
+  canceled
 }
 
 // An invitation sent to an email address to join an organization with a specific role. Accepted invitations result in the creation of a Member record.
@@ -339,7 +339,7 @@ model Invitation {
   email          String
   // Role granted upon invitation acceptance. Stored as a lowercase string (e.g. "owner", "admin") to match better-auth role keys.
   role           String
-  status         InvitationStatus @default(PENDING)
+  status         InvitationStatus @default(pending)
   expiresAt      DateTime
   acceptedAt     DateTime?
   createdAt      DateTime         @default(now())

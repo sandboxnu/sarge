@@ -261,24 +261,46 @@ async function getApplication(id: string): Promise<Application> {
     return application;
 }
 
-async function getAssessmentStatus(applicationId: string): Promise<AssessmentStatus> {
+async function validateApplicationAccess(
+    applicationId: string,
+    orgId: string
+): Promise<{ assessmentStatus: AssessmentStatus }> {
     const application = await prisma.application.findUnique({
         where: { id: applicationId },
-        select: { assessmentStatus: true },
+        select: {
+            assessmentStatus: true,
+            position: {
+                select: { orgId: true },
+            },
+        },
     });
 
     if (!application) {
         throw new NotFoundException('Application', applicationId);
     }
 
-    return application.assessmentStatus;
+    if (application.position.orgId !== orgId) {
+        throw new ForbiddenException('Application does not belong to your organization');
+    }
+
+    return { assessmentStatus: application.assessmentStatus };
+}
+
+async function getAssessmentStatus(
+    applicationId: string,
+    orgId: string
+): Promise<AssessmentStatus> {
+    const { assessmentStatus } = await validateApplicationAccess(applicationId, orgId);
+    return assessmentStatus;
 }
 
 async function updateAssessmentStatus(params: {
     id: string;
     assessmentStatus: AssessmentStatus;
+    orgId: string;
 }): Promise<Application> {
-    const { id, assessmentStatus } = params;
+    const { id, assessmentStatus, orgId } = params;
+    await validateApplicationAccess(id, orgId);
 
     return prisma.application.update({
         where: { id },

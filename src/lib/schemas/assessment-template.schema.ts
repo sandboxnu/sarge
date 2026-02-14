@@ -10,6 +10,7 @@ export const AssessmentTemplateSchema = z.object({
 
 export const CreateAssessmentTemplateSchema = AssessmentTemplateSchema.omit({
     id: true,
+    orgId: true,
 });
 
 export const UpdateAssessmentTemplateSchema = z.object({

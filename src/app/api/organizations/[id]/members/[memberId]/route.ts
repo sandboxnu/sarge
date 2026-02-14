@@ -1,14 +1,23 @@
 import { type NextRequest } from 'next/server';
-import { handleError } from '@/lib/utils/errors.utils';
+import { ForbiddenException, handleError } from '@/lib/utils/errors.utils';
 import { updateRoleSchema } from '@/lib/schemas/role.schema';
 import MemberService from '@/lib/services/member.service';
+import { getSession } from '@/lib/utils/auth.utils';
+import { assertRecruiterOrAbove } from '@/lib/utils/permissions.utils';
 
 export async function PATCH(
     request: NextRequest,
     { params }: { params: Promise<{ id: string; memberId: string }> }
 ) {
     try {
+        const session = await getSession();
+        await assertRecruiterOrAbove(request.headers);
         const { id: orgId, memberId: memberIdToUpdate } = await params;
+        if (session.activeOrganizationId !== orgId) {
+            throw new ForbiddenException(
+                'Active organization ID must match the requested organization ID'
+            );
+        }
 
         const body = await request.json();
         const { role } = updateRoleSchema.parse(body);

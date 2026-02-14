@@ -25,10 +25,6 @@ export const deletePositionSchema = z.object({
     id: z.string('Invalid position ID'),
 });
 
-export const getPositionsByOrgSchema = z.object({
-    orgId: z.string('Invalid organization ID'),
-});
-
 export const positionSchema = z.object({
     id: z.string(),
     title: z.string(),
@@ -43,4 +39,3 @@ export type CreatePositionDTO = z.infer<typeof createPositionSchema>;
 export type UpdatePositionDTO = z.infer<typeof updatePositionSchema>;
 export type GetPositionDTO = z.infer<typeof getPositionSchema>;
 export type DeletePositionDTO = z.infer<typeof deletePositionSchema>;
-export type GetPositionsByOrgDTO = z.infer<typeof getPositionsByOrgSchema>;

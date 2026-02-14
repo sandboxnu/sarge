@@ -1,7 +1,8 @@
 import type { Member } from '@/lib/types/member.types';
 import { prisma } from '@/lib/prisma';
-import { ForbiddenException, NotFoundException } from '@/lib/utils/errors.utils';
+import { NotFoundException } from '@/lib/utils/errors.utils';
 import { auth } from '@/lib/auth/auth';
+import { assertPermission } from '@/lib/utils/permissions.utils';
 
 async function updateMemberRole(
     memberIdToUpdate: string,
@@ -9,18 +10,11 @@ async function updateMemberRole(
     organizationId: string,
     headers: Headers
 ): Promise<Member> {
-    const hasPermissionsToUpdate = await auth.api.hasPermission({
+    await assertPermission(
         headers,
-        body: {
-            permissions: {
-                member: ['update'],
-            },
-        },
-    });
-
-    if (!hasPermissionsToUpdate) {
-        throw new ForbiddenException('You are not an admin of this organization');
-    }
+        { member: ['update'] },
+        'You are not an admin of this organization'
+    );
 
     const existingMember = await prisma.member.findUnique({
         where: {

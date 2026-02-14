@@ -5,10 +5,13 @@ import { handleError } from '@/lib/utils/errors.utils';
 
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
-        await getSession();
+        const session = await getSession();
 
         const positionId = (await params).id;
-        const position = await PositionService.getPositionPreview(positionId);
+        const position = await PositionService.getPositionPreview(
+            positionId,
+            session.activeOrganizationId
+        );
 
         const serialized = {
             ...position,
