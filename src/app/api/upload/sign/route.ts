@@ -24,11 +24,6 @@ export async function POST(request: NextRequest) {
                 throw new NotFoundException('Organization', organizationId);
             }
 
-            // const allowed = await isUserAdmin(userId, organizationId); TODO: revist with new permissions system
-            // if (!allowed) {
-            //     return Response.json(forbidden(`User ${userId} is not authorized`));
-            // }
-
             const res = await s3Connector.getSignedURL(type, organizationId, mime);
             return Response.json({ data: res }, { status: 200 });
         }
