@@ -81,7 +81,7 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                 {error && <p className="text-sarge-error-700">Error: {error}</p>}
                 {!loading && !error && (
                     <Tabs defaultValue="candidates" className="flex flex-col gap-3">
-                        <TabsList className="h-auto gap-5 bg-transparent p-0">
+                        <TabsList className="h-auto gap-5 rounded-none bg-transparent p-0">
                             <UnderlineTabsTrigger value="candidates">
                                 Candidates ({displayedCandidates.length})
                             </UnderlineTabsTrigger>

@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import '@blocknote/shadcn/style.css';
 
 :root {
     /* Layout */
@@ -25,6 +26,7 @@
     --sarge-gray-500: #858c9c;
     --sarge-gray-300: #c1c1c8;
     --sarge-gray-200: #e5e5e7;
+    --sarge-gray-100: #eff0f2;
     --sarge-gray-50: #f9fafe;
     --sarge-gray-0: #ffffff;
 
@@ -75,9 +77,12 @@
     --destructive-foreground: var(--sarge-gray-50);
 
     /* Border colors */
-    --border: var(--sarge-gray-200); /* Default borders */
-    --input: var(--sarge-gray-200); /* Input borders */
-    --ring: var(--sarge-primary-500); /* Focus rings */
+    --border: var(--sarge-gray-200);
+    /* Default borders */
+    --input: var(--sarge-gray-200);
+    /* Input borders */
+    --ring: var(--sarge-primary-500);
+    /* Focus rings */
 
     /* Chart colors  */
     --chart-1: oklch(0.646 0.222 41.116);
@@ -97,7 +102,8 @@
     --sidebar-ring: var(--sarge-primary-500);
 
     /* Spacing and Radius */
-    --radius: 0.5rem; /* 8px - from Figma button radius */
+    --radius: 0.5rem;
+    /* 8px - from Figma button radius */
 
     --letter-spacing-design: 0.025rem;
 }
@@ -123,6 +129,7 @@
     --color-sarge-gray-500: var(--sarge-gray-500);
     --color-sarge-gray-300: var(--sarge-gray-300);
     --color-sarge-gray-200: var(--sarge-gray-200);
+    --color-sarge-gray-100: var(--sarge-gray-100);
     --color-sarge-gray-50: var(--sarge-gray-50);
     --color-sarge-gray-0: var(--sarge-gray-0);
 
@@ -174,10 +181,14 @@
     --color-sidebar-ring: var(--sidebar-ring);
 
     /* Radius system */
-    --radius-sm: calc(var(--radius) - 4px); /* 4px */
-    --radius-md: var(--radius); /* 8px */
-    --radius-lg: calc(var(--radius) + 4px); /* 12px */
-    --radius-xl: calc(var(--radius) + 8px); /* 16px */
+    --radius-sm: calc(var(--radius) - 4px);
+    /* 4px */
+    --radius-md: var(--radius);
+    /* 8px */
+    --radius-lg: calc(var(--radius) + 4px);
+    /* 12px */
+    --radius-xl: calc(var(--radius) + 8px);
+    /* 16px */
 
     --font-sans: var(--font-satoshi);
     --font-inter: var(--font-inter);
@@ -187,16 +198,20 @@
     /* Width and Height */
     --spacing-onboarding-modal-width: var(--onboarding-modal-width);
     --spacing-onboarding-modal-height: var(--onboarding-modal-height);
+
+    --animate-shake: shake 0.4s ease-out;
 }
 
 @layer base {
     * {
         @apply border-border;
     }
+
     html,
     body {
         @apply overflow-hidden;
     }
+
     body {
         @apply bg-background text-foreground font-sans;
         @apply text-base leading-normal;
@@ -204,6 +219,7 @@
 }
 
 @layer components {
+
     /* Display Styles */
     .text-display-l {
         @apply text-foreground tracking-design font-sans text-5xl leading-16 font-bold;
@@ -260,4 +276,71 @@
     }
 }
 
-/* https://www.joshwcomeau.com/css/surprising-truth-about-pixels-and-accessibility/ */
+/* blocknote overrides (we need them to be unlayered so they can override blocknote defaults) */
+
+/* Read-only viewer: remove side menu padding */
+[data-blocknote-no-side-menu] .bn-block-group {
+    padding-left: 0;
+}
+
+[data-blocknote-no-side-menu] .bn-block-group>.bn-block-outer {
+    margin-left: 0;
+}
+
+[data-blocknote-no-side-menu] .bn-editor {
+    padding: 12px 16px;
+}
+
+/* Editable editor: match the gray-50 (we style the desc box with gray-50) in the styled div so there's no white/gray split
+   when pressing Enter and new blocks are created. */
+[data-blocknote-editor-bg='muted'] .bn-editor,
+[data-blocknote-editor-bg='muted'] .bn-container,
+[data-blocknote-editor-bg='muted'] [data-theming-css] {
+    background: var(--sarge-gray-50) !important;
+}
+
+/* BlockNote suggestion menu (slash menu) size customization */
+[data-blocknote-no-side-menu] .bn-suggestion-menu {
+    max-height: 300px;
+    width: 280px;
+    font-size: 14px;
+}
+
+[data-blocknote-no-side-menu] .bn-suggestion-menu-item {
+    padding: 6px 8px;
+    font-size: 14px;
+    min-height: 32px;
+}
+
+[data-blocknote-no-side-menu] .bn-suggestion-menu-item .bn-suggestion-menu-item-title {
+    font-size: 14px;
+}
+
+[data-blocknote-no-side-menu] .bn-suggestion-menu-item .bn-suggestion-menu-item-subtext {
+    font-size: 12px;
+}
+
+/* shake used for char limit feedback */
+@keyframes shake {
+
+    10%,
+    90% {
+        transform: translate3d(-1px, 0, 0);
+    }
+
+    20%,
+    80% {
+        transform: translate3d(2px, 0, 0);
+    }
+
+    30%,
+    50%,
+    70% {
+        transform: translate3d(-3px, 0, 0);
+    }
+
+    40%,
+    60% {
+        transform: translate3d(3px, 0, 0);
+    }
+}

@@ -103,7 +103,7 @@ async function deleteTaskTemplate(id: string, orgId: string): Promise<TaskTempla
 async function updateTaskTemplate(
     taskTemplate: UpdateTaskTemplateDTO & { orgId: string }
 ): Promise<TaskTemplate> {
-    const { id, title, content, publicTestCases, privateTestCases, orgId } = taskTemplate;
+    const { id, title, description, publicTestCases, privateTestCases, orgId } = taskTemplate;
 
     const current = await prisma.taskTemplate.findFirst({ where: { id, orgId } });
     if (!current) throw new NotFoundException('Task Template', id);
@@ -127,7 +127,7 @@ async function updateTaskTemplate(
         },
         data: {
             title,
-            content,
+            description,
             publicTestCases,
             privateTestCases,
         },

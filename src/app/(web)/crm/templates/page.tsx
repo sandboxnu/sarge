@@ -48,7 +48,7 @@ export default function TemplatesPage() {
                 <div className="flex flex-row items-center justify-between">
                     <div className="items-center">
                         <Tabs defaultValue="tasks">
-                            <TabsList className="h-auto gap-5 bg-transparent p-0">
+                            <TabsList className="h-auto gap-5 rounded-none bg-transparent p-0">
                                 <UnderlineTabsTrigger value="tasks">
                                     Tasks ({total ?? 0})
                                 </UnderlineTabsTrigger>
@@ -75,17 +75,11 @@ export default function TemplatesPage() {
                             placeholder="Type to search"
                         />
                         <div className="flex">
-                            <Button
-                                variant="secondary"
-                                className="bg-sarge-gray-100 hover:bg-sarge-gray-200 border-none px-3 py-2"
-                            >
-                                <SlidersHorizontal className="!text-sarge-gray-600 !size-5" />
+                            <Button variant="icon" className="px-3 py-2">
+                                <SlidersHorizontal className="size-5" />
                             </Button>
-                            <Button
-                                variant="secondary"
-                                className="bg-sarge-gray-100 hover:bg-sarge-gray-200 border-none px-3 py-2"
-                            >
-                                <ArrowDownUp className="!text-sarge-gray-600 !size-5" />
+                            <Button variant="icon" className="px-3 py-2">
+                                <ArrowDownUp className="size-5" />
                             </Button>
                         </div>
                     </div>
