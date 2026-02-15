@@ -79,7 +79,7 @@ export default function TestCard(props: TestCardProps) {
                             <Input
                                 type="text"
                                 placeholder="Placeholder"
-                                value={test.input}
+                                value={test.input ?? ''}
                                 onChange={(e) => onUpdate('input', e.target.value)}
                                 className="w-full rounded-md px-3 py-2"
                                 onClick={(e) => e.stopPropagation()}
@@ -92,7 +92,7 @@ export default function TestCard(props: TestCardProps) {
                             <Input
                                 type="text"
                                 placeholder="Placeholder"
-                                value={test.output}
+                                value={test.output ?? ''}
                                 onChange={(e) => onUpdate('output', e.target.value)}
                                 className="w-full rounded-md px-3 py-2"
                                 onClick={(e) => e.stopPropagation()}
