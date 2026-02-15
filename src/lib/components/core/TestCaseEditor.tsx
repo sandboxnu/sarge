@@ -65,12 +65,12 @@ export default function TestCaseEditor(props: TestCaseEditorProps) {
                 </div>
 
                 {/* Header */}
-                <div className="my-2 flex shrink-0 items-center justify-between px-4">
+                <div className="flex shrink-0 items-center justify-between border-b px-4 pb-2">
                     <span className="text-md font-medium">
                         {activeLabel} ({activeTestCases.length})
                     </span>
                     <Button
-                        className="items-center gap-1 rounded-md px-3 py-1"
+                        className="items-center gap-1 rounded-md px-3 py-1 text-sm"
                         variant="secondary"
                         onClick={addTestCase}
                     >
@@ -93,7 +93,7 @@ export default function TestCaseEditor(props: TestCaseEditorProps) {
                             onDuplicate={() => duplicateTestCase(index, 'all')}
                             onRemove={() => removeTestCase(index, 'all')}
                             onUpdate={(field, value) => updateTestCase(index, 'all', field, value)}
-                            onToggle={() => toggleTestCaseVisibility(index, 'private')}
+                            onToggle={() => toggleTestCaseVisibility(index, 'all')}
                             // because our tests themselves don't have a public or private state
                             // they're indexed in a way where they're not mixed and matched, but
                             // public test cases first, then private test cases after
