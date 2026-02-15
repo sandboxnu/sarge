@@ -8,7 +8,7 @@ import { Button } from '@/lib/components/ui/Button';
 import useOnboardingState from '@/lib/hooks/useOnboardingState';
 
 export default function DashboardPage() {
-    const { isOnboarding, isSignedOut, isUserLoading } = useOnboardingState();
+    const { isOnboarding, isSignedOut, isUserLoading, organizationName } = useOnboardingState();
     const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
 
     if (isUserLoading) return <div>Loading...</div>;
@@ -39,6 +39,7 @@ export default function DashboardPage() {
                     <InviteUsersModal
                         open={isInviteModalOpen}
                         onOpenChange={setIsInviteModalOpen}
+                        organizationName={organizationName ?? undefined}
                     />
                 </div>
             )}

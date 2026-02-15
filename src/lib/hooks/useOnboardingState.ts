@@ -10,6 +10,7 @@ function useOnboardingState() {
     const member = useActiveMember();
 
     const userId = session?.user?.id ?? null;
+    const organizationName = auth.activeOrganization?.name ?? null;
 
     const isUserLoading = auth.sessionPending || member.isPending;
     const isSignedOut = !auth.isAuthenticated && !auth.sessionPending;
@@ -43,6 +44,7 @@ function useOnboardingState() {
         isOnboarding,
         isSignedOut,
         isUserLoading,
+        organizationName,
     };
 }
 

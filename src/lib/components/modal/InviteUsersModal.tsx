@@ -7,7 +7,7 @@ import { Button } from '@/lib/components/ui/Button';
 import { InviteEmailInput, getInvalidEmails } from '@/lib/components/ui/InviteEmailInput';
 import { cn } from '@/lib/utils/cn.utils';
 
-const roles = ['Admin', 'Recruiter', 'Viewer'] as const;
+const roles = ['Admin', 'Recruiter'] as const;
 type InviteRole = (typeof roles)[number];
 
 type InviteUsersModalProps = {
