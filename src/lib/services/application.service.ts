@@ -286,6 +286,22 @@ async function updateAssessmentStatus(params: {
     });
 }
 
+async function getApplicationsByName(orgId: string, name: string): Promise<Application[]> {
+    const applications = await prisma.application.findMany({
+        where: {
+            candidate: {
+                orgId,
+                name: {
+                    contains: name,
+                    mode: 'insensitive',
+                },
+            },
+        },
+    });
+
+    return applications;
+}
+
 const ApplicationService = {
     addApplicationToPosition,
     batchAddApplicationsToPosition,
@@ -295,6 +311,7 @@ const ApplicationService = {
     getApplication,
     getAssessmentStatus,
     updateAssessmentStatus,
+    getApplicationsByName,
 };
 
 export default ApplicationService;

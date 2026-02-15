@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, UnderlineTabsTrigger } from '@/lib/compone
 import { ChevronLeft, Plus, ArrowUpDown, SlidersHorizontal } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { use, useState } from 'react';
+import useSearch from '@/lib/hooks/useSearch';
 
 export default function CandidatesPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
@@ -18,6 +19,15 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
     const [isCSVModalOpen, setIsCSVModalOpen] = useState(false);
     const { candidates, loading, error, positionTitle, createCandidate, batchCreateCandidates } =
         useCandidates(id);
+    const { value: searchValue, onChange: onSearchChange } = useSearch('applications', {
+        positionId: id,
+    });
+
+    const displayedCandidates = searchValue.trim().length
+        ? candidates.filter((c) =>
+              c.candidate.name.toLowerCase().includes(searchValue.trim().toLowerCase())
+          )
+        : candidates;
 
     return (
         <>
@@ -35,7 +45,11 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                 <div className="sticky flex items-center gap-4">
                     <div className="flex flex-1 items-center gap-4">
                         <div className="max-w-[680px] flex-1">
-                            <Search placeholder="Type to search for a position" />
+                            <Search
+                                value={searchValue}
+                                onChange={onSearchChange}
+                                placeholder="Type to search for a candidate"
+                            />
                         </div>
 
                         <div className="flex items-center gap-3">
@@ -71,7 +85,7 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                     <Tabs defaultValue="candidates" className="flex flex-col gap-3">
                         <TabsList className="h-auto gap-5 bg-transparent p-0">
                             <UnderlineTabsTrigger value="candidates">
-                                Candidates ({candidates.length})
+                                Candidates ({displayedCandidates.length})
                             </UnderlineTabsTrigger>
                             <UnderlineTabsTrigger value="assessment">
                                 Assessment
@@ -79,7 +93,7 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                         </TabsList>
 
                         <TabsContent value="candidates">
-                            <CandidateTable candidates={candidates} />
+                            <CandidateTable candidates={displayedCandidates} />
                             <br />
                         </TabsContent>
 
