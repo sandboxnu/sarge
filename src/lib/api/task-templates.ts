@@ -22,7 +22,7 @@ export async function getTaskTemplate(taskTemplateId: string): Promise<TaskTempl
 /**
  * GET /api/task-templates/search/?title=...
  */
-export async function searchTaskTemplates(title: string): Promise<TaskTemplate[]> {
+export async function searchTaskTemplates(title: string): Promise<TaskTemplateListItemDTO[]> {
     const res = await fetch(`/api/task-templates/search?title=${title}`);
 
     const json = await res.json();

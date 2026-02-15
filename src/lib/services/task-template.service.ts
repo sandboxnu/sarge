@@ -135,8 +135,11 @@ async function updateTaskTemplate(
     return updatedTaskTemplate;
 }
 
-async function getTaskTemplatesByTitle(title: string, orgId: string): Promise<TaskTemplate[]> {
-    const taskTemplatesWithTitle = await prisma.taskTemplate.findMany({
+async function getTaskTemplatesByTitle(
+    title: string,
+    orgId: string
+): Promise<TaskTemplateListItemDTO[]> {
+    const templates = await prisma.taskTemplate.findMany({
         where: {
             orgId,
             title: {
@@ -144,9 +147,18 @@ async function getTaskTemplatesByTitle(title: string, orgId: string): Promise<Ta
                 mode: 'insensitive',
             },
         },
+        include: {
+            tags: true,
+            author: { select: { id: true, name: true } },
+            _count: { select: { assessments: true } },
+        },
     });
 
-    return taskTemplatesWithTitle;
+    return templates.map(({ author, _count, ...rest }) => ({
+        ...rest,
+        author,
+        assessmentTemplatesCount: _count.assessments,
+    })) as TaskTemplateListItemDTO[];
 }
 
 const TaskTemplateService = {
