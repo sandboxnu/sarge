@@ -29,9 +29,9 @@ async function createPosition(
     });
 }
 
-async function deletePosition(positionId: string): Promise<Position> {
-    const existingPosition = await prisma.position.findUnique({
-        where: { id: positionId },
+async function deletePosition(positionId: string, orgId: string): Promise<Position> {
+    const existingPosition = await prisma.position.findFirst({
+        where: { id: positionId, orgId },
     });
 
     if (!existingPosition) {
@@ -41,9 +41,9 @@ async function deletePosition(positionId: string): Promise<Position> {
     return prisma.position.delete({ where: { id: positionId } });
 }
 
-async function getPosition(positionId: string): Promise<Position> {
-    const position = await prisma.position.findUnique({
-        where: { id: positionId },
+async function getPosition(positionId: string, orgId: string): Promise<Position> {
+    const position = await prisma.position.findFirst({
+        where: { id: positionId, orgId },
     });
 
     if (!position) {
@@ -84,10 +84,11 @@ async function getPositionsByOrgId(orgId: string): Promise<PositionWithCounts[]>
 
 async function updatePosition(
     positionId: string,
-    positionData: UpdatePositionDTO
+    positionData: UpdatePositionDTO,
+    orgId: string
 ): Promise<Position> {
-    const existingPosition = await prisma.position.findUnique({
-        where: { id: positionId },
+    const existingPosition = await prisma.position.findFirst({
+        where: { id: positionId, orgId },
     });
 
     if (!existingPosition) {
@@ -100,9 +101,9 @@ async function updatePosition(
     });
 }
 
-async function getPositionPreview(positionId: string): Promise<PositionPreviewData> {
-    const position = await prisma.position.findUnique({
-        where: { id: positionId },
+async function getPositionPreview(positionId: string, orgId: string): Promise<PositionPreviewData> {
+    const position = await prisma.position.findFirst({
+        where: { id: positionId, orgId },
         select: {
             id: true,
             title: true,

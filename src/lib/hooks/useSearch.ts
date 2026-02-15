@@ -6,11 +6,12 @@ import { searchApplications } from '@/lib/api/applications';
 import { searchPositions } from '@/lib/api/positions';
 import { type TaskTemplate, type AssessmentTemplate, type Application } from '@/generated/prisma';
 import { type PositionWithCounts } from '@/lib/types/position.types';
+import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
 
 export type SearchType = 'task-templates' | 'assessment-templates' | 'positions' | 'applications';
 
 type SearchTypeFunctionMap = {
-    'task-templates': TaskTemplate;
+    'task-templates': TaskTemplateListItemDTO;
     'assessment-templates': AssessmentTemplate;
     positions: PositionWithCounts;
     applications: Application;

@@ -1,9 +1,13 @@
 import { type NextRequest } from 'next/server';
 import { handleError, BadRequestException } from '@/lib/utils/errors.utils';
 import { parseCandidateCsv } from '@/lib/utils/csv.utils';
+import { getSession } from '@/lib/utils/auth.utils';
+import { assertRecruiterOrAbove } from '@/lib/utils/permissions.utils';
 
 export async function POST(request: NextRequest) {
     try {
+        await getSession();
+        await assertRecruiterOrAbove(request.headers);
         const formData = await request.formData();
         const file = formData.get('file');
 

@@ -6,10 +6,11 @@ import { type AssessmentTemplate } from '@/generated/prisma';
 import { NotFoundException } from '@/lib/utils/errors.utils';
 import { prisma } from '@/lib/prisma';
 
-async function getAssessmentTemplate(id: string): Promise<AssessmentTemplate> {
-    const foundAssessmentTemplate = await prisma.assessmentTemplate.findUnique({
+async function getAssessmentTemplate(id: string, orgId: string): Promise<AssessmentTemplate> {
+    const foundAssessmentTemplate = await prisma.assessmentTemplate.findFirst({
         where: {
             id,
+            orgId,
         },
     });
 
@@ -21,7 +22,7 @@ async function getAssessmentTemplate(id: string): Promise<AssessmentTemplate> {
 }
 
 async function createAssessmentTemplate(
-    assessment: CreateAssessmentTemplateDTO
+    assessment: CreateAssessmentTemplateDTO & { orgId: string }
 ): Promise<AssessmentTemplate> {
     const org = await prisma.organization.findFirst({
         where: {
@@ -38,9 +39,9 @@ async function createAssessmentTemplate(
     });
 }
 
-async function deleteAssessmentTemplate(id: string): Promise<AssessmentTemplate> {
-    const existingTemplate = await prisma.assessmentTemplate.findUnique({
-        where: { id },
+async function deleteAssessmentTemplate(id: string, orgId: string): Promise<AssessmentTemplate> {
+    const existingTemplate = await prisma.assessmentTemplate.findFirst({
+        where: { id, orgId },
     });
 
     if (!existingTemplate) {
@@ -56,20 +57,21 @@ async function deleteAssessmentTemplate(id: string): Promise<AssessmentTemplate>
 }
 
 async function updateAssessmentTemplate(
-    assessmentTemplate: UpdateAssessmentTemplateDTO
+    assessmentTemplate: UpdateAssessmentTemplateDTO & { orgId: string }
 ): Promise<AssessmentTemplate> {
-    const existingTemplate = await prisma.assessmentTemplate.findUnique({
-        where: { id: assessmentTemplate.id },
+    const { id, orgId, ...updateData } = assessmentTemplate;
+    const existingTemplate = await prisma.assessmentTemplate.findFirst({
+        where: { id, orgId },
     });
 
     if (!existingTemplate) {
-        throw new NotFoundException('Assessment Template', assessmentTemplate.id);
+        throw new NotFoundException('Assessment Template', id);
     }
 
     return prisma.assessmentTemplate.update({
-        where: { id: assessmentTemplate.id },
+        where: { id },
         data: {
-            ...assessmentTemplate,
+            ...updateData,
         },
     });
 }
