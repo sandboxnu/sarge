@@ -19,9 +19,7 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
     const [isCSVModalOpen, setIsCSVModalOpen] = useState(false);
     const { candidates, loading, error, positionTitle, createCandidate, batchCreateCandidates } =
         useCandidates(id);
-    const { value: searchValue, onChange: onSearchChange } = useSearch('applications', {
-        positionId: id,
-    });
+    const { value: searchValue, onChange: onSearchChange } = useSearch('applications');
 
     const displayedCandidates = searchValue.trim().length
         ? candidates.filter((c) =>
