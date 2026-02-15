@@ -33,28 +33,37 @@ export default function TestCaseEditor(props: TestCaseEditorProps) {
     );
 
     return (
-        <div className="flex flex-1 flex-col overflow-hidden p-4">
+        <div className="flex flex-1 flex-col overflow-hidden">
             <Tabs
                 value={activeTestTab}
                 onValueChange={(v) => setActiveTestTab(v as TestTab)}
                 className="flex flex-1 flex-col overflow-hidden"
             >
                 <div className="border-sarge-gray-200 shrink-0 border-b">
-                    <TabsList className="h-auto gap-5 bg-transparent p-0 px-4">
-                        <TabsTrigger value="all">
-                            All Test Cases ({allTestCases.length})
+                    <TabsList className="h-auto gap-0 rounded-none bg-transparent p-0">
+                        <TabsTrigger
+                            value="all"
+                            className="border-sarge-gray-300 bg-sarge-gray-200 text-sarge-gray-600 data-[state=active]:text-sarge-gray-900 rounded-none border border-r-0 px-4 py-2 text-sm font-medium data-[state=active]:bg-white"
+                        >
+                            All Test Cases
                         </TabsTrigger>
-                        <TabsTrigger value="public">
-                            Public Test Cases ({publicTestCases.length})
+                        <TabsTrigger
+                            value="public"
+                            className="border-sarge-gray-300 bg-sarge-gray-200 text-sarge-gray-600 data-[state=active]:text-sarge-gray-900 rounded-none border border-r-0 px-4 py-2 text-sm font-medium data-[state=active]:bg-white"
+                        >
+                            Public Test Cases
                         </TabsTrigger>
-                        <TabsTrigger value="private">
-                            Private Test Cases ({privateTestCases.length})
+                        <TabsTrigger
+                            value="private"
+                            className="border-sarge-gray-300 bg-sarge-gray-200 text-sarge-gray-600 data-[state=active]:text-sarge-gray-900 rounded-none border px-4 py-2 text-sm font-medium data-[state=active]:bg-white"
+                        >
+                            Private Test Cases
                         </TabsTrigger>
                     </TabsList>
                 </div>
 
                 {/* Header */}
-                <div className="my-3 flex shrink-0 items-center justify-between px-4">
+                <div className="my-2 flex shrink-0 items-center justify-between px-4">
                     <span className="text-md font-medium">
                         {activeLabel} ({activeTestCases.length})
                     </span>
@@ -67,7 +76,10 @@ export default function TestCaseEditor(props: TestCaseEditorProps) {
                     </Button>
                 </div>
 
-                <TabsContent value="all" className="flex flex-1 flex-col gap-2 overflow-y-auto">
+                <TabsContent
+                    value="all"
+                    className="flex flex-1 flex-col gap-2 overflow-y-auto px-4"
+                >
                     {allTestCases.map((test, index) => (
                         <TestCard
                             test={test}
@@ -87,7 +99,10 @@ export default function TestCaseEditor(props: TestCaseEditorProps) {
                     ))}
                 </TabsContent>
 
-                <TabsContent value="public" className="flex flex-1 flex-col gap-2 overflow-y-auto">
+                <TabsContent
+                    value="public"
+                    className="flex flex-1 flex-col gap-2 overflow-y-auto px-4"
+                >
                     {publicTestCases.map((test, index) => (
                         <TestCard
                             test={test}
@@ -106,7 +121,10 @@ export default function TestCaseEditor(props: TestCaseEditorProps) {
                     ))}
                 </TabsContent>
 
-                <TabsContent value="private" className="flex flex-1 flex-col gap-2 overflow-y-auto">
+                <TabsContent
+                    value="private"
+                    className="flex flex-1 flex-col gap-2 overflow-y-auto px-4"
+                >
                     {privateTestCases.map((test, index) => (
                         <TestCard
                             test={test}
