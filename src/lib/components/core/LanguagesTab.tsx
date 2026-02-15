@@ -68,10 +68,11 @@ export default function LanguagesTab({ languages, setLanguages }: LanguagesTabPr
                     searchPlaceholder="Search"
                     emptyText="No languages found"
                     showSearchIcon
+                    filterMode="prefix"
                     trigger={
                         <button
                             type="button"
-                            className="bg-sarge-gray-50 border-sarge-gray-200 flex min-h-11 w-full cursor-pointer items-start rounded-lg border py-3 pr-3 pl-4 text-left"
+                            className="bg-sarge-gray-50 border-sarge-gray-200 flex min-h-11 w-full cursor-pointer items-start rounded-lg border py-2 pr-3 pl-4 text-left"
                         >
                             <div className="flex min-w-0 flex-1 flex-wrap gap-2">
                                 {hasLanguages ? (
@@ -83,7 +84,7 @@ export default function LanguagesTab({ languages, setLanguages }: LanguagesTabPr
                                         />
                                     ))
                                 ) : (
-                                    <span className="text-label-s text-sarge-gray-500 leading-[20px]">
+                                    <span className="text-label-s text-sarge-gray-500 py-[3px]">
                                         Select Languages
                                     </span>
                                 )}
@@ -104,7 +105,7 @@ export default function LanguagesTab({ languages, setLanguages }: LanguagesTabPr
                                         if (hasLanguages) clearAll();
                                     }
                                 }}
-                                className={`text-label-xs ml-2 shrink-0 leading-[20px] whitespace-nowrap ${
+                                className={`text-label-xs mt-1 ml-2 shrink-0 whitespace-nowrap ${
                                     hasLanguages
                                         ? 'text-sarge-primary-600 hover:text-sarge-primary-700 cursor-pointer'
                                         : 'text-sarge-gray-300 cursor-default'

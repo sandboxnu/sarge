@@ -13,7 +13,6 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
     const { id } = use(params);
     const router = useRouter();
     const {
-
         title,
         publicTestCases,
         setPublicTestCases,
@@ -30,7 +29,6 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
         setAvailableTags,
         languages,
         setLanguages,
-        taskTemplate,
     } = useTaskTemplateEditPage(id);
 
     if (isLoading) {
@@ -49,10 +47,7 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
         <div className="flex h-full w-full flex-col">
             <div className="flex items-center justify-between gap-2 border-b px-5 py-4">
                 <div className="flex items-center">
-                    <Button
-                        variant="icon"
-                        onClick={() => router.push('/crm/templates')}
-                    >
+                    <Button variant="icon" onClick={() => router.push('/crm/templates')}>
                         <ChevronLeft className="size-5" />
                     </Button>
                     <h1 className="text-xl font-bold">{title}</h1>

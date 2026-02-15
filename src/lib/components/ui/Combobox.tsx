@@ -41,6 +41,8 @@ export interface ComboboxProps<T = string> {
     showSearchIcon?: boolean;
     /** Max character length for the search input. Shows a counter and prevents exceeding. */
     maxLength?: number;
+    /** Filter mode: 'contains' (default, substring match) or 'prefix' (starts-with match) */
+    filterMode?: 'contains' | 'prefix';
 }
 
 function defaultGetLabel<T>(value: T, options: ComboboxOption<T>[]): string {
@@ -69,6 +71,7 @@ function ComboboxInner<T = string>({
     onCreateOption,
     showSearchIcon = false,
     maxLength,
+    filterMode = 'contains',
 }: ComboboxProps<T>) {
     const [open, setOpen] = React.useState(false);
     const [search, setSearch] = React.useState('');
@@ -186,6 +189,10 @@ function ComboboxInner<T = string>({
                 <Command
                     className="rounded-lg border-0 bg-transparent shadow-none [&_[cmdk-input-wrapper]]:border-0 [&_[cmdk-input-wrapper]]:p-0"
                     shouldFilter={true}
+                    {...(filterMode === 'prefix' && {
+                        filter: (value: string, search: string) =>
+                            value.toLowerCase().startsWith(search.toLowerCase()) ? 1 : 0,
+                    })}
                 >
                     <div className="bg-sarge-gray-50 border-sarge-gray-100 mx-0 mb-1 flex items-center rounded-lg border px-3 py-2">
                         {showSearchIcon && (
@@ -203,11 +210,12 @@ function ComboboxInner<T = string>({
                                 setSearch(val);
                             }}
                         />
-                        {maxLength && search.length >= maxLength - 5 && (
+                        {maxLength && (
                             <span
                                 key={shakeKey}
                                 className={cn(
-                                    'text-label-s ml-2 shrink-0 whitespace-nowrap',
+                                    'text-label-s ml-2 shrink-0 whitespace-nowrap transition-opacity',
+                                    search.length >= maxLength - 5 ? 'opacity-100' : 'opacity-0',
                                     search.length >= maxLength
                                         ? 'text-sarge-error-700 animate-shake'
                                         : 'text-sarge-gray-300'

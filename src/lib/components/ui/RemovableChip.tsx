@@ -20,7 +20,7 @@ export function RemovableChip({
     return (
         <Chip
             variant={variant}
-            className={cn('text-body-xs gap-1', className)}
+            className={cn('text-label-xs gap-1', className)}
             onClick={(e) => e.stopPropagation()}
         >
             {truncate ? <span className="truncate">{label}</span> : label}
@@ -41,7 +41,7 @@ export function RemovableChip({
                 }}
                 className="text-sarge-gray-600 hover:text-sarge-gray-800"
             >
-                <X className="size-[15px]" />
+                <X className="size-[14px]" />
             </span>
         </Chip>
     );
