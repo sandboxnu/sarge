@@ -86,8 +86,8 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
                     />
                 </div>
 
-                <div className="flex w-2/3 flex-col bg-[#384150]">
-                    <div className="border-b-sarge-gray-600 flex w-full justify-between border-b-1 text-white">
+                <div className="flex w-2/3 flex-col">
+                    <div className="border-b-sarge-gray-600 flex w-full justify-between border-b-1 bg-[#384150] text-white">
                         <>
                             <Tabs defaultValue="task" onValueChange={handleTaskSolutionToggle}>
                                 <TabsList className="h-auto bg-transparent p-0">
@@ -136,7 +136,7 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
                             <EllipsisVertical className="mr-2.5 size-5" />
                         </div>
                     </div>
-                    <div className="flex-1 p-2">
+                    <div className="flex-1 bg-[#384150] p-2">
                         <Editor
                             className="h-full"
                             defaultLanguage={taskTemplate?.languages[selectedLanguage]?.language}
