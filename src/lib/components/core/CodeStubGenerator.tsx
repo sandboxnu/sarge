@@ -67,7 +67,9 @@ export default function CodeStubGenerator({ disabled }: CodeStubGeneratorProps) 
 
             <div className="flex w-full items-center justify-between">
                 <span className="text-label-s text-sarge-gray-800">Parameters</span>
-                <Button variant={"tertiary"} onClick={addParameter}>+ Add parameter</Button>
+                <Button variant={'tertiary'} onClick={addParameter}>
+                    + Add parameter
+                </Button>
             </div>
 
             {parameters.map((param) => (

@@ -15,7 +15,10 @@ export const createTagSchema = z.object({
         .trim()
         .min(1, 'Tag name is required')
         .max(20, 'Tag name must be 20 characters or less'),
-    colorHexCode: z.string().regex(/^#[0-9a-fA-F]{6}$/, 'Invalid hex color').default('#e5e5e7'),
+    colorHexCode: z
+        .string()
+        .regex(/^#[0-9a-fA-F]{6}$/, 'Invalid hex color')
+        .default('#e5e5e7'),
 });
 
 export type TagDTO = z.infer<typeof TagSchema>;

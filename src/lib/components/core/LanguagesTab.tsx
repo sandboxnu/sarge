@@ -104,8 +104,8 @@ export default function LanguagesTab({ languages, setLanguages }: LanguagesTabPr
                                 }
                             }}
                             className={`text-label-xs ml-2 shrink-0 leading-[20px] whitespace-nowrap ${hasLanguages
-                                    ? 'text-sarge-primary-600 hover:text-sarge-primary-700 cursor-pointer'
-                                    : 'text-sarge-gray-300 cursor-default'
+                                ? 'text-sarge-primary-600 hover:text-sarge-primary-700 cursor-pointer'
+                                : 'text-sarge-gray-300 cursor-default'
                                 }`}
                         >
                             Clear All
