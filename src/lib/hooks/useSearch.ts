@@ -4,7 +4,7 @@ import { searchTaskTemplates } from '@/lib/api/task-templates';
 import { searchAssessmentTemplates } from '@/lib/api/assessment-templates';
 import { searchApplications } from '@/lib/api/applications';
 import { searchPositions } from '@/lib/api/positions';
-import { type TaskTemplate, type AssessmentTemplate, Application } from '@/generated/prisma';
+import { type TaskTemplate, type AssessmentTemplate, type Application } from '@/generated/prisma';
 import { type PositionWithCounts } from '@/lib/types/position.types';
 
 export type SearchType = 'task-templates' | 'assessment-templates' | 'positions' | 'applications';
