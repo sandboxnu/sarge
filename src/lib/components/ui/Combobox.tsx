@@ -119,8 +119,8 @@ function ComboboxInner<T = string>({
         multiple && multiValues.length > 0
             ? `${multiValues.length} selected`
             : singleValue != null
-                ? displayLabel(singleValue)
-                : placeholder;
+              ? displayLabel(singleValue)
+              : placeholder;
 
     const renderSelectionIcon = (selected: boolean) => {
         if (variant === 'checkbox') {
