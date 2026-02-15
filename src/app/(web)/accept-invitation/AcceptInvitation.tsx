@@ -41,7 +41,7 @@ export default function AcceptInvitation() {
         async function fetchInvitation() {
             try {
                 const result = await authClient.organization.getInvitation({
-                    query: { id: id! },
+                    query: { id: id ?? '' },
                 });
 
                 if (result.data) {
@@ -78,9 +78,7 @@ export default function AcceptInvitation() {
         }
     }
 
-    const isExpired = invitation?.expiresAt
-        ? new Date(invitation.expiresAt) < new Date()
-        : false;
+    const isExpired = invitation?.expiresAt ? new Date(invitation.expiresAt) < new Date() : false;
 
     // Loading
     if (sessionPending || loading) {
@@ -216,8 +214,7 @@ export default function AcceptInvitation() {
     );
 }
 
-
-// TODO these are temporary until we have UI from designs 
+// TODO these are temporary until we have UI from designs
 
 function CenteredCard({ children }: { children: React.ReactNode }) {
     return (
