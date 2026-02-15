@@ -6,6 +6,7 @@ import { use } from 'react';
 import useTaskTemplateEditPage from '@/lib/hooks/useTaskTemplateEditPage';
 import TestCaseEditor from '@/lib/components/core/TestCaseEditor';
 import { ChevronLeft } from 'lucide-react';
+import { Button } from '@/lib/components/ui/Button';
 
 export default function TaskTemplateEditPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
@@ -33,14 +34,19 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
 
     return (
         <div className="flex h-full w-full flex-col">
-            <div className="flex items-center gap-2 border-b px-5 py-4">
-                <button
-                    onClick={() => router.push('/crm/templates')}
-                    className="hover:bg-sarge-gray-100 rounded-lg p-2 hover:cursor-pointer"
-                >
-                    <ChevronLeft className="size-5" />
-                </button>
-                <h1 className="text-xl font-bold">{title}</h1>
+            <div className="flex items-center justify-between gap-2 border-b px-5 py-4">
+                <div className="flex items-center">
+                    <button
+                        onClick={() => router.push('/crm/templates')}
+                        className="hover:bg-sarge-gray-100 rounded-lg p-2 hover:cursor-pointer"
+                    >
+                        <ChevronLeft className="size-5" />
+                    </button>
+                    <h1 className="text-xl font-bold">{title}</h1>
+                </div>
+                <Button variant="secondary" className="px-4 py-2">
+                    Save Changes
+                </Button>
             </div>
 
             <div className="flex flex-1 overflow-hidden">
