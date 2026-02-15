@@ -57,7 +57,9 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
     }, [taskTemplateId]);
 
     function handleLanguageChange(language: number) {
-        handleModelChange(language, true);
+        // NOTE(laith): this was from rebase and chose to accept your changes. please double check @cherman <3
+        // handleModelChange(language, true);
+        handleModelChange(language, false);
         setSelectedLanguage(language);
     }
 
