@@ -25,6 +25,8 @@ export default function TestCaseEditor(props: TestCaseEditorProps) {
         allTestCases,
         activeTestCases,
         activeLabel,
+        isSelected,
+        toggleSelected,
     } = useTestCaseEditor(
         publicTestCases,
         setPublicTestCases,
@@ -39,23 +41,23 @@ export default function TestCaseEditor(props: TestCaseEditorProps) {
                 onValueChange={(v) => setActiveTestTab(v as TestTab)}
                 className="flex flex-1 flex-col overflow-hidden"
             >
-                <div className="border-sarge-gray-200 shrink-0 border-b">
+                <div className="border-sarge-gray-200 bg-sarge-gray-200 shrink-0 border-b">
                     <TabsList className="h-auto gap-0 rounded-none bg-transparent p-0">
                         <TabsTrigger
                             value="all"
-                            className="border-sarge-gray-300 bg-sarge-gray-200 text-sarge-gray-600 data-[state=active]:text-sarge-gray-900 rounded-none border border-r-0 px-4 py-2 text-sm font-medium data-[state=active]:bg-white"
+                            className="border=[0.5px] !text-sarge-gray-700 border-sarge-gray-300 bg-sarge-gray-100 rounded-none border-r-0 px-3 py-1 text-sm font-medium data-[state=active]:!bg-white data-[state=active]:!shadow-none"
                         >
                             All Test Cases
                         </TabsTrigger>
                         <TabsTrigger
                             value="public"
-                            className="border-sarge-gray-300 bg-sarge-gray-200 text-sarge-gray-600 data-[state=active]:text-sarge-gray-900 rounded-none border border-r-0 px-4 py-2 text-sm font-medium data-[state=active]:bg-white"
+                            className="border=[0.5px] !text-sarge-gray-700 border-sarge-gray-300 bg-sarge-gray-100 rounded-none border-r-0 px-3 py-1 text-sm font-medium data-[state=active]:!bg-white data-[state=active]:!shadow-none"
                         >
                             Public Test Cases
                         </TabsTrigger>
                         <TabsTrigger
                             value="private"
-                            className="border-sarge-gray-300 bg-sarge-gray-200 text-sarge-gray-600 data-[state=active]:text-sarge-gray-900 rounded-none border px-4 py-2 text-sm font-medium data-[state=active]:bg-white"
+                            className="!text-sarge-gray-700 border-sarge-gray-300 bg-sarge-gray-100 rounded-none border px-3 py-1 text-sm font-medium data-[state=active]:!border-b-0 data-[state=active]:!bg-white"
                         >
                             Private Test Cases
                         </TabsTrigger>
@@ -85,8 +87,8 @@ export default function TestCaseEditor(props: TestCaseEditorProps) {
                             test={test}
                             index={index}
                             key={`all-${index}`}
-                            selected={true}
-                            setSelected={(i: number) => console.warn(i)}
+                            selected={isSelected('all', index)}
+                            setSelected={() => toggleSelected('all', index)}
                             onDuplicate={() => duplicateTestCase(index, 'all')}
                             onRemove={() => removeTestCase(index, 'all')}
                             onUpdate={(field, value) => updateTestCase(index, 'all', field, value)}
@@ -108,8 +110,8 @@ export default function TestCaseEditor(props: TestCaseEditorProps) {
                             test={test}
                             index={index}
                             key={`public-${index}`}
-                            selected={true}
-                            setSelected={(i: number) => console.warn(i)}
+                            selected={isSelected('public', index)}
+                            setSelected={() => toggleSelected('public', index)}
                             onDuplicate={() => duplicateTestCase(index, 'public')}
                             onRemove={() => removeTestCase(index, 'public')}
                             onUpdate={(field, value) =>
@@ -130,8 +132,8 @@ export default function TestCaseEditor(props: TestCaseEditorProps) {
                             test={test}
                             index={index}
                             key={`private-${index}`}
-                            selected={true}
-                            setSelected={(i: number) => console.warn(i)}
+                            selected={isSelected('private', index)}
+                            setSelected={() => toggleSelected('private', index)}
                             onDuplicate={() => duplicateTestCase(index, 'private')}
                             onRemove={() => removeTestCase(index, 'private')}
                             onUpdate={(field, value) =>

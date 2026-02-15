@@ -10,6 +10,28 @@ export default function useTestCaseEditor(
     setPrivateTestCases: React.Dispatch<React.SetStateAction<TestCaseDTO[]>>
 ) {
     const [activeTestTab, setActiveTestTab] = useState<TestTab>('all');
+    const [selectedIndices, setSelectedIndices] = useState<Set<string>>(new Set());
+
+    function getKey(tab: TestTab, index: number) {
+        return `${tab}-${index}`;
+    }
+
+    function isSelected(tab: TestTab, index: number) {
+        return selectedIndices.has(getKey(tab, index));
+    }
+
+    function toggleSelected(tab: TestTab, index: number) {
+        setSelectedIndices((prev) => {
+            const next = new Set(prev);
+            const key = getKey(tab, index);
+            if (next.has(key)) {
+                next.delete(key);
+            } else {
+                next.add(key);
+            }
+            return next;
+        });
+    }
 
     function addTestCase() {
         const newTest: TestCaseDTO = { input: '', output: '' };
@@ -32,40 +54,41 @@ export default function useTestCaseEditor(
         }
     }
 
-    function insertCopy(prev: TestCaseDTO[], i: number) {
+    function insertDuplicate(prev: TestCaseDTO[], i: number) {
         return [...prev.slice(0, i + 1), { ...prev[i] }, ...prev.slice(i + 1)];
     }
 
     function duplicateTestCase(index: number, tab: TestTab) {
         if (tab === 'all') {
             if (index < publicTestCases.length) {
-                setPublicTestCases((prev) => insertCopy(prev, index));
+                setPublicTestCases((prev) => insertDuplicate(prev, index));
             } else {
                 const privateIndex = index - publicTestCases.length;
-                setPrivateTestCases((prev) => insertCopy(prev, privateIndex));
+                setPrivateTestCases((prev) => insertDuplicate(prev, privateIndex));
             }
         } else if (tab === 'public') {
-            setPublicTestCases((prev) => insertCopy(prev, index));
+            setPublicTestCases((prev) => insertDuplicate(prev, index));
         } else {
-            setPrivateTestCases((prev) => insertCopy(prev, index));
+            setPrivateTestCases((prev) => insertDuplicate(prev, index));
         }
     }
 
-    function updateTestCase(index: number, tab: TestTab, field: 'input' | 'output', value: string) {
-        const update = (prev: TestCaseDTO[], i: number) =>
-            prev.map((t, idx) => (idx === i ? { ...t, [field]: value } : t));
+    function update(prev: TestCaseDTO[], i: number, field: 'input' | 'output', value: string) {
+        return prev.map((t, idx) => (idx === i ? { ...t, [field]: value } : t));
+    }
 
+    function updateTestCase(index: number, tab: TestTab, field: 'input' | 'output', value: string) {
         if (tab === 'all') {
             if (index < publicTestCases.length) {
-                setPublicTestCases((prev) => update(prev, index));
+                setPublicTestCases((prev) => update(prev, index, field, value));
             } else {
                 const privateIndex = index - publicTestCases.length;
-                setPrivateTestCases((prev) => update(prev, privateIndex));
+                setPrivateTestCases((prev) => update(prev, privateIndex, field, value));
             }
         } else if (tab === 'public') {
-            setPublicTestCases((prev) => update(prev, index));
+            setPublicTestCases((prev) => update(prev, index, field, value));
         } else {
-            setPrivateTestCases((prev) => update(prev, index));
+            setPrivateTestCases((prev) => update(prev, index, field, value));
         }
     }
 
@@ -127,5 +150,7 @@ export default function useTestCaseEditor(
         allTestCases,
         activeTestCases,
         activeLabel,
+        isSelected,
+        toggleSelected,
     };
 }

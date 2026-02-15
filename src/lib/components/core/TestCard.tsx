@@ -5,7 +5,7 @@ import { Input } from '@/lib/components/ui/Input';
 export interface TestCardProps {
     test: TestCaseDTO;
     selected: boolean;
-    setSelected: (index: number) => void;
+    setSelected: () => void;
     index: number;
     onDuplicate: () => void;
     onRemove: () => void;
@@ -30,7 +30,7 @@ export default function TestCard(props: TestCardProps) {
     return (
         <div
             className="border-sarge-gray-200 cursor-pointer rounded-md border border-1 bg-white"
-            onClick={() => setSelected(index)}
+            onClick={setSelected}
         >
             <div className="flex items-center justify-between px-4 py-4">
                 <span className="text-sm font-medium text-gray-800">Test Case {index + 1}</span>
@@ -58,7 +58,7 @@ export default function TestCard(props: TestCardProps) {
                         <CopyPlus width={16} height={16} />
                     </button>
                     <button
-                        className="p-1 text-red-400 hover:cursor-pointer hover:text-red-600"
+                        className="text-sarge-error-400 p-1 hover:cursor-pointer hover:text-red-600"
                         onClick={(e) => {
                             e.stopPropagation();
                             onRemove();
