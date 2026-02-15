@@ -2,17 +2,19 @@ import { useEffect, useState } from 'react';
 import { useDebounce } from '@/lib/hooks/useDebounce';
 import { searchTaskTemplates } from '@/lib/api/task-templates';
 import { searchAssessmentTemplates } from '@/lib/api/assessment-templates';
+import { searchApplications } from '@/lib/api/applications';
 import { searchPositions } from '@/lib/api/positions';
-import { type AssessmentTemplate } from '@/generated/prisma';
+import { type AssessmentTemplate, type Application } from '@/generated/prisma';
 import { type PositionWithCounts } from '@/lib/types/position.types';
 import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
 
-export type SearchType = 'task-templates' | 'assessment-templates' | 'positions';
+export type SearchType = 'task-templates' | 'assessment-templates' | 'positions' | 'applications';
 
 type SearchTypeFunctionMap = {
     'task-templates': TaskTemplateListItemDTO;
     'assessment-templates': AssessmentTemplate;
     positions: PositionWithCounts;
+    applications: Application;
 };
 
 const SEARCH_FUNCTION_MAP: {
@@ -21,6 +23,7 @@ const SEARCH_FUNCTION_MAP: {
     'task-templates': searchTaskTemplates,
     'assessment-templates': searchAssessmentTemplates,
     positions: searchPositions,
+    applications: searchApplications,
 };
 
 export default function useSearch<T extends SearchType>(type: T) {
