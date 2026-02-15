@@ -1,14 +1,9 @@
 'use client';
 
 import Image from 'next/image';
-import { ChevronLeft, PlusIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { use } from 'react';
 import useTaskTemplateEditPage from '@/lib/hooks/useTaskTemplateEditPage';
-import TestCard from '@/lib/components/core/TestCard';
-import { Button } from '@/lib/components/ui/Button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/lib/components/ui/Tabs';
-import useTestCaseEditor, { type TestTab } from '@/lib/hooks/useTestCaseEditor';
 import TestCaseEditor from '@/lib/components/core/TestCaseEditor';
 
 export default function TaskTemplateEditPage({ params }: { params: Promise<{ id: string }> }) {
