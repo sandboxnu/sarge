@@ -40,7 +40,8 @@ export default function InviteUsersModal({
         onOpenChange(nextOpen);
     };
 
-    const inviteLink = 'https://sarge.ai/invite';
+    // TODO: create a real link
+    const inviteLink = 'https://sargenu.com/invite';
 
     const handleCopyLink = async () => {
         try {
