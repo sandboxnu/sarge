@@ -42,11 +42,7 @@ export default function TestCard(props: TestCardProps) {
                             onToggle();
                         }}
                     >
-                        {isPrivate ? (
-                            <Lock width={16} height={16} />
-                        ) : (
-                            <Unlock width={16} height={16} />
-                        )}
+                        {isPrivate ? <Lock className="size-4" /> : <Unlock className="size-4" />}
                     </button>
                     <button
                         className="p-1 text-gray-400 hover:cursor-pointer hover:text-gray-600"

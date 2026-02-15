@@ -81,7 +81,7 @@ export default function TestCaseEditor(props: TestCaseEditorProps) {
 
                 <TabsContent
                     value="all"
-                    className="flex flex-1 flex-col gap-2 overflow-y-auto px-4"
+                    className="mb-2 flex flex-1 flex-col gap-2 overflow-y-auto px-4"
                 >
                     {allTestCases.map((test, index) => (
                         <TestCard

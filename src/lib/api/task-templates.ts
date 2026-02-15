@@ -1,4 +1,3 @@
-import { type TaskTemplate } from '@/generated/prisma';
 import {
     type TaskTemplateListItemDTO,
     type TaskTemplateEditorDTO,
