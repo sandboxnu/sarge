@@ -1,15 +1,23 @@
 'use client';
 
 import Image from 'next/image';
-import { ChevronLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { use } from 'react';
 import useTaskTemplateEditPage from '@/lib/hooks/useTaskTemplateEditPage';
+import TestCaseEditor from '@/lib/components/core/TestCaseEditor';
+import { ChevronLeft } from 'lucide-react';
 
 export default function TaskTemplateEditPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
     const router = useRouter();
-    const { taskTemplate, isLoading } = useTaskTemplateEditPage(id);
+    const {
+        title,
+        publicTestCases,
+        setPublicTestCases,
+        privateTestCases,
+        setPrivateTestCases,
+        isLoading,
+    } = useTaskTemplateEditPage(id);
 
     if (isLoading) {
         return (
@@ -28,11 +36,11 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
             <div className="flex items-center gap-2 border-b px-5 py-4">
                 <button
                     onClick={() => router.push('/crm/templates')}
-                    className="hover:bg-sarge-gray-100 rounded-lg p-2"
+                    className="hover:bg-sarge-gray-100 rounded-lg p-2 hover:cursor-pointer"
                 >
                     <ChevronLeft className="size-5" />
                 </button>
-                <h1 className="text-xl font-bold">{taskTemplate?.title}</h1>
+                <h1 className="text-xl font-bold">{title}</h1>
             </div>
 
             <div className="flex flex-1 overflow-hidden">
@@ -41,7 +49,12 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
                 <div className="flex w-2/3 flex-col">
                     <div className="flex-1 bg-red-100 p-4">{/* Editor Here */}</div>
 
-                    <div className="flex-1 bg-blue-100 p-4">{/* Tests Here */}</div>
+                    <TestCaseEditor
+                        publicTestCases={publicTestCases}
+                        setPublicTestCases={setPublicTestCases}
+                        privateTestCases={privateTestCases}
+                        setPrivateTestCases={setPrivateTestCases}
+                    />
                 </div>
             </div>
         </div>

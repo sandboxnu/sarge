@@ -20,6 +20,7 @@
     /* Gray */
     --sarge-gray-900: #16181b;
     --sarge-gray-800: #212429;
+    --sarge-gray-700: #384150;
     --sarge-gray-600: #5b6274;
     --sarge-gray-500: #858c9c;
     --sarge-gray-300: #c1c1c8;
@@ -117,6 +118,7 @@
     /* Gray */
     --color-sarge-gray-900: var(--sarge-gray-900);
     --color-sarge-gray-800: var(--sarge-gray-800);
+    --color-sarge-gray-700: var(--sarge-gray-700);
     --color-sarge-gray-600: var(--sarge-gray-600);
     --color-sarge-gray-500: var(--sarge-gray-500);
     --color-sarge-gray-300: var(--sarge-gray-300);
