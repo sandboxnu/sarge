@@ -8,6 +8,7 @@ import { taskTemplatesData } from './seed-data/task-template.seed';
 import { assessmentTemplatesData } from './seed-data/assessment-template.seed';
 import { assessmentsData } from './seed-data/assessment.seed';
 import { tagsData } from './seed-data/tags.seed';
+import { languageData } from './seed-data/languages.seed';
 
 /**
  * Seed Organizations
@@ -207,6 +208,42 @@ async function seedTaskTemplates() {
 }
 
 /**
+ * Seed Languages for Task Templates
+ */
+async function seedLanguages() {
+    console.log('Seeding task template languages...');
+
+    for (const language of languageData) {
+        const existing = await prisma.taskTemplateLanguage.findFirst({
+            where: {
+                taskTemplateId: language.taskTemplateId,
+                language: language.language as any,
+            },
+        });
+
+        if (existing) {
+            console.log(
+                `  Language ${language.language} for task template ${language.taskTemplateId} already exists`
+            );
+            continue;
+        }
+
+        await prisma.taskTemplateLanguage.create({
+            data: {
+                taskTemplateId: language.taskTemplateId,
+                language: language.language as any,
+                stub: language.stub,
+                solution: language.solution,
+            },
+        });
+
+        console.log(
+            `  Created ${language.language} language for task template: ${language.taskTemplateId}`
+        );
+    }
+}
+
+/**
  * Seed Tags
  */
 async function seedTags() {
@@ -385,6 +422,7 @@ async function main() {
     await seedCandidates();
     await seedApplications();
     await seedTaskTemplates();
+    await seedLanguages();
     await seedTags();
     await seedAssessmentTemplates();
     await seedAssessments();
