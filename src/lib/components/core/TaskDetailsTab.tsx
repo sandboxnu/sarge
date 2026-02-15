@@ -9,6 +9,7 @@ import { createTag } from '@/lib/api/tags';
 import type { BlockNoteContent } from '@/lib/types/task-template.types';
 import type { TagDTO } from '@/lib/schemas/tag.schema';
 
+// BlockNote: https://www.blocknotejs.org/docs/nextjs
 const DescriptionEditor = dynamic(() => import('@/lib/components/core/DescriptionEditor'), {
     ssr: false,
 });

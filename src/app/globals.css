@@ -1,11 +1,8 @@
 @import 'tailwindcss';
-@import '@blocknote/shadcn/style.css';
 
 :root {
     /* Layout */
     --navbar-height: 43px;
-
-    /* Modal */
     --onboarding-modal-width: 544px;
     --onboarding-modal-height: 309px;
 
@@ -46,52 +43,31 @@
     --sarge-success-500: #0f9453;
     --sarge-success-100: #d8f4d4;
 
-    /* Shadcn style variables  */
+    /* Shadcn style variables */
     --background: var(--sarge-gray-0);
     --foreground: var(--sarge-gray-800);
-
-    /* Surface colors */
     --card: var(--sarge-gray-50);
     --card-foreground: var(--sarge-gray-800);
     --popover: var(--sarge-gray-50);
     --popover-foreground: var(--sarge-gray-800);
-
-    /* Primary interactive colors */
     --primary: var(--sarge-primary-500);
     --primary-foreground: var(--sarge-gray-50);
-
-    /* Secondary interactive colors */
     --secondary: var(--sarge-primary-100);
     --secondary-foreground: var(--sarge-primary-700);
-
-    /* Muted/subtle colors */
     --muted: var(--sarge-gray-200);
     --muted-foreground: var(--sarge-gray-500);
-
-    /* Accent colors (for highlights/selections) */
     --accent: var(--sarge-primary-100);
     --accent-foreground: var(--sarge-gray-800);
-
-    /* Destructive/error colors */
     --destructive: var(--sarge-error-700);
     --destructive-foreground: var(--sarge-gray-50);
-
-    /* Border colors */
     --border: var(--sarge-gray-200);
-    /* Default borders */
     --input: var(--sarge-gray-200);
-    /* Input borders */
     --ring: var(--sarge-primary-500);
-    /* Focus rings */
-
-    /* Chart colors  */
     --chart-1: oklch(0.646 0.222 41.116);
     --chart-2: oklch(0.6 0.118 184.704);
     --chart-3: oklch(0.398 0.07 227.392);
     --chart-4: oklch(0.828 0.189 84.429);
     --chart-5: oklch(0.769 0.188 70.08);
-
-    /* Sidebar colors */
     --sidebar: var(--sarge-gray-50);
     --sidebar-foreground: var(--sarge-gray-800);
     --sidebar-primary: var(--sarge-gray-800);
@@ -100,11 +76,7 @@
     --sidebar-accent-foreground: var(--sarge-gray-800);
     --sidebar-border: var(--sarge-gray-200);
     --sidebar-ring: var(--sarge-primary-500);
-
-    /* Spacing and Radius */
     --radius: 0.5rem;
-    /* 8px - from Figma button radius */
-
     --letter-spacing-design: 0.025rem;
 }
 

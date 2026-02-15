@@ -10,4 +10,4 @@ export const blockNoteBlockSchema = z.object({
 
 export const blockNoteContentSchema = z.array(blockNoteBlockSchema);
 
-export type BlockNoteBlock = z.infer<typeof blockNoteBlockSchema>;
+export type BlockNoteBlockDTO = z.infer<typeof blockNoteBlockSchema>;

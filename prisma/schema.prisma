@@ -179,6 +179,7 @@ enum ProgrammingLanguage {
   c
   typescript
   ruby
+  cpp
 }
 
 // Mapping table between task templates and assessment templates that includes the order in which task templates

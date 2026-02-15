@@ -39,7 +39,7 @@ export default function CodeStubGenerator({ disabled }: CodeStubGeneratorProps) 
         <div className="flex flex-col gap-3">
             <div className="flex flex-col">
                 <span className="text-label-s text-sarge-gray-800">Code Stub Generator</span>
-                <span className="text-sarge-gray-500 text-[11px] leading-4">
+                <span className="text-sarge-gray-500 text-body-xs">
                     Auto-generate starter code for all selected languages
                 </span>
             </div>

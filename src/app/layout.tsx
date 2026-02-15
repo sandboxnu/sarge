@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import localFont from 'next/font/local';
+import '@blocknote/shadcn/style.css';
 import './globals.css';
 import { AuthProvider } from '@/lib/auth/auth-context';
 

@@ -6,6 +6,7 @@ import { ProgrammingLanguage } from '@/generated/prisma';
 const LANGUAGE_DISPLAY_NAMES: Partial<Record<string, string>> = {
     javascript: 'JavaScript',
     typescript: 'TypeScript',
+    cpp: 'C++',
 };
 
 /**

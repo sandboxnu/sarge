@@ -207,7 +207,7 @@ function ComboboxInner<T = string>({
                             <span
                                 key={shakeKey}
                                 className={cn(
-                                    'text-label-xs ml-2 shrink-0 whitespace-nowrap',
+                                    'text-label-s ml-2 shrink-0 whitespace-nowrap',
                                     search.length >= maxLength
                                         ? 'text-sarge-error-700 animate-shake'
                                         : 'text-sarge-gray-300'
