@@ -7,14 +7,16 @@ import {
     handleError,
     InternalServerException,
 } from '@/lib/utils/errors.utils';
+import { getSession } from '@/lib/utils/auth.utils';
 
 export async function POST(request: NextRequest) {
     try {
+        const session = await getSession();
         const parsed = ConfirmBodySchema.parse(await request.json());
 
         const { type, key } = parsed;
 
-        const ownerId = type === 'user' ? parsed.userId : parsed.organizationId;
+        const ownerId = type === 'user' ? session.userId : session.activeOrganizationId;
         if (!key.startsWith(`${type}/${ownerId}/`)) {
             throw new BadRequestException('Key does not match the provided ID');
         }
@@ -30,7 +32,7 @@ export async function POST(request: NextRequest) {
         if (type === 'organization') {
             await prisma.organization.update({
                 where: {
-                    id: parsed.organizationId,
+                    id: session.activeOrganizationId,
                 },
                 data: {
                     logo: imageUrl,
@@ -42,7 +44,7 @@ export async function POST(request: NextRequest) {
 
         await prisma.user.update({
             where: {
-                id: parsed.userId,
+                id: session.userId,
             },
             data: {
                 image: imageUrl,
