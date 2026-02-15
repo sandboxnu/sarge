@@ -145,7 +145,7 @@ model AssessmentTemplate {
 model TaskTemplate {
   id               String  @id @unique @default(cuid())
   title            String
-  content          String  @db.Text
+  description      Json
   publicTestCases  Json[]
   privateTestCases Json[]
   orgId            String
