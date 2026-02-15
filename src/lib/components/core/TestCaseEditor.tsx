@@ -70,10 +70,11 @@ export default function TestCaseEditor(props: TestCaseEditorProps) {
                         {activeLabel} ({activeTestCases.length})
                     </span>
                     <Button
-                        className="text-sarge-gray-500 border-sarge-gray-500 flex items-center gap-1 rounded-lg border bg-white px-3 py-1.5 text-sm hover:bg-gray-50"
+                        className="items-center gap-1 rounded-md px-3 py-1"
+                        variant="secondary"
                         onClick={addTestCase}
                     >
-                        <PlusIcon className="stroke-sarge-gray-500" height={18} width={18} />
+                        <PlusIcon className="stroke-sarge-primary-500" height={18} width={18} />
                         Add test
                     </Button>
                 </div>
