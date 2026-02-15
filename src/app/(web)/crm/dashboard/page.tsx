@@ -1,11 +1,15 @@
 'use client';
 
-import OnboardingModal from '@/lib/components/modal/OnboardingModal';
-import useOnboardingState from '@/lib/hooks/useOnboardingState';
+import { useState } from 'react';
 import Image from 'next/image';
+import OnboardingModal from '@/lib/components/modal/OnboardingModal';
+import InviteUsersModal from '@/lib/components/modal/InviteUsersModal';
+import { Button } from '@/lib/components/ui/Button';
+import useOnboardingState from '@/lib/hooks/useOnboardingState';
 
 export default function DashboardPage() {
     const { isOnboarding, isSignedOut, isUserLoading } = useOnboardingState();
+    const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
 
     if (isUserLoading) return <div>Loading...</div>;
     if (isSignedOut) return <div>You must be signed in...</div>;
@@ -15,7 +19,7 @@ export default function DashboardPage() {
             {isOnboarding ? (
                 <OnboardingModal />
             ) : (
-                <div className="flex h-screen flex-col items-center justify-center">
+                <div className="flex h-screen flex-col items-center justify-center gap-6">
                     <Image
                         src="/HelmetLogoFull.png"
                         alt="Helmet Logo"
@@ -24,6 +28,18 @@ export default function DashboardPage() {
                         priority
                     />
                     <p className="text-sarge-primary-700 text-xl">Coming 2026...</p>
+                    <Button
+                        type="button"
+                        variant="secondary"
+                        onClick={() => setIsInviteModalOpen(true)}
+                        className="h-9 px-4"
+                    >
+                        Open Invite Modal
+                    </Button>
+                    <InviteUsersModal
+                        open={isInviteModalOpen}
+                        onOpenChange={setIsInviteModalOpen}
+                    />
                 </div>
             )}
         </div>

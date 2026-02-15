@@ -356,7 +356,7 @@ function UploadCandidateTable({
     return (
         <div className="candidate-table border-sarge-gray-200 bg-sarge-gray-0 border">
             <DataTable columns={columns} data={candidates} />
-            <style jsx>{`
+            <style>{`
                 .candidate-table :global(thead) {
                     background: var(--sarge-gray-50);
                 }
