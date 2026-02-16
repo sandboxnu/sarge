@@ -1,8 +1,8 @@
 'use client';
 
+import Image from 'next/image';
 import OnboardingModal from '@/lib/components/modal/OnboardingModal';
 import useOnboardingState from '@/lib/hooks/useOnboardingState';
-import Image from 'next/image';
 
 export default function DashboardPage() {
     const { isOnboarding, isSignedOut, isUserLoading } = useOnboardingState();
@@ -15,7 +15,7 @@ export default function DashboardPage() {
             {isOnboarding ? (
                 <OnboardingModal />
             ) : (
-                <div className="flex h-screen flex-col items-center justify-center">
+                <div className="flex h-screen flex-col items-center justify-center gap-6">
                     <Image
                         src="/HelmetLogoFull.png"
                         alt="Helmet Logo"

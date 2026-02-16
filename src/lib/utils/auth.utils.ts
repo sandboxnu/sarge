@@ -3,7 +3,7 @@ import { auth } from '@/lib/auth/auth';
 import { prisma } from '@/lib/prisma';
 import { UnauthorizedException } from '@/lib/utils/errors.utils';
 import type { AuthSession, GetSessionOptions } from '@/lib/types/auth.types';
-import type { OrgRole } from '@/lib/utils/role.utils';
+import type { OrgRole } from '@/lib/utils/roles.utils';
 
 // Since organization names are unique, we can safely generate slugs without uniqueness checks.
 export const generateSlugFromName = (name: string): string => {

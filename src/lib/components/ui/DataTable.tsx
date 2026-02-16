@@ -1,13 +1,19 @@
 'use client';
 
 import { flexRender, getCoreRowModel, useReactTable, type ColumnDef } from '@tanstack/react-table';
+import { cn } from '@/lib/utils/cn.utils';
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
+    headerClassName?: string;
 }
 
-export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({
+    columns,
+    data,
+    headerClassName,
+}: DataTableProps<TData, TValue>) {
     const table = useReactTable({
         data,
         columns,
@@ -17,7 +23,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     return (
         <div className="w-full overflow-y-auto">
             <table className="w-full">
-                <thead className="sticky top-0 z-10 bg-white">
+                <thead className={cn('sticky top-0 z-10 bg-white', headerClassName)}>
                     {table.getHeaderGroups().map((headerGroup) => (
                         <tr key={headerGroup.id} className="border-sarge-gray-200 border-b">
                             {headerGroup.headers.map((header) => (

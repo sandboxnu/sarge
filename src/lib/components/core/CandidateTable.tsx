@@ -162,12 +162,7 @@ export function CandidateTable({ candidates }: CandidateTableProps) {
 
     return (
         <div className="candidate-table border-sarge-gray-200 bg-sarge-gray-0 border">
-            <DataTable columns={columns} data={candidates} />
-            <style jsx>{`
-                .candidate-table :global(thead) {
-                    background: #f5f7fb;
-                }
-            `}</style>
+            <DataTable columns={columns} data={candidates} headerClassName="bg-sarge-gray-50" />
         </div>
     );
 }
