@@ -48,7 +48,6 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
         return (
             <div className="flex h-full w-full flex-col items-center justify-center gap-1">
                 <Image src="/CreateOrgLoading.gif" alt="Loading GIF" width={66} height={66} />
-
                 <p className="text-sarge-gray-800 text-base leading-tight font-medium tracking-wide">
                     Opening task template editor...
                 </p>
@@ -70,7 +69,7 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
                 </Button>
             </div>
 
-            <div className="flex flex-1 overflow-hidden">
+            <div className="flex min-h-0 flex-1 overflow-hidden">
                 <div className="h-full min-h-0 w-1/3 min-w-0">
                     <TaskEditorSidebar
                         title={title}
@@ -87,8 +86,8 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
                 </div>
 
                 <div className="flex w-2/3 flex-col bg-[#384150]">
-                    <div className="border-b-sarge-gray-600 flex w-full justify-between border-b-1 text-white">
-                        <>
+                    <div className="flex h-1/2 flex-col">
+                        <div className="border-b-sarge-gray-600 flex w-full justify-between border-b-1 text-white">
                             <Tabs defaultValue="task" onValueChange={handleTaskSolutionToggle}>
                                 <TabsList className="h-auto bg-transparent p-0">
                                     <TabsTrigger
@@ -105,52 +104,56 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
                                     </TabsTrigger>
                                 </TabsList>
                             </Tabs>
-                        </>
-                        <div className="text-md flex items-center gap-1.5">
-                            <div className="">Language</div>
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <div className="bg-sarge-primary-500 flex items-center gap-2.5 rounded-sm px-2.5 text-white">
-                                        {taskTemplate?.languages[selectedLanguage].language}
-                                        <ChevronDown className="size-4" />
-                                    </div>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                    side="bottom"
-                                    align="center"
-                                    className="bg-sarge-primary-500 rounded-sm px-2.5"
-                                >
-                                    <DropdownMenuGroup className="!hover:bg-sarge-primary-600 p-0 !text-white">
-                                        {taskTemplate?.languages.map((l, index) => (
-                                            <DropdownMenuItem
-                                                className="!hover:text-sarge-primary-500 cursor-pointer border-none !text-white"
-                                                key={l.language}
-                                                onClick={() => handleLanguageChange(index)}
-                                            >
-                                                {l.language}
-                                            </DropdownMenuItem>
-                                        ))}
-                                    </DropdownMenuGroup>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                            <EllipsisVertical className="mr-2.5 size-5" />
+                            <div className="text-md flex items-center gap-1.5">
+                                <div>Language</div>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <div className="bg-sarge-primary-500 flex items-center gap-2.5 rounded-sm px-2.5 text-white">
+                                            {taskTemplate?.languages[selectedLanguage].language}
+                                            <ChevronDown className="size-4" />
+                                        </div>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent
+                                        side="bottom"
+                                        align="center"
+                                        className="bg-sarge-primary-500 rounded-sm px-2.5"
+                                    >
+                                        <DropdownMenuGroup className="!hover:bg-sarge-primary-600 p-0 !text-white">
+                                            {taskTemplate?.languages.map((l, index) => (
+                                                <DropdownMenuItem
+                                                    className="!hover:text-sarge-primary-500 cursor-pointer border-none !text-white"
+                                                    key={l.language}
+                                                    onClick={() => handleLanguageChange(index)}
+                                                >
+                                                    {l.language}
+                                                </DropdownMenuItem>
+                                            ))}
+                                        </DropdownMenuGroup>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                                <EllipsisVertical className="mr-2.5 size-5" />
+                            </div>
+                        </div>
+                        <div className="min-h-0 flex-1 p-2">
+                            <Editor
+                                className="h-full"
+                                defaultLanguage={
+                                    taskTemplate?.languages[selectedLanguage]?.language
+                                }
+                                defaultValue={taskTemplate?.languages[selectedLanguage]?.stub}
+                                onMount={handleEditorContent}
+                            />
                         </div>
                     </div>
-                    <div className="flex-1 p-2">
-                        <Editor
-                            className="h-full"
-                            defaultLanguage={taskTemplate?.languages[selectedLanguage]?.language}
-                            defaultValue={taskTemplate?.languages[selectedLanguage]?.stub}
-                            onMount={handleEditorContent}
+
+                    <div className="flex h-1/2 flex-col overflow-hidden bg-white">
+                        <TestCaseEditor
+                            publicTestCases={publicTestCases}
+                            setPublicTestCases={setPublicTestCases}
+                            privateTestCases={privateTestCases}
+                            setPrivateTestCases={setPrivateTestCases}
                         />
                     </div>
-
-                    <TestCaseEditor
-                        publicTestCases={publicTestCases}
-                        setPublicTestCases={setPublicTestCases}
-                        privateTestCases={privateTestCases}
-                        setPrivateTestCases={setPrivateTestCases}
-                    />
                 </div>
             </div>
         </div>
