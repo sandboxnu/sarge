@@ -4,14 +4,7 @@ import { useRef, useState, type ChangeEvent, type KeyboardEvent } from 'react';
 import { X } from 'lucide-react';
 import { Chip } from '@/lib/components/ui/Chip';
 import { cn } from '@/lib/utils/cn.utils';
-import { isValidEmail } from '@/lib/utils/email.utils';
-
-const MAX_CHIP_CHARS = 25;
-
-function truncateEmail(email: string): string {
-    if (email.length <= MAX_CHIP_CHARS) return email;
-    return `${email.slice(0, MAX_CHIP_CHARS)}…`;
-}
+import { isValidEmail, truncateEmail } from '@/lib/utils/email.utils';
 
 type InviteEmailInputProps = {
     emails: string[];
