@@ -799,9 +799,10 @@ export function Sidebar() {
                         <SidebarMenuButton
                             tooltip="Organization Settings"
                             className="hover:!bg-sarge-primary-100 focus:!bg-sarge-primary-200 p-2.5 transition-colors duration-600 ease-out group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8 group-data-[collapsible=icon]:p-0 hover:cursor-pointer"
+                            onClick={() => router.push('/crm/settings')}
                         >
                             <Settings className="text-sarge-gray-600 !h-4 !w-4" />
-                            <span className="text-sarge-gray-800 text-xs font-medium">
+                            <span className="text-sarge-gray-800 text-xs font-medium group-data-[collapsible=icon]:hidden">
                                 Organization Settings
                             </span>
                         </SidebarMenuButton>
@@ -826,7 +827,7 @@ export function Sidebar() {
                                     {auth.user?.name[0]}
                                 </div>
                             )}
-                            <span className="text-sarge-gray-800 text-xs font-medium">Profile</span>
+                            <span className="text-sarge-gray-800 text-xs font-medium group-data-[collapsible=icon]:hidden">Profile</span>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>

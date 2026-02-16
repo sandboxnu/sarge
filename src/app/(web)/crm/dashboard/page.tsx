@@ -1,15 +1,11 @@
 'use client';
 
-import { useState } from 'react';
 import Image from 'next/image';
 import OnboardingModal from '@/lib/components/modal/OnboardingModal';
-import InviteUsersModal from '@/lib/components/modal/InviteUsersModal';
-import { Button } from '@/lib/components/ui/Button';
 import useOnboardingState from '@/lib/hooks/useOnboardingState';
 
 export default function DashboardPage() {
-    const { isOnboarding, isSignedOut, isUserLoading, organizationName } = useOnboardingState();
-    const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+    const { isOnboarding, isSignedOut, isUserLoading } = useOnboardingState();
 
     if (isUserLoading) return <div>Loading...</div>;
     if (isSignedOut) return <div>You must be signed in...</div>;
@@ -28,19 +24,6 @@ export default function DashboardPage() {
                         priority
                     />
                     <p className="text-sarge-primary-700 text-xl">Coming 2026...</p>
-                    <Button
-                        type="button"
-                        variant="secondary"
-                        onClick={() => setIsInviteModalOpen(true)}
-                        className="h-9 px-4"
-                    >
-                        Open Invite Modal
-                    </Button>
-                    <InviteUsersModal
-                        open={isInviteModalOpen}
-                        onOpenChange={setIsInviteModalOpen}
-                        organizationName={organizationName ?? undefined}
-                    />
                 </div>
             )}
         </div>

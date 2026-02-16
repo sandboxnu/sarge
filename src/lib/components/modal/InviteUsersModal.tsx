@@ -1,36 +1,44 @@
 'use client';
 
-import { useMemo, useState } from 'react';
-import { Check, ChevronDown, Link2, X } from 'lucide-react';
+import { useState } from 'react';
+import { Link2, X } from 'lucide-react';
 import { Dialog, DialogContent, DialogTitle } from '@/lib/components/ui/Modal';
 import { Button } from '@/lib/components/ui/Button';
-import { InviteEmailInput, getInvalidEmails } from '@/lib/components/ui/InviteEmailInput';
-import { cn } from '@/lib/utils/cn.utils';
-
-const roles = ['Admin', 'Recruiter'] as const;
-type InviteRole = (typeof roles)[number];
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/lib/components/ui/Select';
+import { Field, FieldLabel } from '@/lib/components/ui/Field';
+import { InviteEmailInput } from '@/lib/components/ui/InviteEmailInput';
+import { getInvalidEmails } from '@/lib/utils/email.utils';
+import { getInvitableRoles, ROLE_DISPLAY_NAMES, type OrgRole } from '@/lib/utils/roles.utils';
 
 type InviteUsersModalProps = {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     organizationName?: string;
+    currentUserRole: OrgRole;
 };
 
 export default function InviteUsersModal({
     open,
     onOpenChange,
     organizationName = 'Organization Name',
+    currentUserRole,
 }: InviteUsersModalProps) {
-    const [emails, setEmails] = useState<string[]>([]);
-    const [role, setRole] = useState<InviteRole>('Admin');
-    const [copied, setCopied] = useState(false);
+    const invitableRoles = getInvitableRoles(currentUserRole);
 
-    const invalidEmails = useMemo(() => getInvalidEmails(emails), [emails]);
+    const [emails, setEmails] = useState<string[]>([]);
+    const [role, setRole] = useState<string>(invitableRoles[0] ?? '');
+
+    const hasInvalidEmails = getInvalidEmails(emails).length > 0;
 
     const resetState = () => {
         setEmails([]);
-        setRole('Admin');
-        setCopied(false);
+        setRole(invitableRoles[0] ?? '');
     };
 
     const handleOpenChange = (nextOpen: boolean) => {
@@ -40,76 +48,51 @@ export default function InviteUsersModal({
         onOpenChange(nextOpen);
     };
 
-    // TODO: create a real link
-    const inviteLink = 'https://sargenu.com/invite';
-
-    const handleCopyLink = async () => {
-        try {
-            if (navigator?.clipboard?.writeText) {
-                await navigator.clipboard.writeText(inviteLink);
-            }
-            setCopied(true);
-            window.setTimeout(() => setCopied(false), 2000);
-        } catch {
-            setCopied(true);
-            window.setTimeout(() => setCopied(false), 2000);
-        }
-    };
-
     const handleInvite = () => {
+        // TODO: wire up to actual invite API (#222)
         resetState();
         onOpenChange(false);
     };
 
-    const hasInvalidEmails = invalidEmails.length > 0;
-
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogContent
-                className="w-[640px] !max-w-[90vw] gap-6 px-8 py-6"
+                className="w-[512px] !max-w-[90vw] px-7 py-6"
                 showCloseButton={false}
             >
-                <div className="flex flex-col gap-6">
-                    <div className="flex items-start justify-between">
-                        <DialogTitle className="text-display-xs text-sarge-gray-800 font-bold">
+                <div className="flex flex-col gap-4">
+                    <div className="flex items-center justify-between">
+                        <DialogTitle className="text-display-xs">
                             Invite users to {organizationName}
                         </DialogTitle>
-                        <div className="flex items-center gap-3">
-                            <button
+                        <div className="flex items-center gap-2">
+                            <Button
                                 type="button"
-                                onClick={handleCopyLink}
-                                className={cn(
-                                    'text-label-s flex items-center gap-2 font-medium transition-colors',
-                                    copied
-                                        ? 'text-sarge-primary-600'
-                                        : 'text-sarge-primary-600 hover:text-sarge-primary-700'
-                                )}
+                                variant="tertiary"
+                                disabled
+                                className="text-xs gap-1 px-1"
                             >
-                                {copied ? (
-                                    <Check className="size-4" />
-                                ) : (
-                                    <Link2 className="size-4" />
-                                )}
-                                {copied ? 'Link copied' : 'Copy link'}
-                            </button>
-                            <button
+                                <Link2 className="size-5" />
+                                Copy link
+                            </Button>
+                            <Button
                                 type="button"
+                                variant="icon"
                                 onClick={() => handleOpenChange(false)}
-                                className="hover:bg-sarge-gray-200 rounded p-1 transition-colors"
                                 aria-label="Close invite modal"
                             >
                                 <X className="size-5" />
-                            </button>
+                            </Button>
                         </div>
                     </div>
 
-                    <div className="flex flex-col gap-2">
+                    <Field className="gap-2">
                         <div className="flex items-center gap-3">
-                            <span className="text-label-s text-sarge-gray-800 font-medium">
+                            <FieldLabel className="text-label-s font-medium">
                                 Invitee emails
-                            </span>
+                            </FieldLabel>
                             {hasInvalidEmails && (
-                                <span className="text-label-xs text-sarge-error-700 font-medium">
+                                <span className="text-label-xs text-sarge-error-700">
                                     Invalid email(s)
                                 </span>
                             )}
@@ -119,36 +102,34 @@ export default function InviteUsersModal({
                             onEmailsChange={setEmails}
                             hasError={hasInvalidEmails}
                         />
-                    </div>
+                    </Field>
 
-                    <div className="flex flex-col gap-2">
-                        <span className="text-label-s text-sarge-gray-800 font-medium">
+                    <Field className="gap-2">
+                        <FieldLabel className="text-label-s font-medium">
                             Invite as
-                        </span>
-                        <div className="relative">
-                            <select
-                                value={role}
-                                onChange={(event) => setRole(event.target.value as InviteRole)}
-                                className="bg-sarge-gray-50 text-sarge-gray-800 border-sarge-gray-200 hover:border-sarge-gray-300 focus:border-sarge-gray-300 h-11 w-full appearance-none rounded-lg border px-3 py-1 pr-10 text-sm transition-colors focus:outline-none"
-                            >
-                                {roles.map((option) => (
-                                    <option key={option} value={option}>
-                                        {option}
-                                    </option>
+                        </FieldLabel>
+                        <Select value={role} onValueChange={setRole}>
+                            <SelectTrigger className="h-11 rounded-lg">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {invitableRoles.map((roleOption) => (
+                                    <SelectItem key={roleOption} value={roleOption}>
+                                        {roleOption.charAt(0).toUpperCase() + roleOption.slice(1)}
+                                    </SelectItem>
                                 ))}
-                            </select>
-                            <ChevronDown className="text-sarge-gray-600 pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2" />
-                        </div>
-                    </div>
+                            </SelectContent>
+                        </Select>
+                    </Field>
 
                     <div className="flex items-center justify-between">
-                        <button
+                        <Button
                             type="button"
+                            variant="link"
                             onClick={() => handleOpenChange(false)}
-                            className="text-label-s text-sarge-primary-600 hover:text-sarge-primary-700 px-0 py-2 font-medium transition-colors"
                         >
                             Cancel
-                        </button>
+                        </Button>
                         <Button
                             type="button"
                             variant="primary"
