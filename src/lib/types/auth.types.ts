@@ -1,5 +1,5 @@
 import type { Session } from '@/generated/prisma';
-import type { OrgRole } from '@/lib/utils/role.utils';
+import type { OrgRole } from '@/lib/utils/roles.utils';
 
 export type AuthSession = Pick<Session, 'id' | 'userId'> & {
     activeOrganizationId: string;
