@@ -827,7 +827,9 @@ export function Sidebar() {
                                     {auth.user?.name[0]}
                                 </div>
                             )}
-                            <span className="text-sarge-gray-800 text-xs font-medium group-data-[collapsible=icon]:hidden">Profile</span>
+                            <span className="text-sarge-gray-800 text-xs font-medium group-data-[collapsible=icon]:hidden">
+                                Profile
+                            </span>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>

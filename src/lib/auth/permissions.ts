@@ -70,8 +70,8 @@ export const member = ac.newRole({
 
 /**
  * Derived from the role definitions above — roles whose statements
- * include `invitation: ['create']`. If we add invite permission 
- * this will update automatically rather than hardcoding it 
+ * include `invitation: ['create']`. If we add invite permission
+ * this will update automatically rather than hardcoding it
  */
 const allRoles = { owner, admin, recruiter, reviewer, member } as const;
 export const ROLES_WITH_INVITE_PERMISSION = new Set(

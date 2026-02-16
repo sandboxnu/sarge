@@ -10,7 +10,7 @@ const MAX_CHIP_CHARS = 25;
 
 function truncateEmail(email: string): string {
     if (email.length <= MAX_CHIP_CHARS) return email;
-    return email.slice(0, MAX_CHIP_CHARS) + '…';
+    return `${email.slice(0, MAX_CHIP_CHARS)}…`;
 }
 
 type InviteEmailInputProps = {
@@ -95,7 +95,7 @@ export function InviteEmailInput({
             className={cn(
                 'bg-sarge-gray-50 text-sarge-gray-800 border-sarge-gray-200 hover:border-sarge-gray-300 focus-within:border-sarge-gray-300 flex min-h-[44px] flex-wrap items-center gap-2 rounded-lg border px-3 py-1.5 transition-colors',
                 hasError &&
-                'border-sarge-error-700 hover:border-sarge-error-700 focus-within:border-sarge-error-700',
+                    'border-sarge-error-700 hover:border-sarge-error-700 focus-within:border-sarge-error-700',
                 className
             )}
             onClick={() => inputRef.current?.focus()}
@@ -144,7 +144,9 @@ export function InviteEmailInput({
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}
                 onBlur={handleBlur}
-                placeholder={emails.length === 0 ? 'Add comma separated emails to invite' : undefined}
+                placeholder={
+                    emails.length === 0 ? 'Add comma separated emails to invite' : undefined
+                }
                 className="text-sarge-gray-800 placeholder:text-sarge-gray-500 min-w-[160px] flex-1 bg-transparent py-1.5 text-sm outline-none"
                 autoComplete="off"
             />

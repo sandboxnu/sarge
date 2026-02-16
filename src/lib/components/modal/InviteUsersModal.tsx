@@ -14,7 +14,7 @@ import {
 import { Field, FieldLabel } from '@/lib/components/ui/Field';
 import { InviteEmailInput } from '@/lib/components/ui/InviteEmailInput';
 import { getInvalidEmails } from '@/lib/utils/email.utils';
-import { getInvitableRoles, ROLE_DISPLAY_NAMES, type OrgRole } from '@/lib/utils/roles.utils';
+import { getInvitableRoles, type OrgRole } from '@/lib/utils/roles.utils';
 
 type InviteUsersModalProps = {
     open: boolean;
@@ -56,10 +56,7 @@ export default function InviteUsersModal({
 
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
-            <DialogContent
-                className="w-[512px] !max-w-[90vw] px-7 py-6"
-                showCloseButton={false}
-            >
+            <DialogContent className="w-[512px] !max-w-[90vw] px-7 py-6" showCloseButton={false}>
                 <div className="flex flex-col gap-4">
                     <div className="flex items-center justify-between">
                         <DialogTitle className="text-display-xs">
@@ -70,7 +67,7 @@ export default function InviteUsersModal({
                                 type="button"
                                 variant="tertiary"
                                 disabled
-                                className="text-xs gap-1 px-1"
+                                className="gap-1 px-1 text-xs"
                             >
                                 <Link2 className="size-5" />
                                 Copy link
@@ -105,9 +102,7 @@ export default function InviteUsersModal({
                     </Field>
 
                     <Field className="gap-2">
-                        <FieldLabel className="text-label-s font-medium">
-                            Invite as
-                        </FieldLabel>
+                        <FieldLabel className="text-label-s font-medium">Invite as</FieldLabel>
                         <Select value={role} onValueChange={setRole}>
                             <SelectTrigger className="h-11 rounded-lg">
                                 <SelectValue />
