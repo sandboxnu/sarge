@@ -69,20 +69,14 @@ export const member = ac.newRole({
 });
 
 /**
- * Derived from the role definitions above — roles whose statements
- * include `invitation: ['create']`. If we add invite permission
- * this will update automatically rather than hardcoding it
+ * Derived from role definitions above — if you add invitation: ['create']
+ * to a role, this set updates automatically.
  */
-const allRoles = { owner, admin, recruiter, reviewer, member } as const;
+const allRoles = { owner, admin, recruiter, reviewer, member };
+type Statements = Record<string, readonly string[]>;
+
 export const ROLES_WITH_INVITE_PERMISSION = new Set(
     Object.entries(allRoles)
-        .filter(([, role]) => {
-            const statements = role.statements as Record<string, readonly string[]>;
-            return (
-                'invitation' in statements &&
-                Array.isArray(statements.invitation) &&
-                statements.invitation.includes('create')
-            );
-        })
+        .filter(([, r]) => (r.statements as Statements).invitation?.includes('create'))
         .map(([name]) => name)
 );
