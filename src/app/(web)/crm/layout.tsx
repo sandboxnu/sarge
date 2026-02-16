@@ -8,7 +8,7 @@ export default function CRMLayout({
 }>) {
     return (
         <div className="flex h-full w-full flex-col">
-            <div className="flex overflow-hidden">
+            <div className="flex flex-1 overflow-hidden">
                 <SidebarProvider>
                     <Toaster />
                     <Sidebar />

@@ -16,7 +16,7 @@ const buttonVariants = cva(
                     'bg-sarge-gray-50 border-sarge-primary-500 hover:bg-sarge-primary-100 text-sarge-primary-500 [&_svg]:text-sarge-primary-500 border transition-colors duration-200 disabled:opacity-50',
                 tertiary:
                     'hover:bg-sarge-primary-100 [&_svg]:text-sarge-primary-500 text-sarge-primary-500 transition-colors duration-200 disabled:opacity-50',
-                icon: 'bg-sarge-gray-100 hover:bg-sarge-gray-200 text-sarge-gray-600 [&_svg]:text-sarge-gray-600 hover:text-sarge-gray-700 hover:[&_svg]:text-sarge-gray-700 border-none transition-colors duration-200 disabled:opacity-50',
+                icon: 'bg-sarge-gray-0 hover:bg-sarge-gray-100 text-sarge-gray-600 [&_svg]:text-sarge-gray-600 hover:text-sarge-gray-800 hover:[&_svg]:text-sarge-gray-800 border-none transition-colors duration-200 disabled:opacity-50',
                 link: 'text-sarge-primary-500 [&_svg]:text-sarge-primary-500 underline-offset-4 hover:underline disabled:opacity-50',
             },
             size: {

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { blockNoteContentSchema } from './block-note.schema';
 import { TagSchema } from './tag.schema';
 import { TaskTemplateLanguageSchema } from './task-template-language.schema';
 
@@ -14,7 +15,7 @@ export const getTaskTemplateSchema = z.object({
 export const TaskTemplateSchema = z.object({
     id: z.string(),
     title: z.string().trim(),
-    content: z.string().min(2),
+    description: blockNoteContentSchema.default([]),
     orgId: z.string(),
     publicTestCases: z.array(testCaseSchema).min(1, 'There must at least be one public test case'),
     privateTestCases: z.array(testCaseSchema).default([]),

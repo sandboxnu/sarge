@@ -11,8 +11,9 @@ import {
     DropdownMenuTrigger,
 } from '@/lib/components/ui/Dropdown';
 import { Button } from '@/lib/components/ui/Button';
-import MarkdownViewer from '@/lib/components/core/Markdown';
+import { BlockNoteViewer } from '@/lib/components/core/BlockNoteViewer';
 import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
+import type { BlockNoteContent } from '@/lib/types/task-template.types';
 
 export interface TaskTemplatePreviewPanelProps {
     taskTemplatePreview: TaskTemplateListItemDTO;
@@ -104,9 +105,10 @@ export function TaskTemplatePreviewPanel({
                         Description
                     </p>
                     <div className="border-border bg-background mt-2 rounded-lg border p-4">
-                        <div className="text-body-m text-foreground">
-                            <MarkdownViewer content={taskTemplatePreview.content ?? ''} />
-                        </div>
+                        <BlockNoteViewer
+                            key={taskTemplatePreview.id}
+                            content={taskTemplatePreview.description as BlockNoteContent}
+                        />
                     </div>
                 </section>
                 <section className="mb-6">
@@ -127,7 +129,7 @@ export function TaskTemplatePreviewPanel({
                     <p className="text-body-s text-muted-foreground">
                         Authored by{' '}
                         <span className="text-label-xs text-muted-foreground font-bold">
-                            {taskTemplatePreview.author?.name ?? '—'}
+                            {taskTemplatePreview.author?.name ?? '-'}
                         </span>
                     </p>
                     <Link

@@ -7,6 +7,7 @@ import useTaskTemplateEditPage from '@/lib/hooks/useTaskTemplateEditPage';
 import TestCaseEditor from '@/lib/components/core/TestCaseEditor';
 import { ChevronLeft } from 'lucide-react';
 import { Button } from '@/lib/components/ui/Button';
+import TaskEditorSidebar from '@/lib/components/core/TaskEditorSidebar';
 
 export default function TaskTemplateEditPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
@@ -17,7 +18,17 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
         setPublicTestCases,
         privateTestCases,
         setPrivateTestCases,
+
         isLoading,
+        setTitle,
+        description,
+        setDescription,
+        tags,
+        setTags,
+        availableTags,
+        setAvailableTags,
+        languages,
+        setLanguages,
     } = useTaskTemplateEditPage(id);
 
     if (isLoading) {
@@ -36,12 +47,9 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
         <div className="flex h-full w-full flex-col">
             <div className="flex items-center justify-between gap-2 border-b px-5 py-4">
                 <div className="flex items-center">
-                    <button
-                        onClick={() => router.push('/crm/templates')}
-                        className="hover:bg-sarge-gray-100 rounded-lg p-2 hover:cursor-pointer"
-                    >
+                    <Button variant="icon" onClick={() => router.push('/crm/templates')}>
                         <ChevronLeft className="size-5" />
-                    </button>
+                    </Button>
                     <h1 className="text-xl font-bold">{title}</h1>
                 </div>
                 <Button variant="secondary" className="px-4 py-2">
@@ -50,7 +58,20 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
             </div>
 
             <div className="flex flex-1 overflow-hidden">
-                <div className="w-1/3 bg-yellow-100 p-4">{/* Tabs and Content Here */}</div>
+                <div className="h-full min-h-0 w-1/3 min-w-0">
+                    <TaskEditorSidebar
+                        title={title}
+                        setTitle={setTitle}
+                        description={description}
+                        setDescription={setDescription}
+                        tags={tags}
+                        setTags={setTags}
+                        availableTags={availableTags}
+                        setAvailableTags={setAvailableTags}
+                        languages={languages}
+                        setLanguages={setLanguages}
+                    />
+                </div>
 
                 <div className="flex w-2/3 flex-col">
                     <div className="flex-1 bg-red-100 p-4">{/* Editor Here */}</div>
