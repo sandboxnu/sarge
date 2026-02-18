@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
-import { getTaskList } from '@/lib/api/task-templates';
+import { getTaskTemplateList as getTaskTemplateList } from '@/lib/api/task-templates';
 
 export function useTaskTemplateList() {
     const [allTaskTemplates, setAllTaskTemplates] = useState<TaskTemplateListItemDTO[]>([]);
@@ -15,9 +15,9 @@ export function useTaskTemplateList() {
         async function fetchTaskList() {
             try {
                 setError(null);
-                const response = await getTaskList(page, limit);
+                const response = await getTaskTemplateList(page, limit);
 
-                updateTemplatesForPage(page, limit, response.data);
+                updateTaskTemplatesForPage(page, limit, response.data);
                 setTotal(response.total);
             } catch (error) {
                 setError(error as Error);
@@ -31,7 +31,7 @@ export function useTaskTemplateList() {
 
     const taskTemplateList = allTaskTemplates.slice(page * limit, (page + 1) * limit);
 
-    const updateTemplatesForPage = (
+    const updateTaskTemplatesForPage = (
         pageNum: number,
         limitNum: number,
         newData: TaskTemplateListItemDTO[]

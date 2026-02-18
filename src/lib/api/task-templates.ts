@@ -36,15 +36,15 @@ export async function searchTaskTemplates(title: string): Promise<TaskTemplateLi
 /**
  * GET /api/task-templates?page=...&limit=...
  */
-export async function getTaskList(
+export async function getTaskTemplateList(
     page: number,
     limit: number
 ): Promise<{ data: TaskTemplateListItemDTO[]; total: number }> {
-    const results = await fetch(`/api/task-templates?page=${page}&limit=${limit}`);
+    const res = await fetch(`/api/task-templates?page=${page}&limit=${limit}`);
 
-    const json = await results.json();
+    const json = await res.json();
 
-    if (!results.ok) {
+    if (!res.ok) {
         throw new Error(json.message);
     }
 

@@ -1,4 +1,5 @@
 import {
+    type AssessmentTemplateListItemDTO,
     type CreateAssessmentTemplateDTO,
     type UpdateAssessmentTemplateDTO,
 } from '@/lib/schemas/assessment-template.schema';
@@ -88,19 +89,49 @@ async function getAssessmentTemplatesByTitle(
                 mode: 'insensitive',
             },
         },
-    });
-
-    return assessmentTemplatesWithTitle;
-}
-
-async function getAllAssessmentTemplates(orgId: string): Promise<AssessmentTemplate[]> {
-    const assessmentTemplates = await prisma.assessmentTemplate.findMany({
-        where: {
-            orgId,
+        include: {
+            author: { select: { id: true, name: true } },
+            positions: { select: { id: true, title: true } },
         },
     });
 
-    return assessmentTemplates;
+    const data = assessmentTemplatesWithTitle.map(({ author, ...rest }) => ({
+        ...rest,
+        author,
+    })) as AssessmentTemplateListItemDTO[];
+
+    return data;
+}
+
+async function getAssessmentTemplates(
+    orgId: string,
+    page?: number,
+    limit?: number
+): Promise<{ data: AssessmentTemplateListItemDTO[]; total: number }> {
+    page = page ?? 0;
+    limit = limit ?? Number.MAX_SAFE_INTEGER;
+
+    const [templates, total] = await prisma.$transaction([
+        prisma.assessmentTemplate.findMany({
+            where: { orgId },
+            include: {
+                author: { select: { id: true, name: true } },
+                positions: { select: { id: true, title: true } },
+            },
+            skip: page * limit,
+            take: limit,
+        }),
+        prisma.assessmentTemplate.count({
+            where: { orgId },
+        }),
+    ]);
+
+    const data = templates.map(({ author, ...rest }) => ({
+        ...rest,
+        author,
+    })) as AssessmentTemplateListItemDTO[];
+
+    return { data, total };
 }
 
 const AssessmentTemplateService = {
@@ -109,7 +140,7 @@ const AssessmentTemplateService = {
     deleteAssessmentTemplate,
     updateAssessmentTemplate,
     getAssessmentTemplatesByTitle,
-    getAllAssessmentTemplates,
+    getAssessmentTemplates,
 };
 
 export default AssessmentTemplateService;

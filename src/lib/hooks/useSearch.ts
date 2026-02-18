@@ -4,15 +4,16 @@ import { searchTaskTemplates } from '@/lib/api/task-templates';
 import { searchAssessmentTemplates } from '@/lib/api/assessment-templates';
 import { searchApplications } from '@/lib/api/applications';
 import { searchPositions } from '@/lib/api/positions';
-import { type AssessmentTemplate, type Application } from '@/generated/prisma';
+import { type Application } from '@/generated/prisma';
 import { type PositionWithCounts } from '@/lib/types/position.types';
-import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
+import { type TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
+import { type AssessmentTemplateListItemDTO } from '@/lib/schemas/assessment-template.schema';
 
 export type SearchType = 'task-templates' | 'assessment-templates' | 'positions' | 'applications';
 
 type SearchTypeFunctionMap = {
     'task-templates': TaskTemplateListItemDTO;
-    'assessment-templates': AssessmentTemplate;
+    'assessment-templates': AssessmentTemplateListItemDTO;
     positions: PositionWithCounts;
     applications: Application;
 };

@@ -163,7 +163,7 @@ async function getTaskTemplatesByTitle(
 
 const TaskTemplateService = {
     getTaskTemplate,
-    getAllTaskTemplates: getTaskTemplates,
+    getTaskTemplates,
     createTaskTemplate,
     deleteTaskTemplate,
     updateTaskTemplate,
