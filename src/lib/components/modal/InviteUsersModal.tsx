@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Link2, X } from 'lucide-react';
+import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogTitle } from '@/lib/components/ui/Modal';
 import { Button } from '@/lib/components/ui/Button';
 import {
@@ -15,26 +16,33 @@ import { Field, FieldLabel } from '@/lib/components/ui/Field';
 import { InviteEmailInput } from '@/lib/components/ui/InviteEmailInput';
 import { getInvalidEmails } from '@/lib/utils/email.utils';
 import { getInvitableRoles, type OrgRole } from '@/lib/utils/roles.utils';
+import { authClient } from '@/lib/auth/auth-client';
 
 type InviteUsersModalProps = {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    organizationName?: string;
+    organization: { id: string; name: string };
     currentUserRole: OrgRole;
 };
 
 export default function InviteUsersModal({
     open,
     onOpenChange,
-    organizationName = 'Organization Name',
+    organization,
     currentUserRole,
 }: InviteUsersModalProps) {
     const invitableRoles = getInvitableRoles(currentUserRole);
 
+    const organizationName = organization.name;
     const [emails, setEmails] = useState<string[]>([]);
-    const [role, setRole] = useState<string>(invitableRoles[0] ?? '');
+    const [role, setRole] = useState<OrgRole>(invitableRoles[0] ?? '');
 
-    const hasInvalidEmails = getInvalidEmails(emails).length > 0;
+    const normalizedEmails = emails
+        .flatMap((email) => email.split(','))
+        .map((email) => email.trim())
+        .filter(Boolean);
+
+    const hasInvalidEmails = getInvalidEmails(normalizedEmails).length > 0;
 
     const resetState = () => {
         setEmails([]);
@@ -48,10 +56,29 @@ export default function InviteUsersModal({
         onOpenChange(nextOpen);
     };
 
-    const handleInvite = () => {
-        // TODO: wire up to actual invite API (#222)
-        resetState();
-        onOpenChange(false);
+    const handleInvite = async () => {
+        if (normalizedEmails.length === 0 || hasInvalidEmails || !role) return;
+
+        try {
+            await Promise.all(
+                normalizedEmails.map((email) =>
+                    authClient.organization.inviteMember({
+                        email,
+                        role,
+                        organizationId: organization.id,
+                    })
+                )
+            );
+
+            const count = normalizedEmails.length;
+
+            resetState();
+            onOpenChange(false);
+            toast.success(`Successfully invited ${count} user${count > 1 ? 's' : ''}`);
+        } catch (err) {
+            console.error('Error inviting users:', err);
+            toast.error('An error occured, please try again');
+        }
     };
 
     return (
@@ -103,7 +130,7 @@ export default function InviteUsersModal({
 
                     <Field className="gap-2">
                         <FieldLabel className="text-label-s font-medium">Invite as</FieldLabel>
-                        <Select value={role} onValueChange={setRole}>
+                        <Select value={role} onValueChange={(value) => setRole(value as OrgRole)}>
                             <SelectTrigger className="h-11 rounded-lg">
                                 <SelectValue />
                             </SelectTrigger>

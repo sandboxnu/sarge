@@ -51,7 +51,7 @@ export default function OrgSettingsPage() {
             <InviteUsersModal
                 open={isInviteModalOpen}
                 onOpenChange={setIsInviteModalOpen}
-                organizationName={activeOrganization?.name ?? undefined}
+                organization={activeOrganization!}
                 currentUserRole={currentUserRole}
             />
         </div>
