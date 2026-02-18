@@ -50,3 +50,40 @@ export async function getTaskTemplateList(
 
     return json;
 }
+
+/**
+ * POST /api/task-templates/:taskTemplateId
+ */
+export async function duplicateTaskTemplate(
+    taskTemplateId: string
+): Promise<TaskTemplateListItemDTO> {
+    const res = await fetch(`/api/task-templates/${taskTemplateId}`, {
+        method: 'POST',
+    });
+
+    const json = await res.json();
+
+    if (!res.ok) {
+        throw new Error(json.message);
+    }
+
+    return json.data;
+}
+
+/**
+ * DELETE /api/task-templates/:taskTemplateId
+ */
+
+export async function deleteTaskTemplate(taskTemplateId: string): Promise<void> {
+    const res = await fetch(`/api/task-templates/${taskTemplateId}`, {
+        method: 'DELETE',
+    });
+
+    const json = await res.json();
+
+    if (!res.ok) {
+        throw new Error(json.message);
+    }
+
+    return json;
+}

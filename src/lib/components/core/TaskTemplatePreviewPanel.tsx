@@ -64,7 +64,10 @@ export function TaskTemplatePreviewPanel({
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-48">
                             <DropdownMenuItem
-                                onSelect={() => onDuplicate?.(taskTemplatePreview.id)}
+                                onSelect={(event) => {
+                                    event.preventDefault();
+                                    onDuplicate?.(taskTemplatePreview.id);
+                                }}
                                 disabled={!onDuplicate}
                             >
                                 <Copy className="size-4" />
@@ -73,7 +76,10 @@ export function TaskTemplatePreviewPanel({
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
                                 variant="destructive"
-                                onSelect={() => onDelete?.(taskTemplatePreview.id)}
+                                onSelect={(event) => {
+                                    event.preventDefault();
+                                    onDelete?.(taskTemplatePreview.id);
+                                }}
                                 disabled={!onDelete}
                             >
                                 <Trash2 className="size-4" />

@@ -3,19 +3,19 @@
 import { useState } from 'react';
 import { Search } from '@/lib/components/core/Search';
 import { Button } from '@/lib/components/ui/Button';
-import { DropdownMenu } from '@/lib/components/ui/Dropdown';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuLabel,
+    DropdownMenuTrigger,
+} from '@/lib/components/ui/Dropdown';
 import { Tabs, TabsContent, TabsList, UnderlineTabsTrigger } from '@/lib/components/ui/Tabs';
 import { ArrowDownUp, Plus, SlidersHorizontal } from 'lucide-react';
 import { useTaskTemplateList } from '@/lib/hooks/useTaskTemplateList';
 import TaskCard from '@/lib/components/core/TaskCard';
 import { TaskTemplatePreviewPanel } from '@/lib/components/core/TaskTemplatePreviewPanel';
 import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
-import {
-    DropdownMenuContent,
-    DropdownMenuGroup,
-    DropdownMenuLabel,
-    DropdownMenuTrigger,
-} from '@radix-ui/react-dropdown-menu';
 import Image from 'next/image';
 import Pager from '@/lib/components/ui/Pager';
 import GreyWinstonLogoMark from '@/../public/GreyWinstonLogoMark.svg';
@@ -23,12 +23,14 @@ import useSearch from '@/lib/hooks/useSearch';
 import { useAssessmentTemplateList } from '@/lib/hooks/useAssessmentTemplateList';
 import { type AssessmentTemplateListItemDTO } from '@/lib/schemas/assessment-template.schema';
 import AssessmentCard from '@/lib/components/core/AssessmentCard';
+import { deleteTaskTemplate, duplicateTaskTemplate } from '@/lib/api/task-templates';
 
 export default function TemplatesPage() {
     const [selectedTaskTemplate, setSelectedTaskTemplate] =
         useState<TaskTemplateListItemDTO | null>(null);
     const [selectedAssessmentTemplate, setSelectedAssessmentTemplate] =
         useState<AssessmentTemplateListItemDTO | null>(null);
+    const [isMutating, setIsMutating] = useState(false);
 
     const {
         taskTemplateList,
@@ -41,6 +43,8 @@ export default function TemplatesPage() {
         selected,
         handleSelectTask,
         total,
+        refreshCurrentPage,
+        insertTaskTemplateAtTopOfPage,
     } = useTaskTemplateList();
 
     const assessmentTemplateList = useAssessmentTemplateList();
@@ -52,6 +56,31 @@ export default function TemplatesPage() {
 
     const isSearchingForTaskTemplate = taskTemplateSearch.value.trim().length >= 1;
     const isSearchingForAssessmentTemplate = assessmentTemplateSearch.value.trim().length >= 1;
+
+    const onDuplicate = async (taskTemplateId: string) => {
+        try {
+            setIsMutating(true);
+            const duplicatedTemplate = await duplicateTaskTemplate(taskTemplateId);
+            insertTaskTemplateAtTopOfPage(duplicatedTemplate);
+            setSelectedTaskTemplate(duplicatedTemplate);
+        } catch {
+        } finally {
+            setIsMutating(false);
+        }
+    };
+
+    const onDelete = async (taskTemplateId: string) => {
+        try {
+            setIsMutating(true);
+            await deleteTaskTemplate(taskTemplateId);
+            await refreshCurrentPage();
+
+            setSelectedTaskTemplate((prev) => (prev?.id === taskTemplateId ? null : prev));
+        } catch {
+        } finally {
+            setIsMutating(false);
+        }
+    };
 
     return (
         <Tabs
@@ -288,6 +317,13 @@ export default function TemplatesPage() {
                         <div className="text-body-m text-muted-foreground flex h-full items-center justify-center">
                             Select a template to preview
                         </div>
+                    )}
+                    {selectedTaskTemplate && (
+                        <TaskTemplatePreviewPanel
+                            taskTemplatePreview={selectedTaskTemplate}
+                            onDuplicate={isMutating ? undefined : onDuplicate}
+                            onDelete={isMutating ? undefined : onDelete}
+                        />
                     )}
                 </div>
             </div>

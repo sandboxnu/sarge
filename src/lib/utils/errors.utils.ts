@@ -159,6 +159,24 @@ export function handleError(err: unknown): Response {
                 { status: 404 }
             );
         }
+
+        if (err.code === 'P2003') {
+            return Response.json(
+                {
+                    message: 'This item is currently in use and cannot be deleted.',
+                    data: null,
+                    debug:
+                        process.env.NODE_ENV === 'development'
+                            ? {
+                                  errorName: err.name,
+                                  errorCode: err.code,
+                                  errorMeta: err.meta,
+                              }
+                            : undefined,
+                },
+                { status: 409 }
+            );
+        }
     }
 
     if (err instanceof z.ZodError) {
