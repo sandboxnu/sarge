@@ -48,12 +48,14 @@ export default function OrgSettingsPage() {
                 </TabsContent>
             </Tabs>
 
-            <InviteUsersModal
-                open={isInviteModalOpen}
-                onOpenChange={setIsInviteModalOpen}
-                organization={activeOrganization!}
-                currentUserRole={currentUserRole}
-            />
+            {activeOrganization && (
+                <InviteUsersModal
+                    open={isInviteModalOpen}
+                    onOpenChange={setIsInviteModalOpen}
+                    organization={activeOrganization}
+                    currentUserRole={currentUserRole}
+                />
+            )}
         </div>
     );
 }
