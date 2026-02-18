@@ -190,7 +190,7 @@ export default function TemplatesPage() {
                         </div>
                     </div>
                     <div className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-scroll px-3 py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                        {assessmentTemplateList.isLoading ? (
+                        {assessmentTemplateList.isLoading || assessmentTemplateSearch.loading ? (
                             <div className="flex h-full w-full items-center justify-center">
                                 <Image src="/CreateOrgLoading.gif" alt="Loading GIF" width={66} height={66} />
                             </div>
