@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
-import { getTaskTemplateList as getTaskTemplateList } from '@/lib/api/task-templates';
+import { getTaskTemplateList } from '@/lib/api/task-templates';
 
 export function useTaskTemplateList() {
     const [allTaskTemplates, setAllTaskTemplates] = useState<TaskTemplateListItemDTO[]>([]);
