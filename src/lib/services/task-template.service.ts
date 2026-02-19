@@ -7,6 +7,7 @@ import type {
 } from '@/lib/schemas/task-template.schema';
 import { prisma } from '@/lib/prisma';
 import { NotFoundException, ConflictException } from '@/lib/utils/errors.utils';
+import { createDuplicateTitle } from '@/lib/utils/template.utils';
 
 type TaskTemplateListQueryResult = Prisma.TaskTemplateGetPayload<{
     include: {
@@ -131,38 +132,11 @@ async function duplicateTaskTemplate(
         throw new NotFoundException('Task Template', sourceId);
     }
 
-    const sourceTitle = source.title.trim();
-    const sourceSuffixStart = sourceTitle.lastIndexOf(' (');
-    const sourceSuffix =
-        sourceSuffixStart >= 0 && sourceTitle.endsWith(')')
-            ? sourceTitle.slice(sourceSuffixStart + 2, -1)
-            : '';
-    const parsedSuffix = Number.parseInt(sourceSuffix, 10);
-    const baseTitle =
-        sourceSuffixStart >= 0 && Number.isInteger(parsedSuffix) && parsedSuffix > 0
-            ? sourceTitle.slice(0, sourceSuffixStart).trim()
-            : sourceTitle;
-
-    const existingTitlesInOrg = await prisma.taskTemplate.findMany({
-        where: {
-            orgId,
-            OR: [{ title: baseTitle }, { title: { startsWith: `${baseTitle} (` } }],
-        },
-        select: { title: true },
-    });
-
-    const existingTitleSet = new Set(existingTitlesInOrg.map((item) => item.title));
-    let nextIndex = 1;
-    let duplicateTitle = `${baseTitle} (${nextIndex})`;
-
-    while (existingTitleSet.has(duplicateTitle)) {
-        nextIndex += 1;
-        duplicateTitle = `${baseTitle} (${nextIndex})`;
-    }
+    const newTitle = await createDuplicateTitle(source.title, 'task-template', orgId);
 
     const created = await prisma.taskTemplate.create({
         data: {
-            title: duplicateTitle,
+            title: newTitle,
             description: source.description as Prisma.InputJsonValue,
             publicTestCases: source.publicTestCases as Prisma.InputJsonValue[],
             privateTestCases: source.privateTestCases as Prisma.InputJsonValue[],
@@ -270,6 +244,22 @@ async function getTaskTemplatesByTitle(
     return templates.map(toTaskTemplateListItem);
 }
 
+async function getDuplicateTitle(title: string, orgId: string): Promise<string> {
+    const titleDoesNotExist = await prisma.taskTemplate.findFirst({
+        where: {
+            title: {
+                equals: title,
+                mode: 'insensitive',
+            },
+        },
+    });
+
+    if (titleDoesNotExist) return title;
+
+    const newTitle = await createDuplicateTitle(title, 'task-template', orgId);
+    return newTitle;
+}
+
 const TaskTemplateService = {
     getTaskTemplate,
     getTaskTemplates,
@@ -278,6 +268,7 @@ const TaskTemplateService = {
     deleteTaskTemplate,
     updateTaskTemplate,
     getTaskTemplatesByTitle,
+    getDuplicateTitle,
 };
 
 export default TaskTemplateService;

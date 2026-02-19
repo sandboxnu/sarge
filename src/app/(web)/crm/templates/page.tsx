@@ -24,7 +24,7 @@ import useSearch from '@/lib/hooks/useSearch';
 import { useAssessmentTemplateList } from '@/lib/hooks/useAssessmentTemplateList';
 import { type AssessmentTemplateListItemDTO } from '@/lib/schemas/assessment-template.schema';
 import AssessmentCard from '@/lib/components/core/AssessmentCard';
-import { deleteTaskTemplate, duplicateTaskTemplate } from '@/lib/api/task-templates';
+import { deleteTaskTemplate, duplicateTaskTemplate, getDuplicateTitle } from '@/lib/api/task-templates';
 import {
     Dialog,
     DialogContent,
@@ -34,6 +34,8 @@ import {
     DialogTitle,
 } from '@/lib/components/ui/Modal';
 import { createTaskTemplate } from '@/lib/api/task-templates';
+import { createDuplicateTitle } from '@/lib/utils/template.utils';
+import { useAuth } from '@/lib/auth/auth-context';
 
 export default function TemplatesPage() {
     const [selectedTaskTemplate, setSelectedTaskTemplate] =
@@ -70,6 +72,8 @@ export default function TemplatesPage() {
 
     const isSearchingForTaskTemplate = taskTemplateSearch.value.trim().length >= 1;
     const isSearchingForAssessmentTemplate = assessmentTemplateSearch.value.trim().length >= 1;
+
+    const { activeOrganizationId } = useAuth()
 
     const onDuplicate = async (taskTemplateId: string) => {
         try {
@@ -108,11 +112,13 @@ export default function TemplatesPage() {
     };
 
     const handleCreateTask = async () => {
-        if (isCreating) return;
+        if (isCreating || !activeOrganizationId) return;
         setIsCreating(true);
+
+        const { data: title } = await getDuplicateTitle('Unnamed Task Template')
         try {
             const created = await createTaskTemplate({
-                title: 'Unnamed Task Template',
+                title,
                 description: [],
                 publicTestCases: [],
                 privateTestCases: [],
@@ -145,7 +151,11 @@ export default function TemplatesPage() {
                     </TabsList>
                     <div className="flex items-center gap-4">
                         {activeTab === 'tasks' ? (
-                            <Button className="px-4 py-2">
+                            <Button
+                                className="px-4 py-2"
+                                onClick={handleCreateTask}
+                                disabled={isCreating}
+                            >
                                 <Plus /> New Task
                             </Button>
                         ) : (
@@ -153,13 +163,6 @@ export default function TemplatesPage() {
                                 <Plus /> New Assessment
                             </Button>
                         )}
-                        <Button
-                            className="px-4 py-2"
-                            onClick={handleCreateTask}
-                            disabled={isCreating}
-                        >
-                            <Plus /> New Task
-                        </Button>
                     </div>
                 </div>
             </div>
@@ -198,9 +201,9 @@ export default function TemplatesPage() {
                         ) : error ? (
                             <div>Error: {error.message}</div>
                         ) : (isSearchingForTaskTemplate
-                              ? taskTemplateSearch.data
-                              : taskTemplateList
-                          ).length === 0 ? (
+                            ? taskTemplateSearch.data
+                            : taskTemplateList
+                        ).length === 0 ? (
                             <div className="text-sarge-gray-500 flex h-full w-full flex-col items-center justify-center gap-4">
                                 <Image
                                     src={GreyWinstonLogoMark}
@@ -316,9 +319,9 @@ export default function TemplatesPage() {
                         ) : assessmentTemplateList.error ? (
                             <div>Error: {assessmentTemplateList.error.message}</div>
                         ) : (isSearchingForAssessmentTemplate
-                              ? assessmentTemplateSearch.data
-                              : assessmentTemplateList.assessmentTemplateList
-                          ).length === 0 ? (
+                            ? assessmentTemplateSearch.data
+                            : assessmentTemplateList.assessmentTemplateList
+                        ).length === 0 ? (
                             <div className="text-sarge-gray-500 flex h-full w-full flex-col items-center justify-center gap-4">
                                 <Image
                                     src={GreyWinstonLogoMark}

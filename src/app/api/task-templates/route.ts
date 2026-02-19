@@ -26,6 +26,17 @@ export async function GET(request: NextRequest) {
     try {
         const session = await getSession();
         const searchParams = request.nextUrl.searchParams;
+
+        if (searchParams.has('duplicate')) {
+            const titleToCheck = searchParams.get('duplciate') as string;
+            const result = await TaskTemplateService.getDuplicateTitle(
+                titleToCheck,
+                session.activeOrganizationId
+            );
+
+            return Response.json({ data: result }, { status: 200 });
+        }
+
         const pageParam = searchParams.get('page') ?? '0';
         const limitParam = searchParams.get('limit') ?? '10';
 
