@@ -36,6 +36,7 @@ export default function InviteUsersModal({
     const organizationName = organization.name;
     const [emails, setEmails] = useState<string[]>([]);
     const [role, setRole] = useState<OrgRole>(invitableRoles[0] ?? '');
+    const [inviting, setInviting] = useState(false);
 
     const normalizedEmails = emails
         .flatMap((email) => email.split(','))
@@ -60,7 +61,8 @@ export default function InviteUsersModal({
         if (normalizedEmails.length === 0 || hasInvalidEmails || !role) return;
 
         try {
-            await Promise.all(
+            setInviting(true);
+            const results = await Promise.allSettled(
                 normalizedEmails.map((email) =>
                     authClient.organization.inviteMember({
                         email,
@@ -70,14 +72,36 @@ export default function InviteUsersModal({
                 )
             );
 
-            const count = normalizedEmails.length;
+            const successfulCount = results.filter((r) => r.status === 'fulfilled').length;
+            const failedCount = results.filter((r) => r.status === 'rejected').length;
+            const failedEmails = normalizedEmails.filter(
+                (_, i) => results[i].status === 'rejected'
+            );
 
-            resetState();
-            onOpenChange(false);
-            toast.success(`Successfully invited ${count} user${count > 1 ? 's' : ''}`);
+            if (failedEmails.length > 0) {
+                setEmails(failedEmails);
+            } else {
+                resetState();
+            }
+
+            if (successfulCount > 0) {
+                const message =
+                    normalizedEmails.length > successfulCount
+                        ? `Successfully invited ${successfulCount} of ${normalizedEmails.length} user${successfulCount > 1 ? 's' : ''}`
+                        : `Successfully invited ${successfulCount} user${successfulCount > 1 ? 's' : ''}`;
+                toast.success(message);
+            }
+
+            if (failedCount === 0) {
+                onOpenChange(false);
+            } else {
+                toast.error('An error occured... please try again');
+            }
         } catch (err) {
             console.error('Error inviting users:', err);
-            toast.error('An error occured, please try again');
+            toast.error('An error occured... please try again');
+        } finally {
+            setInviting(false);
         }
     };
 
@@ -157,9 +181,9 @@ export default function InviteUsersModal({
                             variant="primary"
                             onClick={handleInvite}
                             className="h-9 w-[125px] px-4 py-2"
-                            disabled={emails.length === 0 || hasInvalidEmails}
+                            disabled={emails.length === 0 || hasInvalidEmails || inviting}
                         >
-                            Invite
+                            {inviting ? 'Inviting...' : 'Invite'}
                         </Button>
                     </div>
                 </div>
