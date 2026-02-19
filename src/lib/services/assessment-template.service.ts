@@ -98,7 +98,7 @@ async function getAssessmentTemplatesByTitle(
     const data = assessmentTemplatesWithTitle.map(({ author, ...rest }) => ({
         ...rest,
         author,
-    })) as AssessmentTemplateListItemDTO[];
+    }));
 
     return data;
 }
@@ -129,7 +129,7 @@ async function getAssessmentTemplates(
     const data = templates.map(({ author, ...rest }) => ({
         ...rest,
         author,
-    })) as AssessmentTemplateListItemDTO[];
+    }));
 
     return { data, total };
 }

@@ -6,7 +6,6 @@ export const AssessmentTemplateSchema = z.object({
     description: z.string(),
     orgId: z.string(),
     authorId: z.string(),
-    taskTemplates: z.array(z.string()).min(1),
 });
 
 export const CreateAssessmentTemplateSchema = AssessmentTemplateSchema.omit({
