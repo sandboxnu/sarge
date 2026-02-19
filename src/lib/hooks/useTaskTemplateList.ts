@@ -45,7 +45,7 @@ export function useTaskTemplateList() {
         });
     };
 
-    const refreshCurrentPage = async () => {
+    const updatePageTemplates = async () => {
         setError(null);
         const response = await getTaskList(page, limit);
         updateTemplatesForPage(page, limit, response.data);
@@ -90,7 +90,7 @@ export function useTaskTemplateList() {
         error,
         handleSelectTask,
         total,
-        refreshCurrentPage,
+        updatePageTemplates,
         insertTaskTemplateAtTopOfPage,
     };
 }

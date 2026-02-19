@@ -73,7 +73,6 @@ export async function duplicateTaskTemplate(
 /**
  * DELETE /api/task-templates/:taskTemplateId
  */
-
 export async function deleteTaskTemplate(taskTemplateId: string): Promise<void> {
     const res = await fetch(`/api/task-templates/${taskTemplateId}`, {
         method: 'DELETE',

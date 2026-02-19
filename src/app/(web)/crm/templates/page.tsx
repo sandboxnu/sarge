@@ -53,8 +53,8 @@ export default function TemplatesPage() {
         selected,
         handleSelectTask,
         total,
-        refreshCurrentPage,
         insertTaskTemplateAtTopOfPage,
+        updatePageTemplates,
     } = useTaskTemplateList();
 
     const assessmentTemplateList = useAssessmentTemplateList();
@@ -92,7 +92,7 @@ export default function TemplatesPage() {
         try {
             setIsMutating(true);
             await deleteTaskTemplate(pendingDeleteId);
-            await refreshCurrentPage();
+            await updatePageTemplates();
 
             setSelectedTaskTemplate((prev) => (prev?.id === pendingDeleteId ? null : prev));
             setDeleteDialogOpen(false);
