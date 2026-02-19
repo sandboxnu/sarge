@@ -47,8 +47,8 @@ export function useTaskTemplateList() {
 
     const updatePageTemplates = async () => {
         setError(null);
-        const response = await getTaskList(page, limit);
-        updateTemplatesForPage(page, limit, response.data);
+        const response = await getTaskTemplateList(page, limit);
+        updateTaskTemplatesForPage(page, limit, response.data);
         setTotal(response.total);
     };
 
