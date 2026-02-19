@@ -38,7 +38,6 @@ import {
     DialogTitle,
 } from '@/lib/components/ui/Modal';
 import { createTaskTemplate } from '@/lib/api/task-templates';
-import { createDuplicateTitle } from '@/lib/utils/template.utils';
 import { useAuth } from '@/lib/auth/auth-context';
 
 export default function TemplatesPage() {
