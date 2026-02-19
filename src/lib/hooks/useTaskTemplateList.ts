@@ -14,6 +14,7 @@ export function useTaskTemplateList() {
     useEffect(() => {
         async function fetchTaskList() {
             try {
+                setIsLoading(true);
                 setError(null);
                 const response = await getTaskTemplateList(page, limit);
 
@@ -44,6 +45,31 @@ export function useTaskTemplateList() {
         });
     };
 
+    const updatePageTemplates = async () => {
+        setError(null);
+        const response = await getTaskTemplateList(page, limit);
+        updateTaskTemplatesForPage(page, limit, response.data);
+        setTotal(response.total);
+    };
+
+    const insertTaskTemplateAtTopOfPage = (taskTemplate: TaskTemplateListItemDTO) => {
+        const startIdx = page * limit;
+
+        setAllTaskTemplates((prev) => {
+            const currentPageItems = prev.slice(startIdx, startIdx + limit);
+            const nextPageItems =
+                currentPageItems.length >= limit
+                    ? [taskTemplate, ...currentPageItems.slice(0, limit - 1)]
+                    : [taskTemplate, ...currentPageItems];
+
+            const updated = [...prev];
+            updated.splice(startIdx, currentPageItems.length, ...nextPageItems);
+            return updated;
+        });
+
+        setTotal((prev) => prev + 1);
+    };
+
     const handleSelectTask = (index: number) => {
         const absoluteIndex = page * limit + index;
         if (selected?.includes(absoluteIndex)) {
@@ -64,5 +90,7 @@ export function useTaskTemplateList() {
         error,
         handleSelectTask,
         total,
+        updatePageTemplates,
+        insertTaskTemplateAtTopOfPage,
     };
 }

@@ -1,13 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import { Copy, MoreVertical, SquarePen, Trash2 } from 'lucide-react';
+import { CopyPlus, MoreVertical, SquarePen, Trash2 } from 'lucide-react';
 import { Chip } from '@/lib/components/ui/Chip';
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/lib/components/ui/Dropdown';
 import { Button } from '@/lib/components/ui/Button';
@@ -56,27 +55,35 @@ export function TaskTemplatePreviewPanel({
                         <DropdownMenuTrigger asChild>
                             <Button
                                 variant="icon"
-                                className="h-10 w-10 p-0"
+                                className="border-sarge-gray-200 hover:bg-sarge-gray-50 h-10 w-10 border bg-white p-0"
                                 aria-label="More options"
                             >
                                 <MoreVertical className="size-5" />
                             </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-48">
+                        <DropdownMenuContent
+                            align="end"
+                            className="border-sarge-gray-200 w-48 border bg-white"
+                        >
                             <DropdownMenuItem
-                                onSelect={() => onDuplicate?.(taskTemplatePreview.id)}
+                                onSelect={() => {
+                                    onDuplicate?.(taskTemplatePreview.id);
+                                }}
                                 disabled={!onDuplicate}
+                                className="text-sarge-gray-700 hover:bg-sarge-gray-50 focus:bg-sarge-gray-50 bg-white hover:cursor-pointer"
                             >
-                                <Copy className="size-4" />
+                                <CopyPlus className="size-4" />
                                 Duplicate
                             </DropdownMenuItem>
-                            <DropdownMenuSeparator />
                             <DropdownMenuItem
-                                variant="destructive"
-                                onSelect={() => onDelete?.(taskTemplatePreview.id)}
+                                onSelect={(event) => {
+                                    event.preventDefault();
+                                    onDelete?.(taskTemplatePreview.id);
+                                }}
                                 disabled={!onDelete}
+                                className="text-destructive hover:text-destructive focus:text-destructive hover:bg-sarge-gray-50 focus:bg-sarge-gray-50 bg-white hover:cursor-pointer"
                             >
-                                <Trash2 className="size-4" />
+                                <Trash2 className="text-destructive size-4" />
                                 Delete
                             </DropdownMenuItem>
                         </DropdownMenuContent>

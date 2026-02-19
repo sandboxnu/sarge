@@ -1,4 +1,4 @@
-import type { TaskTemplate } from '@/generated/prisma';
+import type { Prisma, TaskTemplate } from '@/generated/prisma';
 import type {
     UpdateTaskTemplateDTO,
     CreateTaskTemplateDTO,
@@ -7,6 +7,25 @@ import type {
 } from '@/lib/schemas/task-template.schema';
 import { prisma } from '@/lib/prisma';
 import { NotFoundException, ConflictException } from '@/lib/utils/errors.utils';
+
+type TaskTemplateListQueryResult = Prisma.TaskTemplateGetPayload<{
+    include: {
+        tags: true;
+        languages: true;
+        author: { select: { id: true; name: true } };
+        _count: { select: { assessments: true } };
+    };
+}>;
+
+function toTaskTemplateListItem(template: TaskTemplateListQueryResult): TaskTemplateListItemDTO {
+    const { author, _count, ...rest } = template;
+
+    return {
+        ...rest,
+        author,
+        assessmentTemplatesCount: _count.assessments,
+    } as TaskTemplateListItemDTO;
+}
 
 async function getTaskTemplate(id: string, orgId: string): Promise<TaskTemplateEditorDTO> {
     const foundTaskTemplate = await prisma.taskTemplate.findFirst({
@@ -42,6 +61,7 @@ async function getTaskTemplates(
             where: { orgId },
             include: {
                 tags: true,
+                languages: true,
                 author: { select: { id: true, name: true } },
                 _count: { select: { assessments: true } },
             },
@@ -53,11 +73,7 @@ async function getTaskTemplates(
         }),
     ]);
 
-    const data = templates.map(({ author, _count, ...rest }) => ({
-        ...rest,
-        author,
-        assessmentTemplatesCount: _count.assessments,
-    })) as TaskTemplateListItemDTO[];
+    const data = templates.map(toTaskTemplateListItem);
 
     return { data, total };
 }
@@ -83,6 +99,85 @@ async function createTaskTemplate(
     return createdTaskTemplate;
 }
 
+async function duplicateTaskTemplate(
+    sourceId: string,
+    orgId: string,
+    authorId: string
+): Promise<TaskTemplateListItemDTO> {
+    const source = await prisma.taskTemplate.findFirst({
+        where: { id: sourceId, orgId },
+        include: {
+            tags: { select: { id: true } },
+            languages: {
+                select: {
+                    language: true,
+                    solution: true,
+                    stub: true,
+                },
+            },
+        },
+    });
+
+    if (!source) {
+        throw new NotFoundException('Task Template', sourceId);
+    }
+
+    const sourceTitle = source.title.trim();
+    const sourceSuffixStart = sourceTitle.lastIndexOf(' (');
+    const sourceSuffix =
+        sourceSuffixStart >= 0 && sourceTitle.endsWith(')')
+            ? sourceTitle.slice(sourceSuffixStart + 2, -1)
+            : '';
+    const parsedSuffix = Number.parseInt(sourceSuffix, 10);
+    const baseTitle =
+        sourceSuffixStart >= 0 && Number.isInteger(parsedSuffix) && parsedSuffix > 0
+            ? sourceTitle.slice(0, sourceSuffixStart).trim()
+            : sourceTitle;
+
+    const existingTitlesInOrg = await prisma.taskTemplate.findMany({
+        where: {
+            orgId,
+            OR: [{ title: baseTitle }, { title: { startsWith: `${baseTitle} (` } }],
+        },
+        select: { title: true },
+    });
+
+    const existingTitleSet = new Set(existingTitlesInOrg.map((item) => item.title));
+    let nextIndex = 1;
+    let duplicateTitle = `${baseTitle} (${nextIndex})`;
+
+    while (existingTitleSet.has(duplicateTitle)) {
+        nextIndex += 1;
+        duplicateTitle = `${baseTitle} (${nextIndex})`;
+    }
+
+    const created = await prisma.taskTemplate.create({
+        data: {
+            title: duplicateTitle,
+            description: source.description as Prisma.InputJsonValue,
+            publicTestCases: source.publicTestCases as Prisma.InputJsonValue[],
+            privateTestCases: source.privateTestCases as Prisma.InputJsonValue[],
+            taskType: source.taskType,
+            orgId,
+            authorId,
+            tags: {
+                connect: source.tags,
+            },
+            languages: {
+                create: source.languages,
+            },
+        },
+        include: {
+            tags: true,
+            languages: true,
+            author: { select: { id: true, name: true } },
+            _count: { select: { assessments: true } },
+        },
+    });
+
+    return toTaskTemplateListItem(created);
+}
+
 async function deleteTaskTemplate(id: string, orgId: string): Promise<TaskTemplate> {
     const existingTemplate = await prisma.taskTemplate.findFirst({
         where: { id, orgId },
@@ -92,11 +187,19 @@ async function deleteTaskTemplate(id: string, orgId: string): Promise<TaskTempla
         throw new NotFoundException('Task Template', id);
     }
 
-    const deletedTaskTemplate = await prisma.taskTemplate.delete({
-        where: {
-            id,
-        },
-    });
+    const [, deletedTaskTemplate] = await prisma.$transaction([
+        prisma.taskTemplateLanguage.deleteMany({
+            where: {
+                taskTemplateId: id,
+            },
+        }),
+        prisma.taskTemplate.delete({
+            where: {
+                id,
+            },
+        }),
+    ]);
+
     return deletedTaskTemplate;
 }
 
@@ -149,22 +252,20 @@ async function getTaskTemplatesByTitle(
         },
         include: {
             tags: true,
+            languages: true,
             author: { select: { id: true, name: true } },
             _count: { select: { assessments: true } },
         },
     });
 
-    return templates.map(({ author, _count, ...rest }) => ({
-        ...rest,
-        author,
-        assessmentTemplatesCount: _count.assessments,
-    })) as TaskTemplateListItemDTO[];
+    return templates.map(toTaskTemplateListItem);
 }
 
 const TaskTemplateService = {
     getTaskTemplate,
     getTaskTemplates,
     createTaskTemplate,
+    duplicateTaskTemplate,
     deleteTaskTemplate,
     updateTaskTemplate,
     getTaskTemplatesByTitle,

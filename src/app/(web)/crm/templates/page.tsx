@@ -3,19 +3,19 @@
 import { useState } from 'react';
 import { Search } from '@/lib/components/core/Search';
 import { Button } from '@/lib/components/ui/Button';
-import { DropdownMenu } from '@/lib/components/ui/Dropdown';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuLabel,
+    DropdownMenuTrigger,
+} from '@/lib/components/ui/Dropdown';
 import { Tabs, TabsContent, TabsList, UnderlineTabsTrigger } from '@/lib/components/ui/Tabs';
 import { ArrowDownUp, Plus, SlidersHorizontal } from 'lucide-react';
 import { useTaskTemplateList } from '@/lib/hooks/useTaskTemplateList';
 import TaskCard from '@/lib/components/core/TaskCard';
 import { TaskTemplatePreviewPanel } from '@/lib/components/core/TaskTemplatePreviewPanel';
 import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
-import {
-    DropdownMenuContent,
-    DropdownMenuGroup,
-    DropdownMenuLabel,
-    DropdownMenuTrigger,
-} from '@radix-ui/react-dropdown-menu';
 import Image from 'next/image';
 import Pager from '@/lib/components/ui/Pager';
 import GreyWinstonLogoMark from '@/../public/GreyWinstonLogoMark.svg';
@@ -23,12 +23,24 @@ import useSearch from '@/lib/hooks/useSearch';
 import { useAssessmentTemplateList } from '@/lib/hooks/useAssessmentTemplateList';
 import { type AssessmentTemplateListItemDTO } from '@/lib/schemas/assessment-template.schema';
 import AssessmentCard from '@/lib/components/core/AssessmentCard';
+import { deleteTaskTemplate, duplicateTaskTemplate } from '@/lib/api/task-templates';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/lib/components/ui/Modal';
 
 export default function TemplatesPage() {
     const [selectedTaskTemplate, setSelectedTaskTemplate] =
         useState<TaskTemplateListItemDTO | null>(null);
     const [selectedAssessmentTemplate, setSelectedAssessmentTemplate] =
         useState<AssessmentTemplateListItemDTO | null>(null);
+    const [isMutating, setIsMutating] = useState(false);
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
     const {
         taskTemplateList,
@@ -41,6 +53,8 @@ export default function TemplatesPage() {
         selected,
         handleSelectTask,
         total,
+        insertTaskTemplateAtTopOfPage,
+        updatePageTemplates,
     } = useTaskTemplateList();
 
     const assessmentTemplateList = useAssessmentTemplateList();
@@ -52,6 +66,42 @@ export default function TemplatesPage() {
 
     const isSearchingForTaskTemplate = taskTemplateSearch.value.trim().length >= 1;
     const isSearchingForAssessmentTemplate = assessmentTemplateSearch.value.trim().length >= 1;
+
+    const onDuplicate = async (taskTemplateId: string) => {
+        try {
+            setIsMutating(true);
+            const duplicatedTemplate = await duplicateTaskTemplate(taskTemplateId);
+            insertTaskTemplateAtTopOfPage(duplicatedTemplate);
+            setSelectedTaskTemplate(duplicatedTemplate);
+        } catch {
+        } finally {
+            setIsMutating(false);
+        }
+    };
+
+    const onDelete = (taskTemplateId: string) => {
+        setPendingDeleteId(taskTemplateId);
+        setDeleteDialogOpen(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!pendingDeleteId) {
+            return;
+        }
+
+        try {
+            setIsMutating(true);
+            await deleteTaskTemplate(pendingDeleteId);
+            await updatePageTemplates();
+
+            setSelectedTaskTemplate((prev) => (prev?.id === pendingDeleteId ? null : prev));
+            setDeleteDialogOpen(false);
+            setPendingDeleteId(null);
+        } catch {
+        } finally {
+            setIsMutating(false);
+        }
+    };
 
     return (
         <Tabs
@@ -279,7 +329,11 @@ export default function TemplatesPage() {
 
                 <div className="flex w-3/4 flex-col overflow-y-scroll p-[30px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                     {selectedTaskTemplate ? (
-                        <TaskTemplatePreviewPanel taskTemplatePreview={selectedTaskTemplate} />
+                        <TaskTemplatePreviewPanel
+                            taskTemplatePreview={selectedTaskTemplate}
+                            onDuplicate={isMutating ? undefined : onDuplicate}
+                            onDelete={isMutating ? undefined : onDelete}
+                        />
                     ) : selectedAssessmentTemplate ? (
                         <div className="flex h-full items-center justify-center">
                             {/* ASSESSMENT TEMPLATE PREVIEW COMPONENT GOES HERE */}
@@ -291,6 +345,34 @@ export default function TemplatesPage() {
                     )}
                 </div>
             </div>
+
+            <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+                <DialogContent className="max-w-md gap-4 p-6" showCloseButton={!isMutating}>
+                    <DialogHeader>
+                        <DialogTitle>Delete task template?</DialogTitle>
+                        <DialogDescription>This action can&apos;t be undone.</DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter className="flex w-full flex-row justify-between">
+                        <Button
+                            className="hover:bg-sarge-gray-100 text-sarge-gray-700 bg-white px-4 py-2"
+                            onClick={() => {
+                                setDeleteDialogOpen(false);
+                                setPendingDeleteId(null);
+                            }}
+                            disabled={isMutating}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            className="bg-sarge-error-400 hover:bg-sarge-error-700 text-sarge-gray-50 px-4 py-2"
+                            onClick={confirmDelete}
+                            disabled={isMutating}
+                        >
+                            Delete
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </Tabs>
     );
 }
