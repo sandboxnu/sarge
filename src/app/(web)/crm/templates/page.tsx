@@ -357,7 +357,7 @@ export default function TemplatesPage() {
                     </DialogHeader>
                     <DialogFooter className="flex w-full flex-row justify-between">
                         <Button
-                            className="bg-white hover:bg-sarge-gray-100 px-4 py-2 text-sarge-gray-700"
+                            className="hover:bg-sarge-gray-100 text-sarge-gray-700 bg-white px-4 py-2"
                             onClick={() => {
                                 setDeleteDialogOpen(false);
                                 setPendingDeleteId(null);
@@ -367,7 +367,7 @@ export default function TemplatesPage() {
                             Cancel
                         </Button>
                         <Button
-                            className="bg-sarge-error-400 hover:bg-sarge-error-700 px-4 py-2 text-sarge-gray-50"
+                            className="bg-sarge-error-400 hover:bg-sarge-error-700 text-sarge-gray-50 px-4 py-2"
                             onClick={confirmDelete}
                             disabled={isMutating}
                         >
