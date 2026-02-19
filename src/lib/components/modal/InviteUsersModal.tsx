@@ -95,11 +95,11 @@ export default function InviteUsersModal({
             if (failedCount === 0) {
                 onOpenChange(false);
             } else {
-                toast.error('An error occured... please try again');
+                toast.error('An error occurred... please try again');
             }
         } catch (err) {
             console.error('Error inviting users:', err);
-            toast.error('An error occured... please try again');
+            toast.error('An error occurred... please try again');
         } finally {
             setInviting(false);
         }
