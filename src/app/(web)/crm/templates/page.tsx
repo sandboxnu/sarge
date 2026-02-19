@@ -355,10 +355,9 @@ export default function TemplatesPage() {
                         <DialogTitle>Delete task template?</DialogTitle>
                         <DialogDescription>This action can&apos;t be undone.</DialogDescription>
                     </DialogHeader>
-                    <DialogFooter>
+                    <DialogFooter className="flex w-full flex-row justify-between">
                         <Button
-                            variant="secondary"
-                            className="px-4 py-2"
+                            className="bg-white hover:bg-sarge-gray-100 px-4 py-2 text-sarge-gray-700"
                             onClick={() => {
                                 setDeleteDialogOpen(false);
                                 setPendingDeleteId(null);
@@ -367,7 +366,11 @@ export default function TemplatesPage() {
                         >
                             Cancel
                         </Button>
-                        <Button className="px-4 py-2" onClick={confirmDelete} disabled={isMutating}>
+                        <Button
+                            className="bg-sarge-error-400 hover:bg-sarge-error-700 px-4 py-2 text-sarge-gray-50"
+                            onClick={confirmDelete}
+                            disabled={isMutating}
+                        >
                             Delete
                         </Button>
                     </DialogFooter>

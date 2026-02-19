@@ -76,14 +76,13 @@ export function TaskTemplatePreviewPanel({
                                 <CopyPlus className="size-4" />
                                 Duplicate
                             </DropdownMenuItem>
-                            <DropdownMenuSeparator />
                             <DropdownMenuItem
                                 onSelect={(event) => {
                                     event.preventDefault();
                                     onDelete?.(taskTemplatePreview.id);
                                 }}
                                 disabled={!onDelete}
-                                className="text-sarge-gray-700 hover:bg-sarge-gray-50 focus:bg-sarge-gray-50 bg-white"
+                                className="text-destructive hover:text-destructive focus:text-destructive hover:bg-sarge-gray-50 focus:bg-sarge-gray-50 bg-white"
                             >
                                 <Trash2 className="text-destructive size-4" />
                                 Delete
