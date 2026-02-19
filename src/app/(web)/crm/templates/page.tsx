@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Search } from '@/lib/components/core/Search';
 import { Button } from '@/lib/components/ui/Button';
 import {
@@ -32,6 +33,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/lib/components/ui/Modal';
+import { createTaskTemplate } from '@/lib/api/task-templates';
 
 export default function TemplatesPage() {
     const [selectedTaskTemplate, setSelectedTaskTemplate] =
@@ -42,6 +44,8 @@ export default function TemplatesPage() {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
+    const [isCreating, setIsCreating] = useState(false);
+    const router = useRouter();
     const {
         taskTemplateList,
         isLoading,
@@ -103,6 +107,25 @@ export default function TemplatesPage() {
         }
     };
 
+    const handleCreateTask = async () => {
+        if (isCreating) return;
+        setIsCreating(true);
+        try {
+            const created = await createTaskTemplate({
+                title: 'Unnamed Task Template',
+                description: [],
+                publicTestCases: [],
+                privateTestCases: [],
+                taskType: null,
+            });
+            router.push(`/crm/task-templates/${created.id}/edit`);
+        } catch (err) {
+            console.error('Failed to create task template:', err);
+        } finally {
+            setIsCreating(false);
+        }
+    };
+
     return (
         <Tabs
             defaultValue="tasks"
@@ -130,6 +153,13 @@ export default function TemplatesPage() {
                                 <Plus /> New Assessment
                             </Button>
                         )}
+                        <Button
+                            className="px-4 py-2"
+                            onClick={handleCreateTask}
+                            disabled={isCreating}
+                        >
+                            <Plus /> New Task
+                        </Button>
                     </div>
                 </div>
             </div>

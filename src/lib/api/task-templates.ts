@@ -1,6 +1,8 @@
 import {
     type TaskTemplateListItemDTO,
     type TaskTemplateEditorDTO,
+    type CreateTaskTemplateDTO,
+    type TaskTemplateDTO,
 } from '@/lib/schemas/task-template.schema';
 
 /**
@@ -85,4 +87,25 @@ export async function deleteTaskTemplate(taskTemplateId: string): Promise<void> 
     }
 
     return json;
+}
+
+/**
+ * POST /api/task-templates
+ */
+export async function createTaskTemplate(
+    payload: CreateTaskTemplateDTO
+): Promise<TaskTemplateDTO> {
+    const res = await fetch('/api/task-templates', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+    });
+
+    const json = await res.json();
+
+    if (!res.ok) {
+        throw new Error(json.message);
+    }
+
+    return json.data;
 }

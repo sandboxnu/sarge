@@ -28,10 +28,12 @@ export const TaskTemplateEditorSchema = TaskTemplateSchema.extend({
     languages: TaskTemplateLanguageSchema.array(),
 });
 
-export const createTaskTemplateSchema = TaskTemplateSchema.omit({
-    id: true,
-    authorId: true,
-    orgId: true,
+export const createTaskTemplateSchema = z.object({
+    title: z.string().trim(),
+    description: blockNoteContentSchema.default([]),
+    publicTestCases: z.array(testCaseSchema).default([]),
+    privateTestCases: z.array(testCaseSchema).default([]),
+    taskType: z.string().nullable().default(null),
 });
 
 export const deleteTaskTemplateSchema = z.object({

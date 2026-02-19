@@ -94,6 +94,15 @@ async function createTaskTemplate(
     const createdTaskTemplate = await prisma.taskTemplate.create({
         data: {
             ...taskTemplate,
+            languages: {
+                create: [
+                    {
+                        language: 'python',
+                        solution: '',
+                        stub: '',
+                    },
+                ],
+            },
         },
     });
     return createdTaskTemplate;
