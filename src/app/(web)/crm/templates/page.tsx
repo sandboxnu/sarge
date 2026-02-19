@@ -168,9 +168,9 @@ export default function TemplatesPage() {
                         ) : error ? (
                             <div>Error: {error.message}</div>
                         ) : (isSearchingForTaskTemplate
-                            ? taskTemplateSearch.data
-                            : taskTemplateList
-                        ).length === 0 ? (
+                              ? taskTemplateSearch.data
+                              : taskTemplateList
+                          ).length === 0 ? (
                             <div className="text-sarge-gray-500 flex h-full w-full flex-col items-center justify-center gap-4">
                                 <Image
                                     src={GreyWinstonLogoMark}
@@ -286,9 +286,9 @@ export default function TemplatesPage() {
                         ) : assessmentTemplateList.error ? (
                             <div>Error: {assessmentTemplateList.error.message}</div>
                         ) : (isSearchingForAssessmentTemplate
-                            ? assessmentTemplateSearch.data
-                            : assessmentTemplateList.assessmentTemplateList
-                        ).length === 0 ? (
+                              ? assessmentTemplateSearch.data
+                              : assessmentTemplateList.assessmentTemplateList
+                          ).length === 0 ? (
                             <div className="text-sarge-gray-500 flex h-full w-full flex-col items-center justify-center gap-4">
                                 <Image
                                     src={GreyWinstonLogoMark}
