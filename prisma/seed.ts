@@ -370,6 +370,7 @@ async function seedAssessmentTemplates() {
                 description: assessmentTemplateData.description,
                 orgId,
                 tasks: { create: tasksCreate },
+                authorId: assessmentTemplateData.authorId,
             },
         });
 

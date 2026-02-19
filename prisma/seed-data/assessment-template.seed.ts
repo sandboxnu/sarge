@@ -9,6 +9,7 @@ export const assessmentTemplatesData = [
             'task_template_reverse_string_001',
             'task_template_palindrome_001',
         ],
+        authorId: 'user_prof_fontenot_001',
     },
     {
         id: 'assessment_template_algorithms_001',
@@ -19,5 +20,6 @@ export const assessmentTemplatesData = [
             'task_template_fizzbuzz_001',
             'task_template_quick_warmup_001',
         ],
+        authorId: 'user_prof_fontenot_001',
     },
 ];

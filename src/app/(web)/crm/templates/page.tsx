@@ -4,9 +4,9 @@ import { useState } from 'react';
 import { Search } from '@/lib/components/core/Search';
 import { Button } from '@/lib/components/ui/Button';
 import { DropdownMenu } from '@/lib/components/ui/Dropdown';
-import { Tabs, TabsList, UnderlineTabsTrigger } from '@/lib/components/ui/Tabs';
+import { Tabs, TabsContent, TabsList, UnderlineTabsTrigger } from '@/lib/components/ui/Tabs';
 import { ArrowDownUp, Plus, SlidersHorizontal } from 'lucide-react';
-import { useTaskTemplateList } from '@/lib/hooks/useTaskList';
+import { useTaskTemplateList } from '@/lib/hooks/useTaskTemplateList';
 import TaskCard from '@/lib/components/core/TaskCard';
 import { TaskTemplatePreviewPanel } from '@/lib/components/core/TaskTemplatePreviewPanel';
 import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
@@ -20,10 +20,16 @@ import Image from 'next/image';
 import Pager from '@/lib/components/ui/Pager';
 import GreyWinstonLogoMark from '@/../public/GreyWinstonLogoMark.svg';
 import useSearch from '@/lib/hooks/useSearch';
+import { useAssessmentTemplateList } from '@/lib/hooks/useAssessmentTemplateList';
+import { type AssessmentTemplateListItemDTO } from '@/lib/schemas/assessment-template.schema';
+import AssessmentCard from '@/lib/components/core/AssessmentCard';
 
 export default function TemplatesPage() {
     const [selectedTaskTemplate, setSelectedTaskTemplate] =
         useState<TaskTemplateListItemDTO | null>(null);
+    const [selectedAssessmentTemplate, setSelectedAssessmentTemplate] =
+        useState<AssessmentTemplateListItemDTO | null>(null);
+
     const {
         taskTemplateList,
         isLoading,
@@ -37,41 +43,57 @@ export default function TemplatesPage() {
         total,
     } = useTaskTemplateList();
 
-    const { value, onChange, data, loading } = useSearch('task-templates');
+    const assessmentTemplateList = useAssessmentTemplateList();
 
-    const isSearching = value.trim().length >= 1;
+    const taskTemplateSearch = useSearch('task-templates');
+    const assessmentTemplateSearch = useSearch('assessment-templates');
+
+    const [activeTab, setActiveTab] = useState<'tasks' | 'assessments'>('tasks');
+
+    const isSearchingForTaskTemplate = taskTemplateSearch.value.trim().length >= 1;
+    const isSearchingForAssessmentTemplate = assessmentTemplateSearch.value.trim().length >= 1;
 
     return (
-        <div className="flex h-full flex-col">
+        <Tabs
+            defaultValue="tasks"
+            className="flex h-full flex-col"
+            onValueChange={(v) => setActiveTab(v as 'tasks' | 'assessments')}
+        >
             <div className="flex flex-col gap-3 border-b-1 px-5 pt-4">
                 <h1 className="text-xl font-bold">Templates</h1>
                 <div className="flex flex-row items-center justify-between">
-                    <div className="items-center">
-                        <Tabs defaultValue="tasks">
-                            <TabsList className="h-auto gap-5 rounded-none bg-transparent p-0">
-                                <UnderlineTabsTrigger value="tasks">
-                                    Tasks ({total ?? 0})
-                                </UnderlineTabsTrigger>
-                                <UnderlineTabsTrigger value="assessments">
-                                    Assessments
-                                </UnderlineTabsTrigger>
-                            </TabsList>
-                        </Tabs>
-                    </div>
+                    <TabsList className="h-auto gap-5 rounded-none bg-transparent p-0">
+                        <UnderlineTabsTrigger value="tasks">
+                            Tasks ({total ?? 0})
+                        </UnderlineTabsTrigger>
+                        <UnderlineTabsTrigger value="assessments">
+                            Assessments ({assessmentTemplateList.total ?? 0})
+                        </UnderlineTabsTrigger>
+                    </TabsList>
                     <div className="flex items-center gap-4">
-                        <Button className="px-4 py-2">
-                            <Plus /> New Task
-                        </Button>
+                        {activeTab === 'tasks' ? (
+                            <Button className="px-4 py-2">
+                                <Plus /> New Task
+                            </Button>
+                        ) : (
+                            <Button className="px-4 py-2">
+                                <Plus /> New Assessment
+                            </Button>
+                        )}
                     </div>
                 </div>
             </div>
+
             <div className="flex min-h-0 flex-1 flex-row">
-                <div className="border-sarge-gray-200 flex w-96 flex-col gap-2.5 border-r-1">
+                <TabsContent
+                    value="tasks"
+                    className="border-sarge-gray-200 flex min-h-0 w-1/4 shrink-0 flex-col border-r-1"
+                >
                     <div className="flex items-center gap-2.5 px-3 pt-3">
                         <Search
                             className="border-none"
-                            value={value}
-                            onChange={onChange}
+                            value={taskTemplateSearch.value}
+                            onChange={taskTemplateSearch.onChange}
                             placeholder="Type to search"
                         />
                         <div className="flex">
@@ -83,8 +105,8 @@ export default function TemplatesPage() {
                             </Button>
                         </div>
                     </div>
-                    <div className="flex min-h-0 w-full flex-1 flex-col gap-2.5 overflow-scroll px-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                        {isLoading || loading ? (
+                    <div className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-scroll px-3 py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                        {isLoading || taskTemplateSearch.loading ? (
                             <div className="flex h-full w-full items-center justify-center">
                                 <Image
                                     src="/CreateOrgLoading.gif"
@@ -94,39 +116,43 @@ export default function TemplatesPage() {
                                 />
                             </div>
                         ) : error ? (
-                            <div className="">Error: {error.message}</div>
-                        ) : (isSearching ? data : taskTemplateList).length === 0 ? (
+                            <div>Error: {error.message}</div>
+                        ) : (isSearchingForTaskTemplate
+                              ? taskTemplateSearch.data
+                              : taskTemplateList
+                          ).length === 0 ? (
                             <div className="text-sarge-gray-500 flex h-full w-full flex-col items-center justify-center gap-4">
                                 <Image
                                     src={GreyWinstonLogoMark}
                                     height={78}
                                     width={140}
-                                    alt={'Winston Logo'}
+                                    alt="Winston Logo"
                                 />
-                                {isSearching
+                                {isSearchingForTaskTemplate
                                     ? 'Could not find task'
                                     : 'You currently have no tasks'}
                             </div>
                         ) : (
-                            (isSearching ? data : taskTemplateList).map(
-                                (task: TaskTemplateListItemDTO, idx: number) => {
-                                    const absoluteIdx = page * limit + idx;
-                                    return (
-                                        <TaskCard
-                                            key={task.id}
-                                            title={task.title}
-                                            subtitle={task.taskType ?? ''}
-                                            chips={task.tags ?? []}
-                                            selected={selected?.includes(absoluteIdx) ?? false}
-                                            setSelected={handleSelectTask}
-                                            index={idx}
-                                            taskTemplateId={task.id}
-                                            isPreviewSelected={selectedTaskTemplate?.id === task.id}
-                                            onPreviewSelect={() => setSelectedTaskTemplate(task)}
-                                        />
-                                    );
-                                }
-                            )
+                            (isSearchingForTaskTemplate
+                                ? taskTemplateSearch.data
+                                : taskTemplateList
+                            ).map((task: TaskTemplateListItemDTO, idx: number) => {
+                                const absoluteIdx = page * limit + idx;
+                                return (
+                                    <TaskCard
+                                        key={task.id}
+                                        title={task.title}
+                                        subtitle={task.taskType ?? ''}
+                                        chips={task.tags ?? []}
+                                        selected={selected?.includes(absoluteIdx) ?? false}
+                                        setSelected={handleSelectTask}
+                                        index={idx}
+                                        taskTemplateId={task.id}
+                                        isPreviewSelected={selectedTaskTemplate?.id === task.id}
+                                        onPreviewSelect={() => setSelectedTaskTemplate(task)}
+                                    />
+                                );
+                            })
                         )}
                     </div>
                     <div className="border-sarge-gray-200 flex flex-col gap-2.5 border-t-1 p-3">
@@ -175,18 +201,96 @@ export default function TemplatesPage() {
                             </Button>
                         </div>
                     </div>
-                </div>
-                <div className="flex w-0 min-w-0 flex-1 flex-col overflow-hidden p-[30px]">
-                    {!selectedTaskTemplate && (
-                        <div className="text-body-m text-muted-foreground flex h-full items-center justify-center">
-                            Select a task template to preview
+                </TabsContent>
+
+                <TabsContent
+                    value="assessments"
+                    className="border-sarge-gray-200 flex min-h-0 w-1/4 shrink-0 flex-col border-r-1"
+                >
+                    <div className="flex items-center gap-2.5 px-3 pt-3">
+                        <Search
+                            className="border-none"
+                            value={assessmentTemplateSearch.value}
+                            onChange={assessmentTemplateSearch.onChange}
+                            placeholder="Type to search"
+                        />
+                        <div className="flex">
+                            <Button variant="icon" className="px-3 py-2">
+                                <SlidersHorizontal className="size-5" />
+                            </Button>
+                            <Button variant="icon" className="px-3 py-2">
+                                <ArrowDownUp className="size-5" />
+                            </Button>
                         </div>
-                    )}
-                    {selectedTaskTemplate && (
+                    </div>
+                    <div className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-scroll px-3 py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                        {assessmentTemplateList.isLoading || assessmentTemplateSearch.loading ? (
+                            <div className="flex h-full w-full items-center justify-center">
+                                <Image
+                                    src="/CreateOrgLoading.gif"
+                                    alt="Loading GIF"
+                                    width={66}
+                                    height={66}
+                                />
+                            </div>
+                        ) : assessmentTemplateList.error ? (
+                            <div>Error: {assessmentTemplateList.error.message}</div>
+                        ) : (isSearchingForAssessmentTemplate
+                              ? assessmentTemplateSearch.data
+                              : assessmentTemplateList.assessmentTemplateList
+                          ).length === 0 ? (
+                            <div className="text-sarge-gray-500 flex h-full w-full flex-col items-center justify-center gap-4">
+                                <Image
+                                    src={GreyWinstonLogoMark}
+                                    height={78}
+                                    width={140}
+                                    alt="Winston Logo"
+                                />
+                                {isSearchingForAssessmentTemplate
+                                    ? 'Could not find assessment'
+                                    : 'You currently have no assessments'}
+                            </div>
+                        ) : (
+                            (isSearchingForAssessmentTemplate
+                                ? assessmentTemplateSearch.data
+                                : assessmentTemplateList.assessmentTemplateList
+                            ).map((assessment: AssessmentTemplateListItemDTO) => (
+                                <AssessmentCard
+                                    key={assessment.id}
+                                    template={assessment}
+                                    isSelected={selectedAssessmentTemplate?.id === assessment.id}
+                                    onClick={() => setSelectedAssessmentTemplate(assessment)}
+                                />
+                            ))
+                        )}
+                    </div>
+                    <div className="border-sarge-gray-200 flex flex-col gap-2.5 border-t-1 p-3">
+                        <div className="flex-1 justify-end">
+                            <Pager
+                                page={assessmentTemplateList.page}
+                                limit={assessmentTemplateList.limit}
+                                total={assessmentTemplateList.total}
+                                changePage={assessmentTemplateList.setPage}
+                                changeLimit={assessmentTemplateList.setLimit}
+                            />
+                        </div>
+                    </div>
+                </TabsContent>
+
+                <div className="flex w-3/4 flex-col overflow-y-scroll p-[30px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                    {selectedTaskTemplate ? (
                         <TaskTemplatePreviewPanel taskTemplatePreview={selectedTaskTemplate} />
+                    ) : selectedAssessmentTemplate ? (
+                        <div className="flex h-full items-center justify-center">
+                            {/* ASSESSMENT TEMPLATE PREVIEW COMPONENT GOES HERE */}
+                        </div>
+                    ) : (
+                        <div className="text-body-m text-muted-foreground flex h-full items-center justify-center">
+                            Select a template to preview
+                        </div>
                     )}
                 </div>
             </div>
-        </div>
+        </Tabs>
     );
 }

@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
         const page = isNaN(parseInt(pageParam)) ? 0 : parseInt(pageParam);
         const limit = isNaN(parseInt(limitParam)) ? 10 : parseInt(limitParam);
 
-        const result = await TaskTemplateService.getAllTaskTemplates(
+        const result = await TaskTemplateService.getTaskTemplates(
             session.activeOrganizationId,
             page,
             limit

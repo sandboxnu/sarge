@@ -13,15 +13,16 @@ export async function GET(request: NextRequest) {
         const title = searchParams.get('title');
 
         if (!title) {
-            const taskTemplates = await AssessmentTemplateService.getAllAssessmentTemplates(orgId);
-            return Response.json({ data: taskTemplates }, { status: 200 });
+            const assessmentTemplates =
+                await AssessmentTemplateService.getAssessmentTemplates(orgId);
+            return Response.json({ data: assessmentTemplates }, { status: 200 });
         }
 
-        const taskTemplates = await AssessmentTemplateService.getAssessmentTemplatesByTitle(
+        const assessmentTemplates = await AssessmentTemplateService.getAssessmentTemplatesByTitle(
             title,
             orgId
         );
-        return Response.json({ data: taskTemplates }, { status: 200 });
+        return Response.json({ data: assessmentTemplates }, { status: 200 });
     } catch (err) {
         return handleError(err);
     }

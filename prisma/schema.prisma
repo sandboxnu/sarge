@@ -37,16 +37,17 @@ model User {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  reviews               Review[]
-  comments              Comment[]
-  sessions              Session[]
-  accounts              Account[]
-  verifications         Verification[]
-  members               Member[]
-  invitations           Invitation[]   @relation("Inviter")
-  positions             Position[]     @relation("CreatedPositions")
-  decidedApplications   Application[]  @relation("ApplicationDecision")
-  authoredTaskTemplates TaskTemplate[] @relation("AuthoredTaskTemplates")
+  reviews                     Review[]
+  comments                    Comment[]
+  sessions                    Session[]
+  accounts                    Account[]
+  verifications               Verification[]
+  members                     Member[]
+  invitations                 Invitation[]         @relation("Inviter")
+  positions                   Position[]           @relation("CreatedPositions")
+  decidedApplications         Application[]        @relation("ApplicationDecision")
+  authoredTaskTemplates       TaskTemplate[]       @relation("AuthoredTaskTemplates")
+  authoredAssessmentTemplates AssessmentTemplate[] @relation("AuthoredAssessmentTemplates")
 }
 
 // A role or position that an organization is hiring for (e.g. "Software Engineer"). Positions collect applications from candidates.
@@ -132,11 +133,13 @@ model AssessmentTemplate {
   title       String
   description String
   orgId       String
+  authorId    String
 
   organization Organization             @relation(fields: [orgId], references: [id])
   assessments  Assessment[]             @relation("derivedFromAssessmentTemplate")
   tasks        AssessmentTemplateTask[]
   positions    Position[]               @relation("derivedFromPosition")
+  author       User                     @relation("AuthoredAssessmentTemplates", fields: [authorId], references: [id], onDelete: Restrict)
 
   @@index([title])
 }
