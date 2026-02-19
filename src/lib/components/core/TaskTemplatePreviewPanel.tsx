@@ -56,7 +56,7 @@ export function TaskTemplatePreviewPanel({
                         <DropdownMenuTrigger asChild>
                             <Button
                                 variant="icon"
-                                className="border-sarge-gray-200 h-10 w-10 border bg-white p-0 hover:bg-sarge-gray-50"
+                                className="border-sarge-gray-200 hover:bg-sarge-gray-50 h-10 w-10 border bg-white p-0"
                                 aria-label="More options"
                             >
                                 <MoreVertical className="size-5" />
@@ -71,7 +71,7 @@ export function TaskTemplatePreviewPanel({
                                     onDuplicate?.(taskTemplatePreview.id);
                                 }}
                                 disabled={!onDuplicate}
-                                className="bg-white text-sarge-gray-700 hover:bg-sarge-gray-50 focus:bg-sarge-gray-50"
+                                className="text-sarge-gray-700 hover:bg-sarge-gray-50 focus:bg-sarge-gray-50 bg-white"
                             >
                                 <CopyPlus className="size-4" />
                                 Duplicate
@@ -83,7 +83,7 @@ export function TaskTemplatePreviewPanel({
                                     onDelete?.(taskTemplatePreview.id);
                                 }}
                                 disabled={!onDelete}
-                                className="bg-white text-sarge-gray-700 hover:bg-sarge-gray-50 focus:bg-sarge-gray-50"
+                                className="text-sarge-gray-700 hover:bg-sarge-gray-50 focus:bg-sarge-gray-50 bg-white"
                             >
                                 <Trash2 className="text-destructive size-4" />
                                 Delete

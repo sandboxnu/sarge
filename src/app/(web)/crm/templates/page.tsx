@@ -353,9 +353,7 @@ export default function TemplatesPage() {
                 <DialogContent className="max-w-md gap-4 p-6" showCloseButton={!isMutating}>
                     <DialogHeader>
                         <DialogTitle>Delete task template?</DialogTitle>
-                        <DialogDescription>
-                            This action can&apos;t be undone.
-                        </DialogDescription>
+                        <DialogDescription>This action can&apos;t be undone.</DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
                         <Button
