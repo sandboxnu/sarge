@@ -92,9 +92,7 @@ export async function deleteTaskTemplate(taskTemplateId: string): Promise<void> 
 /**
  * POST /api/task-templates
  */
-export async function createTaskTemplate(
-    payload: CreateTaskTemplateDTO
-): Promise<TaskTemplateDTO> {
+export async function createTaskTemplate(payload: CreateTaskTemplateDTO): Promise<TaskTemplateDTO> {
     const res = await fetch('/api/task-templates', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
