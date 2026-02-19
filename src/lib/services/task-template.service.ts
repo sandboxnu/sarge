@@ -245,7 +245,7 @@ async function getTaskTemplatesByTitle(
 }
 
 async function getDuplicateTitle(title: string, orgId: string): Promise<string> {
-    const titleDoesNotExist = await prisma.taskTemplate.findFirst({
+    const titleExists = await prisma.taskTemplate.findFirst({
         where: {
             title: {
                 equals: title,
@@ -254,7 +254,7 @@ async function getDuplicateTitle(title: string, orgId: string): Promise<string> 
         },
     });
 
-    if (titleDoesNotExist) return title;
+    if (!titleExists) return title;
 
     const newTitle = await createDuplicateTitle(title, 'task-template', orgId);
     return newTitle;
