@@ -230,8 +230,9 @@ export default function TemplatesPage() {
                                         title={task.title}
                                         subtitle={task.taskType ?? ''}
                                         chips={task.tags ?? []}
-                                        selected={selected?.includes(absoluteIdx) ?? false}
-                                        setSelected={handleSelectTask}
+                                        languages={task.languages}
+                                        isSelected={selected?.includes(absoluteIdx) ?? false}
+                                        setIsSelected={handleSelectTask}
                                         index={idx}
                                         taskTemplateId={task.id}
                                         isPreviewSelected={selectedTaskTemplate?.id === task.id}
