@@ -49,12 +49,8 @@ export default function TaskCard(props: TaskCardProps) {
             </div>
             <div className="flex min-w-0 flex-1 flex-col gap-2.5">
                 <div className="flex flex-col gap-1.5">
-                    <div className="text-label-s text-foreground truncate">
-                        {props.title}
-                    </div>
-                    <div className="text-label-xs text-sarge-gray-500">
-                        {props.subtitle}
-                    </div>
+                    <div className="text-label-s text-foreground truncate">{props.title}</div>
+                    <div className="text-label-xs text-sarge-gray-500">{props.subtitle}</div>
                     {props.languages && props.languages.length > 0 && (
                         <div className="text-label-xs text-sarge-gray-500 flex items-center gap-1.5">
                             <Code2 className="size-3.5 shrink-0" />
