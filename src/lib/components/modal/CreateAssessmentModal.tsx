@@ -38,8 +38,8 @@ export default function CreateAssessmentTemplateModal({
                         <Image
                             src="/CreateOrgLoading.gif"
                             alt="Loading..."
-                            width={100}
-                            height={100}
+                            width={66}
+                            height={66}
                             unoptimized
                         />
                         <p className="text-sarge-gray-600 text-sm">

@@ -343,7 +343,6 @@ async function seedTags() {
 
 /**
  * Seed Assessment Templates
- * TODO: update seeding logic to handle notes content once we have a better sense of the data structure and API for that
  */
 async function seedAssessmentTemplates() {
     console.log('Seeding assessment templates...');
