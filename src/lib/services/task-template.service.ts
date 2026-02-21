@@ -49,7 +49,7 @@ async function getTaskTemplate(id: string, orgId: string): Promise<TaskTemplateE
     return foundTaskTemplate as TaskTemplateEditorDTO;
 }
 
-async function getTaskTemplates(
+async function getAllTaskTemplates(
     orgId: string,
     page?: number,
     limit?: number
@@ -263,7 +263,7 @@ async function getDuplicateTitle(title: string, orgId: string): Promise<string> 
 
 const TaskTemplateService = {
     getTaskTemplate,
-    getTaskTemplates,
+    getAllTaskTemplates,
     createTaskTemplate,
     duplicateTaskTemplate,
     deleteTaskTemplate,

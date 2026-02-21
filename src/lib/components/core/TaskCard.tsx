@@ -1,14 +1,18 @@
+import { Checkbox } from '@/lib/components/ui/Checkbox';
 import { Chip } from '@/lib/components/ui/Chip';
 import type { TagDTO } from '@/lib/schemas/tag.schema';
-import { Square, SquareCheck } from 'lucide-react';
+import type { TaskTemplateLanguageDTO } from '@/lib/schemas/task-template-language.schema';
+import { getLanguageLabel } from '@/lib/utils/language.utils';
+import { Code2 } from 'lucide-react';
 import { cn } from '@/lib/utils/cn.utils';
 
 export interface TaskCardProps {
     title: string;
     subtitle: string;
     chips: TagDTO[];
-    selected: boolean;
-    setSelected: (index: number) => void;
+    languages?: TaskTemplateLanguageDTO[];
+    isSelected: boolean;
+    setIsSelected: (index: number) => void;
     index: number;
     taskTemplateId?: string;
     isPreviewSelected?: boolean;
@@ -36,25 +40,27 @@ export default function TaskCard(props: TaskCardProps) {
         >
             <div
                 className="flex shrink-0 cursor-pointer items-center"
-                onClick={(e) => {
-                    e.stopPropagation();
-                    props.setSelected(props.index);
-                }}
+                onClick={(e) => e.stopPropagation()}
             >
-                {props.selected ? (
-                    <SquareCheck className="size-5" />
-                ) : (
-                    <Square className="h-5 w-5" />
-                )}
+                <Checkbox
+                    checked={props.isSelected}
+                    onCheckedChange={() => props.setIsSelected(props.index)}
+                />
             </div>
             <div className="flex min-w-0 flex-1 flex-col gap-2.5">
-                <div className="flex-col">
-                    <div className="text-foreground truncate text-sm font-medium">
-                        {props.title}
-                    </div>
-                    <div className="text-sarge-gray-500 font-sans text-xs leading-4 font-medium tracking-[0.406px]">
-                        {props.subtitle}
-                    </div>
+                <div className="flex flex-col gap-1.5">
+                    <div className="text-label-s text-foreground truncate">{props.title}</div>
+                    <div className="text-label-xs text-sarge-gray-500">{props.subtitle}</div>
+                    {props.languages && props.languages.length > 0 && (
+                        <div className="text-label-xs text-sarge-gray-500 flex items-center gap-1.5">
+                            <Code2 className="size-3.5 shrink-0" />
+                            <span>
+                                {props.languages
+                                    .map((l) => getLanguageLabel(l.language))
+                                    .join(', ')}
+                            </span>
+                        </div>
+                    )}
                 </div>
                 <div className="flex flex-wrap gap-1">
                     {props.chips.map((chip, idx) => (
