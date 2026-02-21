@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
         const title = searchParams.get('title');
 
         if (!title) {
-            const taskTemplates = await TaskTemplateService.getTaskTemplates(orgId);
+            const taskTemplates = await TaskTemplateService.getAllTaskTemplates(orgId);
             return Response.json({ data: taskTemplates }, { status: 200 });
         }
 
