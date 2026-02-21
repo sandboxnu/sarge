@@ -21,6 +21,7 @@ import Pager from '@/lib/components/ui/Pager';
 import GreyWinstonLogoMark from '@/../public/GreyWinstonLogoMark.svg';
 import useSearch from '@/lib/hooks/useSearch';
 import { useAssessmentTemplateList } from '@/lib/hooks/useAssessmentTemplateList';
+import CreateAssessmentTemplateModal from '@/lib/components/modal/CreateAssessmentModal';
 import { type AssessmentTemplateListItemDTO } from '@/lib/schemas/assessment-template.schema';
 import AssessmentCard from '@/lib/components/core/AssessmentCard';
 import { deleteTaskTemplate, duplicateTaskTemplate } from '@/lib/api/task-templates';
@@ -32,6 +33,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/lib/components/ui/Modal';
+import { createAssessmentTemplate } from '@/lib/api/assessment-templates';
 
 export default function TemplatesPage() {
     const [selectedTaskTemplate, setSelectedTaskTemplate] =
@@ -41,6 +43,7 @@ export default function TemplatesPage() {
     const [isMutating, setIsMutating] = useState(false);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+    const [isCreateAssessmentTemplateOpen, setCreateAssessmentTemplateOpen] = useState(false);
 
     const {
         taskTemplateList,
@@ -126,7 +129,10 @@ export default function TemplatesPage() {
                                 <Plus /> New Task
                             </Button>
                         ) : (
-                            <Button className="px-4 py-2">
+                            <Button
+                                className="px-4 py-2"
+                                onClick={() => setCreateAssessmentTemplateOpen(true)}
+                            >
                                 <Plus /> New Assessment
                             </Button>
                         )}
@@ -373,6 +379,11 @@ export default function TemplatesPage() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
+            <CreateAssessmentTemplateModal
+                open={isCreateAssessmentTemplateOpen}
+                onOpenChange={setCreateAssessmentTemplateOpen}
+                onCreate={async () => {}}
+            />
         </Tabs>
     );
 }

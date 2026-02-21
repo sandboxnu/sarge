@@ -131,9 +131,9 @@ model Application {
 model AssessmentTemplate {
   id          String @id @unique @default(cuid())
   title       String
-  description String
   orgId       String
   authorId    String
+  notes Json
 
   organization Organization             @relation(fields: [orgId], references: [id])
   assessments  Assessment[]             @relation("derivedFromAssessmentTemplate")

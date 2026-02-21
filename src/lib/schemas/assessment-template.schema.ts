@@ -1,11 +1,12 @@
 import { z } from 'zod';
+import { blockNoteContentSchema } from './block-note.schema';
 
 export const AssessmentTemplateSchema = z.object({
     id: z.string(),
     title: z.string(),
-    description: z.string(),
     orgId: z.string(),
     authorId: z.string(),
+    notes: blockNoteContentSchema.default([]),
 });
 
 export const CreateAssessmentTemplateSchema = AssessmentTemplateSchema.omit({
@@ -16,7 +17,6 @@ export const CreateAssessmentTemplateSchema = AssessmentTemplateSchema.omit({
 export const UpdateAssessmentTemplateSchema = z.object({
     id: z.string(),
     title: z.string().optional(),
-    description: z.string().optional(),
 });
 
 export const GetAssessmentTemplateSchema = z.object({
