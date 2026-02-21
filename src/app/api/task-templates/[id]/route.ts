@@ -22,13 +22,13 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
         await assertRecruiterOrAbove(request.headers);
 
         const id = (await params).id;
-        const result = await TaskTemplateService.duplicateTaskTemplate(
-            id,
-            session.activeOrganizationId,
-            session.userId
-        );
+        // const result = await TaskTemplateService.duplicateTaskTemplate(
+        //     id,
+        //     session.activeOrganizationId,
+        //     session.userId
+        // );
 
-        return Response.json({ data: result }, { status: 201 });
+        // return Response.json({ data: result }, { status: 201 });
     } catch (err) {
         return handleError(err);
     }

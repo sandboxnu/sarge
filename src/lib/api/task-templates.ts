@@ -54,12 +54,12 @@ export async function getTaskTemplateList(
 }
 
 /**
- * POST /api/task-templates/:taskTemplateId
+ * POST /api/task-templates/duplicate/:taskTemplateId
  */
 export async function duplicateTaskTemplate(
     taskTemplateId: string
 ): Promise<TaskTemplateListItemDTO> {
-    const res = await fetch(`/api/task-templates/${taskTemplateId}`, {
+    const res = await fetch(`/api/task-templates/duplciate/${taskTemplateId}`, {
         method: 'POST',
     });
 
