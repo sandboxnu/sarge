@@ -367,7 +367,6 @@ async function seedAssessmentTemplates() {
             create: {
                 id: assessmentTemplateData.id,
                 title: assessmentTemplateData.title,
-                description: assessmentTemplateData.description,
                 orgId,
                 tasks: { create: tasksCreate },
                 authorId: assessmentTemplateData.authorId,
@@ -425,8 +424,8 @@ async function main() {
     await seedTaskTemplates();
     await seedLanguages();
     await seedTags();
-    await seedAssessmentTemplates();
-    await seedAssessments();
+    // await seedAssessmentTemplates();
+    // await seedAssessments();
 
     console.log('\nDatabase seeding completed successfully!');
 }
