@@ -26,6 +26,7 @@ export async function GET(request: NextRequest) {
     try {
         const session = await getSession();
         const searchParams = request.nextUrl.searchParams;
+
         const pageParam = searchParams.get('page') ?? '0';
         const limitParam = searchParams.get('limit') ?? '10';
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Search } from '@/lib/components/core/Search';
 import { Button } from '@/lib/components/ui/Button';
 import {
@@ -23,7 +24,12 @@ import useSearch from '@/lib/hooks/useSearch';
 import { useAssessmentTemplateList } from '@/lib/hooks/useAssessmentTemplateList';
 import { type AssessmentTemplateListItemDTO } from '@/lib/schemas/assessment-template.schema';
 import AssessmentCard from '@/lib/components/core/AssessmentCard';
-import { deleteTaskTemplate, duplicateTaskTemplate } from '@/lib/api/task-templates';
+import {
+    deleteTaskTemplate,
+    duplicateTaskTemplate,
+    getDuplicateTitle,
+    createTaskTemplate,
+} from '@/lib/api/task-templates';
 import {
     Dialog,
     DialogContent,
@@ -32,6 +38,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/lib/components/ui/Modal';
+import { useAuth } from '@/lib/auth/auth-context';
 
 export default function TemplatesPage() {
     const [selectedTaskTemplate, setSelectedTaskTemplate] =
@@ -42,6 +49,8 @@ export default function TemplatesPage() {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
+    const [isCreating, setIsCreating] = useState(false);
+    const router = useRouter();
     const {
         taskTemplateList,
         isLoading,
@@ -66,6 +75,8 @@ export default function TemplatesPage() {
 
     const isSearchingForTaskTemplate = taskTemplateSearch.value.trim().length >= 1;
     const isSearchingForAssessmentTemplate = assessmentTemplateSearch.value.trim().length >= 1;
+
+    const { activeOrganizationId } = useAuth();
 
     const onDuplicate = async (taskTemplateId: string) => {
         try {
@@ -103,6 +114,27 @@ export default function TemplatesPage() {
         }
     };
 
+    const handleCreateTask = async () => {
+        if (isCreating || !activeOrganizationId) return;
+        setIsCreating(true);
+
+        const title = await getDuplicateTitle('Unnamed Task Template');
+        try {
+            const created = await createTaskTemplate({
+                title,
+                description: [],
+                publicTestCases: [],
+                privateTestCases: [],
+                taskType: null,
+            });
+            router.push(`/crm/task-templates/${created.id}/edit`);
+        } catch (err) {
+            console.error('Failed to create task template:', err);
+        } finally {
+            setIsCreating(false);
+        }
+    };
+
     return (
         <Tabs
             defaultValue="tasks"
@@ -122,7 +154,11 @@ export default function TemplatesPage() {
                     </TabsList>
                     <div className="flex items-center gap-4">
                         {activeTab === 'tasks' ? (
-                            <Button className="px-4 py-2">
+                            <Button
+                                className="px-4 py-2"
+                                onClick={handleCreateTask}
+                                disabled={isCreating}
+                            >
                                 <Plus /> New Task
                             </Button>
                         ) : (
