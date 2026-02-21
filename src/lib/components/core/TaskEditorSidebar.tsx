@@ -15,8 +15,10 @@ export interface TaskEditorSidebarProps {
     availableTags: TagDTO[];
     setAvailableTags: React.Dispatch<React.SetStateAction<TagDTO[]>>;
     languages?: TaskTemplateLanguageDTO[];
-    setLanguages: React.Dispatch<React.SetStateAction<TaskTemplateLanguageDTO[] | undefined>>;
     isSaving: boolean;
+    removeLanguage: (lang: string) => void;
+    clearAllLanguages: () => void;
+    handleLanguageSelectionChange: (selected: string | string[]) => void;
 }
 
 export default function TaskEditorSidebar({
@@ -27,8 +29,10 @@ export default function TaskEditorSidebar({
     availableTags,
     setAvailableTags,
     languages,
-    setLanguages,
     isSaving,
+    removeLanguage,
+    clearAllLanguages,
+    handleLanguageSelectionChange,
 }: TaskEditorSidebarProps) {
     return (
         <div className="border-r-sarge-primary-100 bg-sarge-gray-0 flex h-full min-h-0 w-full flex-col border-r-4 px-[30px] py-[10px]">
@@ -49,7 +53,12 @@ export default function TaskEditorSidebar({
                     />
                 </TabsContent>
                 <TabsContent value="languages" className="min-h-0 flex-1 overflow-y-auto pt-5">
-                    <LanguagesTab languages={languages} setLanguages={setLanguages} />
+                    <LanguagesTab
+                        languages={languages}
+                        removeLanguage={removeLanguage}
+                        clearAllLanguages={clearAllLanguages}
+                        handleLanguageSelectionChange={handleLanguageSelectionChange}
+                    />
                 </TabsContent>
             </Tabs>
         </div>
