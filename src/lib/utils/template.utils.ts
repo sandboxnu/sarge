@@ -18,7 +18,7 @@ export const createDuplicateTitle = async (
             : trimmedTitle;
 
     let existingTitlesInOrg;
-    if (type == 'task-template') {
+    if (type === 'task-template') {
         existingTitlesInOrg = await prisma.taskTemplate.findMany({
             where: {
                 orgId,

@@ -111,8 +111,8 @@ export async function createTaskTemplate(payload: CreateTaskTemplateDTO): Promis
 /**
  * GET /api/task-templates?duplicate=...
  */
-export async function getDuplicateTitle(title: string): Promise<{ data: string }> {
-    const res = await fetch(`/api/task-templates?duplicate=${title}`);
+export async function getDuplicateTitle(title: string): Promise<string> {
+    const res = await fetch(`/api/task-templates/duplicate?name=${encodeURIComponent(title)}`);
 
     const json = await res.json();
 
@@ -120,5 +120,5 @@ export async function getDuplicateTitle(title: string): Promise<{ data: string }
         throw new Error(json.message);
     }
 
-    return json;
+    return json.data;
 }
