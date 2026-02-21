@@ -42,7 +42,7 @@ export default function CreateAssessmentTemplateModal({
                             height={66}
                             unoptimized
                         />
-                        <p className="text-sarge-gray-600 text-sm">
+                        <p className="text-sarge-gray-800 text-base leading-tight font-medium tracking-wide">
                             Creating assessment template...
                         </p>
                     </div>
