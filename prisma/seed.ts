@@ -345,38 +345,38 @@ async function seedTags() {
  * Seed Assessment Templates
  * TODO: update seeding logic to handle notes content once we have a better sense of the data structure and API for that
  */
-// async function seedAssessmentTemplates() {
-//     console.log('Seeding assessment templates...');
+async function seedAssessmentTemplates() {
+    console.log('Seeding assessment templates...');
 
-//     const orgId = organizationsData[0].id;
+    const orgId = organizationsData[0].id;
 
-//     for (const assessmentTemplateData of assessmentTemplatesData) {
-//         const taskTemplateIds = assessmentTemplateData.taskTemplates;
-//         const tasksCreate = taskTemplateIds.map((taskTemplateId, index) => ({
-//             taskTemplateId,
-//             order: index,
-//         }));
+    for (const assessmentTemplateData of assessmentTemplatesData) {
+        const taskTemplateIds = assessmentTemplateData.taskTemplates;
+        const tasksCreate = taskTemplateIds.map((taskTemplateId, index) => ({
+            taskTemplateId,
+            order: index,
+        }));
 
-//         await prisma.assessmentTemplate.upsert({
-//             where: { id: assessmentTemplateData.id },
-//             update: {
-//                 tasks: {
-//                     deleteMany: {},
-//                     create: tasksCreate,
-//                 },
-//             },
-//             create: {
-//                 id: assessmentTemplateData.id,
-//                 title: assessmentTemplateData.title,
-//                 orgId,
-//                 tasks: { create: tasksCreate },
-//                 authorId: assessmentTemplateData.authorId,
-//             },
-//         });
+        await prisma.assessmentTemplate.upsert({
+            where: { id: assessmentTemplateData.id },
+            update: {
+                tasks: {
+                    deleteMany: {},
+                    create: tasksCreate,
+                },
+            },
+            create: {
+                id: assessmentTemplateData.id,
+                title: assessmentTemplateData.title,
+                orgId,
+                tasks: { create: tasksCreate },
+                authorId: assessmentTemplateData.authorId,
+            },
+        });
 
-//         console.log(`  Created assessment template: ${assessmentTemplateData.title}`);
-//     }
-// }
+        console.log(`  Created assessment template: ${assessmentTemplateData.title}`);
+    }
+}
 
 /**
  * Seed Assessments
@@ -425,8 +425,8 @@ async function main() {
     await seedTaskTemplates();
     await seedLanguages();
     await seedTags();
-    // await seedAssessmentTemplates();
-    // await seedAssessments();
+    await seedAssessmentTemplates();
+    await seedAssessments();
 
     console.log('\nDatabase seeding completed successfully!');
 }

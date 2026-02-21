@@ -34,7 +34,7 @@ export default function CreateAssessmentModalEditor({
 
     return (
         <div
-            className="bg-sarge-gray-50 border-sarge-gray-200 hover:border-sarge-gray-300 focus-within:border-sarge-gray-300 max-w-full min-w-0 overflow-hidden rounded-lg border transition-colors [&_.bn-editor]:max-w-full [&_.bn-editor]:overflow-hidden"
+            className="bg-sarge-gray-50 border-sarge-gray-200 hover:border-sarge-gray-300 focus-within:border-sarge-gray-300 max-h-[350px] max-w-full min-w-0 overflow-x-hidden overflow-y-scroll rounded-lg border transition-colors [-ms-overflow-style:none] [scrollbar-width:none] [&_.bn-editor]:max-w-full [&_.bn-editor]:overflow-hidden [&::-webkit-scrollbar]:hidden"
             data-blocknote-no-side-menu
             data-blocknote-editor-bg="muted"
         >

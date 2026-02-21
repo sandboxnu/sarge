@@ -32,7 +32,7 @@ export default function CreateAssessmentTemplateModal({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-[750px] min-w-[750px] px-9 py-8">
+            <DialogContent className="max-h-[700px] max-w-[750px] min-w-[750px] px-9 py-8">
                 {isLoading ? (
                     <div className="flex flex-col items-center justify-center gap-4 py-12">
                         <Image
