@@ -106,31 +106,35 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
                             </Tabs>
                             <div className="text-md flex items-center gap-1.5">
                                 <div>Language</div>
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <div className="bg-sarge-primary-500 flex items-center gap-2.5 rounded-sm px-2.5 text-white">
-                                            {taskTemplate?.languages[selectedLanguage].language}
-                                            <ChevronDown className="size-4" />
-                                        </div>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent
-                                        side="bottom"
-                                        align="center"
-                                        className="bg-sarge-primary-500 rounded-sm px-2.5"
-                                    >
-                                        <DropdownMenuGroup className="!hover:bg-sarge-primary-600 p-0 !text-white">
-                                            {taskTemplate?.languages.map((l, index) => (
-                                                <DropdownMenuItem
-                                                    className="!hover:text-sarge-primary-500 cursor-pointer border-none !text-white"
-                                                    key={l.language}
-                                                    onClick={() => handleLanguageChange(index)}
-                                                >
-                                                    {l.language}
-                                                </DropdownMenuItem>
-                                            ))}
-                                        </DropdownMenuGroup>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
+                                {languages && languages?.length > 0 && (
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <div className="bg-sarge-primary-500 flex items-center gap-2.5 rounded-sm px-2.5 text-white hover:cursor-pointer">
+                                                {languages[selectedLanguage].language}
+                                                <ChevronDown className="size-4" />
+                                            </div>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent
+                                            side="bottom"
+                                            align="center"
+                                            className="bg-sarge-primary-500 rounded-sm px-2.5"
+                                        >
+                                            <DropdownMenuGroup className="p-0 !text-white">
+                                                {languages
+                                                    .filter((l) => l != languages[selectedLanguage])
+                                                    .map((l) => (
+                                                        <DropdownMenuItem
+                                                            className="!hover:text-sarge-primary-500 hover:!bg-sarge-primary-600 border-none !text-white hover:cursor-pointer"
+                                                            key={l.language}
+                                                            onClick={() => handleLanguageChange(l)}
+                                                        >
+                                                            {l.language}
+                                                        </DropdownMenuItem>
+                                                    ))}
+                                            </DropdownMenuGroup>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                )}
                                 <EllipsisVertical className="mr-2.5 size-5" />
                             </div>
                         </div>

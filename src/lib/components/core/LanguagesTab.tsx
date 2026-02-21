@@ -19,22 +19,26 @@ export default function LanguagesTab({ languages, setLanguages }: LanguagesTabPr
     const handleLanguageChange = (selected: string | string[]) => {
         const selectedArr = Array.isArray(selected) ? selected : [selected];
 
-        const existing = (languages ?? []).filter((l) => selectedArr.includes(l.language));
-        const existingLangs = existing.map((l) => l.language);
-        const newLangs = selectedArr.filter(
-            (lang) => !existingLangs.includes(lang as TaskTemplateLanguageDTO['language'])
-        );
+        setLanguages((prev) => {
+            const existing = (prev ?? []).filter((l) => selectedArr.includes(l.language));
+            const existingLangs = existing.map((l) => l.language);
+            const newLangs = selectedArr.filter(
+                (lang) => !existingLangs.includes(lang as TaskTemplateLanguageDTO['language'])
+            );
 
-        const newEntries: TaskTemplateLanguageDTO[] = newLangs.map((lang, i) => ({
-            id: -(Date.now() + i),
-            taskTemplateId: '',
-            language: lang as TaskTemplateLanguageDTO['language'],
-            solution: '',
-            stub: '',
-        }));
+            const newEntries: TaskTemplateLanguageDTO[] = newLangs.map((lang, i) => ({
+                id: -(Date.now() + i),
+                taskTemplateId: '',
+                language: lang as TaskTemplateLanguageDTO['language'],
+                solution: '',
+                stub: '',
+            }));
 
-        setLanguages([...existing, ...newEntries]);
+            return [...existing, ...newEntries];
+        });
     };
+
+    // All of these need to handle changing the current language
 
     const removeLanguage = (lang: string) => {
         setLanguages((prev) => (prev ?? []).filter((l) => l.language !== lang));

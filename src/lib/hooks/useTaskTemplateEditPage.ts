@@ -56,15 +56,15 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
         fetchData();
     }, [taskTemplateId]);
 
-    function handleLanguageChange(language: number) {
-        // NOTE(laith): this was from rebase and chose to accept your changes. please double check @cherman <3
-        // handleModelChange(language, true);
-        handleModelChange(language, false);
-        setSelectedLanguage(language);
+    function handleLanguageChange(language: TaskTemplateLanguageDTO) {
+        const selected = languages?.indexOf(language);
+        if (selected === undefined) return;
+        handleModelChange(selected, true);
+        setSelectedLanguage(selected);
     }
 
     function handleModelChange(language: number, task: boolean) {
-        if (!editorRef.current || !monacoRef.current || !languages) return;
+        if (!editorRef.current || !monacoRef.current || !languages?.[language]) return;
         const languageData = languages[language];
         const newStub = task ? languageData.stub : languageData.solution;
         const key = task ? `${languageData.language}` : `${languageData.language}-solution`;
