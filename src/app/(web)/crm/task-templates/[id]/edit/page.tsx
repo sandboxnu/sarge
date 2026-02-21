@@ -58,7 +58,7 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
     return (
         <div className="flex h-full w-full flex-col">
             <div className="flex items-center justify-between gap-2 border-b px-5 py-4">
-                <div className="flex items-center">
+                <div className="flex items-center gap-2">
                     <Button variant="icon" onClick={() => router.push('/crm/templates')}>
                         <ChevronLeft className="size-5" />
                     </Button>

@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
         const searchParams = request.nextUrl.searchParams;
 
         if (searchParams.has('name')) {
-            const titleToCheck = searchParams.get('duplicate') as string;
+            const titleToCheck = searchParams.get('name') as string;
             const result = await TaskTemplateService.getDuplicateTitle(
                 titleToCheck,
                 session.activeOrganizationId
