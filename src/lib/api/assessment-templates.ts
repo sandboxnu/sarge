@@ -1,4 +1,7 @@
-import { type AssessmentTemplateListItemDTO } from '@/lib/schemas/assessment-template.schema';
+import {
+    type CreateAssessmentTemplateDTO,
+    type AssessmentTemplateListItemDTO,
+} from '@/lib/schemas/assessment-template.schema';
 
 /**
  * GET /api/assessment-templates/search/?title=...
@@ -33,4 +36,27 @@ export async function getAssessmentTemplateList(
     }
 
     return json;
+}
+
+/**
+ * POST /api/assessment-templates
+ */
+export async function createAssessmentTemplate(
+    payload: CreateAssessmentTemplateDTO
+): Promise<AssessmentTemplateListItemDTO> {
+    const res = await fetch(`/api/assessment-templates`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+    });
+
+    const json = await res.json();
+
+    if (!res.ok) {
+        throw new Error(json.message);
+    }
+
+    return json.data;
 }

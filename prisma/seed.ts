@@ -367,7 +367,6 @@ async function seedAssessmentTemplates() {
             create: {
                 id: assessmentTemplateData.id,
                 title: assessmentTemplateData.title,
-                description: assessmentTemplateData.description,
                 orgId,
                 tasks: { create: tasksCreate },
                 authorId: assessmentTemplateData.authorId,
