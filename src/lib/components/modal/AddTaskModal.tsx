@@ -10,12 +10,13 @@ import TaskCard from '@/lib/components/core/TaskCard';
 import Pager from '@/lib/components/ui/Pager';
 
 import { useAddTaskModal } from '@/lib/hooks/useAddTaskModal';
+import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
 import GreyWinstonLogoMark from '@/../public/GreyWinstonLogoMark.svg';
 
 type AddTaskModalProps = {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    onAdd: (taskTemplateIds: string[]) => void;
+    onAdd: (tasks: TaskTemplateListItemDTO[]) => void;
     alreadyAddedIds?: Set<string>;
 };
 
@@ -65,7 +66,8 @@ export default function AddTaskModal({
     );
 
     const handleAdd = () => {
-        onAdd(Array.from(selectedIds));
+        const selectedTasks = displayList.filter((t) => selectedIds.has(t.id));
+        onAdd(selectedTasks);
         handleOpenChange(false);
     };
 
@@ -144,7 +146,7 @@ export default function AddTaskModal({
                                                 maxTags={2}
                                             />
                                         </div>
-                                        <span className="text-label-xs text-sarge-gray-500 absolute right-3 bottom-3">
+                                        <span className="text-label-xs text-sarge-gray-500 absolute top-3 right-3">
                                             Already added
                                         </span>
                                     </div>
