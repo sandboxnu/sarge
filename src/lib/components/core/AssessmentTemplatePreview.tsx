@@ -16,10 +16,7 @@ import {
 } from '@/lib/components/ui/Dropdown';
 import { ChevronLeft, ChevronRight, SquarePen } from 'lucide-react';
 import Link from 'next/link';
-import {
-    type TaskTemplateListItemDTO,
-    type TaskTemplateEditorDTO,
-} from '@/lib/schemas/task-template.schema';
+import { type TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
 import { TaskAssessmentPreview } from './AssessmentTaskPreview';
 
 export interface AssessmentTemplatePreviewProps {
