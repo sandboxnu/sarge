@@ -2,6 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import type { AssessmentTemplateListItemDTO } from '@/lib/schemas/assessment-template.schema';
+import {
+    getAssessmentTemplateTaskOrder,
+    type AssessmentTemplateTaskOrder,
+} from '@/lib/api/assessment-templates';
+import { getTaskTemplate } from '@/lib/api/task-templates';
 import { TaskPreview } from './AssessmentTaskPreview';
 import { Button } from '@/lib/components/ui/Button';
 import {
@@ -12,11 +17,6 @@ import {
 } from '@/lib/components/ui/Dropdown';
 import { ChevronLeft, ChevronRight, SquarePen } from 'lucide-react';
 import Link from 'next/link';
-
-type AssessmentTemplateTaskOrder = {
-    taskTemplateId: string;
-    order: number;
-};
 
 type TaskTemplatePreview = {
     id: string;
@@ -42,27 +42,16 @@ export function AssessmentTemplatePreview({
         setCurrentIndex(0);
 
         const load = async () => {
-            const tasksRes = await fetch(
-                `/api/assessment-templates/${assessmentTemplatePreview.id}/tasks`
-            );
-            const tasksJson = await tasksRes.json();
-            if (!tasksRes.ok) {
-                throw new Error(tasksJson.message ?? 'Failed to load tasks');
-            }
+            const orderedTasks = await getAssessmentTemplateTaskOrder(assessmentTemplatePreview.id);
 
-            const orderedTasks = (tasksJson.data as AssessmentTemplateTaskOrder[]) ?? [];
             const templates = await Promise.all(
                 orderedTasks.map(async (task) => {
-                    const res = await fetch(`/api/task-templates/${task.taskTemplateId}`);
-                    const json = await res.json();
-                    if (!res.ok) {
-                        throw new Error(json.message ?? 'Failed to load task template');
-                    }
+                    const taskTemplate = await getTaskTemplate(task.taskTemplateId);
 
                     return {
-                        id: json.data.id as string,
-                        title: json.data.title as string,
-                        description: json.data.description as unknown,
+                        id: taskTemplate.id,
+                        title: taskTemplate.title,
+                        description: taskTemplate.description,
                     } satisfies TaskTemplatePreview;
                 })
             );

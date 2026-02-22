@@ -117,3 +117,25 @@ export async function createAssessmentTemplate(
 
     return json.data;
 }
+
+export type AssessmentTemplateTaskOrder = {
+    taskTemplateId: string;
+    order: number;
+};
+
+/**
+ * GET /api/assessment-templates/:id/tasks
+ */
+export async function getAssessmentTemplateTaskOrder(
+    assessmentTemplateId: string
+): Promise<AssessmentTemplateTaskOrder[]> {
+    const res = await fetch(`/api/assessment-templates/${assessmentTemplateId}/tasks`);
+
+    const json = await res.json();
+
+    if (!res.ok) {
+        throw new Error(json.message);
+    }
+
+    return json.data;
+}
