@@ -134,7 +134,7 @@ export default function TestCaseListShell(props: TestCaseListShellProps) {
                     </TabsList>
                 </div>
 
-                <div className="flex shrink-0 items-center justify-between border-b px-4 pb-2">
+                <div className="flex shrink-0 items-center justify-between border-b px-4 py-2">
                     <span className="text-md font-medium">
                         {activeLabel} ({activeTestCases.length})
                     </span>
