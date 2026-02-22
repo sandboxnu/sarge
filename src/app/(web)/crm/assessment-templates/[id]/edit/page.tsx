@@ -82,7 +82,7 @@ export default function AssessmentTemplateEditPage({
                     height={66}
                     unoptimized
                 />
-                <p className="text-body-m text-sarge-gray-500">
+                <p className="text-sarge-gray-800 text-base leading-tight font-medium tracking-wide">
                     Opening assessment template editor...
                 </p>
             </div>

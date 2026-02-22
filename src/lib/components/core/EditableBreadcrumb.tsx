@@ -99,7 +99,7 @@ export default function EditableBreadcrumb({
                     className={cn(
                         'text-display-xs truncate',
                         isEditable &&
-                            'hover:bg-sarge-gray-100 -ml-1 cursor-text rounded-md px-1 py-0.5 transition-colors'
+                            'hover:bg-sarge-gray-100 -ml-1 cursor-text rounded-md px-2 py-1 transition-colors'
                     )}
                     onClick={startEditing}
                     title={isEditable ? 'Click to edit' : undefined}
