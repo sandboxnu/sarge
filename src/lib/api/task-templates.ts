@@ -3,6 +3,7 @@ import {
     type TaskTemplateEditorDTO,
     type CreateTaskTemplateDTO,
     type TaskTemplateDTO,
+    TaskTemplateEditorSaveDTO,
 } from '@/lib/schemas/task-template.schema';
 
 /**
@@ -113,6 +114,28 @@ export async function createTaskTemplate(payload: CreateTaskTemplateDTO): Promis
  */
 export async function getDuplicateTitle(title: string): Promise<string> {
     const res = await fetch(`/api/task-templates/duplicate?name=${encodeURIComponent(title)}`);
+
+    const json = await res.json();
+
+    if (!res.ok) {
+        throw new Error(json.message);
+    }
+
+    return json.data;
+}
+
+/**
+ * POST /api/task-templates/:taskTemplateId
+ */
+export async function editTaskTemplate(
+    taskTemplateId: string,
+    payload: TaskTemplateEditorSaveDTO
+): Promise<TaskTemplateEditorDTO> {
+    const res = await fetch(`/api/task-templates/${taskTemplateId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+    });
 
     const json = await res.json();
 

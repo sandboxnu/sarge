@@ -1,17 +1,23 @@
 import { useState, useEffect, useRef } from 'react';
-import { getTaskTemplate } from '@/lib/api/task-templates';
+import { editTaskTemplate, getTaskTemplate } from '@/lib/api/task-templates';
 import { getOrgTags } from '@/lib/api/tags';
-import { type TestCaseDTO, type TaskTemplateEditorDTO } from '@/lib/schemas/task-template.schema';
+import {
+    type TestCaseDTO,
+    type TaskTemplateEditorDTO,
+    type TaskTemplateEditorSaveDTO,
+} from '@/lib/schemas/task-template.schema';
 import { type TagDTO } from '@/lib/schemas/tag.schema';
 import { type TaskTemplateLanguageDTO } from '@/lib/schemas/task-template-language.schema';
 import { type BlockNoteContent } from '@/lib/types/task-template.types';
 import { type editor } from 'monaco-editor';
 import { type Monaco } from '@monaco-editor/react';
+import { toast } from 'sonner';
 
 export default function useTaskTemplateEditPage(taskTemplateId: string) {
     const [taskTemplate, setTaskTemplate] = useState<TaskTemplateEditorDTO | null>(null);
     const [isLoading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error | null>(null);
+    const [isSaving, setIsSaving] = useState<boolean>(false);
 
     // Sidebar
     const [title, setTitle] = useState<string>('');
@@ -106,6 +112,48 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
         return editorRef.current.getValue();
     }
 
+    function getSavePayload(): TaskTemplateEditorSaveDTO {
+        const updatedLanguages = (languages ?? []).map((lang): TaskTemplateLanguageDTO => {
+            const stubKey = `${lang.language}`;
+            const solutionKey = `${lang.language}-solution`;
+
+            const stub = editorModels.current[stubKey]?.getValue() ?? lang.stub;
+            const solution = editorModels.current[solutionKey]?.getValue() ?? lang.solution;
+
+            return {
+                id: lang.id,
+                language: lang.language,
+                stub,
+                solution,
+                taskTemplateId,
+            };
+        });
+
+        return {
+            id: taskTemplateId,
+            taskType: taskTemplate?.taskType ?? null,
+            title,
+            description,
+            tags: tags.map((tag) => tag.id),
+            publicTestCases,
+            privateTestCases,
+            languages: updatedLanguages,
+        };
+    }
+
+    async function saveTaskTemplate() {
+        try {
+            setIsSaving(true);
+            const payload = getSavePayload();
+            await editTaskTemplate(taskTemplateId, payload);
+            toast.success('Successfuly saved task template');
+        } catch (err) {
+            setError(err as Error);
+        } finally {
+            setIsSaving(false);
+        }
+    }
+
     return {
         taskTemplate,
         error,
@@ -129,5 +177,7 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
         handleEditorContent,
         getEditorContent,
         handleTaskSolutionToggle,
+        isSaving,
+        saveTaskTemplate,
     };
 }
