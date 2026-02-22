@@ -111,7 +111,7 @@ export function AssessmentTemplatePreview({
                 <Button variant="secondary" className="h-fit px-4 py-2" asChild>
                     <Link
                         aria-label="Edit assessment template"
-                        href={`/crm/assessment-templates/${assessmentTemplatePreview.id}`}
+                        href={`/crm/assessment-templates/${assessmentTemplatePreview.id}/edit`}
                     >
                         <SquarePen className="size-5" />
                         Edit details
