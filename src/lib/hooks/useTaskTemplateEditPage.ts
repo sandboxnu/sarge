@@ -31,6 +31,7 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
     const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
     const monacoRef = useRef<Monaco | null>(null);
     const editorModels = useRef<{ [key: string]: editor.ITextModel }>({});
+    const currentModelKeyRef = useRef<string | null>(null);
 
     // Tests
     const [publicTestCases, setPublicTestCases] = useState<TestCaseDTO[]>([]);
@@ -63,9 +64,7 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
     }, [taskTemplateId]);
 
     function handleLanguageChange(language: number) {
-        // NOTE(laith): this was from rebase and chose to accept your changes. please double check @cherman <3
-        // handleModelChange(language, true);
-        handleModelChange(language, false);
+        handleModelChange(language, true);
         setSelectedLanguage(language);
     }
 
@@ -81,6 +80,7 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
         if (newModel) {
             editorModels.current[key] = newModel;
             editorRef.current.setModel(newModel);
+            currentModelKeyRef.current = key;
         }
     }
 
@@ -112,7 +112,29 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
         return editorRef.current.getValue();
     }
 
+    function syncActiveEditorModel() {
+        if (!editorRef.current || !languages) return;
+
+        const liveModel = editorRef.current.getModel();
+        if (!liveModel) return;
+
+        if (currentModelKeyRef.current) {
+            if (!editorModels.current[currentModelKeyRef.current]) {
+                editorModels.current[currentModelKeyRef.current] = liveModel;
+            }
+        } else {
+            const lang = languages[selectedLanguage];
+            if (lang) {
+                const key = `${lang.language}`;
+                editorModels.current[key] = liveModel;
+                currentModelKeyRef.current = key;
+            }
+        }
+    }
+
     function getSavePayload(): TaskTemplateEditorSaveDTO {
+        syncActiveEditorModel();
+
         const updatedLanguages = (languages ?? []).map((lang): TaskTemplateLanguageDTO => {
             const stubKey = `${lang.language}`;
             const solutionKey = `${lang.language}-solution`;
