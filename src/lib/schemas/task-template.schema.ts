@@ -61,6 +61,15 @@ export const taskTemplateListItemSchema = taskTemplateWithTagsSchema.extend({
     languages: TaskTemplateLanguageSchema.array(),
 });
 
+export const taskTemplateEditorSaveSchema = TaskTemplateSchema.omit({
+    orgId: true,
+    authorId: true,
+}).extend({
+    description: z.array(z.any()),
+    tags: z.array(z.string()),
+    languages: TaskTemplateLanguageSchema.array(),
+});
+
 export type TaskTemplateDTO = z.infer<typeof TaskTemplateSchema>;
 export type GetTaskTemplateDTO = z.infer<typeof getTaskTemplateSchema>;
 export type CreateTaskTemplateDTO = z.infer<typeof createTaskTemplateSchema>;
@@ -70,3 +79,4 @@ export type TestCaseDTO = z.infer<typeof testCaseSchema>;
 export type TaskTemplateWithTagsDTO = z.infer<typeof taskTemplateWithTagsSchema>;
 export type TaskTemplateListItemDTO = z.infer<typeof taskTemplateListItemSchema>;
 export type TaskTemplateEditorDTO = z.infer<typeof TaskTemplateEditorSchema>;
+export type TaskTemplateEditorSaveDTO = z.infer<typeof taskTemplateEditorSaveSchema>;

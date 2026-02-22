@@ -10,10 +10,12 @@ interface TestCaseEditorProps {
     setPublicTestCases: React.Dispatch<React.SetStateAction<TestCaseDTO[]>>;
     privateTestCases: TestCaseDTO[];
     setPrivateTestCases: React.Dispatch<React.SetStateAction<TestCaseDTO[]>>;
+    isSaving: boolean;
 }
 
 export default function TestCaseEditor(props: TestCaseEditorProps) {
-    const { publicTestCases, setPublicTestCases, privateTestCases, setPrivateTestCases } = props;
+    const { publicTestCases, setPublicTestCases, privateTestCases, setPrivateTestCases, isSaving } =
+        props;
     const {
         activeTestTab,
         setActiveTestTab,
@@ -38,25 +40,28 @@ export default function TestCaseEditor(props: TestCaseEditorProps) {
         <div className="flex flex-1 flex-col overflow-hidden">
             <Tabs
                 value={activeTestTab}
-                onValueChange={(v) => setActiveTestTab(v as TestTab)}
+                onValueChange={isSaving ? undefined : (v) => setActiveTestTab(v as TestTab)}
                 className="flex flex-1 flex-col overflow-hidden"
             >
                 <div className="border-sarge-gray-200 bg-sarge-gray-200 shrink-0 border-b">
                     <TabsList className="h-auto gap-0 rounded-none bg-transparent p-0">
                         <TabsTrigger
                             value="all"
+                            disabled={isSaving}
                             className="border=[0.5px] !text-sarge-gray-700 border-sarge-gray-300 bg-sarge-gray-100 rounded-none border-r-0 px-3 py-1 text-sm font-medium data-[state=active]:!bg-white data-[state=active]:!shadow-none"
                         >
                             All Test Cases
                         </TabsTrigger>
                         <TabsTrigger
                             value="public"
+                            disabled={isSaving}
                             className="border=[0.5px] !text-sarge-gray-700 border-sarge-gray-300 bg-sarge-gray-100 rounded-none border-r-0 px-3 py-1 text-sm font-medium data-[state=active]:!bg-white data-[state=active]:!shadow-none"
                         >
                             Public Test Cases
                         </TabsTrigger>
                         <TabsTrigger
                             value="private"
+                            disabled={isSaving}
                             className="!text-sarge-gray-700 border-sarge-gray-300 bg-sarge-gray-100 rounded-none border px-3 py-1 text-sm font-medium data-[state=active]:!border-b-0 data-[state=active]:!bg-white"
                         >
                             Private Test Cases
@@ -73,6 +78,7 @@ export default function TestCaseEditor(props: TestCaseEditorProps) {
                         className="items-center gap-1 rounded-md px-3 py-1 text-sm"
                         variant="secondary"
                         onClick={addTestCase}
+                        disabled={isSaving}
                     >
                         <PlusIcon className="stroke-sarge-primary-500" height={18} width={18} />
                         Add test
@@ -94,10 +100,8 @@ export default function TestCaseEditor(props: TestCaseEditorProps) {
                             onRemove={() => removeTestCase(index, 'all')}
                             onUpdate={(field, value) => updateTestCase(index, 'all', field, value)}
                             onToggle={() => toggleTestCaseVisibility(index, 'all')}
-                            // because our tests themselves don't have a public or private state
-                            // they're indexed in a way where they're not mixed and matched, but
-                            // public test cases first, then private test cases after
                             isPrivate={index >= publicTestCases.length}
+                            isSaving={isSaving}
                         />
                     ))}
                 </TabsContent>
@@ -120,6 +124,7 @@ export default function TestCaseEditor(props: TestCaseEditorProps) {
                             }
                             onToggle={() => toggleTestCaseVisibility(index, 'public')}
                             isPrivate={false}
+                            isSaving={isSaving}
                         />
                     ))}
                 </TabsContent>
@@ -142,6 +147,7 @@ export default function TestCaseEditor(props: TestCaseEditorProps) {
                             }
                             onToggle={() => toggleTestCaseVisibility(index, 'private')}
                             isPrivate={true}
+                            isSaving={isSaving}
                         />
                     ))}
                 </TabsContent>

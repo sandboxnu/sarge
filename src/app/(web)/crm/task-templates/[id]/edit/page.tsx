@@ -42,6 +42,8 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
         handleEditorContent,
         handleLanguageChange,
         handleTaskSolutionToggle,
+        isSaving,
+        saveTaskTemplate,
     } = useTaskTemplateEditPage(id);
 
     if (isLoading) {
@@ -59,13 +61,22 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
         <div className="flex h-full w-full flex-col">
             <div className="flex items-center justify-between gap-2 border-b px-5 py-4">
                 <div className="flex items-center gap-2">
-                    <Button variant="icon" onClick={() => router.push('/crm/templates')}>
+                    <Button
+                        variant="icon"
+                        onClick={() => router.push('/crm/templates')}
+                        disabled={isSaving}
+                    >
                         <ChevronLeft className="size-5" />
                     </Button>
                     <h1 className="text-xl font-bold">{title}</h1>
                 </div>
-                <Button variant="secondary" className="px-4 py-2">
-                    Save Changes
+                <Button
+                    variant="secondary"
+                    className="px-4 py-2"
+                    onClick={saveTaskTemplate}
+                    disabled={isSaving}
+                >
+                    {isSaving ? 'Saving...' : 'Save Changes'}
                 </Button>
             </div>
 
@@ -82,22 +93,28 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
                         setAvailableTags={setAvailableTags}
                         languages={languages}
                         setLanguages={setLanguages}
+                        isSaving={isSaving}
                     />
                 </div>
 
                 <div className="flex w-2/3 flex-col bg-[#384150]">
                     <div className="flex h-1/2 flex-col">
                         <div className="border-b-sarge-gray-600 flex w-full justify-between border-b-1 text-white">
-                            <Tabs defaultValue="task" onValueChange={handleTaskSolutionToggle}>
+                            <Tabs
+                                defaultValue="task"
+                                onValueChange={isSaving ? undefined : handleTaskSolutionToggle}
+                            >
                                 <TabsList className="h-auto bg-transparent p-0">
                                     <TabsTrigger
                                         value="task"
+                                        disabled={isSaving}
                                         className="data-[state=active]:!border-sarge-gray-600 relative h-full rounded-none !border-0 px-2.5 !text-white data-[state=active]:!border-x-1 data-[state=active]:!border-y-0 data-[state=active]:!bg-transparent data-[state=active]:!shadow-none data-[state=active]:after:absolute data-[state=active]:after:right-0 data-[state=active]:after:bottom-[-1px] data-[state=active]:after:left-0 data-[state=active]:after:h-[1px] data-[state=active]:after:bg-[#384150] data-[state=active]:after:content-['']"
                                     >
                                         Main
                                     </TabsTrigger>
                                     <TabsTrigger
                                         value="solution"
+                                        disabled={isSaving}
                                         className="data-[state=active]:!border-sarge-gray-600 relative h-full rounded-none !border-0 px-2.5 !text-white data-[state=active]:!border-x-1 data-[state=active]:!border-y-0 data-[state=active]:!bg-transparent data-[state=active]:!shadow-none data-[state=active]:after:absolute data-[state=active]:after:right-0 data-[state=active]:after:bottom-[-1px] data-[state=active]:after:left-0 data-[state=active]:after:h-[1px] data-[state=active]:after:bg-[#384150] data-[state=active]:after:content-['']"
                                     >
                                         Solution
@@ -107,8 +124,10 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
                             <div className="text-md flex items-center gap-1.5">
                                 <div>Language</div>
                                 <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <div className="bg-sarge-primary-500 flex items-center gap-2.5 rounded-sm px-2.5 text-white">
+                                    <DropdownMenuTrigger asChild disabled={isSaving}>
+                                        <div
+                                            className={`bg-sarge-primary-500 flex items-center gap-2.5 rounded-sm px-2.5 text-white ${isSaving ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+                                        >
                                             {taskTemplate?.languages[selectedLanguage].language}
                                             <ChevronDown className="size-4" />
                                         </div>
@@ -142,6 +161,7 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
                                 }
                                 defaultValue={taskTemplate?.languages[selectedLanguage]?.stub}
                                 onMount={handleEditorContent}
+                                options={{ readOnly: isSaving }}
                             />
                         </div>
                     </div>
@@ -152,6 +172,7 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
                             setPublicTestCases={setPublicTestCases}
                             privateTestCases={privateTestCases}
                             setPrivateTestCases={setPrivateTestCases}
+                            isSaving={isSaving}
                         />
                     </div>
                 </div>
