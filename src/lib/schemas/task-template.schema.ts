@@ -21,6 +21,7 @@ export const TaskTemplateSchema = z.object({
     privateTestCases: z.array(testCaseSchema).default([]),
     taskType: z.string().nullable(),
     authorId: z.string(),
+    timeLimitMinutes: z.number().int().default(0),
 });
 
 export const TaskTemplateEditorSchema = TaskTemplateSchema.extend({

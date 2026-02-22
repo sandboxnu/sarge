@@ -10,7 +10,7 @@ import type { BlockNoteContent } from '@/lib/types/task-template.types';
 import type { TagDTO } from '@/lib/schemas/tag.schema';
 
 // BlockNote: https://www.blocknotejs.org/docs/nextjs
-const DescriptionEditor = dynamic(() => import('@/lib/components/core/DescriptionEditor'), {
+const BlockNoteEditor = dynamic(() => import('@/lib/components/core/BlockNoteEditor'), {
     ssr: false,
 });
 
@@ -126,7 +126,7 @@ export default function TaskDetailsTab({
                     data-blocknote-editor-bg="muted"
                     className={`bg-sarge-gray-50 border-sarge-gray-200 min-h-0 flex-1 overflow-y-auto rounded-lg border ${isSaving ? 'pointer-events-none opacity-50' : ''}`}
                 >
-                    <DescriptionEditor description={description} setDescription={setDescription} />
+                    <BlockNoteEditor description={description} setDescription={setDescription} />
                 </div>
             </Field>
         </div>

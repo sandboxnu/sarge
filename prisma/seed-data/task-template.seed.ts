@@ -1,45 +1,4 @@
-// https://blocknotejs.org/docs/foundations/document-structure
-const defaultProps = {
-    textColor: 'default' as const,
-    backgroundColor: 'default' as const,
-    textAlignment: 'left' as const,
-};
-
-type InlineContentInput =
-    | string
-    | { text: string; bold?: boolean; code?: boolean; italic?: boolean };
-
-function normalizeContent(c: InlineContentInput) {
-    if (typeof c === 'string') {
-        return { type: 'text' as const, text: c, styles: {} };
-    }
-    const { text, bold, code, italic } = c;
-    const styles: Record<string, boolean> = {};
-    if (bold) styles.bold = true;
-    if (code) styles.code = true;
-    if (italic) styles.italic = true;
-    return { type: 'text' as const, text, styles };
-}
-
-function paragraph(id: string, content: InlineContentInput[]) {
-    return {
-        id,
-        type: 'paragraph' as const,
-        props: defaultProps,
-        content: content.map(normalizeContent),
-        children: [] as object[],
-    };
-}
-
-function heading(id: string, level: 1 | 2 | 3, content: InlineContentInput[]) {
-    return {
-        id,
-        type: 'heading' as const,
-        props: { ...defaultProps, level },
-        content: content.map(normalizeContent),
-        children: [] as object[],
-    };
-}
+import { paragraph, heading } from './blocknote-helpers';
 
 export const taskTemplatesData = [
     {
@@ -101,6 +60,7 @@ export const taskTemplatesData = [
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
         authorId: 'user_prof_fontenot_001',
+        timeLimitMinutes: 25,
     },
     {
         id: 'task_template_reverse_string_001',
@@ -145,6 +105,7 @@ export const taskTemplatesData = [
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
         authorId: 'user_prof_fontenot_001',
+        timeLimitMinutes: 10,
     },
     {
         id: 'task_template_palindrome_001',
@@ -192,6 +153,7 @@ export const taskTemplatesData = [
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
         authorId: 'user_prof_fontenot_001',
+        timeLimitMinutes: 20,
     },
     {
         id: 'task_template_fizzbuzz_001',
@@ -231,6 +193,7 @@ export const taskTemplatesData = [
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
         authorId: 'user_prof_fontenot_001',
+        timeLimitMinutes: 10,
     },
     {
         id: 'task_template_quick_warmup_001',
@@ -241,6 +204,7 @@ export const taskTemplatesData = [
         orgId: 'org_nextlab_001',
         taskType: null,
         authorId: 'user_prof_fontenot_001',
+        timeLimitMinutes: 5,
     },
     {
         id: 'task_template_max_subarray_001',
@@ -286,6 +250,7 @@ export const taskTemplatesData = [
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
         authorId: 'user_prof_fontenot_001',
+        timeLimitMinutes: 30,
     },
     {
         id: 'task_template_binary_search_001',
@@ -331,6 +296,7 @@ export const taskTemplatesData = [
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
         authorId: 'user_prof_fontenot_001',
+        timeLimitMinutes: 15,
     },
     {
         id: 'task_template_valid_parentheses_001',
@@ -374,6 +340,7 @@ export const taskTemplatesData = [
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
         authorId: 'user_prof_fontenot_001',
+        timeLimitMinutes: 20,
     },
     {
         id: 'task_template_merge_sorted_001',
@@ -424,6 +391,7 @@ export const taskTemplatesData = [
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
         authorId: 'user_prof_fontenot_001',
+        timeLimitMinutes: 25,
     },
     {
         id: 'task_template_longest_prefix_001',
@@ -466,5 +434,6 @@ export const taskTemplatesData = [
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
         authorId: 'user_prof_fontenot_001',
+        timeLimitMinutes: 15,
     },
 ];
