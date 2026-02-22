@@ -14,7 +14,8 @@ interface TestCaseEditorProps {
 }
 
 export default function TestCaseEditor(props: TestCaseEditorProps) {
-    const { publicTestCases, setPublicTestCases, privateTestCases, setPrivateTestCases, isSaving } = props;
+    const { publicTestCases, setPublicTestCases, privateTestCases, setPrivateTestCases, isSaving } =
+        props;
     const {
         activeTestTab,
         setActiveTestTab,

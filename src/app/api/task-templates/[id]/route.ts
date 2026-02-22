@@ -27,7 +27,6 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
         const orgId = session.activeOrganizationId;
         const id = (await params).id;
         const body = await request.json();
-        console.log(JSON.stringify(body.publicTestCases, null, 2));
         const parsed = taskTemplateEditorSaveSchema.parse(body);
         const result = await TaskTemplateService.editTaskTemplate(id, orgId, parsed);
 

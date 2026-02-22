@@ -41,14 +41,6 @@ function heading(id: string, level: 1 | 2 | 3, content: InlineContentInput[]) {
     };
 }
 
-const fizzbuzz = Array.from({ length: 100 }, (_, i) => {
-    const n = i + 1;
-    if (n % 15 === 0) return 'FizzBuzz';
-    if (n % 3 === 0) return 'Fizz';
-    if (n % 5 === 0) return 'Buzz';
-    return String(n);
-}).join('\n');
-
 export const taskTemplatesData = [
     {
         id: 'task_template_two_sum_001',
@@ -225,8 +217,17 @@ export const taskTemplatesData = [
         ],
         // stdin: empty — no input needed
         // stdout: fizzbuzz output from 1 to 100
-        publicTestCases: [{ input: '', output: fizzbuzz }],
-        privateTestCases: [{ input: '', output: fizzbuzz }],
+        publicTestCases: [
+            { input: '3', output: 'Fizz' },
+            { input: '5', output: 'Buzz' },
+            { input: '15', output: 'FizzBuzz' },
+        ],
+        privateTestCases: [
+            { input: '1', output: '1' },
+            { input: '9', output: 'Fizz' },
+            { input: '10', output: 'Buzz' },
+            { input: '30', output: 'FizzBuzz' },
+        ],
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
         authorId: 'user_prof_fontenot_001',

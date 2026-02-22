@@ -32,7 +32,7 @@ export default function TaskEditorSidebar({
     setAvailableTags,
     languages,
     setLanguages,
-    isSaving
+    isSaving,
 }: TaskEditorSidebarProps) {
     return (
         <div className="border-r-sarge-primary-100 bg-sarge-gray-0 flex h-full min-h-0 w-full flex-col border-r-4 px-[30px] py-[10px]">

@@ -76,6 +76,7 @@ export default function TestCard(props: TestCardProps) {
                             <label className="mb-1 block text-sm font-medium text-gray-700">
                                 Input
                             </label>
+                            {/* TODO: make this a text area to view the newline characters properly */}
                             <Input
                                 type="text"
                                 placeholder="Placeholder"
@@ -90,6 +91,7 @@ export default function TestCard(props: TestCardProps) {
                             <label className="mb-1 block text-sm font-medium text-gray-700">
                                 Expected Output
                             </label>
+                            {/* TODO: make this a text area to view the newline characters properly */}
                             <Input
                                 type="text"
                                 placeholder="Placeholder"
