@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { AssessmentTemplateListItemDTO } from '@/lib/schemas/assessment-template.schema';
+import type { AssessmentTemplateListItemDTO } from '@/lib/schemas/assessment-template.schema';
 import { TaskPreview } from './AssessmentTaskPreview';
 import { Button } from '@/lib/components/ui/Button';
 import {
