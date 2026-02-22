@@ -1,5 +1,6 @@
 import { Checkbox } from '@/lib/components/ui/Checkbox';
 import { Chip } from '@/lib/components/ui/Chip';
+import ChipOverflow from '@/lib/components/ui/ChipOverflow';
 import type { TagDTO } from '@/lib/schemas/tag.schema';
 import type { TaskTemplateLanguageDTO } from '@/lib/schemas/task-template-language.schema';
 import { getLanguageLabel } from '@/lib/utils/language.utils';
@@ -17,9 +18,13 @@ export interface TaskCardProps {
     taskTemplateId?: string;
     isPreviewSelected?: boolean;
     onPreviewSelect?: () => void;
+    maxTags?: number;
 }
 
-export default function TaskCard(props: TaskCardProps) {
+export default function TaskCard({ maxTags, ...props }: TaskCardProps) {
+    const visibleChips = maxTags != null ? props.chips.slice(0, maxTags) : props.chips;
+    const overflowChips = maxTags != null ? props.chips.slice(maxTags) : [];
+
     return (
         <div
             className={cn(
@@ -54,7 +59,7 @@ export default function TaskCard(props: TaskCardProps) {
                     {props.languages && props.languages.length > 0 && (
                         <div className="text-label-xs text-sarge-gray-500 flex items-center gap-1.5">
                             <Code2 className="size-3.5 shrink-0" />
-                            <span>
+                            <span className="truncate">
                                 {props.languages
                                     .map((l) => getLanguageLabel(l.language))
                                     .join(', ')}
@@ -63,7 +68,7 @@ export default function TaskCard(props: TaskCardProps) {
                     )}
                 </div>
                 <div className="flex flex-wrap gap-1">
-                    {props.chips.map((chip, idx) => (
+                    {visibleChips.map((chip, idx) => (
                         <Chip
                             key={chip.id ?? idx}
                             className="rounded-md px-2 py-1 text-xs"
@@ -72,6 +77,7 @@ export default function TaskCard(props: TaskCardProps) {
                             {chip.name}
                         </Chip>
                     ))}
+                    <ChipOverflow chips={overflowChips} />
                 </div>
             </div>
         </div>

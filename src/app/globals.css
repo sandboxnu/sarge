@@ -291,6 +291,22 @@
     font-size: 12px;
 }
 
+/* chip overflow stagger animation */
+@keyframes chip-overflow-enter {
+    from {
+        opacity: 0;
+        transform: translateX(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.chip-overflow-enter {
+    animation: chip-overflow-enter 0.2s ease both;
+}
+
 /* shake used for char limit feedback */
 @keyframes shake {
     10%,
