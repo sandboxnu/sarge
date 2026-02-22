@@ -131,7 +131,6 @@ model Application {
 model AssessmentTemplate {
   id            String @id @unique @default(cuid())
   title         String
-  description   String
   orgId         String
   authorId      String
   internalNotes Json   @default("[]")

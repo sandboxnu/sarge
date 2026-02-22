@@ -37,11 +37,11 @@ export async function getAssessmentTemplate(id: string): Promise<AssessmentTempl
 
 /**
  * PUT /api/assessment-templates/:id
- * Updates metadata: title, description, internalNotes.
+ * Updates metadata: title, internalNotes.
  */
 export async function updateAssessmentTemplate(
     id: string,
-    data: { title?: string; description?: string; internalNotes?: unknown }
+    data: { title?: string; internalNotes?: unknown }
 ): Promise<void> {
     const res = await fetch(`/api/assessment-templates/${id}`, {
         method: 'PUT',

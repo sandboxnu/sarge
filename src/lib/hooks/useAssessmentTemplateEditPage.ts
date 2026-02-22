@@ -12,7 +12,6 @@ export default function useAssessmentTemplateEditPage(assessmentTemplateId: stri
     const [error, setError] = useState<Error | null>(null);
 
     const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
     const [sections, setSections] = useState<AssessmentSection[]>([]);
     const [internalNotes, setInternalNotes] = useState<BlockNoteContent>([]);
     const [selectedSection, setSelectedSection] = useState<AssessmentSection | null>(null);
@@ -32,7 +31,6 @@ export default function useAssessmentTemplateEditPage(assessmentTemplateId: stri
                 if (cancelled) return;
 
                 setTitle(template.title);
-                setDescription(template.description);
                 setInternalNotes(template.internalNotes as BlockNoteContent);
 
                 const initialSections: AssessmentSection[] = template.tasks.map((t) => ({
@@ -65,7 +63,6 @@ export default function useAssessmentTemplateEditPage(assessmentTemplateId: stri
             await Promise.all([
                 updateAssessmentTemplate(assessmentTemplateId, {
                     title,
-                    description,
                     internalNotes,
                 }),
                 updateAssessmentTemplateTasks(
@@ -88,8 +85,6 @@ export default function useAssessmentTemplateEditPage(assessmentTemplateId: stri
         error,
         title,
         setTitle,
-        description,
-        setDescription,
         sections,
         setSections,
         internalNotes,

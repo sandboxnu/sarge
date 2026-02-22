@@ -20,7 +20,6 @@ export const CreateAssessmentTemplateSchema = AssessmentTemplateSchema.omit({
 export const UpdateAssessmentTemplateSchema = z.object({
     id: z.string(),
     title: z.string().optional(),
-    description: z.string().optional(),
     internalNotes: blockNoteContentSchema.optional(),
 });
 
