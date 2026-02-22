@@ -4,6 +4,7 @@ import type {
     CreateTaskTemplateDTO,
     TaskTemplateListItemDTO,
     TaskTemplateEditorDTO,
+    TaskTemplateEditorSaveDTO,
 } from '@/lib/schemas/task-template.schema';
 import { prisma } from '@/lib/prisma';
 import { NotFoundException, ConflictException } from '@/lib/utils/errors.utils';
@@ -261,6 +262,49 @@ async function getDuplicateTitle(title: string, orgId: string): Promise<string> 
     return newTitle;
 }
 
+async function editTaskTemplate(
+    id: string,
+    orgId: string,
+    payload: TaskTemplateEditorSaveDTO
+): Promise<TaskTemplateEditorDTO> {
+    const updated = await prisma.taskTemplate.update({
+        where: {
+            id,
+            orgId,
+        },
+        data: {
+            title: payload.title,
+            description: payload.description,
+            publicTestCases: payload.publicTestCases,
+            privateTestCases: payload.privateTestCases,
+            tags: {
+                set: payload.tags.map((tagId) => ({ id: tagId })),
+            },
+            languages: {
+                deleteMany: {
+                    taskTemplateId: id,
+                    id: { notIn: payload.languages.map((l) => l.id) },
+                },
+                upsert: payload.languages.map((lang) => ({
+                    where: { id: lang.id },
+                    update: { stub: lang.stub, solution: lang.solution },
+                    create: {
+                        stub: lang.stub,
+                        solution: lang.solution,
+                        language: lang.language,
+                    },
+                })),
+            },
+        },
+        include: {
+            tags: true,
+            languages: true,
+        },
+    });
+
+    return updated as TaskTemplateEditorDTO;
+}
+
 const TaskTemplateService = {
     getTaskTemplate,
     getAllTaskTemplates,
@@ -270,6 +314,7 @@ const TaskTemplateService = {
     updateTaskTemplate,
     getTaskTemplatesByTitle,
     getDuplicateTitle,
+    editTaskTemplate,
 };
 
 export default TaskTemplateService;

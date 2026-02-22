@@ -26,7 +26,7 @@ export default function LanguagesTab({ languages, setLanguages }: LanguagesTabPr
         );
 
         const newEntries: TaskTemplateLanguageDTO[] = newLangs.map((lang, i) => ({
-            id: -(Date.now() + i),
+            id: -(i + 1),
             taskTemplateId: '',
             language: lang as TaskTemplateLanguageDTO['language'],
             solution: '',
