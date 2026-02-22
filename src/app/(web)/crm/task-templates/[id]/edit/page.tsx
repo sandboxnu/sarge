@@ -125,7 +125,9 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
                                         >
                                             <DropdownMenuGroup className="p-0 !text-white">
                                                 {languages
-                                                    .filter((l) => l !== languages[selectedLanguage])
+                                                    .filter(
+                                                        (l) => l !== languages[selectedLanguage]
+                                                    )
                                                     .map((l) => (
                                                         <DropdownMenuItem
                                                             className="!hover:text-sarge-primary-500 hover:!bg-sarge-primary-600 border-none !text-white hover:cursor-pointer"
@@ -146,12 +148,14 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
                             <Editor
                                 className="h-full"
                                 defaultLanguage={
-                                    selectedLanguage >= 0 && taskTemplate?.languages[selectedLanguage]
+                                    selectedLanguage >= 0 &&
+                                    taskTemplate?.languages[selectedLanguage]
                                         ? taskTemplate.languages[selectedLanguage].language
                                         : 'plaintext'
                                 }
                                 defaultValue={
-                                    selectedLanguage >= 0 && taskTemplate?.languages[selectedLanguage]
+                                    selectedLanguage >= 0 &&
+                                    taskTemplate?.languages[selectedLanguage]
                                         ? taskTemplate.languages[selectedLanguage].stub
                                         : ''
                                 }
