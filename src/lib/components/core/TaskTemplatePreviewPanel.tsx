@@ -18,78 +18,84 @@ export interface TaskTemplatePreviewPanelProps {
     taskTemplatePreview: TaskTemplateListItemDTO;
     onDuplicate?: (taskTemplateId: string) => void;
     onDelete?: (taskTemplateId: string) => void;
+    removeHeader?: boolean;
 }
 
 export function TaskTemplatePreviewPanel({
     taskTemplatePreview,
     onDuplicate,
     onDelete,
+    removeHeader,
 }: TaskTemplatePreviewPanelProps) {
     const tags = taskTemplatePreview.tags ?? [];
     const languages = taskTemplatePreview.languages?.map((l) => l.language) ?? [];
 
     return (
         <div className="flex h-full w-full flex-col overflow-hidden p-[30px]">
-            <div className="flex items-start justify-between gap-4 px-0 pt-0 pb-6">
-                <div className="min-w-0 flex-1">
-                    <h2 className="text-display-xs text-foreground truncate">
-                        {taskTemplatePreview.title}
-                    </h2>
-                    {taskTemplatePreview.taskType && (
-                        <p className="text-body-m text-muted-foreground mt-0.5">
-                            {taskTemplatePreview.taskType}
-                        </p>
-                    )}
+            {removeHeader ? (
+                <></>
+            ) : (
+                <div className="flex items-start justify-between gap-4 px-0 pt-0 pb-6">
+                    <div className="min-w-0 flex-1">
+                        <h2 className="text-display-xs text-foreground truncate">
+                            {taskTemplatePreview.title}
+                        </h2>
+                        {taskTemplatePreview.taskType && (
+                            <p className="text-body-m text-muted-foreground mt-0.5">
+                                {taskTemplatePreview.taskType}
+                            </p>
+                        )}
+                    </div>
+                    <div className="flex shrink-0 items-center gap-1">
+                        <Button variant="secondary" className="px-4 py-2" asChild>
+                            <Link
+                                href={`/crm/task-templates/${taskTemplatePreview.id}/edit`}
+                                aria-label="Edit task template"
+                            >
+                                <SquarePen className="size-5" />
+                                Edit details
+                            </Link>
+                        </Button>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button
+                                    variant="icon"
+                                    className="border-sarge-gray-200 hover:bg-sarge-gray-50 h-10 w-10 border bg-white p-0"
+                                    aria-label="More options"
+                                >
+                                    <MoreVertical className="size-5" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                                align="end"
+                                className="border-sarge-gray-200 w-48 border bg-white"
+                            >
+                                <DropdownMenuItem
+                                    onSelect={() => {
+                                        onDuplicate?.(taskTemplatePreview.id);
+                                    }}
+                                    disabled={!onDuplicate}
+                                    className="text-sarge-gray-700 hover:bg-sarge-gray-50 focus:bg-sarge-gray-50 bg-white hover:cursor-pointer"
+                                >
+                                    <CopyPlus className="size-4" />
+                                    Duplicate
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                    onSelect={(event) => {
+                                        event.preventDefault();
+                                        onDelete?.(taskTemplatePreview.id);
+                                    }}
+                                    disabled={!onDelete}
+                                    className="text-destructive hover:text-destructive focus:text-destructive hover:bg-sarge-gray-50 focus:bg-sarge-gray-50 bg-white hover:cursor-pointer"
+                                >
+                                    <Trash2 className="text-destructive size-4" />
+                                    Delete
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
                 </div>
-                <div className="flex shrink-0 items-center gap-1">
-                    <Button variant="secondary" className="px-4 py-2" asChild>
-                        <Link
-                            href={`/crm/task-templates/${taskTemplatePreview.id}/edit`}
-                            aria-label="Edit task template"
-                        >
-                            <SquarePen className="size-5" />
-                            Edit details
-                        </Link>
-                    </Button>
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button
-                                variant="icon"
-                                className="border-sarge-gray-200 hover:bg-sarge-gray-50 h-10 w-10 border bg-white p-0"
-                                aria-label="More options"
-                            >
-                                <MoreVertical className="size-5" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent
-                            align="end"
-                            className="border-sarge-gray-200 w-48 border bg-white"
-                        >
-                            <DropdownMenuItem
-                                onSelect={() => {
-                                    onDuplicate?.(taskTemplatePreview.id);
-                                }}
-                                disabled={!onDuplicate}
-                                className="text-sarge-gray-700 hover:bg-sarge-gray-50 focus:bg-sarge-gray-50 bg-white hover:cursor-pointer"
-                            >
-                                <CopyPlus className="size-4" />
-                                Duplicate
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                                onSelect={(event) => {
-                                    event.preventDefault();
-                                    onDelete?.(taskTemplatePreview.id);
-                                }}
-                                disabled={!onDelete}
-                                className="text-destructive hover:text-destructive focus:text-destructive hover:bg-sarge-gray-50 focus:bg-sarge-gray-50 bg-white hover:cursor-pointer"
-                            >
-                                <Trash2 className="text-destructive size-4" />
-                                Delete
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                </div>
-            </div>
+            )}
             <div className="flex-1 overflow-y-auto px-0">
                 <section className="mb-6">
                     <p className="text-label-xs text-muted-foreground tracking-wide uppercase">
