@@ -147,6 +147,7 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
             taskType: taskTemplate?.taskType ?? null,
             title,
             description,
+            timeLimitMinutes: taskTemplate?.timeLimitMinutes ?? 0,
             tags: tags.map((tag) => tag.id),
             publicTestCases,
             privateTestCases,
