@@ -12,6 +12,7 @@ type TestCardBaseProps = {
 
 type EditableTestCardProps = TestCardBaseProps & {
     readOnly?: false;
+    isSaving?: boolean;
     onDuplicate: () => void;
     onRemove: () => void;
     onUpdate: (field: 'input' | 'output', value: string) => void;
@@ -26,18 +27,20 @@ export type TestCardProps = EditableTestCardProps | ReadOnlyTestCardProps;
 
 export default function TestCard(props: TestCardProps) {
     const { test, selected, setSelected, index, isPrivate } = props;
+    const isSaving = !props.readOnly && props.isSaving;
 
     return (
         <div
-            className="border-border bg-background cursor-pointer rounded-md border"
-            onClick={setSelected}
+            className={`border-border bg-background rounded-md border ${isSaving ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+            onClick={isSaving ? undefined : setSelected}
         >
             <div className="flex items-center justify-between px-4 py-4">
                 <span className="text-foreground text-sm font-medium">Test Case {index + 1}</span>
                 {!props.readOnly && (
                     <div className="flex items-center gap-2">
                         <button
-                            className="text-muted-foreground hover:text-foreground p-1 hover:cursor-pointer"
+                            disabled={isSaving}
+                            className="text-muted-foreground hover:text-foreground p-1 hover:cursor-pointer disabled:cursor-not-allowed"
                             onClick={(e) => {
                                 e.stopPropagation();
                                 props.onToggle();
@@ -50,7 +53,8 @@ export default function TestCard(props: TestCardProps) {
                             )}
                         </button>
                         <button
-                            className="text-muted-foreground hover:text-foreground p-1 hover:cursor-pointer"
+                            disabled={isSaving}
+                            className="text-muted-foreground hover:text-foreground p-1 hover:cursor-pointer disabled:cursor-not-allowed"
                             onClick={(e) => {
                                 e.stopPropagation();
                                 props.onDuplicate();
@@ -59,7 +63,8 @@ export default function TestCard(props: TestCardProps) {
                             <CopyPlus width={16} height={16} />
                         </button>
                         <button
-                            className="text-sarge-error-400 hover:text-destructive p-1 hover:cursor-pointer"
+                            disabled={isSaving}
+                            className="text-sarge-error-400 hover:text-destructive p-1 hover:cursor-pointer disabled:cursor-not-allowed"
                             onClick={(e) => {
                                 e.stopPropagation();
                                 props.onRemove();
@@ -89,6 +94,7 @@ export default function TestCard(props: TestCardProps) {
                                     onChange={(e) => props.onUpdate('input', e.target.value)}
                                     className="w-full rounded-md px-3 py-2"
                                     onClick={(e) => e.stopPropagation()}
+                                    disabled={isSaving}
                                 />
                             )}
                         </div>
@@ -108,6 +114,7 @@ export default function TestCard(props: TestCardProps) {
                                     onChange={(e) => props.onUpdate('output', e.target.value)}
                                     className="w-full rounded-md px-3 py-2"
                                     onClick={(e) => e.stopPropagation()}
+                                    disabled={isSaving}
                                 />
                             )}
                         </div>

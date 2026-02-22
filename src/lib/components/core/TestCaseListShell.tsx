@@ -14,6 +14,7 @@ type TestCaseListShellBaseProps = {
 
 type EditableShellProps = TestCaseListShellBaseProps & {
     readOnly?: false;
+    isSaving?: boolean;
     onDuplicate: (index: number, tab: TestTab) => void;
     onRemove: (index: number, tab: TestTab) => void;
     onUpdate: (index: number, tab: TestTab, field: 'input' | 'output', value: string) => void;
@@ -103,6 +104,7 @@ export default function TestCaseListShell(props: TestCaseListShellProps) {
             <TestCard
                 key={`${tab}-${index}`}
                 {...baseProps}
+                isSaving={props.isSaving}
                 onDuplicate={() => props.onDuplicate(index, tab)}
                 onRemove={() => props.onRemove(index, tab)}
                 onUpdate={(field, value) => props.onUpdate(index, tab, field, value)}

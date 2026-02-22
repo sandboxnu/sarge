@@ -32,6 +32,7 @@ export default function TestCaseEditor(props: TestCaseEditorProps) {
         <TestCaseListShell
             publicTestCases={publicTestCases}
             privateTestCases={privateTestCases}
+            isSaving={isSaving}
             onDuplicate={duplicateTestCase}
             onRemove={removeTestCase}
             onUpdate={updateTestCase}
@@ -41,6 +42,7 @@ export default function TestCaseEditor(props: TestCaseEditorProps) {
                     className="items-center gap-1 rounded-md px-3 py-1 text-sm"
                     variant="secondary"
                     onClick={addTestCase}
+                    disabled={isSaving}
                 >
                     <PlusIcon className="stroke-sarge-primary-500" height={18} width={18} />
                     Add test
