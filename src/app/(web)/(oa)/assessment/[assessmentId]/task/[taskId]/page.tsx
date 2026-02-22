@@ -92,7 +92,6 @@ export default function TaskPage({
                                     <Button
                                         type="button"
                                         variant="tertiary"
-                                        size="default"
                                         className="min-w-20"
                                         onClick={goToNextTask}
                                     >
@@ -116,7 +115,6 @@ export default function TaskPage({
                                         <Button
                                             type="button"
                                             variant="secondary"
-                                            size="default"
                                             className="min-w-20"
                                             onClick={handleRunButton}
                                         >
@@ -125,7 +123,6 @@ export default function TaskPage({
                                         <Button
                                             type="button"
                                             variant="primary"
-                                            size="default"
                                             className="min-w-20"
                                             onClick={handleSubmitButton}
                                         >
