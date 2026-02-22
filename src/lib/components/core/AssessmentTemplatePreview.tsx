@@ -1,8 +1,12 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
-import { AssessmentTemplateListItemDTO } from '@/lib/schemas/assessment-template.schema';
-import { TaskPreview } from './AssessmentTaskPreview';
+import { useEffect, useState } from 'react';
+import type { AssessmentTemplateListItemDTO } from '@/lib/schemas/assessment-template.schema';
+import {
+    getAssessmentTemplateTaskOrder,
+    type AssessmentTemplateTaskOrder,
+} from '@/lib/api/assessment-templates';
+import { getTaskTemplate } from '@/lib/api/task-templates';
 import { Button } from '@/lib/components/ui/Button';
 import {
     DropdownMenu,
@@ -12,17 +16,11 @@ import {
 } from '@/lib/components/ui/Dropdown';
 import { ChevronLeft, ChevronRight, SquarePen } from 'lucide-react';
 import Link from 'next/link';
-
-type AssessmentTemplateTaskOrder = {
-    taskTemplateId: string;
-    order: number;
-};
-
-type TaskTemplatePreview = {
-    id: string;
-    title: string;
-    description: unknown;
-};
+import {
+    type TaskTemplateListItemDTO,
+    type TaskTemplateEditorDTO,
+} from '@/lib/schemas/task-template.schema';
+import { TaskAssessmentPreview } from './AssessmentTaskPreview';
 
 export interface AssessmentTemplatePreviewProps {
     assessmentTemplatePreview: AssessmentTemplateListItemDTO;
@@ -32,7 +30,7 @@ export function AssessmentTemplatePreview({
     assessmentTemplatePreview,
 }: AssessmentTemplatePreviewProps) {
     const [tasks, setTasks] = useState<AssessmentTemplateTaskOrder[]>([]);
-    const [taskTemplates, setTaskTemplates] = useState<TaskTemplatePreview[]>([]);
+    const [taskTemplates, setTaskTemplates] = useState<TaskTemplateListItemDTO[]>([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -53,23 +51,15 @@ export function AssessmentTemplatePreview({
             const orderedTasks = (tasksJson.data as AssessmentTemplateTaskOrder[]) ?? [];
             const templates = await Promise.all(
                 orderedTasks.map(async (task) => {
-                    const res = await fetch(`/api/task-templates/${task.taskTemplateId}`);
-                    const json = await res.json();
-                    if (!res.ok) {
-                        throw new Error(json.message ?? 'Failed to load task template');
-                    }
+                    const taskTemplate = await getTaskTemplate(task.taskTemplateId);
 
-                    return {
-                        id: json.data.id as string,
-                        title: json.data.title as string,
-                        description: json.data.description as unknown,
-                    } satisfies TaskTemplatePreview;
+                    return taskTemplate;
                 })
             );
 
             if (!isMounted) return;
             setTasks(orderedTasks);
-            setTaskTemplates(templates);
+            setTaskTemplates(templates as TaskTemplateListItemDTO[]);
         };
 
         load()
@@ -126,7 +116,10 @@ export function AssessmentTemplatePreview({
                     </div>
                 </div>
                 <Button variant="secondary" className="h-fit px-4 py-2" asChild>
-                    <Link aria-label="Edit assessment template" href={''}>
+                    <Link
+                        aria-label="Edit assessment template"
+                        href={`/crm/assessment-templates/${assessmentTemplatePreview.id}`}
+                    >
                         <SquarePen className="size-5" />
                         Edit details
                     </Link>
@@ -135,7 +128,7 @@ export function AssessmentTemplatePreview({
 
             <div className="flex-1 overflow-y-auto">
                 {currentTask ? (
-                    <TaskPreview taskTemplatePreview={currentTask} />
+                    <TaskAssessmentPreview taskTemplatePreview={currentTask} />
                 ) : (
                     <div className="text-body-m text-muted-foreground flex h-full items-center justify-center">
                         Select a task to preview
