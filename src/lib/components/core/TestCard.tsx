@@ -12,6 +12,7 @@ export interface TestCardProps {
     onUpdate: (field: 'input' | 'output', value: string) => void;
     onToggle: () => void;
     isPrivate: boolean;
+    isSaving: boolean;
 }
 
 export default function TestCard(props: TestCardProps) {
@@ -25,18 +26,20 @@ export default function TestCard(props: TestCardProps) {
         onUpdate,
         onToggle,
         isPrivate,
+        isSaving,
     } = props;
 
     return (
         <div
-            className="border-sarge-gray-200 cursor-pointer rounded-md border border-1 bg-white"
-            onClick={setSelected}
+            className={`border-sarge-gray-200 rounded-md border border-1 bg-white ${isSaving ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+            onClick={isSaving ? undefined : setSelected}
         >
             <div className="flex items-center justify-between px-4 py-4">
                 <span className="text-sm font-medium text-gray-800">Test Case {index + 1}</span>
                 <div className="flex items-center gap-2">
                     <button
-                        className="p-1 text-gray-400 hover:cursor-pointer hover:text-gray-600"
+                        disabled={isSaving}
+                        className="p-1 text-gray-400 hover:cursor-pointer hover:text-gray-600 disabled:cursor-not-allowed"
                         onClick={(e) => {
                             e.stopPropagation();
                             onToggle();
@@ -45,7 +48,8 @@ export default function TestCard(props: TestCardProps) {
                         {isPrivate ? <Lock className="size-4" /> : <Unlock className="size-4" />}
                     </button>
                     <button
-                        className="p-1 text-gray-400 hover:cursor-pointer hover:text-gray-600"
+                        disabled={isSaving}
+                        className="p-1 text-gray-400 hover:cursor-pointer hover:text-gray-600 disabled:cursor-not-allowed"
                         onClick={(e) => {
                             e.stopPropagation();
                             onDuplicate();
@@ -54,7 +58,8 @@ export default function TestCard(props: TestCardProps) {
                         <CopyPlus width={16} height={16} />
                     </button>
                     <button
-                        className="text-sarge-error-400 p-1 hover:cursor-pointer hover:text-red-600"
+                        disabled={isSaving}
+                        className="text-sarge-error-400 p-1 hover:cursor-pointer hover:text-red-600 disabled:cursor-not-allowed"
                         onClick={(e) => {
                             e.stopPropagation();
                             onRemove();
@@ -64,7 +69,6 @@ export default function TestCard(props: TestCardProps) {
                     </button>
                 </div>
             </div>
-            {/* Expandable content */}
             {selected && (
                 <div className="px-4 pb-4">
                     <div className="grid grid-cols-2 gap-6">
@@ -79,6 +83,7 @@ export default function TestCard(props: TestCardProps) {
                                 onChange={(e) => onUpdate('input', e.target.value)}
                                 className="w-full rounded-md px-3 py-2"
                                 onClick={(e) => e.stopPropagation()}
+                                disabled={isSaving}
                             />
                         </div>
                         <div>
@@ -92,6 +97,7 @@ export default function TestCard(props: TestCardProps) {
                                 onChange={(e) => onUpdate('output', e.target.value)}
                                 className="w-full rounded-md px-3 py-2"
                                 onClick={(e) => e.stopPropagation()}
+                                disabled={isSaving}
                             />
                         </div>
                     </div>

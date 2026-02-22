@@ -41,6 +41,14 @@ function heading(id: string, level: 1 | 2 | 3, content: InlineContentInput[]) {
     };
 }
 
+const fizzbuzz = Array.from({ length: 100 }, (_, i) => {
+    const n = i + 1;
+    if (n % 15 === 0) return 'FizzBuzz';
+    if (n % 3 === 0) return 'Fizz';
+    if (n % 5 === 0) return 'Buzz';
+    return String(n);
+}).join('\n');
+
 export const taskTemplatesData = [
     {
         id: 'task_template_two_sum_001',
@@ -88,13 +96,15 @@ export const taskTemplatesData = [
             paragraph('two_sum_c3', ['- -10^9 <= target <= 10^9']),
             paragraph('two_sum_c4', ['- Only one valid answer exists.']),
         ],
+        // stdin: first line is space-separated nums, second line is target
+        // stdout: space-separated indices
         publicTestCases: [
-            { input: { nums: [2, 7, 11, 15], target: 9 }, expected: [0, 1] },
-            { input: { nums: [3, 2, 4], target: 6 }, expected: [1, 2] },
+            { input: '2 7 11 15\n9', output: '0 1' },
+            { input: '3 2 4\n6', output: '1 2' },
         ],
         privateTestCases: [
-            { input: { nums: [3, 3], target: 6 }, expected: [0, 1] },
-            { input: { nums: [1, 5, 3, 7, 9], target: 10 }, expected: [1, 3] },
+            { input: '3 3\n6', output: '0 1' },
+            { input: '1 5 3 7 9\n10', output: '1 3' },
         ],
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
@@ -133,15 +143,12 @@ export const taskTemplatesData = [
             paragraph('rs_c1', ['- 1 <= s.length <= 10^5']),
             paragraph('rs_c2', ['- s[i] is a printable ascii character.']),
         ],
-        publicTestCases: [
-            { input: { s: ['h', 'e', 'l', 'l', 'o'] }, expected: ['o', 'l', 'l', 'e', 'h'] },
-        ],
+        // stdin: space-separated characters
+        // stdout: space-separated reversed characters
+        publicTestCases: [{ input: 'h e l l o', output: 'o l l e h' }],
         privateTestCases: [
-            {
-                input: { s: ['H', 'a', 'n', 'n', 'a', 'h'] },
-                expected: ['h', 'a', 'n', 'n', 'a', 'H'],
-            },
-            { input: { s: ['A'] }, expected: ['A'] },
+            { input: 'H a n n a h', output: 'h a n n a H' },
+            { input: 'A', output: 'A' },
         ],
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
@@ -180,13 +187,15 @@ export const taskTemplatesData = [
             paragraph('vp_c1', ['- 1 <= s.length <= 2 * 10^5']),
             paragraph('vp_c2', ['- s consists only of printable ASCII characters.']),
         ],
+        // stdin: the string
+        // stdout: true or false
         publicTestCases: [
-            { input: { s: 'A man, a plan, a canal: Panama' }, expected: true },
-            { input: { s: 'race a car' }, expected: false },
+            { input: 'A man, a plan, a canal: Panama', output: 'true' },
+            { input: 'race a car', output: 'false' },
         ],
         privateTestCases: [
-            { input: { s: ' ' }, expected: true },
-            { input: { s: 'Was it a car or a cat I saw?' }, expected: true },
+            { input: ' ', output: 'true' },
+            { input: 'Was it a car or a cat I saw?', output: 'true' },
         ],
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
@@ -214,8 +223,10 @@ export const taskTemplatesData = [
                 'Write a solution (or reduce an existing one) so it has as few characters as possible.',
             ]),
         ],
-        publicTestCases: [{ input: {}, expected: null }],
-        privateTestCases: [{ input: {}, expected: null }],
+        // stdin: empty — no input needed
+        // stdout: fizzbuzz output from 1 to 100
+        publicTestCases: [{ input: '', output: fizzbuzz }],
+        privateTestCases: [{ input: '', output: fizzbuzz }],
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
         authorId: 'user_prof_fontenot_001',
@@ -224,7 +235,7 @@ export const taskTemplatesData = [
         id: 'task_template_quick_warmup_001',
         title: 'Quick Warmup',
         description: [] as object[],
-        publicTestCases: [{ input: {}, expected: null }],
+        publicTestCases: [{ input: '', output: '' }],
         privateTestCases: [],
         orgId: 'org_nextlab_001',
         taskType: null,
@@ -261,13 +272,15 @@ export const taskTemplatesData = [
             paragraph('ms_c1', ['- 1 <= nums.length <= 10^5']),
             paragraph('ms_c2', ['- -10^4 <= nums[i] <= 10^4']),
         ],
+        // stdin: space-separated nums
+        // stdout: the maximum subarray sum
         publicTestCases: [
-            { input: { nums: [-2, 1, -3, 4, -1, 2, 1, -5, 4] }, expected: 6 },
-            { input: { nums: [1] }, expected: 1 },
+            { input: '-2 1 -3 4 -1 2 1 -5 4', output: '6' },
+            { input: '1', output: '1' },
         ],
         privateTestCases: [
-            { input: { nums: [5, 4, -1, 7, 8] }, expected: 23 },
-            { input: { nums: [-1, -2, -3] }, expected: -1 },
+            { input: '5 4 -1 7 8', output: '23' },
+            { input: '-1 -2 -3', output: '-1' },
         ],
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
@@ -304,13 +317,15 @@ export const taskTemplatesData = [
             paragraph('bs_c2', ['- -10^4 < nums[i], target < 10^4']),
             paragraph('bs_c3', ['- nums is sorted in ascending order.']),
         ],
+        // stdin: first line is space-separated nums, second line is target
+        // stdout: the index, or -1
         publicTestCases: [
-            { input: { nums: [-1, 0, 3, 5, 9, 12], target: 9 }, expected: 4 },
-            { input: { nums: [-1, 0, 3, 5, 9, 12], target: 2 }, expected: -1 },
+            { input: '-1 0 3 5 9 12\n9', output: '4' },
+            { input: '-1 0 3 5 9 12\n2', output: '-1' },
         ],
         privateTestCases: [
-            { input: { nums: [5], target: 5 }, expected: 0 },
-            { input: { nums: [2, 5], target: 5 }, expected: 1 },
+            { input: '5\n5', output: '0' },
+            { input: '2 5\n5', output: '1' },
         ],
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
@@ -344,14 +359,16 @@ export const taskTemplatesData = [
             paragraph('vp2_c1', ['- 1 <= s.length <= 10^4']),
             paragraph('vp2_c2', ["- s consists of parentheses only '()[]{}'."]),
         ],
+        // stdin: the bracket string
+        // stdout: true or false
         publicTestCases: [
-            { input: { s: '()' }, expected: true },
-            { input: { s: '()[]{}' }, expected: true },
-            { input: { s: '(]' }, expected: false },
+            { input: '()', output: 'true' },
+            { input: '()[]{}', output: 'true' },
+            { input: '(]', output: 'false' },
         ],
         privateTestCases: [
-            { input: { s: '([)]' }, expected: false },
-            { input: { s: '{[]}' }, expected: true },
+            { input: '([)]', output: 'false' },
+            { input: '{[]}', output: 'true' },
         ],
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
@@ -392,16 +409,16 @@ export const taskTemplatesData = [
             paragraph('mts_c2', ['- -100 <= Node.val <= 100']),
             paragraph('mts_c3', ['- Both list1 and list2 are sorted in non-decreasing order.']),
         ],
+        // stdin: first line is space-separated list1, second line is space-separated list2
+        //        empty line represents an empty list
+        // stdout: space-separated merged list, or empty string for empty result
         publicTestCases: [
-            {
-                input: { list1: [1, 2, 4], list2: [1, 3, 4] },
-                expected: [1, 1, 2, 3, 4, 4],
-            },
-            { input: { list1: [], list2: [] }, expected: [] },
+            { input: '1 2 4\n1 3 4', output: '1 1 2 3 4 4' },
+            { input: '\n', output: '' },
         ],
         privateTestCases: [
-            { input: { list1: [], list2: [0] }, expected: [0] },
-            { input: { list1: [1], list2: [2] }, expected: [1, 2] },
+            { input: '\n0', output: '0' },
+            { input: '1\n2', output: '1 2' },
         ],
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
@@ -435,19 +452,15 @@ export const taskTemplatesData = [
             paragraph('lcp_c2', ['- 0 <= strs[i].length <= 200']),
             paragraph('lcp_c3', ['- strs[i] consists of only lowercase English letters.']),
         ],
+        // stdin: space-separated strings
+        // stdout: the longest common prefix, or empty string
         publicTestCases: [
-            {
-                input: { strs: ['flower', 'flow', 'flight'] },
-                expected: 'fl',
-            },
-            {
-                input: { strs: ['dog', 'racecar', 'car'] },
-                expected: '',
-            },
+            { input: 'flower flow flight', output: 'fl' },
+            { input: 'dog racecar car', output: '' },
         ],
         privateTestCases: [
-            { input: { strs: ['a'] }, expected: 'a' },
-            { input: { strs: ['ab', 'a'] }, expected: 'a' },
+            { input: 'a', output: 'a' },
+            { input: 'ab a', output: 'a' },
         ],
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',

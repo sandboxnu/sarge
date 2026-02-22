@@ -149,6 +149,7 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
             toast.success('Successfuly saved task template');
         } catch (err) {
             setError(err as Error);
+            toast.error((err as Error).message);
         } finally {
             setIsSaving(false);
         }
