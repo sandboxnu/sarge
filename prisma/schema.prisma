@@ -129,11 +129,12 @@ model Application {
 
 // Represents an assessment composed of tasks (questions) that could be assigned to a position.
 model AssessmentTemplate {
-  id       String @id @unique @default(cuid())
-  title    String
-  orgId    String
-  authorId String
-  notes    Json?
+  id            String @id @unique @default(cuid())
+  title         String
+  description   String
+  orgId         String
+  authorId      String
+  internalNotes Json   @default("[]")
 
   organization Organization             @relation(fields: [orgId], references: [id])
   assessments  Assessment[]             @relation("derivedFromAssessmentTemplate")
@@ -154,6 +155,7 @@ model TaskTemplate {
   orgId            String
   taskType         String?
   authorId         String
+  timeLimitMinutes Int     @default(0)
 
   organization Organization           @relation(fields: [orgId], references: [id])
   author       User                   @relation("AuthoredTaskTemplates", fields: [authorId], references: [id], onDelete: Restrict)
