@@ -242,6 +242,7 @@ export default function TemplatesPage() {
                                         taskTemplateId={task.id}
                                         isPreviewSelected={selectedTaskTemplate?.id === task.id}
                                         onPreviewSelect={() => setSelectedTaskTemplate(task)}
+                                        maxTags={2}
                                     />
                                 );
                             })
@@ -377,9 +378,7 @@ export default function TemplatesPage() {
                             onDelete={isMutating ? undefined : onDelete}
                         />
                     ) : selectedAssessmentTemplate ? (
-                        <div className="flex h-full items-center justify-center">
-                            {/* ASSESSMENT TEMPLATE PREVIEW COMPONENT GOES HERE */}
-                        </div>
+                        <div className="flex h-full items-center justify-center" />
                     ) : (
                         <div className="text-body-m text-muted-foreground flex h-full items-center justify-center">
                             Select a template to preview
