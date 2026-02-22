@@ -36,12 +36,14 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
         availableTags,
         setAvailableTags,
         languages,
-        setLanguages,
         isLoading,
         selectedLanguage,
         handleEditorContent,
         handleLanguageChange,
         handleTaskSolutionToggle,
+        removeLanguage,
+        clearAllLanguages,
+        handleLanguageSelectionChange,
     } = useTaskTemplateEditPage(id);
 
     if (isLoading) {
@@ -81,7 +83,9 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
                         availableTags={availableTags}
                         setAvailableTags={setAvailableTags}
                         languages={languages}
-                        setLanguages={setLanguages}
+                        removeLanguage={removeLanguage}
+                        clearAllLanguages={clearAllLanguages}
+                        handleLanguageSelectionChange={handleLanguageSelectionChange}
                     />
                 </div>
 
@@ -106,11 +110,11 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
                             </Tabs>
                             <div className="text-md flex items-center gap-1.5">
                                 <div>Language</div>
-                                {languages && languages?.length > 0 && (
+                                {languages && languages.length > 0 && selectedLanguage >= 0 && (
                                     <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
                                             <div className="bg-sarge-primary-500 flex items-center gap-2.5 rounded-sm px-2.5 text-white hover:cursor-pointer">
-                                                {languages[selectedLanguage].language}
+                                                {languages[selectedLanguage]?.language}
                                                 <ChevronDown className="size-4" />
                                             </div>
                                         </DropdownMenuTrigger>
@@ -121,7 +125,7 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
                                         >
                                             <DropdownMenuGroup className="p-0 !text-white">
                                                 {languages
-                                                    .filter((l) => l != languages[selectedLanguage])
+                                                    .filter((l) => l !== languages[selectedLanguage])
                                                     .map((l) => (
                                                         <DropdownMenuItem
                                                             className="!hover:text-sarge-primary-500 hover:!bg-sarge-primary-600 border-none !text-white hover:cursor-pointer"
@@ -142,9 +146,15 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
                             <Editor
                                 className="h-full"
                                 defaultLanguage={
-                                    taskTemplate?.languages[selectedLanguage]?.language
+                                    selectedLanguage >= 0 && taskTemplate?.languages[selectedLanguage]
+                                        ? taskTemplate.languages[selectedLanguage].language
+                                        : 'plaintext'
                                 }
-                                defaultValue={taskTemplate?.languages[selectedLanguage]?.stub}
+                                defaultValue={
+                                    selectedLanguage >= 0 && taskTemplate?.languages[selectedLanguage]
+                                        ? taskTemplate.languages[selectedLanguage].stub
+                                        : ''
+                                }
                                 onMount={handleEditorContent}
                             />
                         </div>
