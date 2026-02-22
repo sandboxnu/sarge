@@ -40,6 +40,7 @@ import {
     DialogTitle,
 } from '@/lib/components/ui/Modal';
 import { useAuth } from '@/lib/auth/auth-context';
+import { AssessmentTemplatePreview } from '@/lib/components/core/AssessmentTemplatePreview';
 
 export default function TemplatesPage() {
     const [selectedTaskTemplate, setSelectedTaskTemplate] =
@@ -241,7 +242,10 @@ export default function TemplatesPage() {
                                         index={idx}
                                         taskTemplateId={task.id}
                                         isPreviewSelected={selectedTaskTemplate?.id === task.id}
-                                        onPreviewSelect={() => setSelectedTaskTemplate(task)}
+                                        onPreviewSelect={() => {
+                                            setSelectedAssessmentTemplate(null);
+                                            setSelectedTaskTemplate(task);
+                                        }}
                                     />
                                 );
                             })
@@ -351,7 +355,10 @@ export default function TemplatesPage() {
                                     key={assessment.id}
                                     template={assessment}
                                     isSelected={selectedAssessmentTemplate?.id === assessment.id}
-                                    onClick={() => setSelectedAssessmentTemplate(assessment)}
+                                    onClick={() => {
+                                        setSelectedTaskTemplate(null);
+                                        setSelectedAssessmentTemplate(assessment);
+                                    }}
                                 />
                             ))
                         )}
@@ -369,7 +376,7 @@ export default function TemplatesPage() {
                     </div>
                 </TabsContent>
 
-                <div className="flex w-3/4 flex-col overflow-y-scroll p-[30px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                <div className="flex w-3/4 flex-col overflow-y-scroll [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                     {selectedTaskTemplate ? (
                         <TaskTemplatePreviewPanel
                             taskTemplatePreview={selectedTaskTemplate}
@@ -377,7 +384,9 @@ export default function TemplatesPage() {
                             onDelete={isMutating ? undefined : onDelete}
                         />
                     ) : selectedAssessmentTemplate ? (
-                        <div className="flex h-full items-center justify-center" />
+                        <AssessmentTemplatePreview
+                            assessmentTemplatePreview={selectedAssessmentTemplate}
+                        />
                     ) : (
                         <div className="text-body-m text-muted-foreground flex h-full items-center justify-center">
                             Select a template to preview
