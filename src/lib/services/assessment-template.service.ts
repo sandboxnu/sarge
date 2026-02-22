@@ -176,6 +176,19 @@ async function updateAssessmentTemplateTasks(
     ]);
 }
 
+async function getAssessmentTemplateTaskOrder(
+    assessmentTemplateId: string
+): Promise<Array<{ taskTemplateId: string; order: number }>> {
+    return prisma.assessmentTemplateTask.findMany({
+        where: { assessmentTemplateId },
+        select: {
+            taskTemplateId: true,
+            order: true,
+        },
+        orderBy: { order: 'asc' },
+    });
+}
+
 const AssessmentTemplateService = {
     getAssessmentTemplate,
     createAssessmentTemplate,
@@ -184,6 +197,7 @@ const AssessmentTemplateService = {
     updateAssessmentTemplateTasks,
     getAssessmentTemplatesByTitle,
     getAssessmentTemplates,
+    getAssessmentTemplateTaskOrder,
 };
 
 export default AssessmentTemplateService;

@@ -29,7 +29,7 @@ export function TaskTemplatePreviewPanel({
     const languages = taskTemplatePreview.languages?.map((l) => l.language) ?? [];
 
     return (
-        <div className="flex h-full w-full flex-col overflow-hidden">
+        <div className="flex h-full w-full flex-col overflow-hidden p-[30px]">
             <div className="flex items-start justify-between gap-4 px-0 pt-0 pb-6">
                 <div className="min-w-0 flex-1">
                     <h2 className="text-display-xs text-foreground truncate">

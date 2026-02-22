@@ -24,3 +24,17 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
         return handleError(err);
     }
 }
+
+export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+    try {
+        const session = await getSession();
+        const { id } = await params;
+
+        await AssessmentTemplateService.getAssessmentTemplate(id, session.activeOrganizationId);
+        const tasks = await AssessmentTemplateService.getAssessmentTemplateTaskOrder(id);
+
+        return Response.json({ data: tasks }, { status: 200 });
+    } catch (err) {
+        return handleError(err);
+    }
+}
