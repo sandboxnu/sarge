@@ -122,3 +122,29 @@ export async function getDuplicateTitle(title: string): Promise<string> {
 
     return json.data;
 }
+
+/**
+ * GET /api/task-templates/:taskTemplateId/languages/:language
+ */
+export async function getTaskTemplateLanguage(
+    taskTemplateId: string,
+    language: string
+): Promise<{
+    id: number;
+    taskTemplateId: string;
+    language: string;
+    solution: string;
+    stub: string;
+} | null> {
+    const res = await fetch(
+        `/api/task-templates/${taskTemplateId}/languages/${encodeURIComponent(language)}`
+    );
+
+    const json = await res.json();
+
+    if (!res.ok) {
+        throw new Error(json.message);
+    }
+
+    return json.data;
+}

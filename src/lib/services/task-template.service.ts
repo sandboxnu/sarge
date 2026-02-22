@@ -261,6 +261,36 @@ async function getDuplicateTitle(title: string, orgId: string): Promise<string> 
     return newTitle;
 }
 
+async function getTaskTemplateLanguage(
+    taskTemplateId: string,
+    language: string,
+    orgId: string
+): Promise<{
+    id: number;
+    taskTemplateId: string;
+    language: string;
+    solution: string;
+    stub: string;
+} | null> {
+    const taskTemplate = await prisma.taskTemplate.findFirst({
+        where: { id: taskTemplateId, orgId },
+        select: { id: true },
+    });
+
+    if (!taskTemplate) {
+        throw new NotFoundException('Task Template', taskTemplateId);
+    }
+
+    const languageData = await prisma.taskTemplateLanguage.findFirst({
+        where: {
+            taskTemplateId,
+            language: language as never,
+        },
+    });
+
+    return languageData;
+}
+
 const TaskTemplateService = {
     getTaskTemplate,
     getAllTaskTemplates,
@@ -270,6 +300,7 @@ const TaskTemplateService = {
     updateTaskTemplate,
     getTaskTemplatesByTitle,
     getDuplicateTitle,
+    getTaskTemplateLanguage,
 };
 
 export default TaskTemplateService;
