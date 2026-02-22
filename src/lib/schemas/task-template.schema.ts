@@ -3,7 +3,7 @@ import { blockNoteContentSchema } from './block-note.schema';
 import { TagSchema } from './tag.schema';
 import { TaskTemplateLanguageSchema } from './task-template-language.schema';
 
-const testCaseSchema = z.object({
+export const testCaseSchema = z.object({
     input: z.string().min(1, 'Expected input required'),
     output: z.string().min(1, 'Expected output required'),
 });
