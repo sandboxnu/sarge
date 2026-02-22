@@ -3,7 +3,7 @@ import {
     type TaskTemplateEditorDTO,
     type CreateTaskTemplateDTO,
     type TaskTemplateDTO,
-    TaskTemplateEditorSaveDTO,
+    type TaskTemplateEditorSaveDTO,
 } from '@/lib/schemas/task-template.schema';
 
 /**
