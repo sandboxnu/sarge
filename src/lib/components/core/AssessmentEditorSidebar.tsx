@@ -72,6 +72,7 @@ export default function AssessmentEditorSidebar({
                     <Button
                         variant="primary"
                         className="h-9 flex-1 gap-2 px-4"
+                        disabled={isSaving}
                         onClick={onOpenAddTaskModal}
                     >
                         <Plus className="size-5" />
@@ -80,6 +81,7 @@ export default function AssessmentEditorSidebar({
                     <Button
                         variant="secondary"
                         className="h-9 flex-1 gap-2 px-4"
+                        disabled={isSaving}
                         onClick={() => {
                             // TODO: Text sections are not yet supported
                         }}
@@ -110,7 +112,7 @@ export default function AssessmentEditorSidebar({
                                     <SortableItem
                                         key={section.taskTemplateId}
                                         value={section.taskTemplateId}
-                                        className="opacity-100"
+                                        disabled={isSaving}
                                     >
                                         <AssessmentItem
                                             section={section}
