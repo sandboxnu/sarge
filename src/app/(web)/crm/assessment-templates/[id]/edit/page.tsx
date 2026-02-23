@@ -8,7 +8,7 @@ import { Button } from '@/lib/components/ui/Button';
 import AddTaskModal from '@/lib/components/modal/AddTaskModal';
 import AssessmentEditorSidebar from '@/lib/components/core/AssessmentEditorSidebar';
 import CandidatePreviewPanel from '@/lib/components/core/CandidatePreviewPanel';
-import EditableBreadcrumb from '@/lib/components/core/EditableBreadcrumb';
+import Breadcrumbs from '@/lib/components/core/Breadcrumbs';
 import useAssessmentTemplateEditPage from '@/lib/hooks/useAssessmentTemplateEditPage';
 import type { AssessmentSection } from '@/lib/types/assessment-section.types';
 import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
@@ -104,9 +104,10 @@ export default function AssessmentTemplateEditPage({
     return (
         <div className="flex h-full flex-col">
             <div className="border-sarge-gray-200 flex items-center justify-between border-b px-5 py-4">
-                <EditableBreadcrumb
+                <Breadcrumbs
                     segments={[{ label: 'Assessment Templates', href: '/crm/templates' }]}
                     currentPage={title}
+                    editable
                     onCurrentPageChange={(newTitle) => {
                         setTitle(newTitle);
                         setHasUnsavedChanges(true);

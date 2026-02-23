@@ -10,25 +10,27 @@ export type BreadcrumbSegment = {
     href: string;
 };
 
-interface EditableBreadcrumbProps {
+interface BreadcrumbsProps {
     segments: BreadcrumbSegment[];
     currentPage: string;
+    editable?: boolean;
     onCurrentPageChange?: (value: string) => void;
     maxLength?: number;
 }
 
-export default function EditableBreadcrumb({
+export default function Breadcrumbs({
     segments,
     currentPage,
+    editable = false,
     onCurrentPageChange,
     maxLength = 100,
-}: EditableBreadcrumbProps) {
+}: BreadcrumbsProps) {
     const router = useRouter();
     const inputRef = useRef<HTMLInputElement>(null);
     const [isEditing, setIsEditing] = useState(false);
     const [editValue, setEditValue] = useState(currentPage);
 
-    const isEditable = !!onCurrentPageChange;
+    const isEditable = editable && !!onCurrentPageChange;
 
     const startEditing = () => {
         if (!isEditable) return;
@@ -63,9 +65,9 @@ export default function EditableBreadcrumb({
     };
 
     return (
-        <div className="flex items-center gap-2">
+        <div className="flex min-w-0 items-center gap-2">
             {segments.map((segment, index) => (
-                <div key={segment.href} className="flex items-center gap-2">
+                <div key={segment.href} className="flex shrink-0 items-center gap-2">
                     <button
                         className="text-label-s text-sarge-gray-600 flex shrink-0 cursor-pointer items-center hover:underline"
                         onClick={() => router.push(segment.href)}
@@ -87,7 +89,7 @@ export default function EditableBreadcrumb({
                     onKeyDown={handleKeyDown}
                     maxLength={maxLength}
                     className={cn(
-                        'text-display-xs',
+                        'text-display-xs max-w-[500px]',
                         'border-sarge-primary-300 bg-transparent outline-none',
                         'rounded-md border px-1 py-0.5',
                         '-ml-1'
@@ -97,14 +99,14 @@ export default function EditableBreadcrumb({
             ) : (
                 <div
                     className={cn(
-                        'group flex items-center gap-1.5',
+                        'group flex min-w-0 max-w-[500px] items-center gap-1.5',
                         isEditable &&
-                            'hover:bg-sarge-gray-50 -ml-1 cursor-text rounded-md border border-transparent px-2 py-1 transition-all hover:border-sarge-gray-200'
+                        'hover:bg-sarge-gray-50 -ml-1 cursor-text rounded-md border border-transparent px-2 py-1 transition-all hover:border-sarge-gray-200'
                     )}
                     onClick={startEditing}
-                    title={isEditable ? 'Click to edit' : undefined}
+                    title={isEditable ? 'Click to edit' : "Untitled"}
                 >
-                    <h1 className="text-display-xs truncate">{currentPage}</h1>
+                    <h1 className="text-display-xs min-w-0 truncate">{currentPage}</h1>
                     {isEditable && (
                         <Pencil className="size-3.5 shrink-0 text-sarge-gray-400 opacity-0 transition-opacity group-hover:opacity-100" />
                     )}
