@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, Pencil } from 'lucide-react';
 import { cn } from '@/lib/utils/cn.utils';
 
 export type BreadcrumbSegment = {
@@ -95,17 +95,20 @@ export default function EditableBreadcrumb({
                     autoFocus
                 />
             ) : (
-                <h1
+                <div
                     className={cn(
-                        'text-display-xs truncate',
+                        'group flex items-center gap-1.5',
                         isEditable &&
-                            'hover:bg-sarge-gray-100 -ml-1 cursor-text rounded-md px-2 py-1 transition-colors'
+                            'hover:bg-sarge-gray-50 -ml-1 cursor-text rounded-md border border-transparent px-2 py-1 transition-all hover:border-sarge-gray-200'
                     )}
                     onClick={startEditing}
                     title={isEditable ? 'Click to edit' : undefined}
                 >
-                    {currentPage}
-                </h1>
+                    <h1 className="text-display-xs truncate">{currentPage}</h1>
+                    {isEditable && (
+                        <Pencil className="size-3.5 shrink-0 text-sarge-gray-400 opacity-0 transition-opacity group-hover:opacity-100" />
+                    )}
+                </div>
             )}
         </div>
     );
