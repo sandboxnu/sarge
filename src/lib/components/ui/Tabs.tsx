@@ -72,4 +72,59 @@ function UnderlineTabsTrigger({
     );
 }
 
-export { Tabs, TabsList, TabsTrigger, TabsContent, UnderlineTabsTrigger };
+function CodeTabsTrigger({
+    className,
+    ...props
+}: React.ComponentProps<typeof TabsPrimitive.Trigger>) {
+    return (
+        <TabsPrimitive.Trigger
+            data-slot="code-tabs-trigger"
+            className={cn(
+                'inline-flex items-center justify-center',
+                'rounded-none p-2.5 whitespace-nowrap',
+                'tracking-design text-xs font-medium text-white',
+                'data-[state=active]:font-bold',
+                'border-sarge-gray-600 border-r border-b',
+                'data-[state=active]:border-b-transparent',
+                'focus-visible:outline-none',
+                'disabled:pointer-events-none disabled:opacity-50',
+                className
+            )}
+            {...props}
+        />
+    );
+}
+
+function TestCaseTabsTrigger({
+    className,
+    ...props
+}: React.ComponentProps<typeof TabsPrimitive.Trigger>) {
+    return (
+        <TabsPrimitive.Trigger
+            data-slot="test-case-tabs-trigger"
+            className={cn(
+                'inline-flex items-center justify-center',
+                'rounded-none px-3 py-1 whitespace-nowrap',
+                'text-sarge-gray-700 text-sm font-medium',
+                'border-sarge-gray-300 border-t border-r border-b',
+                'bg-sarge-gray-100',
+                'data-[state=active]:bg-white',
+                'data-[state=active]:border-b-transparent',
+                'focus-visible:outline-none',
+                'disabled:pointer-events-none disabled:opacity-50',
+                className
+            )}
+            {...props}
+        />
+    );
+}
+
+export {
+    Tabs,
+    TabsList,
+    TabsTrigger,
+    TabsContent,
+    UnderlineTabsTrigger,
+    CodeTabsTrigger,
+    TestCaseTabsTrigger,
+};

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import TestCard from '@/lib/components/core/TestCard';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/lib/components/ui/Tabs';
+import { Tabs, TabsContent, TabsList, TestCaseTabsTrigger } from '@/lib/components/ui/Tabs';
 import type { TestCaseDTO } from '@/lib/schemas/task-template.schema';
 import type { TestTab } from '@/lib/hooks/useTestCaseEditor';
 
@@ -26,15 +26,6 @@ type ReadOnlyShellProps = TestCaseListShellBaseProps & {
 };
 
 export type TestCaseListShellProps = EditableShellProps | ReadOnlyShellProps;
-
-const TAB_BASE =
-    '!text-sarge-gray-700 border-sarge-gray-300 bg-sarge-gray-100 rounded-none px-3 py-1 text-sm font-medium';
-
-const TAB_TRIGGER_CLASSES = {
-    all: `border=[0.5px] ${TAB_BASE} border-r-0 data-[state=active]:!bg-white data-[state=active]:!shadow-none`,
-    public: `border=[0.5px] ${TAB_BASE} border-r-0 data-[state=active]:!bg-white data-[state=active]:!shadow-none`,
-    private: `${TAB_BASE} border data-[state=active]:!border-b-0 data-[state=active]:!bg-white`,
-};
 
 export default function TestCaseListShell(props: TestCaseListShellProps) {
     const { publicTestCases, privateTestCases, headerAction } = props;
@@ -120,17 +111,14 @@ export default function TestCaseListShell(props: TestCaseListShellProps) {
                 onValueChange={(v) => setActiveTab(v as TestTab)}
                 className="flex flex-1 flex-col overflow-hidden"
             >
-                <div className="border-sarge-gray-200 bg-sarge-gray-200 shrink-0 border-b">
+                <div className="border-sarge-gray-500 bg-sarge-gray-100 shrink-0 border-b">
                     <TabsList className="h-auto gap-0 rounded-none bg-transparent p-0">
-                        <TabsTrigger value="all" className={TAB_TRIGGER_CLASSES.all}>
-                            All Test Cases
-                        </TabsTrigger>
-                        <TabsTrigger value="public" className={TAB_TRIGGER_CLASSES.public}>
-                            Public Test Cases
-                        </TabsTrigger>
-                        <TabsTrigger value="private" className={TAB_TRIGGER_CLASSES.private}>
+                        <TestCaseTabsTrigger value="all">All Test Cases</TestCaseTabsTrigger>
+                        <TestCaseTabsTrigger value="public">Public Test Cases</TestCaseTabsTrigger>
+                        <TestCaseTabsTrigger value="private">
                             Private Test Cases
-                        </TabsTrigger>
+                        </TestCaseTabsTrigger>
+                        <div className="border-sarge-gray-300 bg-sarge-gray-100 flex-1 border-t border-r border-b" />
                     </TabsList>
                 </div>
 
