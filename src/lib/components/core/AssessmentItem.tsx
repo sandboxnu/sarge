@@ -21,13 +21,13 @@ export default function AssessmentItem({ section, isSelected, onSelect }: Assess
     return (
         <div
             className={cn(
-                'border-border group relative border-l px-5 py-1',
+                'group relative px-5 py-1',
                 isSelected && 'is-selected'
             )}
         >
             <SortableItemHandle
                 className={cn(
-                    'absolute top-1/2 left-0.5 -translate-y-1/2 opacity-0 transition-opacity',
+                    'absolute top-1/2 left-[3px] -translate-y-1/2 opacity-0 transition-opacity',
                     isDragging && 'opacity-100',
                     !isSelected && !isDragging && 'group-hover:opacity-100'
                 )}
@@ -39,10 +39,10 @@ export default function AssessmentItem({ section, isSelected, onSelect }: Assess
                 className={cn(
                     'flex w-full cursor-pointer items-center justify-between rounded-lg border px-3 py-2',
                     isDragging
-                        ? 'border-sarge-primary-200 bg-sarge-primary-100'
+                        ? 'border-sarge-primary-100 bg-sarge-primary-gray-50'
                         : isSelected
-                          ? 'border-sarge-primary-100 bg-card'
-                          : 'border-border hover:border-sarge-primary-100 hover:bg-card'
+                            ? 'border-sarge-primary-100 bg-sarge-primary-100'
+                            : 'border-sarge-gray-200 hover:border-sarge-primary-100 hover:bg-sarge-gray-50'
                 )}
                 onClick={onSelect}
             >
