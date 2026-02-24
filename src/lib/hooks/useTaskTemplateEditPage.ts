@@ -50,7 +50,7 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
                 setTaskTemplate(taskTemplate);
                 setTitle(taskTemplate.title);
                 setLanguages(taskTemplate.languages);
-                setDescription((taskTemplate.description ?? []) as BlockNoteContent);
+                setDescription(taskTemplate.description ?? []);
                 setPrivateTestCases(taskTemplate.privateTestCases);
                 setPublicTestCases(taskTemplate.publicTestCases);
                 setTags(taskTemplate.tags);

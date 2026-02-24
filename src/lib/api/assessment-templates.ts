@@ -3,6 +3,7 @@ import {
     type AssessmentTemplateDetailDTO,
     type CreateAssessmentTemplateDTO,
 } from '@/lib/schemas/assessment-template.schema';
+import type { BlockNoteContent } from '@/lib/types/task-template.types';
 /**
  * GET /api/assessment-templates/search/?title=...
  */
@@ -41,7 +42,7 @@ export async function getAssessmentTemplate(id: string): Promise<AssessmentTempl
  */
 export async function updateAssessmentTemplate(
     id: string,
-    data: { title?: string; internalNotes?: unknown }
+    data: { title?: string; internalNotes?: BlockNoteContent }
 ): Promise<void> {
     const res = await fetch(`/api/assessment-templates/${id}`, {
         method: 'PUT',

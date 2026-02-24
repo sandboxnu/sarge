@@ -3,7 +3,6 @@ import { useRouter } from 'next/navigation';
 import { createAssessmentTemplate } from '@/lib/api/assessment-templates';
 import { useAuthSession } from '@/lib/auth/auth-context';
 import type { BlockNoteContent } from '@/lib/types/task-template.types';
-import type { BlockNoteBlockDTO } from '@/lib/schemas/block-note.schema';
 
 export function useCreateAssessmentTemplateModal(onOpenChange: (open: boolean) => void) {
     const router = useRouter();
@@ -29,23 +28,10 @@ export function useCreateAssessmentTemplateModal(onOpenChange: (open: boolean) =
         setLocalError(null);
 
         try {
-            const notesForApi = notes
-                .filter(
-                    (block): block is BlockNoteContent[number] & { id: string } =>
-                        typeof block.id === 'string'
-                )
-                .map((block) => ({
-                    id: block.id,
-                    type: block.type,
-                    props: block.props,
-                    content: block.content,
-                    children: block.children,
-                })) as BlockNoteBlockDTO[];
-
             const result = await createAssessmentTemplate({
                 title: name.trim(),
                 authorId: userId,
-                internalNotes: notesForApi,
+                internalNotes: notes,
             });
 
             router.push(`/crm/assessment-templates/${result.id}/edit`);

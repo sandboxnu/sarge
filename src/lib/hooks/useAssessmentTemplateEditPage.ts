@@ -32,7 +32,7 @@ export default function useAssessmentTemplateEditPage(assessmentTemplateId: stri
                 if (cancelled) return;
 
                 setTitle(template.title);
-                setInternalNotes(template.internalNotes as BlockNoteContent);
+                setInternalNotes(template.internalNotes);
 
                 const initialSections: AssessmentSection[] = template.tasks.map((t) => ({
                     type: 'task' as const,
@@ -128,8 +128,7 @@ export default function useAssessmentTemplateEditPage(assessmentTemplateId: stri
             ]);
             setHasUnsavedChanges(false);
             return true;
-        } catch (err) {
-            console.error('Save failed:', err);
+        } catch {
             return false;
         } finally {
             setIsSaving(false);

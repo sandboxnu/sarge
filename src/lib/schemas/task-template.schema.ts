@@ -66,7 +66,7 @@ export const taskTemplateEditorSaveSchema = TaskTemplateSchema.omit({
     orgId: true,
     authorId: true,
 }).extend({
-    description: z.array(z.any()),
+    description: blockNoteContentSchema,
     tags: z.array(z.string()),
     languages: TaskTemplateLanguageSchema.array(),
 });
