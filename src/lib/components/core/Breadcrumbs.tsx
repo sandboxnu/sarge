@@ -99,16 +99,16 @@ export default function Breadcrumbs({
             ) : (
                 <div
                     className={cn(
-                        'group flex min-w-0 max-w-[500px] items-center gap-1.5',
+                        'group flex max-w-[500px] min-w-0 items-center gap-1.5',
                         isEditable &&
-                        'hover:bg-sarge-gray-50 -ml-1 cursor-text rounded-md border border-transparent px-2 py-1 transition-all hover:border-sarge-gray-200'
+                            'hover:bg-sarge-gray-50 hover:border-sarge-gray-200 -ml-1 cursor-text rounded-md border border-transparent px-2 py-1 transition-all'
                     )}
                     onClick={startEditing}
-                    title={isEditable ? 'Click to edit' : "Untitled"}
+                    title={isEditable ? 'Click to edit' : 'Untitled'}
                 >
                     <h1 className="text-display-xs min-w-0 truncate">{currentPage}</h1>
                     {isEditable && (
-                        <Pencil className="size-3.5 shrink-0 text-sarge-gray-400 opacity-0 transition-opacity group-hover:opacity-100" />
+                        <Pencil className="text-sarge-gray-400 size-3.5 shrink-0 opacity-0 transition-opacity group-hover:opacity-100" />
                     )}
                 </div>
             )}

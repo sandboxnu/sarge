@@ -10,8 +10,6 @@ import AssessmentEditorSidebar from '@/lib/components/core/AssessmentEditorSideb
 import CandidatePreviewPanel from '@/lib/components/core/CandidatePreviewPanel';
 import Breadcrumbs from '@/lib/components/core/Breadcrumbs';
 import useAssessmentTemplateEditPage from '@/lib/hooks/useAssessmentTemplateEditPage';
-import type { AssessmentSection } from '@/lib/types/assessment-section.types';
-import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
 
 export default function AssessmentTemplateEditPage({
     params,
@@ -24,47 +22,24 @@ export default function AssessmentTemplateEditPage({
         isLoading,
         error,
         title,
-        setTitle,
         sections,
-        setSections,
         internalNotes,
-        setInternalNotes,
         selectedSection,
-        setSelectedSection,
         hasUnsavedChanges,
-        setHasUnsavedChanges,
         isSaving,
-        handleSave,
+        updateTitle,
+        updateInternalNotes,
+        addSections,
+        deleteSection,
+        reorderSections,
+        selectSection,
+        save,
     } = useAssessmentTemplateEditPage(id);
 
     const [addTaskOpen, setAddTaskOpen] = useState(false);
 
-    const handleAddTasks = (tasks: TaskTemplateListItemDTO[]) => {
-        const newSections: AssessmentSection[] = tasks.map((task, i) => ({
-            type: 'task',
-            taskTemplateId: task.id,
-            order: sections.length + i,
-            taskTemplate: task,
-        }));
-        setSections((prev) => [...prev, ...newSections]);
-        setHasUnsavedChanges(true);
-
-        if (!selectedSection && newSections.length > 0) {
-            setSelectedSection(newSections[0]);
-        }
-    };
-
-    const handleDeleteSection = () => {
-        if (!selectedSection) return;
-        setSections((prev) =>
-            prev.filter((s) => s.taskTemplateId !== selectedSection.taskTemplateId)
-        );
-        setSelectedSection(null);
-        setHasUnsavedChanges(true);
-    };
-
     const onSave = async () => {
-        const success = await handleSave();
+        const success = await save();
         if (success) {
             toast.success('Assessment template saved');
         } else {
@@ -108,10 +83,7 @@ export default function AssessmentTemplateEditPage({
                     segments={[{ label: 'Assessment Templates', href: '/crm/templates' }]}
                     currentPage={title}
                     editable
-                    onCurrentPageChange={(newTitle) => {
-                        setTitle(newTitle);
-                        setHasUnsavedChanges(true);
-                    }}
+                    onCurrentPageChange={updateTitle}
                 />
 
                 <Button variant="dropdown" className="shrink-0">
@@ -124,28 +96,27 @@ export default function AssessmentTemplateEditPage({
             <div className="flex min-h-0 flex-1">
                 <AssessmentEditorSidebar
                     sections={sections}
-                    setSections={setSections}
                     selectedSection={selectedSection}
-                    setSelectedSection={setSelectedSection}
                     internalNotes={internalNotes}
-                    setInternalNotes={setInternalNotes}
                     hasUnsavedChanges={hasUnsavedChanges}
-                    setHasUnsavedChanges={setHasUnsavedChanges}
-                    onSave={onSave}
                     isSaving={isSaving}
+                    onReorder={reorderSections}
+                    onSelectSection={selectSection}
+                    onNotesChange={updateInternalNotes}
+                    onSave={onSave}
                     onOpenAddTaskModal={() => setAddTaskOpen(true)}
                 />
 
                 <CandidatePreviewPanel
                     selectedSection={selectedSection}
-                    onDeleteSection={handleDeleteSection}
+                    onDeleteSection={deleteSection}
                 />
             </div>
 
             <AddTaskModal
                 open={addTaskOpen}
                 onOpenChange={setAddTaskOpen}
-                onAdd={handleAddTasks}
+                onAdd={addSections}
                 alreadyAddedIds={alreadyAddedIds}
             />
         </div>

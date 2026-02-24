@@ -19,12 +19,7 @@ export default function AssessmentItem({ section, isSelected, onSelect }: Assess
     const timeLimitMinutes = section.type === 'task' ? section.taskTemplate.timeLimitMinutes : 0;
 
     return (
-        <div
-            className={cn(
-                'group relative px-5 py-1',
-                isSelected && 'is-selected'
-            )}
-        >
+        <div className={cn('group relative px-5 py-1', isSelected && 'is-selected')}>
             <SortableItemHandle
                 className={cn(
                     'absolute top-1/2 left-[3px] -translate-y-1/2 opacity-0 transition-opacity',
@@ -41,8 +36,8 @@ export default function AssessmentItem({ section, isSelected, onSelect }: Assess
                     isDragging
                         ? 'border-sarge-primary-100 bg-sarge-primary-gray-50'
                         : isSelected
-                            ? 'border-sarge-primary-100 bg-sarge-primary-100'
-                            : 'border-sarge-gray-200 hover:border-sarge-primary-100 hover:bg-sarge-gray-50'
+                          ? 'border-sarge-primary-100 bg-sarge-primary-100'
+                          : 'border-sarge-gray-200 hover:border-sarge-primary-100 hover:bg-sarge-gray-50'
                 )}
                 onClick={onSelect}
             >

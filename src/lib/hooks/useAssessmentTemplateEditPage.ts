@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
     getAssessmentTemplate,
     updateAssessmentTemplate,
@@ -6,6 +6,7 @@ import {
 } from '@/lib/api/assessment-templates';
 import type { AssessmentSection } from '@/lib/types/assessment-section.types';
 import type { BlockNoteContent } from '@/lib/types/task-template.types';
+import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
 
 export default function useAssessmentTemplateEditPage(assessmentTemplateId: string) {
     const [isLoading, setIsLoading] = useState(true);
@@ -57,7 +58,62 @@ export default function useAssessmentTemplateEditPage(assessmentTemplateId: stri
         };
     }, [assessmentTemplateId]);
 
-    async function handleSave(): Promise<boolean> {
+    function updateTitle(newTitle: string) {
+        setTitle(newTitle);
+        setHasUnsavedChanges(true);
+    }
+
+    function updateInternalNotes(notes: BlockNoteContent) {
+        setInternalNotes(notes);
+        setHasUnsavedChanges(true);
+    }
+
+    function addSections(tasks: TaskTemplateListItemDTO[]) {
+        const newSections: AssessmentSection[] = tasks.map((task, i) => ({
+            type: 'task' as const,
+            taskTemplateId: task.id,
+            order: sections.length + i,
+            taskTemplate: task,
+        }));
+        setSections((prev) => [...prev, ...newSections]);
+        setHasUnsavedChanges(true);
+
+        if (!selectedSection && newSections.length > 0) {
+            setSelectedSection(newSections[0]);
+        }
+    }
+
+    function deleteSection() {
+        if (!selectedSection) return;
+
+        const currentIndex = sections.findIndex(
+            (s) => s.taskTemplateId === selectedSection.taskTemplateId
+        );
+        const remaining = sections.filter(
+            (s) => s.taskTemplateId !== selectedSection.taskTemplateId
+        );
+
+        setSections(remaining);
+        setHasUnsavedChanges(true);
+
+        if (remaining.length === 0) {
+            setSelectedSection(null);
+        } else {
+            const nextIndex = Math.min(currentIndex, remaining.length - 1);
+            setSelectedSection(remaining[nextIndex]);
+        }
+    }
+
+    function reorderSections(reordered: AssessmentSection[]) {
+        setSections(reordered);
+        setHasUnsavedChanges(true);
+    }
+
+    function selectSection(section: AssessmentSection | null) {
+        setSelectedSection(section);
+    }
+
+    async function save(): Promise<boolean> {
         setIsSaving(true);
         try {
             await Promise.all([
@@ -84,16 +140,17 @@ export default function useAssessmentTemplateEditPage(assessmentTemplateId: stri
         isLoading,
         error,
         title,
-        setTitle,
         sections,
-        setSections,
         internalNotes,
-        setInternalNotes,
         selectedSection,
-        setSelectedSection,
         hasUnsavedChanges,
-        setHasUnsavedChanges,
         isSaving,
-        handleSave,
+        updateTitle,
+        updateInternalNotes,
+        addSections,
+        deleteSection,
+        reorderSections,
+        selectSection,
+        save,
     };
 }

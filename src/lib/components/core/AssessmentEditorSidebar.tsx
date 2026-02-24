@@ -17,29 +17,27 @@ import type { BlockNoteContent } from '@/lib/types/task-template.types';
 
 interface AssessmentEditorSidebarProps {
     sections: AssessmentSection[];
-    setSections: React.Dispatch<React.SetStateAction<AssessmentSection[]>>;
     selectedSection: AssessmentSection | null;
-    setSelectedSection: (section: AssessmentSection | null) => void;
     internalNotes: BlockNoteContent;
-    setInternalNotes: (notes: BlockNoteContent) => void;
     hasUnsavedChanges: boolean;
-    setHasUnsavedChanges: (changed: boolean) => void;
-    onSave: () => void;
     isSaving: boolean;
+    onReorder: (sections: AssessmentSection[]) => void;
+    onSelectSection: (section: AssessmentSection | null) => void;
+    onNotesChange: (notes: BlockNoteContent) => void;
+    onSave: () => void;
     onOpenAddTaskModal: () => void;
 }
 
 export default function AssessmentEditorSidebar({
     sections,
-    setSections,
     selectedSection,
-    setSelectedSection,
     internalNotes,
-    setInternalNotes,
     hasUnsavedChanges,
-    setHasUnsavedChanges,
-    onSave,
     isSaving,
+    onReorder,
+    onSelectSection,
+    onNotesChange,
+    onSave,
     onOpenAddTaskModal,
 }: AssessmentEditorSidebarProps) {
     const [isNotesExpanded, setIsNotesExpanded] = useState(false);
@@ -61,8 +59,7 @@ export default function AssessmentEditorSidebar({
     };
 
     const handleReorder = (reordered: AssessmentSection[]) => {
-        setSections(reordered);
-        setHasUnsavedChanges(true);
+        onReorder(reordered);
     };
 
     return (
@@ -120,7 +117,7 @@ export default function AssessmentEditorSidebar({
                                                 selectedSection?.taskTemplateId ===
                                                 section.taskTemplateId
                                             }
-                                            onSelect={() => setSelectedSection(section)}
+                                            onSelect={() => onSelectSection(section)}
                                         />
                                     </SortableItem>
                                 ))}
@@ -165,10 +162,7 @@ export default function AssessmentEditorSidebar({
                             >
                                 <BlockNoteEditor
                                     description={internalNotes}
-                                    setDescription={(notes) => {
-                                        setInternalNotes(notes);
-                                        setHasUnsavedChanges(true);
-                                    }}
+                                    setDescription={onNotesChange}
                                     compact
                                 />
                             </div>
