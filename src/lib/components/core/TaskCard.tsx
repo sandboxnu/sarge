@@ -21,9 +21,9 @@ export interface TaskCardProps {
     maxTags?: number;
 }
 
-export default function TaskCard({ maxTags, ...props }: TaskCardProps) {
-    const visibleChips = maxTags != null ? props.chips.slice(0, maxTags) : props.chips;
-    const overflowChips = maxTags != null ? props.chips.slice(maxTags) : [];
+export default function TaskCard({ maxTags = 2, ...props }: TaskCardProps) {
+    const visibleChips = props.chips.slice(0, maxTags);
+    const overflowChips = props.chips.slice(maxTags);
 
     return (
         <div

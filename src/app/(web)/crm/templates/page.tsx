@@ -242,7 +242,6 @@ export default function TemplatesPage() {
                                         taskTemplateId={task.id}
                                         isPreviewSelected={selectedTaskTemplate?.id === task.id}
                                         onPreviewSelect={() => setSelectedTaskTemplate(task)}
-                                        maxTags={2}
                                     />
                                 );
                             })
