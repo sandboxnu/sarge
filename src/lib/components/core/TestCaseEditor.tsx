@@ -1,4 +1,4 @@
-import TestCaseListShell from '@/lib/components/core/TestCaseListShell';
+import TestCasePanel from '@/lib/components/core/TestCasePanel';
 import { Button } from '@/lib/components/ui/Button';
 import { type TestCaseDTO } from '@/lib/schemas/task-template.schema';
 import useTestCaseEditor from '@/lib/hooks/useTestCaseEditor';
@@ -29,14 +29,14 @@ export default function TestCaseEditor(props: TestCaseEditorProps) {
     );
 
     return (
-        <TestCaseListShell
+        <TestCasePanel
             publicTestCases={publicTestCases}
             privateTestCases={privateTestCases}
             isSaving={isSaving}
-            onDuplicate={duplicateTestCase}
-            onRemove={removeTestCase}
-            onUpdate={updateTestCase}
-            onToggleVisibility={toggleTestCaseVisibility}
+            onDuplicateTestCase={duplicateTestCase}
+            onRemoveTestCase={removeTestCase}
+            onTestCaseUpdate={updateTestCase}
+            onToggleTestCaseVisibility={toggleTestCaseVisibility}
             headerAction={
                 <Button
                     className="items-center gap-1 rounded-md px-3 py-1 text-sm"

@@ -6,28 +6,33 @@ import { Tabs, TabsContent, TabsList, TestCaseTabsTrigger } from '@/lib/componen
 import type { TestCaseDTO } from '@/lib/schemas/task-template.schema';
 import type { TestTab } from '@/lib/hooks/useTestCaseEditor';
 
-type TestCaseListShellBaseProps = {
+type TestCasePanelBaseProps = {
     publicTestCases: TestCaseDTO[];
     privateTestCases: TestCaseDTO[];
     headerAction?: React.ReactNode;
 };
 
-type EditableShellProps = TestCaseListShellBaseProps & {
+type EditablePanelProps = TestCasePanelBaseProps & {
     readOnly?: false;
     isSaving?: boolean;
-    onDuplicate: (index: number, tab: TestTab) => void;
-    onRemove: (index: number, tab: TestTab) => void;
-    onUpdate: (index: number, tab: TestTab, field: 'input' | 'output', value: string) => void;
-    onToggleVisibility: (index: number, tab: TestTab) => void;
+    onDuplicateTestCase: (index: number, tab: TestTab) => void;
+    onRemoveTestCase: (index: number, tab: TestTab) => void;
+    onTestCaseUpdate: (
+        index: number,
+        tab: TestTab,
+        field: 'input' | 'output',
+        value: string
+    ) => void;
+    onToggleTestCaseVisibility: (index: number, tab: TestTab) => void;
 };
 
-type ReadOnlyShellProps = TestCaseListShellBaseProps & {
+type ReadOnlyPanelProps = TestCasePanelBaseProps & {
     readOnly: true;
 };
 
-export type TestCaseListShellProps = EditableShellProps | ReadOnlyShellProps;
+export type TestCasePanelProps = EditablePanelProps | ReadOnlyPanelProps;
 
-export default function TestCaseListShell(props: TestCaseListShellProps) {
+export default function TestCasePanel(props: TestCasePanelProps) {
     const { publicTestCases, privateTestCases, headerAction } = props;
 
     const [activeTab, setActiveTab] = useState<TestTab>('all');
@@ -96,10 +101,10 @@ export default function TestCaseListShell(props: TestCaseListShellProps) {
                 key={`${tab}-${index}`}
                 {...baseProps}
                 isSaving={props.isSaving}
-                onDuplicate={() => props.onDuplicate(index, tab)}
-                onRemove={() => props.onRemove(index, tab)}
-                onUpdate={(field, value) => props.onUpdate(index, tab, field, value)}
-                onToggle={() => props.onToggleVisibility(index, tab)}
+                onDuplicate={() => props.onDuplicateTestCase(index, tab)}
+                onRemove={() => props.onRemoveTestCase(index, tab)}
+                onUpdate={(field, value) => props.onTestCaseUpdate(index, tab, field, value)}
+                onToggle={() => props.onToggleTestCaseVisibility(index, tab)}
             />
         );
     }

@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import TaskDescriptionPreview from '@/lib/components/core/TaskDescriptionPreview';
 import CodeEditorPreview from '@/lib/components/core/CodeEditorPreview';
-import TestCasePreviewList from '@/lib/components/core/TestCasePreviewList';
+import TestCasePanel from '@/lib/components/core/TestCasePanel';
 import type { AssessmentSection } from '@/lib/types/assessment-section.types';
 import GreyWinstonLogoMark from '@/../public/GreyWinstonLogoMark.svg';
 
@@ -58,9 +58,10 @@ export default function CandidatePreviewPanel({
                         </div>
 
                         <div className="flex flex-[2_0_0] flex-col overflow-hidden">
-                            <TestCasePreviewList
+                            <TestCasePanel
                                 publicTestCases={taskTemplate.publicTestCases}
                                 privateTestCases={taskTemplate.privateTestCases}
+                                readOnly
                             />
                         </div>
                     </div>
