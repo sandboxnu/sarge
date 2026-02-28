@@ -12,15 +12,16 @@ export function useAddTaskModal(open: boolean) {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const search = useSearch('task-templates');
+    const { reset: resetSearch } = search; // we need to pull out reset so we only run the effect when the modal opens, not when the user types
     const isSearching = search.value.trim().length >= 1;
 
     useEffect(() => {
         if (open) {
             setPage(0);
-            search.reset();
+            resetSearch();
             setError(null);
         }
-    }, [open]);
+    }, [open, resetSearch]);
 
     // this is when we aren't searching so we fetch the paginated list
     useEffect(() => {

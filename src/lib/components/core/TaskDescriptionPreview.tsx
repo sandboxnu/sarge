@@ -10,7 +10,6 @@ import {
 } from '@/lib/components/ui/Dropdown';
 import { BlockNoteViewer } from '@/lib/components/core/BlockNoteViewer';
 import type { AssessmentTaskTemplatePreviewDTO } from '@/lib/schemas/assessment-template.schema';
-import type { BlockNoteContent } from '@/lib/types/task-template.types';
 
 interface TaskDescriptionPreviewProps {
     taskTemplate: AssessmentTaskTemplatePreviewDTO;
@@ -71,10 +70,7 @@ export default function TaskDescriptionPreview({
                 )}
             </div>
 
-            <BlockNoteViewer
-                key={taskTemplate.id}
-                content={taskTemplate.description as BlockNoteContent}
-            />
+            <BlockNoteViewer key={taskTemplate.id} content={taskTemplate.description} />
         </div>
     );
 }

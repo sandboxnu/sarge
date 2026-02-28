@@ -84,7 +84,7 @@ export default function TaskCard({ maxTags = 2, ...props }: TaskCardProps) {
             </div>
             {props.isAlreadyAdded && (
                 <CircleCheck
-                    className="text-sarge-primary-500 absolute right-2 top-2 z-10 size-5"
+                    className="text-sarge-primary-500 absolute top-2 right-2 z-10 size-5"
                     aria-label="Already added"
                 />
             )}

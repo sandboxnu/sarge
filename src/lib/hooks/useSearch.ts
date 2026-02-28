@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDebounce } from '@/lib/hooks/useDebounce';
 import { searchTaskTemplates } from '@/lib/api/task-templates';
 import { searchAssessmentTemplates } from '@/lib/api/assessment-templates';
@@ -37,12 +37,12 @@ export default function useSearch<T extends SearchType>(type: T) {
 
     const isSearchPending = query.trim().length >= 1 && query !== debouncedQuery;
 
-    const reset = () => {
+    const reset = useCallback(() => {
         setQuery('');
         setData([]);
         setError(null);
         setLoading(false);
-    };
+    }, []);
 
     useEffect(() => {
         if (debouncedQuery.length < 1) {

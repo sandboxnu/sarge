@@ -74,7 +74,7 @@ export default function AddTaskModal({
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogContent
-                className="flex w-[960px] !max-w-[90vw] max-h-[85vh] flex-col gap-0 overflow-hidden p-0"
+                className="flex max-h-[85vh] w-[960px] !max-w-[90vw] flex-col gap-0 overflow-hidden p-0"
                 showCloseButton={true}
             >
                 <div className="px-7 pt-6 pb-0">
@@ -100,7 +100,7 @@ export default function AddTaskModal({
                     </div>
                 </div>
 
-                <div className="mx-7 mt-4 flex basis-[27rem] grow-0 shrink min-h-0 flex-col overflow-y-auto">
+                <div className="mx-7 mt-4 flex min-h-0 shrink grow-0 basis-[27rem] flex-col overflow-y-auto">
                     {isLoading ? (
                         <div className="flex flex-1 items-center justify-center">
                             <Image
