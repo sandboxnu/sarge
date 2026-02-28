@@ -37,6 +37,13 @@ export default function useSearch<T extends SearchType>(type: T) {
 
     const isSearchPending = query.trim().length >= 1 && query !== debouncedQuery;
 
+    const reset = () => {
+        setQuery('');
+        setData([]);
+        setError(null);
+        setLoading(false);
+    };
+
     useEffect(() => {
         if (debouncedQuery.length < 1) {
             setData([]);
@@ -60,5 +67,6 @@ export default function useSearch<T extends SearchType>(type: T) {
         data,
         loading: loading || isSearchPending,
         error,
+        reset,
     };
 }

@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDebounce } from '@/lib/hooks/useDebounce';
-import { getTaskTemplateList, searchTaskTemplates } from '@/lib/api/task-templates';
+import { useEffect, useState } from 'react';
+import { getTaskTemplateList } from '@/lib/api/task-templates';
 import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
+import useSearch from '@/lib/hooks/useSearch';
 
 const PAGE_SIZE = 9;
 
@@ -10,21 +10,14 @@ export function useAddTaskModal(open: boolean) {
     const [total, setTotal] = useState(0);
     const [taskTemplates, setTaskTemplates] = useState<TaskTemplateListItemDTO[]>([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<Error | null>(null);
-
-    const [searchQuery, setSearchQuery] = useState('');
-    const debouncedQuery = useDebounce(searchQuery, 500);
-
-    const isSearching = debouncedQuery.trim().length >= 1;
-    const isSearchPending = searchQuery.trim().length >= 1 && searchQuery !== debouncedQuery;
-
-    const [searchResults, setSearchResults] = useState<TaskTemplateListItemDTO[]>([]);
+    const [error, setError] = useState<string | null>(null);
+    const search = useSearch('task-templates');
+    const isSearching = search.value.trim().length >= 1;
 
     useEffect(() => {
         if (open) {
             setPage(0);
-            setSearchQuery('');
-            setSearchResults([]);
+            search.reset();
             setError(null);
         }
     }, [open]);
@@ -47,7 +40,7 @@ export function useAddTaskModal(open: boolean) {
                 }
             } catch (err) {
                 if (!cancelled) {
-                    setError(err as Error);
+                    setError(err instanceof Error ? err.message : 'An unknown error occurred');
                 }
             } finally {
                 if (!cancelled) {
@@ -63,71 +56,30 @@ export function useAddTaskModal(open: boolean) {
         };
     }, [open, page, isSearching]);
 
-    // this is when we are searching so we fetch the search results and paginate client side
-    useEffect(() => {
-        if (!open || !isSearching) {
-            setSearchResults([]);
-            return;
-        }
-
-        let cancelled = false;
-
-        async function fetchSearch() {
-            try {
-                setIsLoading(true);
-                setError(null);
-                const results = await searchTaskTemplates(debouncedQuery);
-
-                if (!cancelled) {
-                    setSearchResults(results);
-                }
-            } catch (err) {
-                if (!cancelled) {
-                    setError(err as Error);
-                }
-            } finally {
-                if (!cancelled) {
-                    setIsLoading(false);
-                }
-            }
-        }
-
-        fetchSearch();
-
-        return () => {
-            cancelled = true;
-        };
-    }, [open, debouncedQuery, isSearching]);
-
     // we set to 0 because we want to start from the first page
     // when we search (otherwise it would leave the user on a random page)
     useEffect(() => {
         setPage(0);
-    }, [debouncedQuery]);
+    }, [search.value]);
 
-    const displayList = useMemo(() => {
-        if (isSearching) {
-            return searchResults.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
-        }
-        return taskTemplates;
-    }, [isSearching, searchResults, taskTemplates, page]);
+    const displayList = isSearching
+        ? search.data.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
+        : taskTemplates;
 
-    const displayTotal = isSearching ? searchResults.length : total;
+    const displayTotal = isSearching ? search.data.length : total;
 
-    const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchQuery(e.target.value);
-    }, []);
+    const hookError = error ?? search.error;
 
     return {
         displayList,
         displayTotal,
-        isLoading: isLoading || isSearchPending,
-        error,
+        isLoading: isLoading || search.loading,
+        error: hookError,
         page,
         setPage,
         limit: PAGE_SIZE,
-        searchQuery,
-        handleSearchChange,
+        searchQuery: search.value,
+        handleSearchChange: search.onChange,
         isSearching,
     };
 }
