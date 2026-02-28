@@ -124,7 +124,7 @@ export default function TaskDetailsTab({
                 <div
                     data-blocknote-no-side-menu
                     data-blocknote-editor-bg="muted"
-                    className={`bg-sarge-gray-50 border-sarge-gray-200 min-h-0 flex-1 overflow-y-auto rounded-lg border ${isSaving ? 'pointer-events-none opacity-50' : ''}`}
+                    className={`bg-sarge-gray-50 border-sarge-gray-200 min-h-0 flex-1 overflow-y-auto rounded-lg border px-3 pt-1 ${isSaving ? 'pointer-events-none opacity-50' : ''}`}
                 >
                     <BlockNoteEditor description={description} setDescription={setDescription} />
                 </div>
