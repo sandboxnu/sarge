@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import { Button } from '@/lib/components/ui/Button';
 import AddTaskModal from '@/lib/components/modal/AddTaskModal';
 import AssessmentEditorSidebar from '@/lib/components/core/AssessmentEditorSidebar';
-import CandidatePreviewPanel from '@/lib/components/core/CandidatePreviewPanel';
+import AssessmentTaskPreviewPanel from '@/lib/components/core/AssessmentTaskPreviewPanel';
 import Breadcrumbs from '@/lib/components/core/Breadcrumbs';
 import useAssessmentTemplateEditPage from '@/lib/hooks/useAssessmentTemplateEditPage';
 
@@ -107,7 +107,7 @@ export default function AssessmentTemplateEditPage({
                     onOpenAddTaskModal={() => setAddTaskOpen(true)}
                 />
 
-                <CandidatePreviewPanel
+                <AssessmentTaskPreviewPanel
                     selectedSection={selectedSection}
                     onDeleteSection={deleteSection}
                 />
