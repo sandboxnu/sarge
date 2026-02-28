@@ -4,7 +4,7 @@ import ChipOverflow from '@/lib/components/ui/ChipOverflow';
 import type { TagDTO } from '@/lib/schemas/tag.schema';
 import type { TaskTemplateLanguageDTO } from '@/lib/schemas/task-template-language.schema';
 import { getLanguageLabel } from '@/lib/utils/language.utils';
-import { Code2 } from 'lucide-react';
+import { CircleCheck, Code2 } from 'lucide-react';
 import { cn } from '@/lib/utils/cn.utils';
 
 export interface TaskCardProps {
@@ -19,6 +19,7 @@ export interface TaskCardProps {
     isPreviewSelected?: boolean;
     onPreviewSelect?: () => void;
     maxTags?: number;
+    isAlreadyAdded?: boolean;
 }
 
 export default function TaskCard({ maxTags = 2, ...props }: TaskCardProps) {
@@ -28,8 +29,9 @@ export default function TaskCard({ maxTags = 2, ...props }: TaskCardProps) {
     return (
         <div
             className={cn(
-                'flex cursor-pointer gap-4.5 rounded-xl border-1 p-4',
-                props.isPreviewSelected
+                'relative flex cursor-pointer gap-4.5 rounded-xl border-1 p-4',
+                props.isAlreadyAdded && 'pointer-events-none opacity-50',
+                props.isPreviewSelected && !props.isAlreadyAdded
                     ? 'border-sarge-primary-500 bg-sarge-primary-50 ring-sarge-primary-200 ring-2 ring-inset'
                     : 'border-sarge-gray-200 hover:bg-sarge-primary-100 hover:border-sarge-primary-400'
             )}
@@ -48,7 +50,7 @@ export default function TaskCard({ maxTags = 2, ...props }: TaskCardProps) {
                 onClick={(e) => e.stopPropagation()}
             >
                 <Checkbox
-                    checked={props.isSelected}
+                    checked={props.isSelected || !!props.isAlreadyAdded}
                     onCheckedChange={() => props.setIsSelected(props.index)}
                 />
             </div>
@@ -80,6 +82,12 @@ export default function TaskCard({ maxTags = 2, ...props }: TaskCardProps) {
                     <ChipOverflow chips={overflowChips} />
                 </div>
             </div>
+            {props.isAlreadyAdded && (
+                <CircleCheck
+                    className="text-sarge-primary-500 absolute right-2 top-2 z-10 size-5"
+                    aria-label="Already added"
+                />
+            )}
         </div>
     );
 }

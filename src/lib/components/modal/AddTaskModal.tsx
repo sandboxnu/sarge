@@ -74,7 +74,7 @@ export default function AddTaskModal({
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogContent
-                className="flex w-[960px] !max-w-[90vw] flex-col gap-0 p-0"
+                className="flex w-[960px] !max-w-[90vw] max-h-[85vh] flex-col gap-0 overflow-hidden p-0"
                 showCloseButton={true}
             >
                 <div className="px-7 pt-6 pb-0">
@@ -100,7 +100,7 @@ export default function AddTaskModal({
                     </div>
                 </div>
 
-                <div className="mx-7 mt-4 flex h-[460px] flex-col">
+                <div className="mx-7 mt-4 flex basis-[27rem] grow-0 shrink min-h-0 flex-col overflow-y-auto">
                     {isLoading ? (
                         <div className="flex flex-1 items-center justify-center">
                             <Image
@@ -127,30 +127,11 @@ export default function AddTaskModal({
                                 : 'You currently have no task templates'}
                         </div>
                     ) : (
-                        <div className="grid grid-cols-3 gap-3">
+                        <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
                             {displayList.map((task, idx) => {
                                 const isAlreadyAdded = alreadyAddedIds.has(task.id);
 
-                                return isAlreadyAdded ? (
-                                    <div key={task.id} className="relative">
-                                        <div className="pointer-events-none opacity-50">
-                                            <TaskCard
-                                                title={task.title}
-                                                subtitle={task.taskType ?? ''}
-                                                chips={task.tags ?? []}
-                                                languages={task.languages}
-                                                isSelected={true}
-                                                setIsSelected={() => {}}
-                                                index={idx}
-                                                taskTemplateId={task.id}
-                                                maxTags={2}
-                                            />
-                                        </div>
-                                        <span className="text-label-xs text-sarge-gray-500 absolute top-3 right-3">
-                                            Already added
-                                        </span>
-                                    </div>
-                                ) : (
+                                return (
                                     <TaskCard
                                         key={task.id}
                                         title={task.title}
@@ -164,6 +145,7 @@ export default function AddTaskModal({
                                         isPreviewSelected={selectedIds.has(task.id)}
                                         onPreviewSelect={() => toggleSelection(task.id)}
                                         maxTags={2}
+                                        isAlreadyAdded={isAlreadyAdded}
                                     />
                                 );
                             })}
@@ -171,7 +153,7 @@ export default function AddTaskModal({
                     )}
                 </div>
 
-                <div className="flex justify-center px-7 pt-3">
+                <div className="flex justify-center px-7 pt-2">
                     <Pager
                         page={page}
                         limit={limit}
