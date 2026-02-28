@@ -84,7 +84,7 @@ export default function TestCard(props: TestCardProps) {
                             </label>
                             {props.readOnly ? (
                                 <p className="text-body-s text-sarge-gray-700 bg-card rounded-md px-3 py-2">
-                                    {test.input || '--'}
+                                    {test.input}
                                 </p>
                             ) : (
                                 <Input
@@ -104,7 +104,7 @@ export default function TestCard(props: TestCardProps) {
                             </label>
                             {props.readOnly ? (
                                 <p className="text-body-s text-sarge-gray-700 bg-card rounded-md px-3 py-2">
-                                    {test.output || '--'}
+                                    {test.output}
                                 </p>
                             ) : (
                                 <Input
