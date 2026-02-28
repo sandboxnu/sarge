@@ -17,7 +17,6 @@ import {
 } from '@/lib/components/ui/Dropdown';
 import { DropdownMenu } from '@radix-ui/react-dropdown-menu';
 import { BlockNoteViewer } from '@/lib/components/core/BlockNoteViewer';
-import type { BlockNoteContent } from '@/lib/types/task-template.types';
 import useAssessment from '@/lib/hooks/useAssessment';
 
 export default function TaskPage({
@@ -57,7 +56,7 @@ export default function TaskPage({
             <ResizablePanelGroup direction="horizontal" className="min-h-screen">
                 <ResizablePanel defaultSize={20} minSize={20}>
                     <div className="flex h-full max-h-screen flex-col overflow-y-auto border-1 p-4">
-                        <BlockNoteViewer content={taskTemplate.description as BlockNoteContent} />
+                        <BlockNoteViewer content={taskTemplate.description} />
                     </div>
                 </ResizablePanel>
                 <ResizableHandle />
@@ -92,7 +91,6 @@ export default function TaskPage({
                                     <Button
                                         type="button"
                                         variant="tertiary"
-                                        size="default"
                                         className="min-w-20"
                                         onClick={goToNextTask}
                                     >
@@ -116,7 +114,6 @@ export default function TaskPage({
                                         <Button
                                             type="button"
                                             variant="secondary"
-                                            size="default"
                                             className="min-w-20"
                                             onClick={handleRunButton}
                                         >
@@ -125,7 +122,6 @@ export default function TaskPage({
                                         <Button
                                             type="button"
                                             variant="primary"
-                                            size="default"
                                             className="min-w-20"
                                             onClick={handleSubmitButton}
                                         >

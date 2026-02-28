@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { type TestCaseDTO } from '@/lib/schemas/task-template.schema';
 
 export type TestTab = 'all' | 'public' | 'private';
@@ -9,30 +8,6 @@ export default function useTestCaseEditor(
     privateTestCases: TestCaseDTO[],
     setPrivateTestCases: React.Dispatch<React.SetStateAction<TestCaseDTO[]>>
 ) {
-    const [activeTestTab, setActiveTestTab] = useState<TestTab>('all');
-    const [selectedIndices, setSelectedIndices] = useState<Set<string>>(new Set());
-
-    function getKey(tab: TestTab, index: number) {
-        return `${tab}-${index}`;
-    }
-
-    function isSelected(tab: TestTab, index: number) {
-        return selectedIndices.has(getKey(tab, index));
-    }
-
-    function toggleSelected(tab: TestTab, index: number) {
-        setSelectedIndices((prev) => {
-            const next = new Set(prev);
-            const key = getKey(tab, index);
-            if (next.has(key)) {
-                next.delete(key);
-            } else {
-                next.add(key);
-            }
-            return next;
-        });
-    }
-
     function addTestCase() {
         const newTest: TestCaseDTO = { input: '', output: '' };
         // adding a test case goes to private
@@ -92,30 +67,6 @@ export default function useTestCaseEditor(
         }
     }
 
-    const allTestCases = [...publicTestCases, ...privateTestCases];
-
-    const activeTestCases = (() => {
-        switch (activeTestTab) {
-            case 'public':
-                return publicTestCases;
-            case 'private':
-                return privateTestCases;
-            case 'all':
-                return allTestCases;
-        }
-    })();
-
-    const activeLabel = (() => {
-        switch (activeTestTab) {
-            case 'all':
-                return 'All Test Cases';
-            case 'public':
-                return 'Public Test Cases';
-            case 'private':
-                return 'Private Test Cases';
-        }
-    })();
-
     function toggleTestCaseVisibility(index: number, tab: TestTab) {
         if (tab === 'all') {
             if (index < publicTestCases.length) {
@@ -140,17 +91,10 @@ export default function useTestCaseEditor(
     }
 
     return {
-        activeTestTab,
-        setActiveTestTab,
         addTestCase,
         removeTestCase,
         duplicateTestCase,
         updateTestCase,
         toggleTestCaseVisibility,
-        allTestCases,
-        activeTestCases,
-        activeLabel,
-        isSelected,
-        toggleSelected,
     };
 }

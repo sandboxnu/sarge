@@ -1,8 +1,9 @@
 import {
-    type CreateAssessmentTemplateDTO,
     type AssessmentTemplateListItemDTO,
+    type AssessmentTemplateDetailDTO,
+    type CreateAssessmentTemplateDTO,
 } from '@/lib/schemas/assessment-template.schema';
-
+import type { BlockNoteContent } from '@/lib/types/task-template.types';
 /**
  * GET /api/assessment-templates/search/?title=...
  */
@@ -18,6 +19,63 @@ export async function searchAssessmentTemplates(
     }
 
     return json.data;
+}
+
+/**
+ * GET /api/assessment-templates/:id
+ * Returns full template with ordered tasks, author, positions.
+ */
+export async function getAssessmentTemplate(id: string): Promise<AssessmentTemplateDetailDTO> {
+    const res = await fetch(`/api/assessment-templates/${id}`);
+    const json = await res.json();
+
+    if (!res.ok) {
+        throw new Error(json.message);
+    }
+
+    return json.data;
+}
+
+/**
+ * PUT /api/assessment-templates/:id
+ * Updates metadata: title, notes.
+ */
+export async function updateAssessmentTemplate(
+    id: string,
+    data: { title?: string; notes?: BlockNoteContent }
+): Promise<void> {
+    const res = await fetch(`/api/assessment-templates/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+    });
+
+    const json = await res.json();
+
+    if (!res.ok) {
+        throw new Error(json.message);
+    }
+}
+
+/**
+ * PUT /api/assessment-templates/:id/tasks
+ * Bulk-replaces the ordered task list.
+ */
+export async function updateAssessmentTemplateTasks(
+    id: string,
+    tasks: { taskTemplateId: string }[]
+): Promise<void> {
+    const res = await fetch(`/api/assessment-templates/${id}/tasks`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tasks }),
+    });
+
+    const json = await res.json();
+
+    if (!res.ok) {
+        throw new Error(json.message);
+    }
 }
 
 /**

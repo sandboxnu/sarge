@@ -1,0 +1,164 @@
+'use client';
+
+import { useState } from 'react';
+import TestCard from '@/lib/components/core/TestCard';
+import { Tabs, TabsContent, TabsList, TestCaseTabsTrigger } from '@/lib/components/ui/Tabs';
+import type { TestCaseDTO } from '@/lib/schemas/task-template.schema';
+import type { TestTab } from '@/lib/hooks/useTestCaseEditor';
+
+type TestCasePanelBaseProps = {
+    publicTestCases: TestCaseDTO[];
+    privateTestCases: TestCaseDTO[];
+    headerAction?: React.ReactNode;
+};
+
+type EditablePanelProps = TestCasePanelBaseProps & {
+    readOnly?: false;
+    isSaving?: boolean;
+    onDuplicateTestCase: (index: number, tab: TestTab) => void;
+    onRemoveTestCase: (index: number, tab: TestTab) => void;
+    onTestCaseUpdate: (
+        index: number,
+        tab: TestTab,
+        field: 'input' | 'output',
+        value: string
+    ) => void;
+    onToggleTestCaseVisibility: (index: number, tab: TestTab) => void;
+};
+
+type ReadOnlyPanelProps = TestCasePanelBaseProps & {
+    readOnly: true;
+};
+
+export type TestCasePanelProps = EditablePanelProps | ReadOnlyPanelProps;
+
+export default function TestCasePanel(props: TestCasePanelProps) {
+    const { publicTestCases, privateTestCases, headerAction } = props;
+
+    const [activeTab, setActiveTab] = useState<TestTab>('all');
+    const [selectedIndices, setSelectedIndices] = useState<Set<string>>(new Set());
+
+    const allTestCases = [...publicTestCases, ...privateTestCases];
+
+    const activeTestCases =
+        activeTab === 'all'
+            ? allTestCases
+            : activeTab === 'public'
+              ? publicTestCases
+              : privateTestCases;
+
+    const activeLabel =
+        activeTab === 'all'
+            ? 'All Test Cases'
+            : activeTab === 'public'
+              ? 'Public Test Cases'
+              : 'Private Test Cases';
+
+    function getKey(tab: TestTab, index: number) {
+        return `${tab}-${index}`;
+    }
+
+    function isSelected(tab: TestTab, index: number) {
+        return selectedIndices.has(getKey(tab, index));
+    }
+
+    function toggleSelected(tab: TestTab, index: number) {
+        setSelectedIndices((prev) => {
+            const next = new Set(prev);
+            const key = getKey(tab, index);
+            if (next.has(key)) {
+                next.delete(key);
+            } else {
+                next.add(key);
+            }
+            return next;
+        });
+    }
+
+    if (allTestCases.length === 0) {
+        return (
+            <div className="flex flex-1 items-center justify-center">
+                <p className="text-body-s text-muted-foreground">No test cases</p>
+            </div>
+        );
+    }
+
+    function renderCard(test: TestCaseDTO, index: number, tab: TestTab, isPrivate: boolean) {
+        const baseProps = {
+            test,
+            index,
+            selected: isSelected(tab, index),
+            setSelected: () => toggleSelected(tab, index),
+            isPrivate,
+        };
+
+        if (props.readOnly) {
+            return <TestCard key={`${tab}-${index}`} {...baseProps} readOnly />;
+        }
+
+        return (
+            <TestCard
+                key={`${tab}-${index}`}
+                {...baseProps}
+                isSaving={props.isSaving}
+                onDuplicate={() => props.onDuplicateTestCase(index, tab)}
+                onRemove={() => props.onRemoveTestCase(index, tab)}
+                onUpdate={(field, value) => props.onTestCaseUpdate(index, tab, field, value)}
+                onToggle={() => props.onToggleTestCaseVisibility(index, tab)}
+            />
+        );
+    }
+
+    return (
+        <div className="flex flex-1 flex-col overflow-hidden">
+            <Tabs
+                value={activeTab}
+                onValueChange={(v) => setActiveTab(v as TestTab)}
+                className="flex flex-1 flex-col overflow-hidden"
+            >
+                <div className="border-sarge-gray-500 bg-sarge-gray-100 shrink-0 border-b">
+                    <TabsList className="h-auto gap-0 rounded-none bg-transparent p-0">
+                        <TestCaseTabsTrigger value="all">All Test Cases</TestCaseTabsTrigger>
+                        <TestCaseTabsTrigger value="public">Public Test Cases</TestCaseTabsTrigger>
+                        <TestCaseTabsTrigger value="private">
+                            Private Test Cases
+                        </TestCaseTabsTrigger>
+                        <div className="border-sarge-gray-300 bg-sarge-gray-100 flex-1 border-t border-r border-b" />
+                    </TabsList>
+                </div>
+
+                <div className="flex shrink-0 items-center justify-between border-b px-4 pb-2">
+                    <span className="text-md font-medium">
+                        {activeLabel} ({activeTestCases.length})
+                    </span>
+                    {headerAction}
+                </div>
+
+                <TabsContent
+                    value="all"
+                    className="mb-2 flex flex-1 flex-col gap-2 overflow-y-auto px-4"
+                >
+                    {allTestCases.map((test, index) =>
+                        renderCard(test, index, 'all', index >= publicTestCases.length)
+                    )}
+                </TabsContent>
+
+                <TabsContent
+                    value="public"
+                    className="mb-2 flex flex-1 flex-col gap-2 overflow-y-auto px-4"
+                >
+                    {publicTestCases.map((test, index) => renderCard(test, index, 'public', false))}
+                </TabsContent>
+
+                <TabsContent
+                    value="private"
+                    className="mb-2 flex flex-1 flex-col gap-2 overflow-y-auto px-4"
+                >
+                    {privateTestCases.map((test, index) =>
+                        renderCard(test, index, 'private', true)
+                    )}
+                </TabsContent>
+            </Tabs>
+        </div>
+    );
+}

@@ -12,7 +12,6 @@ import {
 import { Button } from '@/lib/components/ui/Button';
 import { BlockNoteViewer } from '@/lib/components/core/BlockNoteViewer';
 import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
-import type { BlockNoteContent } from '@/lib/types/task-template.types';
 
 export interface TaskTemplatePreviewPanelProps {
     taskTemplatePreview: TaskTemplateListItemDTO;
@@ -114,7 +113,7 @@ export function TaskTemplatePreviewPanel({
                     <div className="border-border bg-background mt-2 rounded-lg border p-4">
                         <BlockNoteViewer
                             key={taskTemplatePreview.id}
-                            content={taskTemplatePreview.description as BlockNoteContent}
+                            content={taskTemplatePreview.description}
                         />
                     </div>
                 </section>
