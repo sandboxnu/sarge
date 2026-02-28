@@ -10,7 +10,7 @@ export const assessmentTemplatesData = [
             'task_template_palindrome_001',
         ],
         authorId: 'user_prof_fontenot_001',
-        internalNotes: [
+        notes: [
             paragraph('gen_note_1', [
                 'Focus on clean code over optimization. ',
                 { text: 'Two Sum is the hardest', bold: true },
@@ -42,7 +42,7 @@ export const assessmentTemplatesData = [
             'task_template_binary_search_001',
         ],
         authorId: 'user_prof_fontenot_001',
-        internalNotes: [
+        notes: [
             paragraph('coop_note_1', [
                 'This assessment is calibrated for junior co-op candidates. ',
                 'Binary Search should separate strong candidates from average ones.',

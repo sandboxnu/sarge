@@ -23,12 +23,12 @@ export default function AssessmentTemplateEditPage({
         error,
         title,
         sections,
-        internalNotes,
+        notes,
         selectedSection,
         hasUnsavedChanges,
         isSaving,
         updateTitle,
-        updateInternalNotes,
+        updateNotes,
         addSections,
         deleteSection,
         reorderSections,
@@ -97,12 +97,12 @@ export default function AssessmentTemplateEditPage({
                 <AssessmentEditorSidebar
                     sections={sections}
                     selectedSection={selectedSection}
-                    internalNotes={internalNotes}
+                    notes={notes}
                     hasUnsavedChanges={hasUnsavedChanges}
                     isSaving={isSaving}
                     onReorder={reorderSections}
                     onSelectSection={selectSection}
-                    onNotesChange={updateInternalNotes}
+                    onNotesChange={updateNotes}
                     onSave={onSave}
                     onOpenAddTaskModal={() => setAddTaskOpen(true)}
                 />

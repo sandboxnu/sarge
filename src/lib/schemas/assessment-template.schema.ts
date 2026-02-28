@@ -9,7 +9,7 @@ export const AssessmentTemplateSchema = z.object({
     title: z.string(),
     orgId: z.string(),
     authorId: z.string(),
-    internalNotes: blockNoteContentSchema.default([]),
+    notes: blockNoteContentSchema.default([]),
 });
 
 export const CreateAssessmentTemplateSchema = AssessmentTemplateSchema.omit({
@@ -20,7 +20,7 @@ export const CreateAssessmentTemplateSchema = AssessmentTemplateSchema.omit({
 export const UpdateAssessmentTemplateSchema = z.object({
     id: z.string(),
     title: z.string().optional(),
-    internalNotes: blockNoteContentSchema.optional(),
+    notes: blockNoteContentSchema.optional(),
 });
 
 export const UpdateAssessmentTemplateTasksSchema = z.object({

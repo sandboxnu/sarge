@@ -18,7 +18,7 @@ import type { BlockNoteContent } from '@/lib/types/task-template.types';
 interface AssessmentEditorSidebarProps {
     sections: AssessmentSection[];
     selectedSection: AssessmentSection | null;
-    internalNotes: BlockNoteContent;
+    notes: BlockNoteContent;
     hasUnsavedChanges: boolean;
     isSaving: boolean;
     onReorder: (sections: AssessmentSection[]) => void;
@@ -31,7 +31,7 @@ interface AssessmentEditorSidebarProps {
 export default function AssessmentEditorSidebar({
     sections,
     selectedSection,
-    internalNotes,
+    notes,
     hasUnsavedChanges,
     isSaving,
     onReorder,
@@ -161,7 +161,7 @@ export default function AssessmentEditorSidebar({
                                 data-blocknote-editor-bg="muted"
                             >
                                 <BlockNoteEditor
-                                    description={internalNotes}
+                                    description={notes}
                                     setDescription={onNotesChange}
                                     compact
                                 />

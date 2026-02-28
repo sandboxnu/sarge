@@ -14,7 +14,7 @@ export default function useAssessmentTemplateEditPage(assessmentTemplateId: stri
 
     const [title, setTitle] = useState('');
     const [sections, setSections] = useState<AssessmentSection[]>([]);
-    const [internalNotes, setInternalNotes] = useState<BlockNoteContent>([]);
+    const [notes, setNotes] = useState<BlockNoteContent>([]);
     const [selectedSection, setSelectedSection] = useState<AssessmentSection | null>(null);
 
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
@@ -32,7 +32,7 @@ export default function useAssessmentTemplateEditPage(assessmentTemplateId: stri
                 if (cancelled) return;
 
                 setTitle(template.title);
-                setInternalNotes(template.internalNotes);
+                setNotes(template.notes);
 
                 const initialSections: AssessmentSection[] = template.tasks.map((t) => ({
                     type: 'task' as const,
@@ -63,8 +63,8 @@ export default function useAssessmentTemplateEditPage(assessmentTemplateId: stri
         setHasUnsavedChanges(true);
     }
 
-    function updateInternalNotes(notes: BlockNoteContent) {
-        setInternalNotes(notes);
+    function updateNotes(newNotes: BlockNoteContent) {
+        setNotes(newNotes);
         setHasUnsavedChanges(true);
     }
 
@@ -119,7 +119,7 @@ export default function useAssessmentTemplateEditPage(assessmentTemplateId: stri
             await Promise.all([
                 updateAssessmentTemplate(assessmentTemplateId, {
                     title,
-                    internalNotes,
+                    notes,
                 }),
                 updateAssessmentTemplateTasks(
                     assessmentTemplateId,
@@ -140,12 +140,12 @@ export default function useAssessmentTemplateEditPage(assessmentTemplateId: stri
         error,
         title,
         sections,
-        internalNotes,
+        notes,
         selectedSection,
         hasUnsavedChanges,
         isSaving,
         updateTitle,
-        updateInternalNotes,
+        updateNotes,
         addSections,
         deleteSection,
         reorderSections,

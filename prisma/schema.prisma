@@ -133,7 +133,7 @@ model AssessmentTemplate {
   title         String
   orgId         String
   authorId      String
-  internalNotes Json   @default("[]")
+  notes Json   @default("[]")
 
   organization Organization             @relation(fields: [orgId], references: [id])
   assessments  Assessment[]             @relation("derivedFromAssessmentTemplate")

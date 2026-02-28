@@ -363,8 +363,8 @@ async function seedAssessmentTemplates() {
                     deleteMany: {},
                     create: tasksCreate,
                 },
-                ...('internalNotes' in assessmentTemplateData && {
-                    internalNotes: assessmentTemplateData.internalNotes,
+                ...('notes' in assessmentTemplateData && {
+                    notes: assessmentTemplateData.notes,
                 }),
             },
             create: {
@@ -373,8 +373,8 @@ async function seedAssessmentTemplates() {
                 orgId,
                 tasks: { create: tasksCreate },
                 authorId: assessmentTemplateData.authorId,
-                ...('internalNotes' in assessmentTemplateData && {
-                    internalNotes: assessmentTemplateData.internalNotes,
+                ...('notes' in assessmentTemplateData && {
+                    notes: assessmentTemplateData.notes,
                 }),
             },
         });

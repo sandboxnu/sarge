@@ -31,7 +31,7 @@ export function useCreateAssessmentTemplateModal(onOpenChange: (open: boolean) =
             const result = await createAssessmentTemplate({
                 title: name.trim(),
                 authorId: userId,
-                internalNotes: notes,
+                notes,
             });
 
             router.push(`/crm/assessment-templates/${result.id}/edit`);
