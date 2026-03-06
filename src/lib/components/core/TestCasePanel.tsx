@@ -75,14 +75,6 @@ export default function TestCasePanel(props: TestCasePanelProps) {
         });
     }
 
-    if (allTestCases.length === 0) {
-        return (
-            <div className="flex flex-1 items-center justify-center">
-                <p className="text-body-s text-muted-foreground">No test cases</p>
-            </div>
-        );
-    }
-
     function renderCard(test: TestCaseDTO, index: number, tab: TestTab, isPrivate: boolean) {
         const baseProps = {
             test,
@@ -109,6 +101,31 @@ export default function TestCasePanel(props: TestCasePanelProps) {
         );
     }
 
+    function renderTestCaseTab(testCases: TestCaseDTO[], tab: TestTab, emptyMessage: string) {
+        const content =
+            testCases.length === 0 ? (
+                <div className="flex flex-1 items-center justify-center">
+                    <p className="text-body-s text-muted-foreground">{emptyMessage}</p>
+                </div>
+            ) : (
+                testCases.map((test, index) => {
+                    const isPrivate =
+                        tab === 'private' || (tab === 'all' && index >= publicTestCases.length);
+                    return renderCard(test, index, tab, isPrivate);
+                })
+            );
+
+        return (
+            <TabsContent
+                key={tab}
+                value={tab}
+                className="mb-2 flex flex-1 flex-col gap-2 overflow-y-auto px-4"
+            >
+                {content}
+            </TabsContent>
+        );
+    }
+
     return (
         <div className="flex flex-1 flex-col overflow-hidden">
             <Tabs
@@ -116,48 +133,27 @@ export default function TestCasePanel(props: TestCasePanelProps) {
                 onValueChange={(v) => setActiveTab(v as TestTab)}
                 className="flex flex-1 flex-col overflow-hidden"
             >
-                <div className="border-sarge-gray-500 bg-sarge-gray-100 shrink-0 border-b">
+                <div className="border-sarge-gray-500 bg-sarge-gray-100 shrink-0">
                     <TabsList className="h-auto gap-0 rounded-none bg-transparent p-0">
                         <TestCaseTabsTrigger value="all">All Test Cases</TestCaseTabsTrigger>
                         <TestCaseTabsTrigger value="public">Public Test Cases</TestCaseTabsTrigger>
                         <TestCaseTabsTrigger value="private">
                             Private Test Cases
                         </TestCaseTabsTrigger>
-                        <div className="border-sarge-gray-300 bg-sarge-gray-100 flex-1 border-t border-r border-b" />
+                        <div className="border-sarge-gray-300 bg-sarge-gray-100 flex-1 border-r border-b" />
                     </TabsList>
                 </div>
 
-                <div className="flex shrink-0 items-center justify-between border-b px-4 pb-2">
+                <div className="flex shrink-0 items-center justify-between px-4 py-2">
                     <span className="text-md font-medium">
                         {activeLabel} ({activeTestCases.length})
                     </span>
                     {headerAction}
                 </div>
 
-                <TabsContent
-                    value="all"
-                    className="mb-2 flex flex-1 flex-col gap-2 overflow-y-auto px-4"
-                >
-                    {allTestCases.map((test, index) =>
-                        renderCard(test, index, 'all', index >= publicTestCases.length)
-                    )}
-                </TabsContent>
-
-                <TabsContent
-                    value="public"
-                    className="mb-2 flex flex-1 flex-col gap-2 overflow-y-auto px-4"
-                >
-                    {publicTestCases.map((test, index) => renderCard(test, index, 'public', false))}
-                </TabsContent>
-
-                <TabsContent
-                    value="private"
-                    className="mb-2 flex flex-1 flex-col gap-2 overflow-y-auto px-4"
-                >
-                    {privateTestCases.map((test, index) =>
-                        renderCard(test, index, 'private', true)
-                    )}
-                </TabsContent>
+                {renderTestCaseTab(allTestCases, 'all', 'No test cases')}
+                {renderTestCaseTab(publicTestCases, 'public', 'No public test cases')}
+                {renderTestCaseTab(privateTestCases, 'private', 'No private test cases')}
             </Tabs>
         </div>
     );
