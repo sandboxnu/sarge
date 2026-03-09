@@ -1,8 +1,6 @@
 'use client';
 
 import Image from 'next/image';
-import { ChevronLeft } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { use } from 'react';
 import useTaskTemplateEditPage from '@/lib/hooks/useTaskTemplateEditPage';
 import { Editor } from '@monaco-editor/react';
@@ -10,10 +8,10 @@ import CodeEditorToolbar from '@/lib/components/core/CodeEditorToolbar';
 import TestCaseEditor from '@/lib/components/core/TestCaseEditor';
 import { Button } from '@/lib/components/ui/Button';
 import TaskEditorSidebar from '@/lib/components/core/TaskEditorSidebar';
+import Breadcrumbs from '@/lib/components/core/Breadcrumbs';
 
 export default function TaskTemplateEditPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
-    const router = useRouter();
     const {
         taskTemplate,
         title,
@@ -53,17 +51,13 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
 
     return (
         <div className="flex h-full w-full flex-col">
-            <div className="flex items-center justify-between gap-2 border-b px-5 py-4">
-                <div className="flex items-center gap-2">
-                    <Button
-                        variant="icon"
-                        onClick={() => router.push('/crm/templates')}
-                        disabled={isSaving}
-                    >
-                        <ChevronLeft className="size-5" />
-                    </Button>
-                    <h1 className="text-xl font-bold">{title}</h1>
-                </div>
+            <div className="border-sarge-gray-200 flex items-center justify-between border-b px-5 py-4">
+                <Breadcrumbs
+                    segments={[{ label: 'Task Templates', href: '/crm/templates' }]}
+                    currentPage={title}
+                    editable
+                    onCurrentPageChange={setTitle}
+                />
                 <Button
                     variant="secondary"
                     className="px-4 py-2"
@@ -77,8 +71,6 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
             <div className="flex min-h-0 flex-1 overflow-hidden">
                 <div className="h-full min-h-0 w-1/3 min-w-0">
                     <TaskEditorSidebar
-                        title={title}
-                        setTitle={setTitle}
                         description={description}
                         setDescription={setDescription}
                         tags={tags}

@@ -8,8 +8,6 @@ import type { TagDTO } from '@/lib/schemas/tag.schema';
 import type { TaskTemplateLanguageDTO } from '@/lib/schemas/task-template-language.schema';
 
 export interface TaskEditorSidebarProps {
-    title: string;
-    setTitle: (title: string) => void;
     description: BlockNoteContent;
     setDescription: (description: BlockNoteContent) => void;
     tags: TagDTO[];
@@ -22,8 +20,6 @@ export interface TaskEditorSidebarProps {
 }
 
 export default function TaskEditorSidebar({
-    title,
-    setTitle,
     description,
     setDescription,
     tags,
@@ -43,8 +39,6 @@ export default function TaskEditorSidebar({
                 </TabsList>
                 <TabsContent value="task-details" className="min-h-0 flex-1 overflow-y-auto pt-5">
                     <TaskDetailsTab
-                        title={title}
-                        setTitle={setTitle}
                         description={description}
                         setDescription={setDescription}
                         tags={tags}
