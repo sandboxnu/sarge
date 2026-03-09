@@ -4,6 +4,8 @@ import {
     type CreateAssessmentTemplateDTO,
 } from '@/lib/schemas/assessment-template.schema';
 import type { BlockNoteContent } from '@/lib/types/task-template.types';
+import type { AssessmentTemplateTaskOrder } from '@/lib/types/assessment.types';
+
 /**
  * GET /api/assessment-templates/search/?title=...
  */
@@ -109,6 +111,23 @@ export async function createAssessmentTemplate(
         },
         body: JSON.stringify(payload),
     });
+
+    const json = await res.json();
+
+    if (!res.ok) {
+        throw new Error(json.message);
+    }
+
+    return json.data;
+}
+
+/**
+ * GET /api/assessment-templates/:id/tasks
+ */
+export async function getAssessmentTemplateTaskOrder(
+    assessmentTemplateId: string
+): Promise<AssessmentTemplateTaskOrder[]> {
+    const res = await fetch(`/api/assessment-templates/${assessmentTemplateId}/tasks`);
 
     const json = await res.json();
 

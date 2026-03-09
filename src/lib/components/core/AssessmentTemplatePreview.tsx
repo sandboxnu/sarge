@@ -2,10 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import type { AssessmentTemplateListItemDTO } from '@/lib/schemas/assessment-template.schema';
-import {
-    getAssessmentTemplateTaskOrder,
-    type AssessmentTemplateTaskOrder,
-} from '@/lib/api/assessment-templates';
+import { type AssessmentTemplateTaskOrder } from '@/lib/types/assessment.types';
 import { getTaskTemplate } from '@/lib/api/task-templates';
 import { Button } from '@/lib/components/ui/Button';
 import {
@@ -18,6 +15,7 @@ import { ChevronLeft, ChevronRight, SquarePen } from 'lucide-react';
 import Link from 'next/link';
 import { type TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
 import { TaskAssessmentPreview } from './AssessmentTaskPreview';
+import { getAssessmentTemplateTaskOrder } from '@/lib/api/assessment-templates';
 
 export interface AssessmentTemplatePreviewProps {
     assessmentTemplatePreview: AssessmentTemplateListItemDTO;
@@ -37,15 +35,9 @@ export function AssessmentTemplatePreview({
         setCurrentIndex(0);
 
         const load = async () => {
-            const tasksRes = await fetch(
-                `/api/assessment-templates/${assessmentTemplatePreview.id}/tasks`
-            );
-            const tasksJson = await tasksRes.json();
-            if (!tasksRes.ok) {
-                throw new Error(tasksJson.message ?? 'Failed to load tasks');
-            }
+            const tasksJson = await getAssessmentTemplateTaskOrder(assessmentTemplatePreview.id);
 
-            const orderedTasks = (tasksJson.data as AssessmentTemplateTaskOrder[]) ?? [];
+            const orderedTasks = tasksJson ?? [];
             const templates = await Promise.all(
                 orderedTasks.map(async (task) => {
                     const taskTemplate = await getTaskTemplate(task.taskTemplateId);
@@ -106,8 +98,8 @@ export function AssessmentTemplatePreview({
                         <p className="text-label-s text-sarge-primary-600 underline">
                             {assessmentTemplatePreview.positions.length > 0
                                 ? assessmentTemplatePreview.positions
-                                    .map((position) => position.title)
-                                    .join(', ')
+                                      .map((position) => position.title)
+                                      .join(', ')
                                 : '0 positions'}
                         </p>
                     </div>
