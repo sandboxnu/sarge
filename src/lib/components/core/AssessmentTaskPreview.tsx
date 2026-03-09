@@ -13,7 +13,7 @@ export function TaskAssessmentPreview({ taskTemplatePreview }: TaskPreviewProps)
     const { title } = taskTemplatePreview;
     return (
         <div className="flex h-full w-full flex-col gap-2 px-6 py-4">
-            <div className="pl-3 inline-flex flex-col items-start gap-1 self-stretch">
+            <div className="inline-flex flex-col items-start gap-1 self-stretch pl-3">
                 <h2 className="text-display-xs justify-start font-medium text-neutral-800">
                     {title}
                 </h2>
