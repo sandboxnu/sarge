@@ -8,10 +8,13 @@ export default function useTestCaseEditor(
     privateTestCases: TestCaseDTO[],
     setPrivateTestCases: React.Dispatch<React.SetStateAction<TestCaseDTO[]>>
 ) {
-    function addTestCase() {
+    function addTestCase(tab: TestTab) {
         const newTest: TestCaseDTO = { input: '', output: '' };
-        // adding a test case goes to private
-        setPrivateTestCases((prev) => [...prev, newTest]);
+        if (tab === 'public') {
+            setPublicTestCases((prev) => [...prev, newTest]);
+        } else {
+            setPrivateTestCases((prev) => [...prev, newTest]);
+        }
     }
 
     function removeTestCase(index: number, tab: TestTab) {
