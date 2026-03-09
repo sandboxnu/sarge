@@ -190,7 +190,6 @@ export default function SignupPage() {
                         <Button
                             type="submit"
                             variant="primary"
-                            size="default"
                             disabled={form.formState.isSubmitting}
                             className="text-label-s bg-sarge-primary-500 text-sarge-gray-50 hover:bg-sarge-primary-600 h-11 w-full rounded-lg px-4 py-2 transition-colors disabled:opacity-50"
                         >

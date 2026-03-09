@@ -42,18 +42,12 @@ export default function PositionsContent() {
                     </div>
 
                     <div className="flex items-center gap-3">
-                        <Button
-                            variant="primary"
-                            className="bg-sarge-gray-100 text-sarge-gray-600 hover:bg-sarge-gray-200 border-sarge-gray-200 h-11 gap-2 border px-3"
-                        >
-                            <ArrowUpDown className="text-sarge-gray-600 size-5" />
+                        <Button variant="dropdown">
+                            <ArrowUpDown className="size-5" />
                             <span className="text-label-s">Sort</span>
                         </Button>
-                        <Button
-                            variant="primary"
-                            className="bg-sarge-gray-100 text-sarge-gray-600 hover:bg-sarge-gray-200 border-sarge-gray-200 h-11 gap-2 border px-3"
-                        >
-                            <SlidersHorizontal className="text-sarge-gray-600 size-5" />
+                        <Button variant="dropdown">
+                            <SlidersHorizontal className="size-5" />
                             <span className="text-label-s">Filter</span>
                         </Button>
                     </div>

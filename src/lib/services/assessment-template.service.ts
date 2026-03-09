@@ -1,17 +1,34 @@
 import {
+    AssessmentTemplateDetailSchema,
+    type AssessmentTemplateDetailDTO,
     type AssessmentTemplateListItemDTO,
     type CreateAssessmentTemplateDTO,
     type UpdateAssessmentTemplateDTO,
 } from '@/lib/schemas/assessment-template.schema';
-import { type AssessmentTemplate } from '@/generated/prisma';
+import type { AssessmentTemplate } from '@/generated/prisma';
 import { NotFoundException } from '@/lib/utils/errors.utils';
 import { prisma } from '@/lib/prisma';
 
-async function getAssessmentTemplate(id: string, orgId: string): Promise<AssessmentTemplate> {
+async function getAssessmentTemplate(
+    id: string,
+    orgId: string
+): Promise<AssessmentTemplateDetailDTO> {
     const foundAssessmentTemplate = await prisma.assessmentTemplate.findFirst({
-        where: {
-            id,
-            orgId,
+        where: { id, orgId },
+        include: {
+            author: { select: { id: true, name: true } },
+            positions: { select: { id: true, title: true } },
+            tasks: {
+                include: {
+                    taskTemplate: {
+                        include: {
+                            tags: true,
+                            languages: true,
+                        },
+                    },
+                },
+                orderBy: { order: 'asc' },
+            },
         },
     });
 
@@ -19,7 +36,7 @@ async function getAssessmentTemplate(id: string, orgId: string): Promise<Assessm
         throw new NotFoundException('Assessment Template', id);
     }
 
-    return foundAssessmentTemplate;
+    return AssessmentTemplateDetailSchema.parse(foundAssessmentTemplate);
 }
 
 async function createAssessmentTemplate(
@@ -69,12 +86,7 @@ async function updateAssessmentTemplate(
         throw new NotFoundException('Assessment Template', id);
     }
 
-    return prisma.assessmentTemplate.update({
-        where: { id },
-        data: {
-            ...updateData,
-        },
-    });
+    return prisma.assessmentTemplate.update({ where: { id }, data: updateData });
 }
 
 async function getAssessmentTemplatesByTitle(
@@ -134,11 +146,42 @@ async function getAssessmentTemplates(
     return { data, total };
 }
 
+async function updateAssessmentTemplateTasks(
+    assessmentTemplateId: string,
+    orgId: string,
+    tasks: { taskTemplateId: string }[]
+): Promise<void> {
+    const template = await prisma.assessmentTemplate.findFirst({
+        where: { id: assessmentTemplateId, orgId },
+        select: { id: true },
+    });
+
+    if (!template) {
+        throw new NotFoundException('Assessment Template', assessmentTemplateId);
+    }
+
+    await prisma.$transaction([
+        prisma.assessmentTemplateTask.deleteMany({
+            where: { assessmentTemplateId },
+        }),
+        ...tasks.map((task, index) =>
+            prisma.assessmentTemplateTask.create({
+                data: {
+                    assessmentTemplateId,
+                    taskTemplateId: task.taskTemplateId,
+                    order: index,
+                },
+            })
+        ),
+    ]);
+}
+
 const AssessmentTemplateService = {
     getAssessmentTemplate,
     createAssessmentTemplate,
     deleteAssessmentTemplate,
     updateAssessmentTemplate,
+    updateAssessmentTemplateTasks,
     getAssessmentTemplatesByTitle,
     getAssessmentTemplates,
 };

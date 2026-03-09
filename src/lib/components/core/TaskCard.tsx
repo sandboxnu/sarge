@@ -1,9 +1,10 @@
 import { Checkbox } from '@/lib/components/ui/Checkbox';
 import { Chip } from '@/lib/components/ui/Chip';
+import ChipOverflow from '@/lib/components/ui/ChipOverflow';
 import type { TagDTO } from '@/lib/schemas/tag.schema';
 import type { TaskTemplateLanguageDTO } from '@/lib/schemas/task-template-language.schema';
 import { getLanguageLabel } from '@/lib/utils/language.utils';
-import { Code2 } from 'lucide-react';
+import { CircleCheck, Code2 } from 'lucide-react';
 import { cn } from '@/lib/utils/cn.utils';
 
 export interface TaskCardProps {
@@ -17,14 +18,20 @@ export interface TaskCardProps {
     taskTemplateId?: string;
     isPreviewSelected?: boolean;
     onPreviewSelect?: () => void;
+    maxTags?: number;
+    isAlreadyAdded?: boolean;
 }
 
-export default function TaskCard(props: TaskCardProps) {
+export default function TaskCard({ maxTags = 2, ...props }: TaskCardProps) {
+    const visibleChips = props.chips.slice(0, maxTags);
+    const overflowChips = props.chips.slice(maxTags);
+
     return (
         <div
             className={cn(
-                'flex cursor-pointer gap-4.5 rounded-xl border-1 p-4',
-                props.isPreviewSelected
+                'relative flex cursor-pointer gap-4.5 rounded-xl border-1 p-4',
+                props.isAlreadyAdded && 'pointer-events-none opacity-50',
+                props.isPreviewSelected && !props.isAlreadyAdded
                     ? 'border-sarge-primary-500 bg-sarge-primary-50 ring-sarge-primary-200 ring-2 ring-inset'
                     : 'border-sarge-gray-200 hover:bg-sarge-primary-100 hover:border-sarge-primary-400'
             )}
@@ -43,7 +50,7 @@ export default function TaskCard(props: TaskCardProps) {
                 onClick={(e) => e.stopPropagation()}
             >
                 <Checkbox
-                    checked={props.isSelected}
+                    checked={props.isSelected || !!props.isAlreadyAdded}
                     onCheckedChange={() => props.setIsSelected(props.index)}
                 />
             </div>
@@ -54,7 +61,7 @@ export default function TaskCard(props: TaskCardProps) {
                     {props.languages && props.languages.length > 0 && (
                         <div className="text-label-xs text-sarge-gray-500 flex items-center gap-1.5">
                             <Code2 className="size-3.5 shrink-0" />
-                            <span>
+                            <span className="truncate">
                                 {props.languages
                                     .map((l) => getLanguageLabel(l.language))
                                     .join(', ')}
@@ -63,7 +70,7 @@ export default function TaskCard(props: TaskCardProps) {
                     )}
                 </div>
                 <div className="flex flex-wrap gap-1">
-                    {props.chips.map((chip, idx) => (
+                    {visibleChips.map((chip, idx) => (
                         <Chip
                             key={chip.id ?? idx}
                             className="rounded-md px-2 py-1 text-xs"
@@ -72,8 +79,15 @@ export default function TaskCard(props: TaskCardProps) {
                             {chip.name}
                         </Chip>
                     ))}
+                    <ChipOverflow chips={overflowChips} />
                 </div>
             </div>
+            {props.isAlreadyAdded && (
+                <CircleCheck
+                    className="text-sarge-primary-500 absolute top-2 right-2 z-10 size-5"
+                    aria-label="Already added"
+                />
+            )}
         </div>
     );
 }

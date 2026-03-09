@@ -11,6 +11,7 @@ import { type TaskTemplateLanguageDTO } from '@/lib/schemas/task-template-langua
 import { type BlockNoteContent } from '@/lib/types/task-template.types';
 import { type editor } from 'monaco-editor';
 import { type Monaco } from '@monaco-editor/react';
+import { applySargeDarkTheme } from '@/lib/utils/monaco.utils';
 import { toast } from 'sonner';
 
 export default function useTaskTemplateEditPage(taskTemplateId: string) {
@@ -28,6 +29,7 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
     const [selectedLanguage, setSelectedLanguage] = useState<number>(0);
 
     // Editor
+    const [activeFileTab, setActiveFileTab] = useState<'task' | 'solution'>('task');
     const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
     const monacoRef = useRef<Monaco | null>(null);
     const editorModels = useRef<{ [key: string]: editor.ITextModel }>({});
@@ -48,7 +50,7 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
                 setTaskTemplate(taskTemplate);
                 setTitle(taskTemplate.title);
                 setLanguages(taskTemplate.languages);
-                setDescription((taskTemplate.description ?? []) as BlockNoteContent);
+                setDescription(taskTemplate.description ?? []);
                 setPrivateTestCases(taskTemplate.privateTestCases);
                 setPublicTestCases(taskTemplate.publicTestCases);
                 setTags(taskTemplate.tags);
@@ -84,26 +86,15 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
         }
     }
 
-    function handleEditorContent(editor: editor.IStandaloneCodeEditor, monaco: Monaco) {
-        editorRef.current = editor;
+    function handleEditorContent(editorInstance: editor.IStandaloneCodeEditor, monaco: Monaco) {
+        editorRef.current = editorInstance;
         monacoRef.current = monaco;
-        monaco.editor.defineTheme('sargeDark', {
-            base: 'vs-dark',
-            inherit: true,
-            rules: [{ token: '', foreground: 'FFFFFF' }],
-            colors: {
-                'editor.background': '#384150',
-                'editor.foreground': '#FFFFFF',
-                'editor.lineHighlightBorder': '#384150',
-            },
-        });
-        monaco.editor.setTheme('sargeDark');
-        editor.updateOptions({ minimap: { enabled: false } });
+        applySargeDarkTheme(editorInstance, monaco);
     }
 
-    function handleTaskSolutionToggle(tab: string) {
-        const task = tab == 'task' ? true : false;
-        handleModelChange(selectedLanguage, task);
+    function handleTaskSolutionToggle(tab: 'task' | 'solution') {
+        setActiveFileTab(tab);
+        handleModelChange(selectedLanguage, tab === 'task');
     }
 
     function getEditorContent(): string {
@@ -156,6 +147,7 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
             taskType: taskTemplate?.taskType ?? null,
             title,
             description,
+            timeLimitMinutes: taskTemplate?.timeLimitMinutes ?? 0,
             tags: tags.map((tag) => tag.id),
             publicTestCases,
             privateTestCases,
@@ -197,6 +189,7 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
         languages,
         handleLanguageChange,
         selectedLanguage,
+        activeFileTab,
         handleEditorContent,
         getEditorContent,
         handleTaskSolutionToggle,

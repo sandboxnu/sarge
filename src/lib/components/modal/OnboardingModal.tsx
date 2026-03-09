@@ -73,7 +73,6 @@ function WelcomeContent({ onCreate }: { onCreate: () => void }) {
             <div className="mt-[24px] flex w-[415px] flex-col gap-2">
                 <Button
                     className="flex h-[36px] w-full justify-center px-4 py-2"
-                    size="default"
                     variant="primary"
                     onClick={onCreate}
                 >
@@ -81,7 +80,6 @@ function WelcomeContent({ onCreate }: { onCreate: () => void }) {
                 </Button>
                 <Button
                     className="flex h-[36px] w-full justify-center px-4 py-2"
-                    size="default"
                     variant="tertiary"
                 >
                     Join Organization
@@ -190,7 +188,6 @@ function CreateOrganizationContent({
                 </p>
                 <Button
                     variant="primary"
-                    size="default"
                     className="w-[125px]"
                     onClick={onSubmit}
                     disabled={loading}
