@@ -8,3 +8,8 @@ export type AssessmentWithRelations = Assessment & {
         tasks: AssessmentTemplateTask[];
     };
 };
+
+export type AssessmentTemplateTaskOrder = {
+    taskTemplateId: string;
+    order: number;
+};
