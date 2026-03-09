@@ -95,7 +95,7 @@ export function AssessmentTemplatePreview({
     }
 
     return (
-        <div className="flex h-full w-full flex-col">
+        <div className="flex h-full w-full flex-col overflow-hidden">
             <div className="border-border flex w-full flex-row items-center justify-between border-b px-6 py-5">
                 <div className="flex w-full flex-col gap-1">
                     <h1 className="text-display-xs text-foreground truncate font-medium">
@@ -106,8 +106,8 @@ export function AssessmentTemplatePreview({
                         <p className="text-label-s text-sarge-primary-600 underline">
                             {assessmentTemplatePreview.positions.length > 0
                                 ? assessmentTemplatePreview.positions
-                                      .map((position) => position.title)
-                                      .join(', ')
+                                    .map((position) => position.title)
+                                    .join(', ')
                                 : '0 positions'}
                         </p>
                     </div>
@@ -123,7 +123,7 @@ export function AssessmentTemplatePreview({
                 </Button>
             </div>
 
-            <div className="flex-1 overflow-y-auto">
+            <div className="h-full overflow-y-scroll [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 {currentTask ? (
                     <TaskAssessmentPreview taskTemplatePreview={currentTask} />
                 ) : (

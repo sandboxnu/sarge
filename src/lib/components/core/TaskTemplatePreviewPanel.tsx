@@ -30,7 +30,7 @@ export function TaskTemplatePreviewPanel({
     const languages = taskTemplatePreview.languages?.map((l) => l.language) ?? [];
 
     return (
-        <div className="flex h-full w-full flex-col overflow-hidden p-[30px]">
+        <div className="flex h-full w-full flex-col overflow-hidden p-4">
             {removeHeader ? (
                 <></>
             ) : (
@@ -137,7 +137,7 @@ export function TaskTemplatePreviewPanel({
                         </div>
                     </div>
                 </section>
-                <div className="mb-0">
+                <section className="mb-2">
                     <p className="text-body-s text-muted-foreground">
                         Authored by{' '}
                         <span className="text-label-xs text-muted-foreground font-bold">
@@ -151,7 +151,7 @@ export function TaskTemplatePreviewPanel({
                         Used in {taskTemplatePreview.assessmentTemplatesCount} assessment
                         {taskTemplatePreview.assessmentTemplatesCount !== 1 ? 's' : ''}
                     </Link>
-                </div>
+                </section>
             </div>
         </div>
     );
