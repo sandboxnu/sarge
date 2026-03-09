@@ -3,18 +3,20 @@
 import { useState } from 'react';
 import TestCard from '@/lib/components/core/TestCard';
 import { Tabs, TabsContent, TabsList, TestCaseTabsTrigger } from '@/lib/components/ui/Tabs';
+import { Button } from '@/lib/components/ui/Button';
+import { PlusIcon } from 'lucide-react';
 import type { TestCaseDTO } from '@/lib/schemas/task-template.schema';
 import type { TestTab } from '@/lib/hooks/useTestCaseEditor';
 
 type TestCasePanelBaseProps = {
     publicTestCases: TestCaseDTO[];
     privateTestCases: TestCaseDTO[];
-    headerAction?: React.ReactNode;
 };
 
 type EditablePanelProps = TestCasePanelBaseProps & {
     readOnly?: false;
     isSaving?: boolean;
+    onAddTestCase: (tab: TestTab) => void;
     onDuplicateTestCase: (index: number, tab: TestTab) => void;
     onRemoveTestCase: (index: number, tab: TestTab) => void;
     onTestCaseUpdate: (
@@ -33,7 +35,7 @@ type ReadOnlyPanelProps = TestCasePanelBaseProps & {
 export type TestCasePanelProps = EditablePanelProps | ReadOnlyPanelProps;
 
 export default function TestCasePanel(props: TestCasePanelProps) {
-    const { publicTestCases, privateTestCases, headerAction } = props;
+    const { publicTestCases, privateTestCases } = props;
 
     const [activeTab, setActiveTab] = useState<TestTab>('all');
     const [selectedIndices, setSelectedIndices] = useState<Set<string>>(new Set());
@@ -148,7 +150,17 @@ export default function TestCasePanel(props: TestCasePanelProps) {
                     <span className="text-md font-medium">
                         {activeLabel} ({activeTestCases.length})
                     </span>
-                    {headerAction}
+                    {!props.readOnly && (
+                        <Button
+                            className="items-center gap-1 rounded-md px-3 py-1 text-sm"
+                            variant="secondary"
+                            onClick={() => props.onAddTestCase(activeTab)}
+                            disabled={props.isSaving}
+                        >
+                            <PlusIcon className="stroke-sarge-primary-500" height={18} width={18} />
+                            Add test
+                        </Button>
+                    )}
                 </div>
 
                 {renderTestCaseTab(allTestCases, 'all', 'No test cases')}

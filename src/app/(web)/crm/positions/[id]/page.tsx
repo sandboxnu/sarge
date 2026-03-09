@@ -7,14 +7,13 @@ import UploadCSVModal from '@/lib/components/modal/UploadCSVModal';
 import useCandidates from '@/lib/hooks/useCandidates';
 import { Search } from '@/lib/components/core/Search';
 import { Tabs, TabsContent, TabsList, UnderlineTabsTrigger } from '@/lib/components/ui/Tabs';
-import { ChevronLeft, Plus, ArrowUpDown, SlidersHorizontal } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { Plus, ArrowUpDown, SlidersHorizontal } from 'lucide-react';
 import { use, useState } from 'react';
 import useSearch from '@/lib/hooks/useSearch';
+import Breadcrumbs from '@/lib/components/core/Breadcrumbs';
 
 export default function CandidatesPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
-    const router = useRouter();
     const [isModalManualOpen, setIsModalManualOpen] = useState(false);
     const [isCSVModalOpen, setIsCSVModalOpen] = useState(false);
     const { candidates, loading, error, positionTitle, createCandidate, batchCreateCandidates } =
@@ -31,13 +30,10 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
         <>
             <div className="flex max-h-screen flex-col gap-8 px-8 py-7 pb-20">
                 <div className="sticky flex items-center gap-2">
-                    <button
-                        onClick={() => router.push('/crm/positions')}
-                        className="hover:bg-sarge-gray-100 rounded-lg p-2 hover:cursor-pointer"
-                    >
-                        <ChevronLeft className="size-5" />
-                    </button>
-                    <h1 className="text-2xl font-semibold">{positionTitle} Candidates</h1>
+                    <Breadcrumbs
+                        segments={[{ label: 'Positions', href: '/crm/positions' }]}
+                        currentPage={`${positionTitle} Candidates`}
+                    />
                 </div>
                 <hr />
                 <div className="sticky flex items-center gap-4">

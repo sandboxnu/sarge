@@ -2,7 +2,6 @@
 
 import dynamic from 'next/dynamic';
 import { Field, FieldLabel } from '@/lib/components/ui/Field';
-import { Input } from '@/lib/components/ui/Input';
 import { RemovableChip } from '@/lib/components/ui/RemovableChip';
 import { Combobox } from '@/lib/components/ui/Combobox';
 import { createTag } from '@/lib/api/tags';
@@ -15,8 +14,6 @@ const BlockNoteEditor = dynamic(() => import('@/lib/components/core/BlockNoteEdi
 });
 
 export interface TaskDetailsTabProps {
-    title: string;
-    setTitle: (title: string) => void;
     description: BlockNoteContent;
     setDescription: (description: BlockNoteContent) => void;
     tags: TagDTO[];
@@ -27,8 +24,6 @@ export interface TaskDetailsTabProps {
 }
 
 export default function TaskDetailsTab({
-    title,
-    setTitle,
     description,
     setDescription,
     tags,
@@ -69,16 +64,6 @@ export default function TaskDetailsTab({
 
     return (
         <div className="flex h-full flex-col gap-2.5">
-            <Field className="gap-2">
-                <FieldLabel className="text-label-s text-sarge-gray-800">Title</FieldLabel>
-                <Input
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    className="text-body-s h-11 w-full"
-                    disabled={isSaving}
-                />
-            </Field>
-
             <Field className="gap-2">
                 <FieldLabel className="text-label-s text-sarge-gray-800">Tags</FieldLabel>
                 <Combobox
