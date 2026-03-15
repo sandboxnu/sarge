@@ -238,7 +238,7 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
             const currentLanguages = languages ?? [];
             if (currentLanguages.length === 0) return;
 
-            const languagesToGenerate = currentLanguages.filter((lang) => !lang.stub?.trim());
+            const languagesToGenerate = currentLanguages.filter((lang) => lang.stub === '');
 
             if (languagesToGenerate.length === 0) {
                 toast.info('All selected languages already have stubs');
@@ -271,6 +271,10 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
                     const lang = currentLanguages.find((l) => l.id === id);
                     if (lang) {
                         editorModels.current[lang.language]?.setValue(stub);
+
+                        if (editorModels.current[`${lang.language}-solution`].getValue() === '') {
+                            editorModels.current[`${lang.language}-solution`]?.setValue(stub);
+                        }
                     }
                 });
 
@@ -278,19 +282,10 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
                     (prev ?? []).map((lang) => ({
                         ...lang,
                         stub: generatedById.get(lang.id) ?? lang.stub,
+                        solution: generatedById.get(lang.id) ?? lang.solution,
                     }))
                 );
-                setTaskTemplate((prev) => {
-                    if (!prev) return prev;
 
-                    return {
-                        ...prev,
-                        languages: prev.languages.map((lang) => ({
-                            ...lang,
-                            stub: generatedById.get(lang.id) ?? lang.stub,
-                        })),
-                    };
-                });
                 toast.success('Successfully generated stubs for selected languages');
             } catch (err) {
                 setError(err as Error);
