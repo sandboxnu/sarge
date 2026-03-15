@@ -238,9 +238,18 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
             const currentLanguages = languages ?? [];
             if (currentLanguages.length === 0) return;
 
+            const languagesToGenerate = currentLanguages.filter(
+                (lang) => !lang.stub?.trim()
+            );
+
+            if (languagesToGenerate.length === 0) {
+                toast.info('All selected languages already have stubs');
+                return;
+            }
+
             try {
                 const generated = await Promise.all(
-                    currentLanguages.map(async (lang) => {
+                    languagesToGenerate.map(async (lang) => {
                         const result = await generateTaskTemplateLanguageStub(
                             taskTemplateId,
                             lang.id,
