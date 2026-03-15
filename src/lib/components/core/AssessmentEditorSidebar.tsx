@@ -44,7 +44,7 @@ export default function AssessmentEditorSidebar({
 
     const totalMinutes = sections.reduce((sum, s) => {
         if (s.type === 'task') {
-            return sum + s.taskTemplate.timeLimitMinutes;
+            return sum + s.taskTemplate.estimatedTime;
         }
         return sum;
     }, 0);
