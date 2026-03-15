@@ -170,3 +170,33 @@ export async function getTaskTemplateLanguage(
 
     return json.data;
 }
+
+export interface GenerateTaskTemplateStubPayload {
+    functionName: string;
+    returnType: string;
+    parameters: { name: string; type: string }[];
+    language: string;
+}
+
+/**
+ * POST /api/task-templates/:taskTemplateId/:languageId/stub
+ */
+export async function generateTaskTemplateLanguageStub(
+    taskTemplateId: string,
+    languageId: number,
+    payload: GenerateTaskTemplateStubPayload
+): Promise<{ stub: string; languageId: number }> {
+    const res = await fetch(`/api/task-templates/${taskTemplateId}/${languageId}/stub`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+    });
+
+    const json = await res.json();
+
+    if (!res.ok) {
+        throw new Error(json.message);
+    }
+
+    return json.data;
+}

@@ -38,6 +38,7 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
         removeLanguage,
         clearAllLanguages,
         handleLanguageSelectionChange,
+        generateStubsForLanguages,
     } = useTaskTemplateEditPage(id);
 
     if (isLoading) {
@@ -84,6 +85,7 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
                         removeLanguage={removeLanguage}
                         clearAllLanguages={clearAllLanguages}
                         handleLanguageSelectionChange={handleLanguageSelectionChange}
+                        generateStubsForLanguages={generateStubsForLanguages}
                     />
                 </div>
 

@@ -7,12 +7,14 @@ import { Separator } from '@/lib/components/ui/Separator';
 import { getLanguageOptions, getLanguageLabel } from '@/lib/utils/language.utils';
 import CodeStubGenerator from '@/lib/components/core/CodeStubGenerator';
 import type { TaskTemplateLanguageDTO } from '@/lib/schemas/task-template-language.schema';
+import type { GenerateTaskTemplateStubPayload } from '@/lib/api/task-templates';
 
 export interface LanguagesTabProps {
     languages?: TaskTemplateLanguageDTO[];
     removeLanguage: (lang: string) => void;
     clearAllLanguages: () => void;
     handleLanguageSelectionChange: (selected: string | string[]) => void;
+    generateStubsForLanguages: (stubConfig: GenerateTaskTemplateStubPayload) => Promise<void>;
 }
 
 export default function LanguagesTab({
@@ -20,6 +22,7 @@ export default function LanguagesTab({
     removeLanguage,
     clearAllLanguages,
     handleLanguageSelectionChange,
+    generateStubsForLanguages,
 }: LanguagesTabProps) {
     const selectedLanguageValues = (languages ?? []).map((l) => l.language);
 
@@ -99,7 +102,7 @@ export default function LanguagesTab({
 
             <Separator />
 
-            <CodeStubGenerator disabled={!hasLanguages} />
+            <CodeStubGenerator disabled={!hasLanguages} onGenerate={generateStubsForLanguages} />
         </div>
     );
 }

@@ -6,6 +6,7 @@ import LanguagesTab from '@/lib/components/core/LanguagesTab';
 import type { BlockNoteContent } from '@/lib/types/task-template.types';
 import type { TagDTO } from '@/lib/schemas/tag.schema';
 import type { TaskTemplateLanguageDTO } from '@/lib/schemas/task-template-language.schema';
+import type { GenerateTaskTemplateStubPayload } from '@/lib/api/task-templates';
 
 export interface TaskEditorSidebarProps {
     description: BlockNoteContent;
@@ -19,6 +20,7 @@ export interface TaskEditorSidebarProps {
     removeLanguage: (lang: string) => void;
     clearAllLanguages: () => void;
     handleLanguageSelectionChange: (selected: string | string[]) => void;
+    generateStubsForLanguages: (stubConfig: GenerateTaskTemplateStubPayload) => Promise<void>;
 }
 
 export default function TaskEditorSidebar({
@@ -33,6 +35,7 @@ export default function TaskEditorSidebar({
     removeLanguage,
     clearAllLanguages,
     handleLanguageSelectionChange,
+    generateStubsForLanguages,
 }: TaskEditorSidebarProps) {
     return (
         <div className="border-r-sarge-primary-100 bg-sarge-gray-0 flex h-full min-h-0 w-full flex-col border-r-4 px-[30px] py-[10px]">
@@ -58,6 +61,7 @@ export default function TaskEditorSidebar({
                         removeLanguage={removeLanguage}
                         clearAllLanguages={clearAllLanguages}
                         handleLanguageSelectionChange={handleLanguageSelectionChange}
+                        generateStubsForLanguages={generateStubsForLanguages}
                     />
                 </TabsContent>
             </Tabs>

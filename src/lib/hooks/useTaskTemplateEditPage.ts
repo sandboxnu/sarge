@@ -3,6 +3,8 @@ import {
     getTaskTemplate,
     getTaskTemplateLanguage,
     editTaskTemplate,
+    generateTaskTemplateLanguageStub,
+    type GenerateTaskTemplateStubPayload,
 } from '@/lib/api/task-templates';
 import { getOrgTags } from '@/lib/api/tags';
 import {
@@ -231,6 +233,66 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
         }
     }
 
+    const generateStubsForLanguages = useCallback(
+        async (stubConfig: GenerateTaskTemplateStubPayload) => {
+            const currentLanguages = languages ?? [];
+            if (currentLanguages.length === 0) return;
+
+            try {
+                const generated = await Promise.all(
+                    currentLanguages.map(async (lang) => {
+                        const result = await generateTaskTemplateLanguageStub(
+                            taskTemplateId,
+                            lang.id,
+                            {
+                                ...stubConfig,
+                                language: lang.language,
+                            }
+                        );
+
+                        return {
+                            id: lang.id,
+                            stub: result.stub,
+                        };
+                    })
+                );
+
+                const generatedById = new Map(generated.map((item) => [item.id, item.stub]));
+
+                // Update Monaco models so the editor reflects the new stubs immediately
+                generated.forEach(({ id, stub }) => {
+                    const lang = currentLanguages.find((l) => l.id === id);
+                    if (lang) {
+                        editorModels.current[lang.language]?.setValue(stub);
+                    }
+                });
+
+                setLanguages((prev) =>
+                    (prev ?? []).map((lang) => ({
+                        ...lang,
+                        stub: generatedById.get(lang.id) ?? lang.stub,
+                    }))
+                );
+                setTaskTemplate((prev) => {
+                    if (!prev) return prev;
+
+                    return {
+                        ...prev,
+                        languages: prev.languages.map((lang) => ({
+                            ...lang,
+                            stub: generatedById.get(lang.id) ?? lang.stub,
+                        })),
+                    };
+                });
+                toast.success('Successfully generated stubs for selected languages');
+            } catch (err) {
+                setError(err as Error);
+                toast.error((err as Error).message);
+            }
+        },
+        [languages, taskTemplateId]
+    );
+
     const removeLanguage = useCallback(
         (lang: string) => {
             setLanguages((prev) => {
@@ -368,5 +430,6 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
         removeLanguage,
         clearAllLanguages,
         handleLanguageSelectionChange,
+        generateStubsForLanguages,
     };
 }
