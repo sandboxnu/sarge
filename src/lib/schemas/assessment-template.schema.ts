@@ -50,11 +50,12 @@ const assessmentTaskTemplatePreviewSchema = z.object({
     id: z.string(),
     title: z.string(),
     description: blockNoteContentSchema.default([]),
-    timeLimitMinutes: z.number().int().default(0),
+    estimatedTime: z.number().int().default(0),
     languages: TaskTemplateLanguageSchema.array(),
     publicTestCases: testCaseSchema.array(),
     privateTestCases: testCaseSchema.array(),
     tags: TagSchema.array(),
+    timeout: z.number().int().default(5),
 });
 
 const AssessmentTemplateTaskSchema = z.object({

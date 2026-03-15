@@ -6,6 +6,7 @@ import LanguagesTab from '@/lib/components/core/LanguagesTab';
 import type { BlockNoteContent } from '@/lib/types/task-template.types';
 import type { TagDTO } from '@/lib/schemas/tag.schema';
 import type { TaskTemplateLanguageDTO } from '@/lib/schemas/task-template-language.schema';
+import SettingsTab from './SettingsTab';
 
 export interface TaskEditorSidebarProps {
     description: BlockNoteContent;
@@ -16,6 +17,10 @@ export interface TaskEditorSidebarProps {
     setAvailableTags: React.Dispatch<React.SetStateAction<TagDTO[]>>;
     languages?: TaskTemplateLanguageDTO[];
     setLanguages: React.Dispatch<React.SetStateAction<TaskTemplateLanguageDTO[] | undefined>>;
+    timeout: number;
+    setTimeout: React.Dispatch<React.SetStateAction<number>>;
+    estimatedTime: number;
+    setEstimatedTime: React.Dispatch<React.SetStateAction<number>>;
     isSaving: boolean;
 }
 
@@ -28,6 +33,10 @@ export default function TaskEditorSidebar({
     setAvailableTags,
     languages,
     setLanguages,
+    timeout,
+    setTimeout,
+    estimatedTime,
+    setEstimatedTime,
     isSaving,
 }: TaskEditorSidebarProps) {
     return (
@@ -36,6 +45,7 @@ export default function TaskEditorSidebar({
                 <TabsList className="border-sarge-gray-200 h-auto w-full justify-start gap-5 rounded-none border-b bg-transparent p-0">
                     <UnderlineTabsTrigger value="task-details">Task Details</UnderlineTabsTrigger>
                     <UnderlineTabsTrigger value="languages">Languages</UnderlineTabsTrigger>
+                    <UnderlineTabsTrigger value="settings">Settings</UnderlineTabsTrigger>
                 </TabsList>
                 <TabsContent value="task-details" className="min-h-0 flex-1 overflow-y-auto pt-5">
                     <TaskDetailsTab
@@ -50,6 +60,15 @@ export default function TaskEditorSidebar({
                 </TabsContent>
                 <TabsContent value="languages" className="min-h-0 flex-1 overflow-y-auto pt-5">
                     <LanguagesTab languages={languages} setLanguages={setLanguages} />
+                </TabsContent>
+                <TabsContent value="settings" className="min-h-0 flex-1 overflow-y-auto pt-5">
+                    <SettingsTab
+                        timeout={timeout}
+                        setTimeout={setTimeout}
+                        estimatedTime={estimatedTime}
+                        setEstimatedTime={setEstimatedTime}
+                        isSaving={isSaving}
+                    />
                 </TabsContent>
             </Tabs>
         </div>

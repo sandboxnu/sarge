@@ -62,10 +62,10 @@ export default function TaskDescriptionPreview({
                     </DropdownMenu>
                 </div>
 
-                {taskTemplate.timeLimitMinutes > 0 && (
+                {taskTemplate.estimatedTime > 0 && (
                     <div className="flex w-full items-center gap-2">
                         <AlarmClock className="text-foreground size-5" />
-                        <span className="text-label-s">{taskTemplate.timeLimitMinutes}:00</span>
+                        <span className="text-label-s">{taskTemplate.estimatedTime}:00</span>
                     </div>
                 )}
             </div>

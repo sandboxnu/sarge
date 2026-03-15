@@ -27,6 +27,8 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
     const [availableTags, setAvailableTags] = useState<TagDTO[]>([]);
     const [languages, setLanguages] = useState<TaskTemplateLanguageDTO[]>();
     const [selectedLanguage, setSelectedLanguage] = useState<number>(0);
+    const [timeout, setTimeout] = useState<number>(5);
+    const [estimatedTime, setEstimatedTime] = useState<number>(0);
 
     // Editor
     const [activeFileTab, setActiveFileTab] = useState<'task' | 'solution'>('task');
@@ -55,6 +57,8 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
                 setPublicTestCases(taskTemplate.publicTestCases);
                 setTags(taskTemplate.tags);
                 setAvailableTags(orgTags);
+                setTimeout(taskTemplate.timeout ?? 5);
+                setEstimatedTime(taskTemplate.estimatedTime ?? 0);
             } catch (err) {
                 setError(err as Error);
             } finally {
@@ -147,7 +151,8 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
             taskType: taskTemplate?.taskType ?? null,
             title,
             description,
-            timeLimitMinutes: taskTemplate?.timeLimitMinutes ?? 0,
+            timeout,
+            estimatedTime,
             tags: tags.map((tag) => tag.id),
             publicTestCases,
             privateTestCases,
@@ -160,7 +165,7 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
             setIsSaving(true);
             const payload = getSavePayload();
             await editTaskTemplate(taskTemplateId, payload);
-            toast.success('Successfuly saved task template');
+            toast.success('Successfully saved task template');
         } catch (err) {
             setError(err as Error);
             toast.error((err as Error).message);
@@ -187,6 +192,10 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
         availableTags,
         setAvailableTags,
         languages,
+        timeout,
+        setTimeout,
+        estimatedTime,
+        setEstimatedTime,
         handleLanguageChange,
         selectedLanguage,
         activeFileTab,

@@ -275,6 +275,8 @@ async function editTaskTemplate(
         data: {
             title: payload.title,
             description: payload.description,
+            timeout: payload.timeout,
+            estimatedTime: payload.estimatedTime,
             publicTestCases: payload.publicTestCases,
             privateTestCases: payload.privateTestCases,
             tags: {
