@@ -238,9 +238,7 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
             const currentLanguages = languages ?? [];
             if (currentLanguages.length === 0) return;
 
-            const languagesToGenerate = currentLanguages.filter(
-                (lang) => !lang.stub?.trim()
-            );
+            const languagesToGenerate = currentLanguages.filter((lang) => !lang.stub?.trim());
 
             if (languagesToGenerate.length === 0) {
                 toast.info('All selected languages already have stubs');
