@@ -21,6 +21,16 @@ export default function CodeEditorPreview({ languages, taskTemplateId }: CodeEdi
     const [selectedLanguageIndex, setSelectedLanguageIndex] = useState(0);
     const [activeFileTab, setActiveFileTab] = useState<'task' | 'solution'>('task');
 
+    const handleLanguageChange = useCallback(
+        (selectedLanguage: TaskTemplateLanguageDTO) => {
+            const nextIndex = languages.findIndex((lang) => lang.id === selectedLanguage.id);
+            if (nextIndex !== -1) {
+                setSelectedLanguageIndex(nextIndex);
+            }
+        },
+        [languages]
+    );
+
     useEffect(() => {
         setSelectedLanguageIndex(0);
         setActiveFileTab('task');
@@ -46,7 +56,7 @@ export default function CodeEditorPreview({ languages, taskTemplateId }: CodeEdi
                 onTabChange={setActiveFileTab}
                 languages={languages}
                 selectedLanguageIndex={selectedLanguageIndex}
-                onLanguageChange={setSelectedLanguageIndex}
+                handleLanguageChange={handleLanguageChange}
             />
 
             <div className="min-h-0 flex-1 p-2">

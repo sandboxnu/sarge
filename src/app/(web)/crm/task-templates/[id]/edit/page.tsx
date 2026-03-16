@@ -27,7 +27,6 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
         availableTags,
         setAvailableTags,
         languages,
-        setLanguages,
         isLoading,
         selectedLanguage,
         activeFileTab,
@@ -36,6 +35,10 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
         handleTaskSolutionToggle,
         isSaving,
         saveTaskTemplate,
+        removeLanguage,
+        clearAllLanguages,
+        handleLanguageSelectionChange,
+        generateStubsForLanguages,
     } = useTaskTemplateEditPage(id);
 
     if (isLoading) {
@@ -78,8 +81,11 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
                         availableTags={availableTags}
                         setAvailableTags={setAvailableTags}
                         languages={languages}
-                        setLanguages={setLanguages}
                         isSaving={isSaving}
+                        removeLanguage={removeLanguage}
+                        clearAllLanguages={clearAllLanguages}
+                        handleLanguageSelectionChange={handleLanguageSelectionChange}
+                        generateStubsForLanguages={generateStubsForLanguages}
                     />
                 </div>
 
@@ -88,17 +94,25 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
                         <CodeEditorToolbar
                             activeTab={activeFileTab}
                             onTabChange={handleTaskSolutionToggle}
-                            languages={taskTemplate?.languages ?? []}
+                            languages={languages ?? []}
                             selectedLanguageIndex={selectedLanguage}
-                            onLanguageChange={handleLanguageChange}
+                            handleLanguageChange={handleLanguageChange}
                         />
                         <div className="min-h-0 flex-1 p-2">
                             <Editor
                                 className="h-full"
                                 defaultLanguage={
-                                    taskTemplate?.languages[selectedLanguage]?.language
+                                    selectedLanguage >= 0 &&
+                                    taskTemplate?.languages[selectedLanguage]
+                                        ? taskTemplate.languages[selectedLanguage].language
+                                        : 'plaintext'
                                 }
-                                defaultValue={taskTemplate?.languages[selectedLanguage]?.stub}
+                                defaultValue={
+                                    selectedLanguage >= 0 &&
+                                    taskTemplate?.languages[selectedLanguage]
+                                        ? taskTemplate.languages[selectedLanguage].stub
+                                        : ''
+                                }
                                 onMount={handleEditorContent}
                                 options={{ readOnly: isSaving }}
                             />

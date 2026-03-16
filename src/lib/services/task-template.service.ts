@@ -305,6 +305,36 @@ async function editTaskTemplate(
     return updated as TaskTemplateEditorDTO;
 }
 
+async function getTaskTemplateLanguage(
+    taskTemplateId: string,
+    language: string,
+    orgId: string
+): Promise<{
+    id: number;
+    taskTemplateId: string;
+    language: string;
+    solution: string;
+    stub: string;
+} | null> {
+    const taskTemplate = await prisma.taskTemplate.findFirst({
+        where: { id: taskTemplateId, orgId },
+        select: { id: true },
+    });
+
+    if (!taskTemplate) {
+        throw new NotFoundException('Task Template', taskTemplateId);
+    }
+
+    const languageData = await prisma.taskTemplateLanguage.findFirst({
+        where: {
+            taskTemplateId,
+            language: language as never,
+        },
+    });
+
+    return languageData;
+}
+
 const TaskTemplateService = {
     getTaskTemplate,
     getAllTaskTemplates,
@@ -315,6 +345,7 @@ const TaskTemplateService = {
     getTaskTemplatesByTitle,
     getDuplicateTitle,
     editTaskTemplate,
+    getTaskTemplateLanguage,
 };
 
 export default TaskTemplateService;
