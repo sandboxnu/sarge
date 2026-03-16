@@ -22,7 +22,7 @@ export const TaskTemplateSchema = z.object({
     taskType: z.string().nullable(),
     authorId: z.string(),
     estimatedTime: z.number().int().default(0),
-    timeout: z.number().int().default(5),
+    timeout: z.number().int().default(0),
 });
 
 export const TaskTemplateEditorSchema = TaskTemplateSchema.extend({
@@ -70,7 +70,7 @@ export const taskTemplateEditorSaveSchema = TaskTemplateSchema.omit({
     description: blockNoteContentSchema,
     tags: z.array(z.string()),
     languages: TaskTemplateLanguageSchema.array(),
-    timeout: z.number().int().default(5),
+    timeout: z.number().int().default(0),
     estimatedTime: z.number().int().default(0),
 });
 

@@ -29,14 +29,13 @@ export default function SettingsTab({
     return (
         <div className="flex h-full flex-col gap-5">
             <div className="flex flex-col gap-2.5">
-                <span className="text-label-s text-sarge-gray-800">Time Limit (seconds)</span>
+                <span className="text-label-s text-sarge-gray-800">Time Limit (milliseconds)</span>
                 <Input
                     type="number"
                     min="0"
                     value={timeout}
                     onChange={handleTimeLimitChange}
                     disabled={isSaving}
-                    placeholder="e.g. 5"
                 />
             </div>
             <div className="flex flex-col gap-2.5">
@@ -47,7 +46,6 @@ export default function SettingsTab({
                     value={estimatedTime}
                     onChange={handleEstimatedTimeChange}
                     disabled={isSaving}
-                    placeholder="e.g. 10"
                 />
             </div>
         </div>

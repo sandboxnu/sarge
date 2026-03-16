@@ -27,7 +27,7 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
     const [availableTags, setAvailableTags] = useState<TagDTO[]>([]);
     const [languages, setLanguages] = useState<TaskTemplateLanguageDTO[]>();
     const [selectedLanguage, setSelectedLanguage] = useState<number>(0);
-    const [timeout, setTimeout] = useState<number>(5);
+    const [timeout, setTimeout] = useState<number>(0);
     const [estimatedTime, setEstimatedTime] = useState<number>(0);
 
     // Editor
@@ -57,7 +57,7 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
                 setPublicTestCases(taskTemplate.publicTestCases);
                 setTags(taskTemplate.tags);
                 setAvailableTags(orgTags);
-                setTimeout(taskTemplate.timeout ?? 5);
+                setTimeout(taskTemplate.timeout ?? 0);
                 setEstimatedTime(taskTemplate.estimatedTime ?? 0);
             } catch (err) {
                 setError(err as Error);

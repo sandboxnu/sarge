@@ -55,7 +55,7 @@ const assessmentTaskTemplatePreviewSchema = z.object({
     publicTestCases: testCaseSchema.array(),
     privateTestCases: testCaseSchema.array(),
     tags: TagSchema.array(),
-    timeout: z.number().int().default(5),
+    timeout: z.number().int().default(0),
 });
 
 const AssessmentTemplateTaskSchema = z.object({
