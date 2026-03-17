@@ -37,7 +37,6 @@ export default function TaskEditorSidebar({
     availableTags,
     setAvailableTags,
     languages,
-    setLanguages,
     timeout,
     setTimeout,
     estimatedTime,

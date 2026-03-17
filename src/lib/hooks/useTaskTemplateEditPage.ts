@@ -229,7 +229,7 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
             const updatedTaskTemplate = await editTaskTemplate(taskTemplateId, payload);
             setTaskTemplate(updatedTaskTemplate);
             setLanguages(updatedTaskTemplate.languages);
-            toast.success('Successfuly saved task template');
+            toast.success('Successfully saved task template');
         } catch (err) {
             setError(err as Error);
             toast.error((err as Error).message);

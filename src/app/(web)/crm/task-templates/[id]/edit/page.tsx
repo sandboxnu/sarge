@@ -27,7 +27,6 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
         availableTags,
         setAvailableTags,
         languages,
-        setLanguages,
         timeout,
         setTimeout,
         estimatedTime,
@@ -86,7 +85,6 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
                         availableTags={availableTags}
                         setAvailableTags={setAvailableTags}
                         languages={languages}
-                        setLanguages={setLanguages}
                         timeout={timeout}
                         setTimeout={setTimeout}
                         estimatedTime={estimatedTime}
