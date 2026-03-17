@@ -17,7 +17,6 @@ export interface TaskEditorSidebarProps {
     availableTags: TagDTO[];
     setAvailableTags: React.Dispatch<React.SetStateAction<TagDTO[]>>;
     languages?: TaskTemplateLanguageDTO[];
-    setLanguages: React.Dispatch<React.SetStateAction<TaskTemplateLanguageDTO[] | undefined>>;
     timeout: number;
     setTimeout: React.Dispatch<React.SetStateAction<number>>;
     estimatedTime: number;
