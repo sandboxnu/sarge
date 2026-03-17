@@ -7,42 +7,24 @@ import { Separator } from '@/lib/components/ui/Separator';
 import { getLanguageOptions, getLanguageLabel } from '@/lib/utils/language.utils';
 import CodeStubGenerator from '@/lib/components/core/CodeStubGenerator';
 import type { TaskTemplateLanguageDTO } from '@/lib/schemas/task-template-language.schema';
+import type { GenerateTaskTemplateStubPayload } from '@/lib/api/task-templates';
 
 export interface LanguagesTabProps {
     languages?: TaskTemplateLanguageDTO[];
-    setLanguages: React.Dispatch<React.SetStateAction<TaskTemplateLanguageDTO[] | undefined>>;
+    removeLanguage: (lang: string) => void;
+    clearAllLanguages: () => void;
+    handleLanguageSelectionChange: (selected: string | string[]) => void;
+    generateStubsForLanguages: (stubConfig: GenerateTaskTemplateStubPayload) => Promise<void>;
 }
 
-export default function LanguagesTab({ languages, setLanguages }: LanguagesTabProps) {
+export default function LanguagesTab({
+    languages,
+    removeLanguage,
+    clearAllLanguages,
+    handleLanguageSelectionChange,
+    generateStubsForLanguages,
+}: LanguagesTabProps) {
     const selectedLanguageValues = (languages ?? []).map((l) => l.language);
-
-    const handleLanguageChange = (selected: string | string[]) => {
-        const selectedArr = Array.isArray(selected) ? selected : [selected];
-
-        const existing = (languages ?? []).filter((l) => selectedArr.includes(l.language));
-        const existingLangs = existing.map((l) => l.language);
-        const newLangs = selectedArr.filter(
-            (lang) => !existingLangs.includes(lang as TaskTemplateLanguageDTO['language'])
-        );
-
-        const newEntries: TaskTemplateLanguageDTO[] = newLangs.map((lang, i) => ({
-            id: -(i + 1),
-            taskTemplateId: '',
-            language: lang as TaskTemplateLanguageDTO['language'],
-            solution: '',
-            stub: '',
-        }));
-
-        setLanguages([...existing, ...newEntries]);
-    };
-
-    const removeLanguage = (lang: string) => {
-        setLanguages((prev) => (prev ?? []).filter((l) => l.language !== lang));
-    };
-
-    const clearAll = () => {
-        setLanguages([]);
-    };
 
     const languageOptions = getLanguageOptions();
     const hasLanguages = selectedLanguageValues.length > 0;
@@ -60,7 +42,7 @@ export default function LanguagesTab({ languages, setLanguages }: LanguagesTabPr
                 <Combobox
                     options={languageOptions}
                     value={selectedLanguageValues}
-                    onChange={handleLanguageChange}
+                    onChange={handleLanguageSelectionChange}
                     multiple
                     variant="checkbox"
                     showSelectAll
@@ -96,13 +78,13 @@ export default function LanguagesTab({ languages, setLanguages }: LanguagesTabPr
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     e.preventDefault();
-                                    if (hasLanguages) clearAll();
+                                    if (hasLanguages) clearAllLanguages();
                                 }}
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter' || e.key === ' ') {
                                         e.stopPropagation();
                                         e.preventDefault();
-                                        if (hasLanguages) clearAll();
+                                        if (hasLanguages) clearAllLanguages();
                                     }
                                 }}
                                 className={`text-label-xs mt-1 ml-2 shrink-0 whitespace-nowrap ${
@@ -120,7 +102,7 @@ export default function LanguagesTab({ languages, setLanguages }: LanguagesTabPr
 
             <Separator />
 
-            <CodeStubGenerator disabled={!hasLanguages} />
+            <CodeStubGenerator disabled={!hasLanguages} onGenerate={generateStubsForLanguages} />
         </div>
     );
 }

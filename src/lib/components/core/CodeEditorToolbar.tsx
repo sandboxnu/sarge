@@ -10,13 +10,14 @@ import {
     DropdownMenuTrigger,
 } from '@/lib/components/ui/Dropdown';
 import { getLanguageLabel } from '@/lib/utils/language.utils';
+import { type TaskTemplateLanguageDTO } from '@/lib/schemas/task-template-language.schema';
 
 interface CodeEditorToolbarProps {
     activeTab: 'task' | 'solution';
     onTabChange: (tab: 'task' | 'solution') => void;
-    languages: { language: string }[];
+    languages: TaskTemplateLanguageDTO[];
     selectedLanguageIndex: number;
-    onLanguageChange: (index: number) => void;
+    handleLanguageChange: (language: TaskTemplateLanguageDTO) => void;
     disabled?: boolean;
 }
 
@@ -25,7 +26,7 @@ export default function CodeEditorToolbar({
     onTabChange,
     languages,
     selectedLanguageIndex,
-    onLanguageChange,
+    handleLanguageChange,
     disabled = false,
 }: CodeEditorToolbarProps) {
     const currentLanguage = languages[selectedLanguageIndex];
@@ -71,11 +72,11 @@ export default function CodeEditorToolbar({
                                 className="bg-sarge-primary-500 rounded-sm px-2.5"
                             >
                                 <DropdownMenuGroup className="!hover:bg-sarge-primary-600 !text-primary-foreground p-0">
-                                    {languages.map((lang, index) => (
+                                    {languages.map((lang: TaskTemplateLanguageDTO) => (
                                         <DropdownMenuItem
                                             className="!hover:text-sarge-primary-500 !text-primary-foreground cursor-pointer border-none"
                                             key={lang.language}
-                                            onClick={() => onLanguageChange(index)}
+                                            onClick={() => handleLanguageChange(lang)}
                                         >
                                             {getLanguageLabel(lang.language)}
                                         </DropdownMenuItem>

@@ -136,6 +136,61 @@ export async function editTaskTemplate(
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
     });
+    const json = await res.json();
+
+    if (!res.ok) {
+        throw new Error(json.message);
+    }
+
+    return json.data;
+}
+
+/**
+ * GET /api/task-templates/:taskTemplateId/languages/:language
+ */
+export async function getTaskTemplateLanguage(
+    taskTemplateId: string,
+    language: string
+): Promise<{
+    id: number;
+    taskTemplateId: string;
+    language: string;
+    solution: string;
+    stub: string;
+} | null> {
+    const res = await fetch(
+        `/api/task-templates/${taskTemplateId}/languages/${encodeURIComponent(language)}`
+    );
+
+    const json = await res.json();
+
+    if (!res.ok) {
+        throw new Error(json.message);
+    }
+
+    return json.data;
+}
+
+export interface GenerateTaskTemplateStubPayload {
+    functionName: string;
+    returnType: string;
+    parameters: { name: string; type: string }[];
+    language: string;
+}
+
+/**
+ * POST /api/task-templates/:taskTemplateId/:languageId/stub
+ */
+export async function generateTaskTemplateLanguageStub(
+    taskTemplateId: string,
+    languageId: number,
+    payload: GenerateTaskTemplateStubPayload
+): Promise<{ stub: string; languageId: number }> {
+    const res = await fetch(`/api/task-templates/${taskTemplateId}/${languageId}/stub`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+    });
 
     const json = await res.json();
 

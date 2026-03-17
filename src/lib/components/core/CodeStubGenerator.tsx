@@ -6,6 +6,7 @@ import { Field, FieldLabel } from '@/lib/components/ui/Field';
 import { Input } from '@/lib/components/ui/Input';
 import { Button } from '@/lib/components/ui/Button';
 import TypeSelect from '@/lib/components/core/TypeSelect';
+import type { GenerateTaskTemplateStubPayload } from '@/lib/api/task-templates';
 
 interface StubParameter {
     id: number;
@@ -15,12 +16,14 @@ interface StubParameter {
 
 interface CodeStubGeneratorProps {
     disabled: boolean;
+    onGenerate: (stubConfig: GenerateTaskTemplateStubPayload) => Promise<void>;
 }
 
-export default function CodeStubGenerator({ disabled }: CodeStubGeneratorProps) {
+export default function CodeStubGenerator({ disabled, onGenerate }: CodeStubGeneratorProps) {
     const [functionName, setFunctionName] = React.useState('');
     const [returnType, setReturnType] = React.useState('');
     const [parameters, setParameters] = React.useState<StubParameter[]>([]);
+    const [isGenerating, setIsGenerating] = React.useState(false);
     const nextParamId = React.useRef(0);
 
     const addParameter = () => {
@@ -33,6 +36,24 @@ export default function CodeStubGenerator({ disabled }: CodeStubGeneratorProps) 
 
     const removeParameter = (id: number) => {
         setParameters((prev) => prev.filter((p) => p.id !== id));
+    };
+
+    const handleGenerate = async () => {
+        const filteredParams = parameters
+            .map((p) => ({ name: p.name.trim(), type: p.type.trim() }))
+            .filter((p) => p.name.length > 0 && p.type.length > 0);
+
+        setIsGenerating(true);
+        try {
+            await onGenerate({
+                functionName: functionName.trim(),
+                returnType: returnType.trim(),
+                parameters: filteredParams,
+                language: '',
+            });
+        } finally {
+            setIsGenerating(false);
+        }
     };
 
     return (
@@ -99,8 +120,13 @@ export default function CodeStubGenerator({ disabled }: CodeStubGeneratorProps) 
             ))}
 
             <div className="flex w-full justify-end">
-                <Button variant="primary" disabled={disabled} className="h-9 px-4">
-                    Generate Stub
+                <Button
+                    variant="primary"
+                    disabled={disabled || isGenerating}
+                    className="h-9 px-4"
+                    onClick={handleGenerate}
+                >
+                    {isGenerating ? 'Generating...' : 'Generate Stub'}
                 </Button>
             </div>
         </div>
