@@ -1,5 +1,6 @@
 services:
     web:
+        container_name: sarge_web
         build:
             context: .
             dockerfile: Dockerfile
@@ -9,12 +10,20 @@ services:
             DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
         depends_on:
             - db
+            - ws
         volumes:
             - .:/app
             - /app/node_modules
+    ws:
+        container_name: sarge_ws
+        build:
+            context: ./src/ws/
+            dockerfile: Dockerfile
+        ports:
+            - '8080:8080'
     db:
         image: postgres:17
-        container_name: sarge_dev_db
+        container_name: sarge_db
         restart: unless-stopped
         environment:
             POSTGRES_USER: ${DB_USER}
