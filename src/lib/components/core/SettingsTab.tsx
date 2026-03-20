@@ -29,7 +29,7 @@ export default function SettingsTab({
     return (
         <div className="flex h-full flex-col gap-5">
             <div className="flex flex-col gap-2.5">
-                <span className="text-label-s text-sarge-gray-800">Time Limit (milliseconds)</span>
+                <span className="text-label-s text-sarge-gray-800">Max Test Runtime (milliseconds)</span>
                 <Input
                     type="number"
                     min="0"
