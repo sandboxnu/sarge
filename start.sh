@@ -8,4 +8,4 @@ cleanup() {
 
 trap cleanup SIGINT SIGTERM
 
-docker compose up -d db && pnpm install && pnpm run dev
+docker compose up -d db ws && pnpm install && pnpm run dev
