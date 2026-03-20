@@ -27,6 +27,10 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
         availableTags,
         setAvailableTags,
         languages,
+        timeout,
+        setTimeout,
+        estimatedTime,
+        setEstimatedTime,
         isLoading,
         selectedLanguage,
         activeFileTab,
@@ -81,6 +85,10 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
                         availableTags={availableTags}
                         setAvailableTags={setAvailableTags}
                         languages={languages}
+                        timeout={timeout}
+                        setTimeout={setTimeout}
+                        estimatedTime={estimatedTime}
+                        setEstimatedTime={setEstimatedTime}
                         isSaving={isSaving}
                         removeLanguage={removeLanguage}
                         clearAllLanguages={clearAllLanguages}

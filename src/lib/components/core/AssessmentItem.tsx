@@ -16,7 +16,7 @@ export default function AssessmentItem({ section, isSelected, onSelect }: Assess
 
     const SectionIcon = section.type === 'task' ? CodeXml : Type;
     const title = section.type === 'task' ? section.taskTemplate.title : '';
-    const timeLimitMinutes = section.type === 'task' ? section.taskTemplate.timeLimitMinutes : 0;
+    const estimatedTime = section.type === 'task' ? section.taskTemplate.estimatedTime : 0;
 
     return (
         <div className={cn('group relative px-5 py-1', isSelected && 'is-selected')}>
@@ -46,8 +46,8 @@ export default function AssessmentItem({ section, isSelected, onSelect }: Assess
                     <span className="text-label-xs truncate">{title}</span>
                 </div>
 
-                {timeLimitMinutes > 0 && (
-                    <span className="text-label-xs ml-2 shrink-0">{timeLimitMinutes}min</span>
+                {estimatedTime > 0 && (
+                    <span className="text-label-xs ml-2 shrink-0">{estimatedTime}min</span>
                 )}
             </div>
         </div>

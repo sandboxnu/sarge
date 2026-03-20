@@ -60,7 +60,7 @@ export const taskTemplatesData = [
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
         authorId: 'user_prof_fontenot_001',
-        timeLimitMinutes: 25,
+        estimatedTime: 25,
     },
     {
         id: 'task_template_reverse_string_001',
@@ -105,7 +105,7 @@ export const taskTemplatesData = [
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
         authorId: 'user_prof_fontenot_001',
-        timeLimitMinutes: 10,
+        estimatedTime: 10,
     },
     {
         id: 'task_template_palindrome_001',
@@ -153,7 +153,7 @@ export const taskTemplatesData = [
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
         authorId: 'user_prof_fontenot_001',
-        timeLimitMinutes: 20,
+        estimatedTime: 20,
     },
     {
         id: 'task_template_fizzbuzz_001',
@@ -193,7 +193,7 @@ export const taskTemplatesData = [
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
         authorId: 'user_prof_fontenot_001',
-        timeLimitMinutes: 10,
+        estimatedTime: 10,
     },
     {
         id: 'task_template_quick_warmup_001',
@@ -204,7 +204,7 @@ export const taskTemplatesData = [
         orgId: 'org_nextlab_001',
         taskType: null,
         authorId: 'user_prof_fontenot_001',
-        timeLimitMinutes: 5,
+        estimatedTime: 5,
     },
     {
         id: 'task_template_max_subarray_001',
@@ -250,7 +250,7 @@ export const taskTemplatesData = [
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
         authorId: 'user_prof_fontenot_001',
-        timeLimitMinutes: 30,
+        estimatedTime: 30,
     },
     {
         id: 'task_template_binary_search_001',
@@ -296,7 +296,7 @@ export const taskTemplatesData = [
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
         authorId: 'user_prof_fontenot_001',
-        timeLimitMinutes: 15,
+        estimatedTime: 15,
     },
     {
         id: 'task_template_valid_parentheses_001',
@@ -340,7 +340,7 @@ export const taskTemplatesData = [
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
         authorId: 'user_prof_fontenot_001',
-        timeLimitMinutes: 20,
+        estimatedTime: 20,
     },
     {
         id: 'task_template_merge_sorted_001',
@@ -391,7 +391,7 @@ export const taskTemplatesData = [
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
         authorId: 'user_prof_fontenot_001',
-        timeLimitMinutes: 25,
+        estimatedTime: 25,
     },
     {
         id: 'task_template_longest_prefix_001',
@@ -434,6 +434,6 @@ export const taskTemplatesData = [
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
         authorId: 'user_prof_fontenot_001',
-        timeLimitMinutes: 15,
+        estimatedTime: 15,
     },
 ];
