@@ -46,3 +46,6 @@ next-env.d.ts
 
 .vercel
 .env*.local
+
+# ws
+/src/ws/node_modules
