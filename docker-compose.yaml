@@ -9,6 +9,7 @@ services:
             DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
         depends_on:
             - db
+            - ws
         volumes:
             - .:/app
             - /app/node_modules
@@ -24,6 +25,16 @@ services:
             - '5432:5432'
         volumes:
             - postgres_data:/var/lib/postgresql/data
+    ws:
+        container_name: sarge_dev_ws
+        build:
+            context: ./src/ws/
+            dockerfile: Dockerfile
+        ports:
+            - 8080:8080
+        volumes:
+            - ./src/ws:/src/ws
+            - /src/ws/node_modules
 
 volumes:
     postgres_data:
