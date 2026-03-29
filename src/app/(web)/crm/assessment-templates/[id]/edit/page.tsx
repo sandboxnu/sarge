@@ -42,11 +42,12 @@ export default function AssessmentTemplateEditPage({
     const [addTaskOpen, setAddTaskOpen] = useState(false);
 
     const onSave = async () => {
-        const success = await save();
-        if (success) {
+        const result = await save();
+        if (result.success) {
             toast.success('Assessment template saved');
         } else {
-            toast.error('Failed to save assessment template');
+            const message = result.errorMessage ?? 'Failed to save assessment template';
+            toast.error(message);
         }
     };
 

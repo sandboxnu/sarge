@@ -128,7 +128,7 @@ export default function useAssessmentTemplateEditPage(assessmentTemplateId: stri
         setHasUnsavedChanges(true);
     }
 
-    async function save(): Promise<boolean> {
+    async function save(): Promise<{ success: boolean; errorMessage?: string }> {
         setIsSaving(true);
         try {
             await Promise.all([
@@ -147,9 +147,15 @@ export default function useAssessmentTemplateEditPage(assessmentTemplateId: stri
             }
 
             setHasUnsavedChanges(false);
-            return true;
-        } catch {
-            return false;
+            return { success: true };
+        } catch (err) {
+            const errorMessage =
+                err instanceof Error ? err.message : 'Failed to save assessment template';
+
+            return {
+                success: false,
+                errorMessage,
+            };
         } finally {
             setIsSaving(false);
         }
