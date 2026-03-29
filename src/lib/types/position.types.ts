@@ -6,6 +6,10 @@ export type PositionWithCounts = {
     archived: boolean;
     numCandidates: number;
     numAssigned: number;
+    assessmentTemplateId: string | null;
+    assessmentTemplateTitle: string | null;
+    assessmentSentCount: number;
+    assessmentSubmittedCount: number;
     createdAt: Date;
 };
 

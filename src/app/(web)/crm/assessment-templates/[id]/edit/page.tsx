@@ -4,12 +4,12 @@ import { use, useState } from 'react';
 import { ChevronDown, Users } from 'lucide-react';
 import Image from 'next/image';
 import { toast } from 'sonner';
-import { Button } from '@/lib/components/ui/Button';
 import AddTaskModal from '@/lib/components/modal/AddTaskModal';
 import AssessmentEditorSidebar from '@/lib/components/core/AssessmentEditorSidebar';
 import AssessmentTaskPreviewPanel from '@/lib/components/core/AssessmentTaskPreviewPanel';
 import Breadcrumbs from '@/lib/components/core/Breadcrumbs';
 import useAssessmentTemplateEditPage from '@/lib/hooks/useAssessmentTemplateEditPage';
+import { Combobox } from '@/lib/components/ui/Combobox';
 
 export default function AssessmentTemplateEditPage({
     params,
@@ -22,6 +22,8 @@ export default function AssessmentTemplateEditPage({
         isLoading,
         error,
         title,
+        positions,
+        selectedPositionId,
         sections,
         notes,
         selectedSection,
@@ -33,6 +35,7 @@ export default function AssessmentTemplateEditPage({
         deleteSection,
         reorderSections,
         selectSection,
+        updateSelectedPosition,
         save,
     } = useAssessmentTemplateEditPage(id);
 
@@ -75,6 +78,10 @@ export default function AssessmentTemplateEditPage({
     }
 
     const alreadyAddedIds = new Set(sections.map((s) => s.taskTemplateId));
+    const positionOptions = positions.map((position) => ({
+        value: position.id,
+        label: position.title,
+    }));
 
     return (
         <div className="flex h-full flex-col">
@@ -86,11 +93,33 @@ export default function AssessmentTemplateEditPage({
                     onCurrentPageChange={updateTitle}
                 />
 
-                <Button variant="dropdown" className="shrink-0">
-                    <Users className="size-5" />
-                    Assign to position
-                    <ChevronDown className="size-5" />
-                </Button>
+                <div className="w-full max-w-[320px] shrink-0">
+                    <Combobox
+                        options={positionOptions}
+                        value={selectedPositionId ?? undefined}
+                        onChange={(value) => updateSelectedPosition((value as string) || null)}
+                        placeholder="Assign to a position"
+                        searchPlaceholder="Search positions..."
+                        emptyText="No positions found."
+                        showSearchIcon
+                        triggerClassName="h-14 rounded-xl border px-4"
+                        contentClassName="rounded-xl"
+                        trigger={
+                            <button
+                                type="button"
+                                className="border-sarge-gray-200 bg-sarge-gray-0 text-sarge-gray-800 flex h-14 w-full items-center gap-3 rounded-xl border px-4 text-left"
+                            >
+                                <Users className="text-sarge-gray-600 size-5 shrink-0" />
+                                <span className="text-label-s min-w-0 flex-1 truncate">
+                                    {positions.find(
+                                        (position) => position.id === selectedPositionId
+                                    )?.title ?? 'Assign to a position'}
+                                </span>
+                                <ChevronDown className="text-sarge-gray-600 size-5 shrink-0" />
+                            </button>
+                        }
+                    />
+                </div>
             </div>
 
             <div className="flex min-h-0 flex-1">

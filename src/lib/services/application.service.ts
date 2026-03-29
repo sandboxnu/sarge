@@ -3,11 +3,12 @@ import { NotFoundException, ForbiddenException } from '@/lib/utils/errors.utils'
 import { type AddApplicationWithCandidateDataDTO } from '@/lib/schemas/application.schema';
 import type { BatchAddResult, ApplicationDisplayInfo } from '@/lib/types/position.types';
 import type { Application, AssessmentStatus } from '@/generated/prisma';
+import AssessmentService from '@/lib/services/assessment.service';
 
 async function validatePositionAccess(positionId: string, orgId: string) {
     const position = await prisma.position.findUnique({
         where: { id: positionId },
-        select: { id: true, orgId: true },
+        select: { id: true, orgId: true, assessmentId: true },
     });
 
     if (!position) {
@@ -29,60 +30,74 @@ async function addApplicationToPosition(
     positionId: string,
     orgId: string
 ): Promise<ApplicationDisplayInfo> {
-    await validatePositionAccess(positionId, orgId);
+    const position = await validatePositionAccess(positionId, orgId);
 
-    const application = await prisma.application.create({
-        data: {
-            position: { connect: { id: positionId } },
-            candidate: {
-                connectOrCreate: {
-                    where: {
-                        email_orgId: {
+    const application = await prisma.$transaction(async (tx) => {
+        const createdApplication = await tx.application.create({
+            data: {
+                position: { connect: { id: positionId } },
+                candidate: {
+                    connectOrCreate: {
+                        where: {
+                            email_orgId: {
+                                email: candidateData.email,
+                                orgId,
+                            },
+                        },
+                        create: {
+                            name: candidateData.name,
                             email: candidateData.email,
                             orgId,
+                            linkedinUrl: candidateData.linkedinUrl,
+                            githubUrl: candidateData.githubUrl,
+                            major: candidateData.major,
+                            graduationDate: candidateData.graduationDate,
+                            resumeUrl: candidateData.resumeUrl,
                         },
                     },
-                    create: {
-                        name: candidateData.name,
-                        email: candidateData.email,
-                        orgId,
-                        linkedinUrl: candidateData.linkedinUrl,
-                        githubUrl: candidateData.githubUrl,
-                        major: candidateData.major,
-                        graduationDate: candidateData.graduationDate,
-                        resumeUrl: candidateData.resumeUrl,
+                },
+            },
+            select: { id: true },
+        });
+
+        if (position.assessmentId) {
+            await AssessmentService.createAssessmentForApplicationTx(tx, {
+                applicationId: createdApplication.id,
+                assessmentTemplateId: position.assessmentId,
+            });
+        }
+
+        return tx.application.findUniqueOrThrow({
+            where: { id: createdApplication.id },
+            select: {
+                assessmentStatus: true,
+                decisionStatus: true,
+                decidedAt: true,
+                candidate: {
+                    select: {
+                        name: true,
+                        major: true,
+                        graduationDate: true,
+                        githubUrl: true,
+                        resumeUrl: true,
+                    },
+                },
+                assessment: {
+                    select: {
+                        id: true,
+                        uniqueLink: true,
+                        submittedAt: true,
+                    },
+                },
+                grader: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
                     },
                 },
             },
-        },
-        select: {
-            assessmentStatus: true,
-            decisionStatus: true,
-            decidedAt: true,
-            candidate: {
-                select: {
-                    name: true,
-                    major: true,
-                    graduationDate: true,
-                    githubUrl: true,
-                    resumeUrl: true,
-                },
-            },
-            assessment: {
-                select: {
-                    id: true,
-                    uniqueLink: true,
-                    submittedAt: true,
-                },
-            },
-            grader: {
-                select: {
-                    id: true,
-                    name: true,
-                    email: true,
-                },
-            },
-        },
+        });
     });
 
     return application;
@@ -96,7 +111,7 @@ async function batchAddApplicationsToPosition(
     positionId: string,
     orgId: string
 ): Promise<BatchAddResult> {
-    await validatePositionAccess(positionId, orgId);
+    const position = await validatePositionAccess(positionId, orgId);
 
     const candidatesCreated = await prisma.candidate.createMany({
         data: candidates.map((c) => ({
@@ -121,18 +136,55 @@ async function batchAddApplicationsToPosition(
         select: { id: true },
     });
 
+    const existingApplications = await prisma.application.findMany({
+        where: {
+            positionId,
+            candidateId: { in: candidateRecords.map((candidate) => candidate.id) },
+        },
+        select: { id: true, candidateId: true },
+    });
+    const existingCandidateIds = new Set(
+        existingApplications.map((application) => application.candidateId)
+    );
+
     const applicationsCreated = await prisma.application.createMany({
-        data: candidateRecords.map((c) => ({
-            candidateId: c.id,
+        data: candidateRecords.map((candidate) => ({
+            candidateId: candidate.id,
             positionId,
         })),
         skipDuplicates: true,
     });
 
+    if (position.assessmentId) {
+        const assessmentTemplateId = position.assessmentId;
+        const newCandidateIds = candidateRecords
+            .filter((candidate) => !existingCandidateIds.has(candidate.id))
+            .map((candidate) => candidate.id);
+
+        if (newCandidateIds.length > 0) {
+            const newApplications = await prisma.application.findMany({
+                where: {
+                    positionId,
+                    candidateId: { in: newCandidateIds },
+                },
+                select: { id: true },
+            });
+
+            await prisma.$transaction(async (tx) => {
+                for (const application of newApplications) {
+                    await AssessmentService.createAssessmentForApplicationTx(tx, {
+                        applicationId: application.id,
+                        assessmentTemplateId,
+                    });
+                }
+            });
+        }
+    }
+
     const applications = await prisma.application.findMany({
         where: {
             positionId,
-            candidateId: { in: candidateRecords.map((c) => c.id) },
+            candidateId: { in: candidateRecords.map((candidate) => candidate.id) },
         },
         select: {
             assessmentStatus: true,

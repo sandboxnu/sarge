@@ -1,18 +1,23 @@
 import { useState, useEffect } from 'react';
 import {
+    assignAssessmentTemplate,
     getAssessmentTemplate,
     updateAssessmentTemplate,
     updateAssessmentTemplateTasks,
 } from '@/lib/api/assessment-templates';
+import { getPositions } from '@/lib/api/positions';
 import type { AssessmentSection } from '@/lib/types/assessment-section.types';
 import type { BlockNoteContent } from '@/lib/types/task-template.types';
 import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
+import type { PositionWithCounts } from '@/lib/types/position.types';
 
 export default function useAssessmentTemplateEditPage(assessmentTemplateId: string) {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
 
     const [title, setTitle] = useState('');
+    const [positions, setPositions] = useState<PositionWithCounts[]>([]);
+    const [selectedPositionId, setSelectedPositionId] = useState<string | null>(null);
     const [sections, setSections] = useState<AssessmentSection[]>([]);
     const [notes, setNotes] = useState<BlockNoteContent>([]);
     const [selectedSection, setSelectedSection] = useState<AssessmentSection | null>(null);
@@ -27,12 +32,17 @@ export default function useAssessmentTemplateEditPage(assessmentTemplateId: stri
             try {
                 setIsLoading(true);
                 setError(null);
-                const template = await getAssessmentTemplate(assessmentTemplateId);
+                const [template, availablePositions] = await Promise.all([
+                    getAssessmentTemplate(assessmentTemplateId),
+                    getPositions(),
+                ]);
 
                 if (cancelled) return;
 
                 setTitle(template.title);
                 setNotes(template.notes);
+                setPositions(availablePositions);
+                setSelectedPositionId(template.positions[0]?.id ?? null);
 
                 const initialSections: AssessmentSection[] = template.tasks.map((t) => ({
                     type: 'task' as const,
@@ -113,6 +123,11 @@ export default function useAssessmentTemplateEditPage(assessmentTemplateId: stri
         setSelectedSection(section);
     }
 
+    function updateSelectedPosition(positionId: string | null) {
+        setSelectedPositionId(positionId);
+        setHasUnsavedChanges(true);
+    }
+
     async function save(): Promise<boolean> {
         setIsSaving(true);
         try {
@@ -126,6 +141,11 @@ export default function useAssessmentTemplateEditPage(assessmentTemplateId: stri
                     sections.map((s) => ({ taskTemplateId: s.taskTemplateId }))
                 ),
             ]);
+
+            if (selectedPositionId) {
+                await assignAssessmentTemplate(assessmentTemplateId, selectedPositionId);
+            }
+
             setHasUnsavedChanges(false);
             return true;
         } catch {
@@ -139,6 +159,8 @@ export default function useAssessmentTemplateEditPage(assessmentTemplateId: stri
         isLoading,
         error,
         title,
+        positions,
+        selectedPositionId,
         sections,
         notes,
         selectedSection,
@@ -150,6 +172,7 @@ export default function useAssessmentTemplateEditPage(assessmentTemplateId: stri
         deleteSection,
         reorderSections,
         selectSection,
+        updateSelectedPosition,
         save,
     };
 }

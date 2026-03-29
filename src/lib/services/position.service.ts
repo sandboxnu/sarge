@@ -61,13 +61,17 @@ async function getPositionsByOrgId(orgId: string): Promise<PositionWithCounts[]>
             title: true,
             createdAt: true,
             archived: true,
-            _count: {
+            assessmentId: true,
+            assessmentTemplate: {
                 select: {
-                    applications: true,
+                    title: true,
                 },
             },
             applications: {
-                select: { id: true },
+                select: {
+                    id: true,
+                    assessmentStatus: true,
+                },
             },
         },
     });
@@ -76,8 +80,18 @@ async function getPositionsByOrgId(orgId: string): Promise<PositionWithCounts[]>
         id: p.id,
         title: p.title,
         archived: p.archived,
-        numCandidates: p._count.applications,
+        numCandidates: p.applications.length,
         numAssigned: p.applications.length,
+        assessmentTemplateId: p.assessmentId,
+        assessmentTemplateTitle: p.assessmentTemplate?.title ?? null,
+        assessmentSentCount: p.applications.filter(
+            (application) => application.assessmentStatus !== AssessmentStatus.NOT_ASSIGNED
+        ).length,
+        assessmentSubmittedCount: p.applications.filter(
+            (application) =>
+                application.assessmentStatus === AssessmentStatus.SUBMITTED ||
+                application.assessmentStatus === AssessmentStatus.GRADED
+        ).length,
         createdAt: p.createdAt,
     }));
 }
@@ -218,13 +232,17 @@ async function getPositionsByTitle(title: string, orgId: string): Promise<Positi
             title: true,
             createdAt: true,
             archived: true,
-            _count: {
+            assessmentId: true,
+            assessmentTemplate: {
                 select: {
-                    applications: true,
+                    title: true,
                 },
             },
             applications: {
-                select: { id: true },
+                select: {
+                    id: true,
+                    assessmentStatus: true,
+                },
             },
         },
     });
@@ -233,8 +251,18 @@ async function getPositionsByTitle(title: string, orgId: string): Promise<Positi
         id: p.id,
         title: p.title,
         archived: p.archived,
-        numCandidates: p._count.applications,
+        numCandidates: p.applications.length,
         numAssigned: p.applications.length,
+        assessmentTemplateId: p.assessmentId,
+        assessmentTemplateTitle: p.assessmentTemplate?.title ?? null,
+        assessmentSentCount: p.applications.filter(
+            (application) => application.assessmentStatus !== AssessmentStatus.NOT_ASSIGNED
+        ).length,
+        assessmentSubmittedCount: p.applications.filter(
+            (application) =>
+                application.assessmentStatus === AssessmentStatus.SUBMITTED ||
+                application.assessmentStatus === AssessmentStatus.GRADED
+        ).length,
         createdAt: p.createdAt,
     }));
 }

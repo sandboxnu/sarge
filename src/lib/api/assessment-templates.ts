@@ -5,6 +5,7 @@ import {
 } from '@/lib/schemas/assessment-template.schema';
 import type { BlockNoteContent } from '@/lib/types/task-template.types';
 import type { AssessmentTemplateTaskOrder } from '@/lib/types/assessment.types';
+import { assignAssessmentTemplateToPosition } from '@/lib/api/positions';
 
 /**
  * GET /api/assessment-templates/search/?title=...
@@ -136,4 +137,11 @@ export async function getAssessmentTemplateTaskOrder(
     }
 
     return json.data;
+}
+
+export async function assignAssessmentTemplate(
+    assessmentTemplateId: string,
+    positionId: string
+): Promise<{ positionId: string; assessmentTemplateId: string; assessmentsCreated: number }> {
+    return assignAssessmentTemplateToPosition(positionId, assessmentTemplateId);
 }

@@ -58,10 +58,10 @@ export async function getPosition(positionId: string): Promise<Position> {
 }
 
 /**
- * GET api/positions?orgId=
+ * GET /api/positions
  */
-export async function getPositionsByOrgId(orgId: string): Promise<PositionWithCounts[]> {
-    const res = await fetch(`/api/positions?orgId=${orgId}`);
+export async function getPositions(): Promise<PositionWithCounts[]> {
+    const res = await fetch('/api/positions');
 
     const json = await res.json();
 
@@ -70,6 +70,14 @@ export async function getPositionsByOrgId(orgId: string): Promise<PositionWithCo
     }
 
     return json.data;
+}
+
+/**
+ * GET api/positions?orgId=
+ */
+export async function getPositionsByOrgId(orgId: string): Promise<PositionWithCounts[]> {
+    void orgId;
+    return getPositions();
 }
 
 /**
@@ -161,6 +169,29 @@ export async function getPositionPreview(positionId: string): Promise<PositionPr
  */
 export async function searchPositions(title: string): Promise<PositionWithCounts[]> {
     const res = await fetch(`/api/positions/search/?title=${title}`);
+
+    const json = await res.json();
+
+    if (!res.ok) {
+        throw new Error(json.message);
+    }
+
+    return json.data;
+}
+
+/**
+ * PUT /api/positions/:positionId/assessment-template/:assessmentTemplateId
+ */
+export async function assignAssessmentTemplateToPosition(
+    positionId: string,
+    assessmentTemplateId: string
+): Promise<{ positionId: string; assessmentTemplateId: string; assessmentsCreated: number }> {
+    const res = await fetch(
+        `/api/positions/${positionId}/assessment-template/${assessmentTemplateId}`,
+        {
+            method: 'PUT',
+        }
+    );
 
     const json = await res.json();
 
