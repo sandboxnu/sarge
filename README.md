@@ -35,11 +35,13 @@ cd sarge/
 
 ```sh
 pnpm install
+cd src/ws && pnpm install
 ```
 
 3. Setup the .env file
 
 ```
+# in the project's root directory
 mv .env.example .env
 ```
 
