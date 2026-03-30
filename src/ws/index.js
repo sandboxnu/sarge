@@ -4,6 +4,8 @@ import { jwtVerify } from 'jose';
 const ws = new WebSocketServer({ port: 8080 });
 const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 
+console.log('Sarge WS server listening on 8080');
+
 // <userId, socket>
 const clients = new Map();
 
