@@ -2,15 +2,20 @@
     "name": "ws",
     "version": "1.0.0",
     "description": "",
-    "main": "index.js",
+    "main": "src/index.js",
     "type": "module",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "start": "node src/index.js",
+        "dev": "nodemon src/index.js"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "jose": "^6.2.2",
         "ws": "^8.20.0"
+    },
+    "devDependencies": {
+        "nodemon": "^3.1.14"
     }
 }
