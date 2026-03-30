@@ -42,10 +42,10 @@ export async function POST(request: NextRequest) {
         }
 
         const applicationWithAssessment = candidate.applications.find(
-            (app) => (app as any).assessment !== null
-        ) as any;
+            (app) => app.assessment !== null
+        );
 
-        if (!applicationWithAssessment || !applicationWithAssessment.assessment) {
+        if (!applicationWithAssessment?.assessment) {
             return Response.json(
                 { error: 'Candidate does not have an assigned assessment' },
                 { status: 400 }
