@@ -6,7 +6,6 @@ import { assertRecruiterOrAbove } from '@/lib/utils/permissions.utils';
 import { prisma } from '@/lib/prisma';
 import sesConnector from '@/lib/connectors/ses.connector';
 import { generateAssessmentInvitationHTML } from '@/lib/templates/assessment-invitation-email';
-import { type Application } from '@/generated/prisma';
 
 const sendAssessmentInvitationSchema = z.object({
     candidateId: z.string().cuid(),
@@ -43,8 +42,8 @@ export async function POST(request: NextRequest) {
         }
 
         const applicationWithAssessment = candidate.applications.find(
-            (app: Application & { assessment: any }) => app.assessment !== null
-        );
+            (app) => (app as any).assessment !== null
+        ) as any;
 
         if (!applicationWithAssessment || !applicationWithAssessment.assessment) {
             return Response.json(
@@ -59,8 +58,8 @@ export async function POST(request: NextRequest) {
 
         //create url
         const baseUrl =
-            process.env.BETTER_AUTH_URL ||
-            process.env.NEXT_PUBLIC_APP_URL ||
+            process.env.BETTER_AUTH_URL ??
+            process.env.NEXT_PUBLIC_APP_URL ??
             'http://localhost:3000';
         const assessmentUrl = `${baseUrl}/assessment/${assessment.uniqueLink}`;
         const logoUrl = `${baseUrl}/Sarge_logo.svg`;

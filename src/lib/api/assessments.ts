@@ -87,7 +87,7 @@ export async function sendAssessmentInvitation(candidateId: string): Promise<{
     const json = await res.json();
 
     if (!res.ok) {
-        throw new Error(json.error || json.message || 'Failed to send assessment invitation');
+        throw new Error(json.error ?? json.message ?? 'Failed to send assessment invitation');
     }
 
     return json.data;

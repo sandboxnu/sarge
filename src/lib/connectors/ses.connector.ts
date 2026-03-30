@@ -4,6 +4,15 @@ interface EmailOptions {
     html?: string;
 }
 
+interface MessageBody {
+    Text: {
+        Data: string;
+    };
+    Html?: {
+        Data: string;
+    };
+}
+
 class SESConnector {
     private client: SESClient;
 
@@ -19,7 +28,7 @@ class SESConnector {
         options?: EmailOptions
     ): Promise<boolean> {
         try {
-            const bodyConfig: any = {
+            const bodyConfig: MessageBody = {
                 Text: {
                     Data: body,
                 },
