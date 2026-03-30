@@ -1,5 +1,9 @@
 import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
 
+interface EmailOptions {
+    html?: string;
+}
+
 class SESConnector {
     private client: SESClient;
 
@@ -8,8 +12,25 @@ class SESConnector {
         this.client = new SESClient({ region: 'us-east-2' });
     }
 
-    async sendEmail(to: string, subject: string, body: string): Promise<boolean> {
+    async sendEmail(
+        to: string,
+        subject: string,
+        body: string,
+        options?: EmailOptions
+    ): Promise<boolean> {
         try {
+            const bodyConfig: any = {
+                Text: {
+                    Data: body,
+                },
+            };
+
+            if (options?.html) {
+                bodyConfig.Html = {
+                    Data: options.html,
+                };
+            }
+
             const params = {
                 Source: `no-reply@${process.env.EMAIL_DOMAIN}`,
                 Destination: {
@@ -19,11 +40,7 @@ class SESConnector {
                     Subject: {
                         Data: subject,
                     },
-                    Body: {
-                        Text: {
-                            Data: body,
-                        },
-                    },
+                    Body: bodyConfig,
                 },
             };
             const res = await this.client.send(new SendEmailCommand(params));
