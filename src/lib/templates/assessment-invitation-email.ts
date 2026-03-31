@@ -5,6 +5,8 @@ export interface AssessmentInvitationEmailData {
     assessmentId: string;
     assessmentUrl: string;
     logoUrl: string;
+    durationMinutes: number;
+    expirationDate: string;
 }
 
 export function generateAssessmentInvitationHTML(data: AssessmentInvitationEmailData): string {
@@ -49,10 +51,10 @@ export function generateAssessmentInvitationHTML(data: AssessmentInvitationEmail
 
                 <div style="text-align: center; margin: 0 0 32px 0; padding: 24px 0;">
                     <div style="margin-bottom: 16px; font-size: 14px; color: #333333;">
-                        <strong>Duration:</strong> 120 minutes
+                        <strong>Duration:</strong> ${data.durationMinutes} minutes
                     </div>
                     <div style="font-size: 14px; color: #333333;">
-                        <strong>Test Expiration Date:</strong> March 16, 2026 11:59PM EST
+                        <strong>Test Expiration Date:</strong> ${data.expirationDate}
                     </div>
                 </div>
 
