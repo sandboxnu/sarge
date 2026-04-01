@@ -96,8 +96,8 @@ export default function useAssessment(assessmentId: string) {
                 await submitCandidateAssessment(assessmentId);
                 setOutroReason(reason);
                 setPhase('outro');
-            } catch (_err) {
-                toast.error('Failed to submit assessment. Please try again.');
+            } catch (err) {
+                toast.error(`Failed to submit assessment. Please try again. Error: ${err}`);
                 setIsSubmitting(false);
             }
         },
@@ -180,11 +180,11 @@ export default function useAssessment(assessmentId: string) {
             prev.map((s, i) =>
                 i === currentSectionIndex
                     ? {
-                          ...s,
-                          testCaseResults: s.testCaseResults.map(() => ({
-                              status: 'loading' as const,
-                          })),
-                      }
+                        ...s,
+                        testCaseResults: s.testCaseResults.map(() => ({
+                            status: 'loading' as const,
+                        })),
+                    }
                     : s
             )
         );
