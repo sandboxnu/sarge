@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
 import {
-    assignAssessmentTemplate,
     getAssessmentTemplate,
     updateAssessmentTemplate,
     updateAssessmentTemplateTasks,
 } from '@/lib/api/assessment-templates';
-import { getPositions } from '@/lib/api/positions';
+import { assignAssessmentTemplateToPosition, getPositions } from '@/lib/api/positions';
 import type { AssessmentSection } from '@/lib/types/assessment-section.types';
 import type { BlockNoteContent } from '@/lib/types/task-template.types';
 import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
@@ -143,7 +142,7 @@ export default function useAssessmentTemplateEditPage(assessmentTemplateId: stri
             ]);
 
             if (selectedPositionId) {
-                await assignAssessmentTemplate(assessmentTemplateId, selectedPositionId);
+                await assignAssessmentTemplateToPosition(selectedPositionId, assessmentTemplateId);
             }
 
             setHasUnsavedChanges(false);

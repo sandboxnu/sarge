@@ -73,14 +73,6 @@ export async function getPositions(): Promise<PositionWithCounts[]> {
 }
 
 /**
- * GET api/positions?orgId=
- */
-export async function getPositionsByOrgId(orgId: string): Promise<PositionWithCounts[]> {
-    void orgId;
-    return getPositions();
-}
-
-/**
  * POST /api/positions/:positionId/candidates
  */
 export async function createCandidate(
