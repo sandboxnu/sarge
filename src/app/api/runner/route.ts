@@ -14,7 +14,6 @@ export async function POST(request: NextRequest) {
         const parsed = TestSubmissionSchema.parse(body);
         const languageId = mapLanguageToJudge(parsed.language);
         const formatted: JudgeSubmissionRequestBody[] = parsed.tests.map((test) => ({
-            // it doesnt make sense to send the code multiple times so formatting happens on server
             source_code: parsed.code,
             language_id: languageId,
             stdin: test.input,
@@ -32,6 +31,7 @@ export async function POST(request: NextRequest) {
             }
         );
     } catch (err) {
+        console.log(err);
         return handleError(err);
     }
 }

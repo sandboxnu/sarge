@@ -44,9 +44,13 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
         clearAllLanguages,
         handleLanguageSelectionChange,
         generateStubsForLanguages,
+        getEditorContent,
     } = useTaskTemplateEditPage(id);
-    const { runAssessmentTests, runEditPageTests, setCode, setLanguage, error, loading, output } =
-        useTestRunner(id);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { runEditPageTests, error, loading, output } = useTestRunner(
+        'print(input())',
+        languages ? languages[selectedLanguage].language : 'python' // UHHHH
+    );
 
     if (isLoading) {
         return (
@@ -76,7 +80,6 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
                 >
                     {isSaving ? 'Saving...' : 'Save Changes'}
                 </Button>
-                <Button onClick={runEditPageTests}> Run Code </Button>
             </div>
 
             <div className="flex min-h-0 flex-1 overflow-hidden">
@@ -137,6 +140,7 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
                             setPublicTestCases={setPublicTestCases}
                             privateTestCases={privateTestCases}
                             setPrivateTestCases={setPrivateTestCases}
+                            runTests={runEditPageTests}
                             isSaving={isSaving}
                         />
                     </div>
