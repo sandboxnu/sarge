@@ -13,7 +13,7 @@ import type { TestCaseDTO } from '@/lib/schemas/task-template.schema';
 import type { TestCaseResult } from '@/lib/hooks/useAssessment';
 import type { TaskLanguageOption } from '@/lib/types/candidate-assessment.types';
 
-type AssessmentFlowMainProps = {
+type AssessmentFlowContentProps = {
     currentSection: SectionState | null;
     availableLanguages: TaskLanguageOption[];
     publicTestCases: TestCaseDTO[];
@@ -25,7 +25,7 @@ type AssessmentFlowMainProps = {
     onSubmit: () => void;
 };
 
-export default function AssessmentFlowMain({
+export default function AssessmentFlowContent({
     currentSection,
     availableLanguages,
     publicTestCases,
@@ -35,7 +35,7 @@ export default function AssessmentFlowMain({
     onEditorMount,
     onRunTests,
     onSubmit,
-}: AssessmentFlowMainProps) {
+}: AssessmentFlowContentProps) {
     if (!currentSection) return null;
 
     return (

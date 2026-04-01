@@ -4,10 +4,9 @@ import { use } from 'react';
 import useAssessment from '@/lib/hooks/useAssessment';
 import AssessmentIntro from '@/lib/components/assessment-flow/AssessmentIntro';
 import AssessmentOutro from '@/lib/components/assessment-flow/AssessmentOutro';
-import AssessmentFlowLayout from '@/lib/components/assessment-flow/AssessmentFlowLayout';
 import AssessmentFlowSidebar from '@/lib/components/assessment-flow/AssessmentFlowSidebar';
 import AssessmentFlowNavbar from '@/lib/components/assessment-flow/AssessmentFlowNavbar';
-import AssessmentFlowMain from '@/lib/components/assessment-flow/AssessmentFlowMain';
+import AssessmentFlowContent from '@/lib/components/assessment-flow/AssessmentFlowContent';
 
 export default function AssessmentPage({ params }: { params: Promise<{ assessmentId: string }> }) {
     const { assessmentId } = use(params);
@@ -46,28 +45,28 @@ export default function AssessmentPage({ params }: { params: Promise<{ assessmen
     }
 
     return (
-        <AssessmentFlowLayout
-            navbar={<AssessmentFlowNavbar candidateName={assessment.candidateName} />}
-            sidebar={
+        <div className="flex h-screen w-full flex-col overflow-hidden">
+            <AssessmentFlowNavbar candidateName={assessment.candidateName} />
+            <div className="flex flex-1 overflow-hidden">
                 <AssessmentFlowSidebar
                     sections={assessment.sections}
                     currentSectionIndex={assessment.currentSectionIndex}
                     formattedTime={assessment.timer.formattedTime}
                 />
-            }
-            main={
-                <AssessmentFlowMain
-                    currentSection={assessment.currentSection}
-                    availableLanguages={assessment.availableLanguages}
-                    publicTestCases={assessment.publicTestCases}
-                    testCaseResults={assessment.testCaseResults}
-                    isTransitioning={assessment.isTransitioning}
-                    onLanguageChange={assessment.changeLanguage}
-                    onEditorMount={assessment.handleEditorMount}
-                    onRunTests={assessment.runTests}
-                    onSubmit={assessment.submitAndContinue}
-                />
-            }
-        />
+                <main className="flex-1 overflow-hidden">
+                    <AssessmentFlowContent
+                        currentSection={assessment.currentSection}
+                        availableLanguages={assessment.availableLanguages}
+                        publicTestCases={assessment.publicTestCases}
+                        testCaseResults={assessment.testCaseResults}
+                        isTransitioning={assessment.isTransitioning}
+                        onLanguageChange={assessment.changeLanguage}
+                        onEditorMount={assessment.handleEditorMount}
+                        onRunTests={assessment.runTests}
+                        onSubmit={assessment.submitAndContinue}
+                    />
+                </main>
+            </div>
+        </div>
     );
 }

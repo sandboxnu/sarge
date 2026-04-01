@@ -1,5 +1,5 @@
 import { AlarmClock } from 'lucide-react';
-import QuestionIndicator from '@/lib/components/assessment-flow/QuestionIndicator';
+import AssessmentSidebarQuestion from '@/lib/components/assessment-flow/AssessmentSidebarQuestion';
 import type { SectionState } from '@/lib/hooks/useAssessment';
 
 type AssessmentFlowSidebarProps = {
@@ -22,7 +22,7 @@ export default function AssessmentFlowSidebar({
             </div>
             <div className="flex flex-col items-center gap-3">
                 {sections.map((section, i) => (
-                    <QuestionIndicator
+                    <AssessmentSidebarQuestion
                         key={section.taskTemplateId}
                         index={i}
                         status={section.status}

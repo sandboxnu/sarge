@@ -1,30 +1,11 @@
 import type { CandidateAssessment } from '@/lib/types/candidate-assessment.types';
+import { formatDeadline, formatDuration } from '@/lib/utils/date.utils';
 
 type AssessmentIntroProps = {
     assessment: CandidateAssessment;
     totalTimeSeconds: number;
     onStart: () => void;
 };
-
-// move this to utils? (thoughts)
-function formatDeadline(date: Date | null): string {
-    if (!date) return 'No deadline';
-    return new Date(date).toLocaleString('en-US', {
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric',
-        hour: 'numeric',
-        minute: '2-digit',
-    });
-}
-
-function formatDuration(totalSeconds: number): string {
-    const minutes = Math.round(totalSeconds / 60);
-    if (minutes < 60) return `${minutes} minutes`;
-    const hours = Math.floor(minutes / 60);
-    const remaining = minutes % 60;
-    return remaining > 0 ? `${hours}h ${remaining}m` : `${hours} hour${hours > 1 ? 's' : ''}`;
-}
 
 const GUIDELINES = [
     'Questions are linear - you cannot go back to previous questions.',

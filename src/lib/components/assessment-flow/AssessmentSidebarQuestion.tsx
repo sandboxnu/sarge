@@ -2,17 +2,17 @@ import { CircleCheck, Lock } from 'lucide-react';
 import { cn } from '@/lib/utils/cn.utils';
 import type { SectionStatus } from '@/lib/hooks/useAssessment';
 
-type QuestionIndicatorProps = {
+type AssessmentSidebarQuestionProps = {
     index: number;
     status: SectionStatus;
     type?: 'task' | 'text';
 };
 
-export default function QuestionIndicator({
+export default function AssessmentSidebarQuestion({
     index,
     status,
     type = 'task',
-}: QuestionIndicatorProps) {
+}: AssessmentSidebarQuestionProps) {
     const isCompleted = status === 'completed';
     const isCurrent = status === 'current';
     const isLocked = status === 'locked' || type === 'text';

@@ -180,11 +180,11 @@ export default function useAssessment(assessmentId: string) {
             prev.map((s, i) =>
                 i === currentSectionIndex
                     ? {
-                        ...s,
-                        testCaseResults: s.testCaseResults.map(() => ({
-                            status: 'loading' as const,
-                        })),
-                    }
+                          ...s,
+                          testCaseResults: s.testCaseResults.map(() => ({
+                              status: 'loading' as const,
+                          })),
+                      }
                     : s
             )
         );
