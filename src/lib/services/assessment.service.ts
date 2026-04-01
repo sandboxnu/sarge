@@ -8,6 +8,8 @@ import type {
 import { AssessmentStatus } from '@/generated/prisma';
 import { BadRequestException, NotFoundException } from '@/lib/utils/errors.utils';
 import { type AssessmentWithRelations } from '@/lib/types/assessment.types';
+import type { CandidateAssessment } from '@/lib/types/candidate-assessment.types';
+import type { TestCaseDTO } from '@/lib/schemas/task-template.schema';
 
 async function getAssessmentWithRelations(
     id: string,
@@ -227,8 +229,93 @@ async function updateAssessment(
     });
 }
 
+async function getAssessmentForCandidate(
+    assessmentId: string,
+    uniqueLink: string
+): Promise<CandidateAssessment> {
+    const assessment = await prisma.assessment.findFirst({
+        where: {
+            id: assessmentId,
+            uniqueLink,
+        },
+        select: {
+            id: true,
+            deadline: true,
+            assignedAt: true,
+            submittedAt: true,
+            application: {
+                select: {
+                    assessmentStatus: true,
+                    candidate: {
+                        select: { name: true },
+                    },
+                },
+            },
+            assessmentTemplate: {
+                select: {
+                    title: true,
+                    tasks: {
+                        select: {
+                            taskTemplateId: true,
+                            order: true,
+                            taskTemplate: {
+                                select: {
+                                    id: true,
+                                    title: true,
+                                    description: true,
+                                    publicTestCases: true,
+                                    estimatedTime: true,
+                                    timeout: true,
+                                    languages: {
+                                        select: {
+                                            id: true,
+                                            language: true,
+                                            stub: true,
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                        orderBy: { order: 'asc' },
+                    },
+                },
+            },
+        },
+    });
+
+    if (!assessment) {
+        throw new NotFoundException(`Assessment with id ${assessmentId} not found`);
+    }
+
+    return {
+        id: assessment.id,
+        deadline: assessment.deadline,
+        assignedAt: assessment.assignedAt,
+        submittedAt: assessment.submittedAt,
+        assessmentStatus: assessment.application.assessmentStatus,
+        candidateName: assessment.application.candidate.name,
+        assessmentTemplate: {
+            title: assessment.assessmentTemplate.title,
+            tasks: assessment.assessmentTemplate.tasks.map((task) => ({
+                taskTemplateId: task.taskTemplateId,
+                order: task.order,
+                taskTemplate: {
+                    id: task.taskTemplate.id,
+                    title: task.taskTemplate.title,
+                    description: task.taskTemplate.description,
+                    publicTestCases: task.taskTemplate.publicTestCases as TestCaseDTO[],
+                    estimatedTime: task.taskTemplate.estimatedTime,
+                    timeout: task.taskTemplate.timeout,
+                    languages: task.taskTemplate.languages,
+                },
+            })),
+        },
+    };
+}
+
 const AssessmentService = {
     getAssessmentWithRelations,
+    getAssessmentForCandidate,
     createAssessment,
     assignTemplateToPosition,
     deleteAssessment,
