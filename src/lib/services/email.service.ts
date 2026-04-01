@@ -1,7 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import sesConnector from '@/lib/connectors/ses.connector';
-import { generateAssessmentInvitationHTML } from '@/lib/templates/assessment-invitation-email';
-import { email } from 'zod';
+import { generateAssessmentInvitationHTML } from '@/lib/templates/invitation';
 
 interface SendAssessmentInvitationResult {
     success: boolean;
