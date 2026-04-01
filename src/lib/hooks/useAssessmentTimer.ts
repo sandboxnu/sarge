@@ -20,15 +20,16 @@ export function useAssessmentTimer(totalTimeSeconds: number, started: boolean) {
     useEffect(() => {
         if (!started) return;
 
-        intervalRef.current = setInterval(() => {
+        const id = setInterval(() => {
             setRemainingSeconds((prev) => {
                 if (prev <= 1) {
-                    clearInterval(intervalRef.current!);
+                    clearInterval(id);
                     return 0;
                 }
                 return prev - 1;
             });
         }, 1000);
+        intervalRef.current = id;
 
         return () => {
             if (intervalRef.current) clearInterval(intervalRef.current);

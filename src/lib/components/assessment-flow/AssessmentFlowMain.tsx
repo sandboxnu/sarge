@@ -42,7 +42,7 @@ export default function AssessmentFlowMain({
         <ResizablePanelGroup direction="horizontal" className="h-full">
             <ResizablePanel defaultSize={35} minSize={20}>
                 <div
-                    key={currentSection.taskTemplateId + '-desc'}
+                    key={`${currentSection.taskTemplateId}-desc`}
                     className={
                         isTransitioning
                             ? 'flex h-full flex-col opacity-0 transition-opacity duration-150'
@@ -66,7 +66,7 @@ export default function AssessmentFlowMain({
 
             <ResizablePanel defaultSize={65} minSize={40}>
                 <div
-                    key={currentSection.taskTemplateId + '-code'}
+                    key={`${currentSection.taskTemplateId}-code`}
                     className={
                         isTransitioning
                             ? 'flex h-full flex-col overflow-hidden opacity-0 transition-opacity duration-150'

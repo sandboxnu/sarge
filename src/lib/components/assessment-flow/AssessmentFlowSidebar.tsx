@@ -10,7 +10,6 @@ type AssessmentFlowSidebarProps = {
 
 export default function AssessmentFlowSidebar({
     sections,
-    currentSectionIndex,
     formattedTime,
 }: AssessmentFlowSidebarProps) {
     return (

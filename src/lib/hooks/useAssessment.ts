@@ -96,7 +96,7 @@ export default function useAssessment(assessmentId: string) {
                 await submitCandidateAssessment(assessmentId);
                 setOutroReason(reason);
                 setPhase('outro');
-            } catch (err) {
+            } catch (_err) {
                 toast.error('Failed to submit assessment. Please try again.');
                 setIsSubmitting(false);
             }

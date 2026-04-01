@@ -26,10 +26,10 @@ export default function AssessmentPage({ params }: { params: Promise<{ assessmen
             </div>
         );
 
-    if (assessment.phase === 'intro') {
+    if (assessment.phase === 'intro' && assessment.assessment) {
         return (
             <AssessmentIntro
-                assessment={assessment.assessment!}
+                assessment={assessment.assessment}
                 totalTimeSeconds={assessment.totalTimeSeconds}
                 onStart={assessment.startAssessment}
             />
