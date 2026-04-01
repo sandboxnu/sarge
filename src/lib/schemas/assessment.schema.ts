@@ -14,7 +14,7 @@ export const assessmentSchema = z.object({
     submittedAt: z.date().nullable(),
 });
 
-export const createAssessmentSchema = assessmentSchema.omit({ id: true });
+export const createAssessmentSchema = assessmentSchema.omit({ id: true, uniqueLink: true });
 
 export const updateAssessmentSchema = assessmentSchema.partial().extend({
     id: z.string(),

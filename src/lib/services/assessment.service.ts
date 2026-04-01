@@ -70,9 +70,10 @@ async function createAssessment(
             `Assessment Template with id ${assessment.assessmentTemplateId} not found`
         );
     }
-
+    // the unique link shouldn't be the full link (bc the env of the link matters) so we just use id
+    const id = crypto.randomUUID();
     const newAssessment = await prisma.assessment.create({
-        data: assessment,
+        data: { ...assessment, id, uniqueLink: id },
     });
 
     return newAssessment;
@@ -229,14 +230,10 @@ async function updateAssessment(
     });
 }
 
-async function getAssessmentForCandidate(
-    assessmentId: string,
-    uniqueLink: string
-): Promise<CandidateAssessment> {
+async function getAssessmentForCandidate(assessmentId: string): Promise<CandidateAssessment> {
     const assessment = await prisma.assessment.findFirst({
         where: {
             id: assessmentId,
-            uniqueLink,
         },
         select: {
             id: true,
@@ -313,12 +310,9 @@ async function getAssessmentForCandidate(
     };
 }
 
-async function submitAssessmentForCandidate(
-    assessmentId: string,
-    uniqueLink: string
-): Promise<void> {
+async function submitAssessmentForCandidate(assessmentId: string): Promise<void> {
     const assessment = await prisma.assessment.findFirst({
-        where: { id: assessmentId, uniqueLink },
+        where: { id: assessmentId },
         select: { id: true, submittedAt: true, application: { select: { id: true } } },
     });
 
