@@ -48,7 +48,7 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
     } = useTaskTemplateEditPage(id);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { runEditPageTests, error, loading, output } = useTestRunner(
-        'print(input())',
+        getEditorContent(),
         languages ? languages[selectedLanguage].language : 'python' // UHHHH
     );
 
