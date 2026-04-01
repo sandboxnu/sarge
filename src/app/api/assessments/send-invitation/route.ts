@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { handleError } from '@/lib/utils/errors.utils';
 import { getSession } from '@/lib/utils/auth.utils';
 import { assertRecruiterOrAbove } from '@/lib/utils/permissions.utils';
-import { sendAssessmentInvitationEmail } from '@/lib/services/assessment-invitation-email.service';
+import { emailService } from '@/lib/services/email.service';
 
 const sendAssessmentInvitationSchema = z.object({
     candidateId: z.string().cuid(),
@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
         const body = await request.json();
         const { candidateId } = sendAssessmentInvitationSchema.parse(body);
 
-        const result = await sendAssessmentInvitationEmail(
+        const result = await emailService.sendAssessmentInvitationEmail(
             candidateId,
             session.activeOrganizationId
         );
