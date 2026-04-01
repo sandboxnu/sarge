@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 function formatTime(seconds: number): string {
     const mins = Math.floor(seconds / 60);
@@ -10,7 +10,6 @@ function formatTime(seconds: number): string {
 
 export function useAssessmentTimer(totalTimeSeconds: number, started: boolean) {
     const [remainingSeconds, setRemainingSeconds] = useState(totalTimeSeconds);
-    const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
     // totalTimeSeconds is 0 on first render (sections not loaded); sync when tasks arrive.
     useEffect(() => {
@@ -29,11 +28,8 @@ export function useAssessmentTimer(totalTimeSeconds: number, started: boolean) {
                 return prev - 1;
             });
         }, 1000);
-        intervalRef.current = id;
 
-        return () => {
-            if (intervalRef.current) clearInterval(intervalRef.current);
-        };
+        return () => clearInterval(id);
     }, [started]);
 
     return {
