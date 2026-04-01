@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { handleError } from '@/lib/utils/errors.utils';
 import { getSession } from '@/lib/utils/auth.utils';
 import { assertRecruiterOrAbove } from '@/lib/utils/permissions.utils';
-import { emailService } from '@/lib/services/email.service';
+import emailService from '@/lib/services/email.service';
 
 const sendAssessmentInvitationSchema = z.object({
     candidateId: z.string().cuid(),
