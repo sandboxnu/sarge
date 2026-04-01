@@ -12,6 +12,11 @@ export function useAssessmentTimer(totalTimeSeconds: number, started: boolean) {
     const [remainingSeconds, setRemainingSeconds] = useState(totalTimeSeconds);
     const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+    // totalTimeSeconds is 0 on first render (sections not loaded); sync when tasks arrive.
+    useEffect(() => {
+        setRemainingSeconds(totalTimeSeconds);
+    }, [totalTimeSeconds]);
+
     useEffect(() => {
         if (!started) return;
 
