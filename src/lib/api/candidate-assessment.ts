@@ -1,13 +1,7 @@
 import type { CandidateAssessment } from '@/lib/types/candidate-assessment.types';
 
-/**
- * GET /api/oa/[assessmentId]?token=<uniqueLink>
- */
-export async function getCandidateAssessment(
-    assessmentId: string,
-    token: string
-): Promise<CandidateAssessment> {
-    const res = await fetch(`/api/oa/${assessmentId}?token=${encodeURIComponent(token)}`);
+export async function getCandidateAssessment(assessmentId: string): Promise<CandidateAssessment> {
+    const res = await fetch(`/api/oa/${assessmentId}`);
     const json = await res.json();
 
     if (!res.ok) {
@@ -17,16 +11,8 @@ export async function getCandidateAssessment(
     return json.data;
 }
 
-/**
- * PUT /api/oa/[assessmentId]/submit?token=<uniqueLink>
- */
-export async function submitCandidateAssessment(
-    assessmentId: string,
-    token: string
-): Promise<void> {
-    const res = await fetch(`/api/oa/${assessmentId}/submit?token=${encodeURIComponent(token)}`, {
-        method: 'PUT',
-    });
+export async function submitCandidateAssessment(assessmentId: string): Promise<void> {
+    const res = await fetch(`/api/oa/${assessmentId}/submit`, { method: 'PUT' });
     const json = await res.json();
 
     if (!res.ok) {
