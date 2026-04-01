@@ -313,9 +313,39 @@ async function getAssessmentForCandidate(
     };
 }
 
+async function submitAssessmentForCandidate(
+    assessmentId: string,
+    uniqueLink: string
+): Promise<void> {
+    const assessment = await prisma.assessment.findFirst({
+        where: { id: assessmentId, uniqueLink },
+        select: { id: true, submittedAt: true, application: { select: { id: true } } },
+    });
+
+    if (!assessment) {
+        throw new NotFoundException(`Assessment with id ${assessmentId} not found`);
+    }
+
+    if (assessment.submittedAt) {
+        throw new BadRequestException('Assessment has already been submitted');
+    }
+
+    await prisma.$transaction([
+        prisma.assessment.update({
+            where: { id: assessmentId },
+            data: { submittedAt: new Date() },
+        }),
+        prisma.application.update({
+            where: { id: assessment.application.id },
+            data: { assessmentStatus: 'SUBMITTED' },
+        }),
+    ]);
+}
+
 const AssessmentService = {
     getAssessmentWithRelations,
     getAssessmentForCandidate,
+    submitAssessmentForCandidate,
     createAssessment,
     assignTemplateToPosition,
     deleteAssessment,
