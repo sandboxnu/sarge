@@ -22,10 +22,9 @@ export default function QuestionIndicator({
             className={cn(
                 'flex size-10 shrink-0 items-center justify-center rounded-xl transition-[box-shadow,transform] duration-200',
                 isCompleted && 'bg-sarge-primary-100 text-sarge-primary-500 shadow-none',
-                isCurrent &&
-                'bg-sarge-primary-500 text-primary-foreground shadow-md',
+                isCurrent && 'bg-sarge-primary-500 text-primary-foreground shadow-md',
                 isLocked &&
-                'border-sarge-gray-100 bg-sarge-gray-50 text-sarge-gray-300 border shadow-none'
+                    'border-sarge-gray-100 bg-sarge-gray-50 text-sarge-gray-300 border shadow-none'
             )}
         >
             {isCompleted && <CircleCheck className="size-5 shrink-0" aria-hidden />}

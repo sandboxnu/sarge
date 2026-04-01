@@ -31,14 +31,18 @@ export default function OATestCasesPanel({
     const dragRef = useRef<{ startY: number; startHeight: number } | null>(null);
 
     const passCount = results.filter((r) => r.status === 'passed').length;
-    const failCount = results.filter((r) => r.status === 'failed' || r.status === 'runtime_error').length;
-    const hasResults = results.some((r) => r.status === 'passed' || r.status === 'failed' || r.status === 'runtime_error');
+    const failCount = results.filter(
+        (r) => r.status === 'failed' || r.status === 'runtime_error'
+    ).length;
+    const hasResults = results.some(
+        (r) => r.status === 'passed' || r.status === 'failed' || r.status === 'runtime_error'
+    );
 
     function toggleCard(i: number) {
         setExpandedIndex((prev) => (prev === i ? null : i));
     }
 
-    // this is the dragging handle for when the panel is open and we want to resize it 
+    // this is the dragging handle for when the panel is open and we want to resize it
     function handleDragStart(e: React.MouseEvent<HTMLDivElement>) {
         e.preventDefault();
         dragRef.current = { startY: e.clientY, startHeight: panelHeight };

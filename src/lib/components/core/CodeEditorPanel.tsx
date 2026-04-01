@@ -15,7 +15,6 @@ import { applySargeDarkTheme } from '@/lib/utils/monaco.utils';
 import { getLanguageLabel } from '@/lib/utils/language.utils';
 import type { TaskLanguageOption } from '@/lib/types/candidate-assessment.types';
 
-
 type CodeEditorPanelProps = {
     language: string;
     availableLanguages: TaskLanguageOption[];

@@ -179,7 +179,12 @@ export default function useAssessment(assessmentId: string) {
         setSections((prev) =>
             prev.map((s, i) =>
                 i === currentSectionIndex
-                    ? { ...s, testCaseResults: s.testCaseResults.map(() => ({ status: 'loading' as const })) }
+                    ? {
+                          ...s,
+                          testCaseResults: s.testCaseResults.map(() => ({
+                              status: 'loading' as const,
+                          })),
+                      }
                     : s
             )
         );
@@ -191,10 +196,16 @@ export default function useAssessment(assessmentId: string) {
                     return {
                         ...s,
                         testCaseResults: s.testCaseResults.map((_, idx) => {
-                            const status = MOCK_STATUSES[Math.floor(Math.random() * MOCK_STATUSES.length)];
+                            const status =
+                                MOCK_STATUSES[Math.floor(Math.random() * MOCK_STATUSES.length)];
                             const tc = section.taskTemplate.publicTestCases[idx];
-                            if (status === 'passed') return { status, actualOutput: tc?.output ?? '' };
-                            if (status === 'runtime_error') return { status, actualOutput: 'Timeout Error: Execution Time Exceeded' };
+                            if (status === 'passed')
+                                return { status, actualOutput: tc?.output ?? '' };
+                            if (status === 'runtime_error')
+                                return {
+                                    status,
+                                    actualOutput: 'Timeout Error: Execution Time Exceeded',
+                                };
                             return { status, actualOutput: 'wrong_answer' };
                         }),
                     };

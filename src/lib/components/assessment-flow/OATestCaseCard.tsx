@@ -27,7 +27,7 @@ export default function OATestCaseCard({
     const isError = isFailed || isRuntimeError;
 
     return (
-        <div className="border-sarge-gray-200 bg-background shadow-xs w-full rounded-lg border p-5">
+        <div className="border-sarge-gray-200 bg-background w-full rounded-lg border p-5 shadow-xs">
             <button
                 type="button"
                 onClick={onToggle}

@@ -33,7 +33,11 @@ const GUIDELINES = [
     'Your work is automatically submitted when time runs out.',
 ];
 
-export default function AssessmentIntro({ assessment, totalTimeSeconds, onStart }: AssessmentIntroProps) {
+export default function AssessmentIntro({
+    assessment,
+    totalTimeSeconds,
+    onStart,
+}: AssessmentIntroProps) {
     const questionCount = assessment.assessmentTemplate.tasks.length;
 
     return (

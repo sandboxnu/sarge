@@ -54,10 +54,11 @@ export default function CodeEditorToolbar({
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild disabled={disabled}>
                                 <div
-                                    className={`bg-sarge-primary-500 tracking-design text-primary-foreground flex items-center gap-2.5 rounded-sm px-2.5 py-0.5 text-xs font-medium ${disabled
-                                        ? 'cursor-not-allowed opacity-50'
-                                        : 'cursor-pointer'
-                                        }`}
+                                    className={`bg-sarge-primary-500 tracking-design text-primary-foreground flex items-center gap-2.5 rounded-sm px-2.5 py-0.5 text-xs font-medium ${
+                                        disabled
+                                            ? 'cursor-not-allowed opacity-50'
+                                            : 'cursor-pointer'
+                                    }`}
                                 >
                                     {currentLanguage
                                         ? getLanguageLabel(currentLanguage.language)
