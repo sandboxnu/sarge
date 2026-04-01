@@ -64,3 +64,31 @@ export async function updateAssessmentStatus(
 
     return json.data;
 }
+
+/**
+ * POST /api/assessments/send-invitation
+ * Sends an assessment invitation email to a candidate
+ */
+export async function sendAssessmentInvitation(candidateId: string): Promise<{
+    success: boolean;
+    message: string;
+    candidateName: string;
+    positionTitle: string;
+    assessmentId: string;
+}> {
+    const res = await fetch('/api/assessments/send-invitation', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ candidateId }),
+    });
+
+    const json = await res.json();
+
+    if (!res.ok) {
+        throw new Error(json.error ?? json.message ?? 'Failed to send assessment invitation');
+    }
+
+    return json.data;
+}
