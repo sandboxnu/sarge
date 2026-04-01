@@ -9,6 +9,7 @@ import TestCaseEditor from '@/lib/components/core/TestCaseEditor';
 import { Button } from '@/lib/components/ui/Button';
 import TaskEditorSidebar from '@/lib/components/core/TaskEditorSidebar';
 import Breadcrumbs from '@/lib/components/core/Breadcrumbs';
+import useTestRunner from '@/lib/hooks/useTestRunner';
 
 export default function TaskTemplateEditPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
@@ -44,6 +45,8 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
         handleLanguageSelectionChange,
         generateStubsForLanguages,
     } = useTaskTemplateEditPage(id);
+    const { runAssessmentTests, runEditPageTests, setCode, setLanguage, error, loading, output } =
+        useTestRunner(id);
 
     if (isLoading) {
         return (
@@ -73,6 +76,7 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
                 >
                     {isSaving ? 'Saving...' : 'Save Changes'}
                 </Button>
+                <Button onClick={runEditPageTests}> Run Code </Button>
             </div>
 
             <div className="flex min-h-0 flex-1 overflow-hidden">

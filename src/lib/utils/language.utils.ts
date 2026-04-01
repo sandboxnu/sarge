@@ -205,3 +205,19 @@ export function generateCodeStub(
             return `// Code stub for ${language} is not available.`;
     }
 }
+
+export function mapLanguageToJudge(language: string): number {
+    try {
+        switch (language) {
+            case 'python':
+                return 100;
+            case 'javascript':
+                return 102;
+            default:
+                return -1;
+        }
+    } catch {
+        // figure this out later
+        throw new Error('language not foudn');
+    }
+}

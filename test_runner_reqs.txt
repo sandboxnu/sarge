@@ -1,0 +1,31 @@
+
+Objects:
+    - TaskTemplate: Stores test cases
+        - TaskTemplateLanguage: stores solution stub
+    - Task: Stores candidate code
+
+Requirements for CRM
+    Object mutation
+        - Can mutate all parts of Task and Task Template object
+    Code running
+        - Uses solution from TaskTemplateLanguage as code text to run
+
+Requirements for OA:
+    Object mutation
+        - Update Task object to change code
+        - Can't update object to change assessmentId, taskTemplateId
+    Code running:
+        - uses candidateCode from task template language as code text to run
+
+Need to store current language in both
+
+Would it make sense to have two separate endpoints?
+
+One requires a POST to send user code
+
+One requires a GET because there is no user code, unless we are changing solution
+
+Both could be POST if we always send solution as well
+
+refactor use task hook 
+
