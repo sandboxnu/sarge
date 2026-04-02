@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { type PositionWithCounts } from '@/lib/types/position.types';
 import { useSession } from '@/lib/auth/auth-client';
-import { getPositionsByOrgId } from '@/lib/api/positions';
+import { getPositions } from '@/lib/api/positions';
 
 function usePositionContent() {
     const { data: session } = useSession();
@@ -24,7 +24,7 @@ function usePositionContent() {
 
                 setLoading(true);
 
-                const positions = await getPositionsByOrgId(activeOrganizationId);
+                const positions = await getPositions();
 
                 const activePositions = positions.filter((pos) => !pos.archived);
                 const archivedPositions = positions.filter((pos) => pos.archived);

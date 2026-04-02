@@ -31,6 +31,10 @@ export default function useCreatePositionModal(
                 ...newPosition,
                 numCandidates: 0,
                 numAssigned: 0,
+                assessmentTemplateId: null,
+                assessmentTemplateTitle: null,
+                assessmentSentCount: 0,
+                assessmentSubmittedCount: 0,
             };
 
             setActive((prev) => [...prev, positionWithCounts]);

@@ -20,6 +20,6 @@ export async function GET(request: NextRequest) {
         const positions = await PositionService.getPositionsByTitle(title, orgId);
         return Response.json({ data: positions }, { status: 200 });
     } catch (err) {
-        handleError(err);
+        return handleError(err);
     }
 }

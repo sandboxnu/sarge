@@ -8,10 +8,8 @@ import { getSubmissionVariant } from '@/lib/utils/status.utils';
 type PositionCardProps = {
     title: string;
     candidateCount: number;
-    assessmentName?: string;
-    assignedCount?: number;
+    sentCount?: number;
     submittedCount?: number;
-    totalAssigned?: number;
     className?: string;
     onPositionClick?: () => void;
     onAssessmentClick?: () => void;
@@ -20,14 +18,13 @@ type PositionCardProps = {
 export default function PositionCard({
     title,
     candidateCount,
-    assignedCount = 0,
+    sentCount = 0,
     submittedCount = 0,
-    totalAssigned = 0,
     className,
     onPositionClick,
     onAssessmentClick,
 }: PositionCardProps) {
-    const submissionVariant = getSubmissionVariant(submittedCount, totalAssigned);
+    const submissionVariant = getSubmissionVariant(submittedCount, sentCount);
 
     return (
         <div
@@ -84,9 +81,9 @@ export default function PositionCard({
                     onAssessmentClick?.();
                 }}
             >
-                <Chip variant="neutral">{assignedCount} sent</Chip>
+                <Chip variant="neutral">{sentCount} assigned</Chip>
                 <Chip variant={submissionVariant}>
-                    {submittedCount}/{totalAssigned} submitted
+                    {submittedCount}/{sentCount} submitted
                 </Chip>
             </PositionAssessmentCard>
         </div>
