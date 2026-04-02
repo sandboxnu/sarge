@@ -81,7 +81,7 @@ export default function PositionCard({
                     onAssessmentClick?.();
                 }}
             >
-                <Chip variant="neutral">{sentCount} sent</Chip>
+                <Chip variant="neutral">{sentCount} assigned</Chip>
                 <Chip variant={submissionVariant}>
                     {submittedCount}/{sentCount} submitted
                 </Chip>

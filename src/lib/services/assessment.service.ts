@@ -97,7 +97,7 @@ async function createAssessmentForApplicationTx(
 
     await tx.application.update({
         where: { id: params.applicationId },
-        data: { assessmentStatus: AssessmentStatus.NOT_STARTED },
+        data: { assessmentStatus: AssessmentStatus.NOT_SENT },
     });
 
     return assessment;
