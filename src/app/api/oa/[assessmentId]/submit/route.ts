@@ -9,7 +9,7 @@ export async function PUT(
     try {
         const { assessmentId } = await params;
         await AssessmentService.submitAssessmentForCandidate(assessmentId);
-        return Response.json({ data: null }, { status: 200 });
+        return Response.json({ data: null }, { status: 201 });
     } catch (err) {
         return handleError(err);
     }

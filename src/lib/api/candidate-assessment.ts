@@ -18,4 +18,6 @@ export async function submitCandidateAssessment(assessmentId: string): Promise<v
     if (!res.ok) {
         throw new Error(json.message);
     }
+
+    return json.data;
 }
