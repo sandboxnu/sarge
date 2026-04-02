@@ -7,7 +7,7 @@ import type {
 } from '@/lib/schemas/assessment.schema';
 import { AssessmentStatus } from '@/generated/prisma';
 import { BadRequestException, NotFoundException } from '@/lib/utils/errors.utils';
-import { type AssessmentWithRelations } from '@/lib/types/assessment.types';
+import { type AssessmentWithRelations } from '@/lib/types/assessment-template.types';
 import type { CandidateAssessment } from '@/lib/types/candidate-assessment.types';
 import type { BlockNoteContent } from '@/lib/types/task-template.types';
 import type { TestCaseDTO } from '@/lib/schemas/task-template.schema';

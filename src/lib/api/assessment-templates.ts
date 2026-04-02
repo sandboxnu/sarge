@@ -4,7 +4,7 @@ import {
     type CreateAssessmentTemplateDTO,
 } from '@/lib/schemas/assessment-template.schema';
 import type { BlockNoteContent } from '@/lib/types/task-template.types';
-import type { AssessmentTemplateTaskOrder } from '@/lib/types/assessment.types';
+import type { AssessmentTemplateTaskOrder } from '@/lib/types/assessment-template.types';
 
 /**
  * GET /api/assessment-templates/search/?title=...

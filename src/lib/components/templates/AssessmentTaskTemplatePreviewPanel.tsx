@@ -4,7 +4,7 @@ import Image from 'next/image';
 import TaskDescriptionPreview from '@/lib/components/core/TaskDescriptionPreview';
 import CodeEditorPreview from '@/lib/components/core/CodeEditorPreview';
 import TestCasePanel from '@/lib/components/core/TestCasePanel';
-import type { AssessmentSection } from '@/lib/types/assessment-section.types';
+import type { AssessmentSection } from '@/lib/types/assessment-template.types';
 import GreyWinstonLogoMark from '@/../public/GreyWinstonLogoMark.svg';
 
 interface AssessmentTaskTemplatePreviewPanelProps {

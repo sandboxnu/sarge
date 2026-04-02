@@ -12,7 +12,7 @@ import {
 } from '@/lib/components/ui/sortable';
 import AssessmentTemplateItem from '@/lib/components/templates/AssessmentTemplateItem';
 import BlockNoteEditor from '@/lib/components/core/BlockNoteEditor';
-import type { AssessmentSection } from '@/lib/types/assessment-section.types';
+import type { AssessmentSection } from '@/lib/types/assessment-template.types';
 import type { BlockNoteContent } from '@/lib/types/task-template.types';
 
 interface AssessmentTemplateEditorSidebarProps {

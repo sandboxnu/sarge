@@ -1,7 +1,7 @@
 import { type Application } from '@/generated/prisma';
 import { type AssessmentStatus } from '@/generated/prisma';
 import { type Assessment, type UpdateAssessmentDTO } from '@/lib/schemas/assessment.schema';
-import { type AssessmentWithRelations } from '@/lib/types/assessment.types';
+import { type AssessmentWithRelations } from '@/lib/types/assessment-template.types';
 
 /**
  * GET /api/assessments/:assessmentId

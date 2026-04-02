@@ -3,7 +3,7 @@
 import { CodeXml, GripVertical, Type } from 'lucide-react';
 import { cn } from '@/lib/utils/cn.utils';
 import { SortableItemHandle, useSortableItemContext } from '@/lib/components/ui/sortable';
-import type { AssessmentSection } from '@/lib/types/assessment-section.types';
+import type { AssessmentSection } from '@/lib/types/assessment-template.types';
 
 interface AssessmentTemplateItemProps {
     section: AssessmentSection;

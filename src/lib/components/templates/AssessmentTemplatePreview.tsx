@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import type { AssessmentTemplateListItemDTO } from '@/lib/schemas/assessment-template.schema';
-import { type AssessmentTemplateTaskOrder } from '@/lib/types/assessment.types';
+import { type AssessmentTemplateTaskOrder } from '@/lib/types/assessment-template.types';
 import { getTaskTemplate } from '@/lib/api/task-templates';
 import { Button } from '@/lib/components/ui/Button';
 import {

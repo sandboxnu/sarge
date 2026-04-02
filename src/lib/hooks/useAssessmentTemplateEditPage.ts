@@ -5,7 +5,7 @@ import {
     updateAssessmentTemplateTasks,
 } from '@/lib/api/assessment-templates';
 import { assignAssessmentTemplateToPosition, getPositions } from '@/lib/api/positions';
-import type { AssessmentSection } from '@/lib/types/assessment-section.types';
+import type { AssessmentSection } from '@/lib/types/assessment-template.types';
 import type { BlockNoteContent } from '@/lib/types/task-template.types';
 import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
 import type { PositionWithCounts } from '@/lib/types/position.types';
