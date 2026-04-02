@@ -28,7 +28,7 @@ export async function runAssessmentSubmission(
     taskTemplateId: string,
     submission: SubmissionSchemaDTO
 ): Promise<JudgeResultRequestBody> {
-    const result = await fetch(`/api/${taskTemplateId}/runner`, {
+    const result = await fetch(`/api/runner/${taskTemplateId}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

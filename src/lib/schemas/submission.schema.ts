@@ -5,11 +5,11 @@ import { z } from 'zod';
 export const SubmissionSchema = z.object({
     code: z.string(),
     language: z.enum(ProgrammingLanguage),
-    additonalTests: z.array(testCaseSchema).optional(), // May be useful for letting users create their own test cases in the future
+    additionalTests: z.array(testCaseSchema).optional(), // May be useful for letting users create their own test cases in the future
 });
 
 export const TestSubmissionSchema = SubmissionSchema.omit({
-    additonalTests: true,
+    additionalTests: true,
 }).extend({
     tests: z.array(testCaseSchema),
 });

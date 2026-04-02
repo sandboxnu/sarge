@@ -73,7 +73,7 @@ class Judge0Connector {
         }
 
         if (!('submissions' in jsonResponse)) {
-            throw new InternalServerException(`Submissions Not Returned`); // REVIEWER LOOK AT THIS IN CASE I FORGOR
+            throw new InternalServerException(`Submissions Not Returned`);
         }
         return jsonResponse['submissions'];
     }

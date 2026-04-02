@@ -213,6 +213,14 @@ export function mapLanguageToJudge(language: string): number {
                 return 100;
             case 'javascript':
                 return 102;
+            case 'ruby':
+                return 72;
+            case 'typescript':
+                return 101;
+            case 'c':
+                return 103;
+            case 'cpp':
+                return 105;
             default:
                 return -1;
         }

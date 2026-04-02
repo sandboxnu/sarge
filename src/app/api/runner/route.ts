@@ -22,14 +22,10 @@ export async function POST(request: NextRequest) {
 
         const result = await judge0Connector.executeSubmissions(formatted);
 
-        return Response.json(
-            {
-                data: result,
-            },
-            {
-                status: 200,
-            }
-        );
+        return Response.json({
+            data: result,
+            status: 200,
+        });
     } catch (err) {
         return handleError(err);
     }
