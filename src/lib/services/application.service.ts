@@ -1,9 +1,9 @@
+import crypto from 'node:crypto';
 import { prisma } from '@/lib/prisma';
 import { NotFoundException, ForbiddenException } from '@/lib/utils/errors.utils';
 import { type AddApplicationWithCandidateDataDTO } from '@/lib/schemas/application.schema';
 import type { BatchAddResult, ApplicationDisplayInfo } from '@/lib/types/position.types';
-import type { Application, AssessmentStatus } from '@/generated/prisma';
-import AssessmentService from '@/lib/services/assessment.service';
+import { AssessmentStatus, type Application } from '@/generated/prisma';
 
 async function validatePositionAccess(positionId: string, orgId: string) {
     const position = await prisma.position.findUnique({
@@ -61,9 +61,17 @@ async function addApplicationToPosition(
         });
 
         if (position.assessmentId) {
-            await AssessmentService.createAssessmentForApplicationTx(tx, {
-                applicationId: createdApplication.id,
-                assessmentTemplateId: position.assessmentId,
+            await tx.assessment.create({
+                data: {
+                    applicationId: createdApplication.id,
+                    assessmentTemplateId: position.assessmentId,
+                    uniqueLink: crypto.randomUUID(),
+                },
+            });
+
+            await tx.application.update({
+                where: { id: createdApplication.id },
+                data: { assessmentStatus: AssessmentStatus.NOT_SENT },
             });
         }
 
@@ -172,9 +180,17 @@ async function batchAddApplicationsToPosition(
 
             await prisma.$transaction(async (tx) => {
                 for (const application of newApplications) {
-                    await AssessmentService.createAssessmentForApplicationTx(tx, {
-                        applicationId: application.id,
-                        assessmentTemplateId,
+                    await tx.assessment.create({
+                        data: {
+                            applicationId: application.id,
+                            assessmentTemplateId,
+                            uniqueLink: crypto.randomUUID(),
+                        },
+                    });
+
+                    await tx.application.update({
+                        where: { id: application.id },
+                        data: { assessmentStatus: AssessmentStatus.NOT_SENT },
                     });
                 }
             });

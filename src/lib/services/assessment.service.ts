@@ -5,7 +5,7 @@ import type {
     CreateAssessmentDTO,
     Assessment,
 } from '@/lib/schemas/assessment.schema';
-import { AssessmentStatus, type Prisma } from '@/generated/prisma';
+import { AssessmentStatus } from '@/generated/prisma';
 import { BadRequestException, NotFoundException } from '@/lib/utils/errors.utils';
 import { type AssessmentWithRelations } from '@/lib/types/assessment.types';
 
@@ -78,29 +78,6 @@ async function createAssessment(
 
 function buildAssessmentLinkToken() {
     return crypto.randomUUID();
-}
-
-async function createAssessmentForApplicationTx(
-    tx: Prisma.TransactionClient,
-    params: {
-        applicationId: string;
-        assessmentTemplateId: string;
-    }
-) {
-    const assessment = await tx.assessment.create({
-        data: {
-            applicationId: params.applicationId,
-            assessmentTemplateId: params.assessmentTemplateId,
-            uniqueLink: buildAssessmentLinkToken(),
-        },
-    });
-
-    await tx.application.update({
-        where: { id: params.applicationId },
-        data: { assessmentStatus: AssessmentStatus.NOT_SENT },
-    });
-
-    return assessment;
 }
 
 async function assignTemplateToPosition(params: {
@@ -176,9 +153,17 @@ async function assignTemplateToPosition(params: {
         }
 
         for (const application of applicationsMissingAssessment) {
-            await createAssessmentForApplicationTx(tx, {
-                applicationId: application.id,
-                assessmentTemplateId,
+            await tx.assessment.create({
+                data: {
+                    applicationId: application.id,
+                    assessmentTemplateId,
+                    uniqueLink: buildAssessmentLinkToken(),
+                },
+            });
+
+            await tx.application.update({
+                where: { id: application.id },
+                data: { assessmentStatus: AssessmentStatus.NOT_SENT },
             });
         }
     });
@@ -245,7 +230,6 @@ async function updateAssessment(
 const AssessmentService = {
     getAssessmentWithRelations,
     createAssessment,
-    createAssessmentForApplicationTx,
     assignTemplateToPosition,
     deleteAssessment,
     updateAssessment,
