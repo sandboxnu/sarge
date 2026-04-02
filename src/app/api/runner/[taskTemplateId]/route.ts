@@ -14,13 +14,12 @@ export async function POST(
 ) {
     try {
         const body = await request.json();
-        const session = await getSession();
         const { taskTemplateId } = await params;
         const parsed = SubmissionSchema.parse(body);
         const languageId = mapLanguageToJudge(parsed.language);
         const taskTemplate = await TaskTemplateService.getTaskTemplate(
             taskTemplateId,
-            session.activeOrganizationId
+            'REPLACE THIS LATER LAITH WITH COOKIE'
         );
         const tests = [...taskTemplate.privateTestCases, ...taskTemplate.publicTestCases];
         const formatted: JudgeSubmissionRequestBody[] = tests.map((test) => ({
