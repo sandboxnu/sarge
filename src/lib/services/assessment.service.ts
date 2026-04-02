@@ -9,6 +9,7 @@ import { AssessmentStatus } from '@/generated/prisma';
 import { BadRequestException, NotFoundException } from '@/lib/utils/errors.utils';
 import { type AssessmentWithRelations } from '@/lib/types/assessment.types';
 import type { CandidateAssessment } from '@/lib/types/candidate-assessment.types';
+import type { BlockNoteContent } from '@/lib/types/task-template.types';
 import type { TestCaseDTO } from '@/lib/schemas/task-template.schema';
 
 async function getAssessmentWithRelations(
@@ -299,7 +300,7 @@ async function getAssessmentForCandidate(assessmentId: string): Promise<Candidat
                 taskTemplate: {
                     id: task.taskTemplate.id,
                     title: task.taskTemplate.title,
-                    description: task.taskTemplate.description,
+                    description: task.taskTemplate.description as BlockNoteContent,
                     publicTestCases: task.taskTemplate.publicTestCases as TestCaseDTO[],
                     estimatedTime: task.taskTemplate.estimatedTime,
                     timeout: task.taskTemplate.timeout,

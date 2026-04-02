@@ -2,16 +2,13 @@ import { AlarmClock } from 'lucide-react';
 import AssessmentSidebarQuestion from '@/lib/components/assessment-flow/AssessmentSidebarQuestion';
 import type { SectionState } from '@/lib/hooks/useAssessment';
 
-type AssessmentFlowSidebarProps = {
+type AssessmentSidebarProps = {
     sections: SectionState[];
     currentSectionIndex: number;
     formattedTime: string;
 };
 
-export default function AssessmentFlowSidebar({
-    sections,
-    formattedTime,
-}: AssessmentFlowSidebarProps) {
+export default function AssessmentSidebar({ sections, formattedTime }: AssessmentSidebarProps) {
     return (
         <aside className="border-sarge-gray-200 bg-background flex w-18 flex-shrink-0 flex-col items-center gap-4 border-r py-4">
             <div className="flex flex-col items-center gap-1">

@@ -5,8 +5,8 @@ import { ChevronDown, Users } from 'lucide-react';
 import Image from 'next/image';
 import { toast } from 'sonner';
 import AddTaskModal from '@/lib/components/modal/AddTaskModal';
-import AssessmentEditorSidebar from '@/lib/components/core/AssessmentEditorSidebar';
-import AssessmentTaskPreviewPanel from '@/lib/components/core/AssessmentTaskPreviewPanel';
+import AssessmentTemplateEditorSidebar from '@/lib/components/templates/AssessmentTemplateEditorSidebar';
+import AssessmentTaskTemplatePreviewPanel from '@/lib/components/templates/AssessmentTaskTemplatePreviewPanel';
 import Breadcrumbs from '@/lib/components/core/Breadcrumbs';
 import useAssessmentTemplateEditPage from '@/lib/hooks/useAssessmentTemplateEditPage';
 import { Combobox } from '@/lib/components/ui/Combobox';
@@ -124,7 +124,7 @@ export default function AssessmentTemplateEditPage({
             </div>
 
             <div className="flex min-h-0 flex-1">
-                <AssessmentEditorSidebar
+                <AssessmentTemplateEditorSidebar
                     sections={sections}
                     selectedSection={selectedSection}
                     notes={notes}
@@ -137,7 +137,7 @@ export default function AssessmentTemplateEditPage({
                     onOpenAddTaskModal={() => setAddTaskOpen(true)}
                 />
 
-                <AssessmentTaskPreviewPanel
+                <AssessmentTaskTemplatePreviewPanel
                     selectedSection={selectedSection}
                     onDeleteSection={deleteSection}
                 />

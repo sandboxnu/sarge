@@ -2,11 +2,11 @@
 
 import { useState, useRef } from 'react';
 import { ChevronDown, ChevronUp, CircleCheck, CircleX, Play, ChevronRight } from 'lucide-react';
-import OATestCaseCard from '@/lib/components/assessment-flow/OATestCaseCard';
+import AssessmentTestCaseCard from '@/lib/components/assessment-flow/AssessmentTestCaseCard';
 import type { TestCaseDTO } from '@/lib/schemas/task-template.schema';
 import type { TestCaseResult } from '@/lib/hooks/useAssessment';
 
-type OATestCasesPanelProps = {
+type AssessmentTestCasesPanelProps = {
     testCases: TestCaseDTO[];
     results: TestCaseResult[];
     onRunTests: () => void;
@@ -19,12 +19,12 @@ const PANEL_MIN_HEIGHT = 160;
 const PANEL_MAX_HEIGHT = 600;
 const PANEL_CLOSED_HEIGHT = 60;
 
-export default function OATestCasesPanel({
+export default function AssessmentTestCasesPanel({
     testCases,
     results,
     onRunTests,
     onSubmit,
-}: OATestCasesPanelProps) {
+}: AssessmentTestCasesPanelProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [panelHeight, setPanelHeight] = useState(PANEL_DEFAULT_HEIGHT);
     const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
@@ -135,7 +135,7 @@ export default function OATestCasesPanel({
             {isOpen && (
                 <div className="bg-sarge-gray-50 border-sarge-gray-200 flex min-h-0 flex-1 flex-col gap-2.5 overflow-y-auto border-t p-4">
                     {testCases.map((tc, i) => (
-                        <OATestCaseCard
+                        <AssessmentTestCaseCard
                             key={i}
                             index={i}
                             testCase={tc}

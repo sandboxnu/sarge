@@ -1,13 +1,17 @@
 import { cn } from '@/lib/utils/cn.utils';
 import type { AssessmentTemplateListItemDTO } from '@/lib/schemas/assessment-template.schema';
 
-interface AssessmentCardProps {
+interface AssessmentTemplateCardProps {
     template: AssessmentTemplateListItemDTO;
     isSelected: boolean;
     onClick: () => void;
 }
 
-export default function AssessmentCard({ template, isSelected, onClick }: AssessmentCardProps) {
+export default function AssessmentTemplateCard({
+    template,
+    isSelected,
+    onClick,
+}: AssessmentTemplateCardProps) {
     return (
         <div
             className={cn(

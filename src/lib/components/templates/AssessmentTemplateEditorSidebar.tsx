@@ -10,12 +10,12 @@ import {
     SortableItem,
     SortableOverlay,
 } from '@/lib/components/ui/sortable';
-import AssessmentItem from '@/lib/components/core/AssessmentItem';
+import AssessmentTemplateItem from '@/lib/components/templates/AssessmentTemplateItem';
 import BlockNoteEditor from '@/lib/components/core/BlockNoteEditor';
 import type { AssessmentSection } from '@/lib/types/assessment-section.types';
 import type { BlockNoteContent } from '@/lib/types/task-template.types';
 
-interface AssessmentEditorSidebarProps {
+interface AssessmentTemplateEditorSidebarProps {
     sections: AssessmentSection[];
     selectedSection: AssessmentSection | null;
     notes: BlockNoteContent;
@@ -28,7 +28,7 @@ interface AssessmentEditorSidebarProps {
     onOpenAddTaskModal: () => void;
 }
 
-export default function AssessmentEditorSidebar({
+export default function AssessmentTemplateEditorSidebar({
     sections,
     selectedSection,
     notes,
@@ -39,7 +39,7 @@ export default function AssessmentEditorSidebar({
     onNotesChange,
     onSave,
     onOpenAddTaskModal,
-}: AssessmentEditorSidebarProps) {
+}: AssessmentTemplateEditorSidebarProps) {
     const [isNotesExpanded, setIsNotesExpanded] = useState(false);
 
     const totalMinutes = sections.reduce((sum, s) => {
@@ -111,7 +111,7 @@ export default function AssessmentEditorSidebar({
                                         value={section.taskTemplateId}
                                         disabled={isSaving}
                                     >
-                                        <AssessmentItem
+                                        <AssessmentTemplateItem
                                             section={section}
                                             isSelected={
                                                 selectedSection?.taskTemplateId ===

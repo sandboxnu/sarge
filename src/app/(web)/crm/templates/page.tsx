@@ -14,8 +14,8 @@ import {
 import { Tabs, TabsContent, TabsList, UnderlineTabsTrigger } from '@/lib/components/ui/Tabs';
 import { ArrowDownUp, Plus, SlidersHorizontal } from 'lucide-react';
 import { useTaskTemplateList } from '@/lib/hooks/useTaskTemplateList';
-import TaskCard from '@/lib/components/core/TaskCard';
-import { TaskTemplatePreviewPanel } from '@/lib/components/core/TaskTemplatePreviewPanel';
+import TaskTemplateCard from '@/lib/components/templates/TaskTemplateCard';
+import { TaskTemplatePreview } from '@/lib/components/templates/TaskTemplatePreview';
 import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
 import Image from 'next/image';
 import Pager from '@/lib/components/ui/Pager';
@@ -24,7 +24,7 @@ import useSearch from '@/lib/hooks/useSearch';
 import { useAssessmentTemplateList } from '@/lib/hooks/useAssessmentTemplateList';
 import CreateAssessmentTemplateModal from '@/lib/components/modal/CreateAssessmentModal';
 import { type AssessmentTemplateListItemDTO } from '@/lib/schemas/assessment-template.schema';
-import AssessmentCard from '@/lib/components/core/AssessmentCard';
+import AssessmentTemplateCard from '@/lib/components/templates/AssessmentTemplateCard';
 import {
     deleteTaskTemplate,
     duplicateTaskTemplate,
@@ -40,7 +40,7 @@ import {
     DialogTitle,
 } from '@/lib/components/ui/Modal';
 import { useAuth } from '@/lib/auth/auth-context';
-import { AssessmentTemplatePreview } from '@/lib/components/core/AssessmentTemplatePreview';
+import { AssessmentTemplatePreview } from '@/lib/components/templates/AssessmentTemplatePreview';
 
 export default function TemplatesPage() {
     const [selectedTaskTemplate, setSelectedTaskTemplate] =
@@ -231,7 +231,7 @@ export default function TemplatesPage() {
                             ).map((task: TaskTemplateListItemDTO, idx: number) => {
                                 const absoluteIdx = page * limit + idx;
                                 return (
-                                    <TaskCard
+                                    <TaskTemplateCard
                                         key={task.id}
                                         title={task.title}
                                         subtitle={task.taskType ?? ''}
@@ -351,7 +351,7 @@ export default function TemplatesPage() {
                                 ? assessmentTemplateSearch.data
                                 : assessmentTemplateList.assessmentTemplateList
                             ).map((assessment: AssessmentTemplateListItemDTO) => (
-                                <AssessmentCard
+                                <AssessmentTemplateCard
                                     key={assessment.id}
                                     template={assessment}
                                     isSelected={selectedAssessmentTemplate?.id === assessment.id}
@@ -378,7 +378,7 @@ export default function TemplatesPage() {
 
                 <div className="flex min-h-0 w-3/4 flex-col">
                     {selectedTaskTemplate ? (
-                        <TaskTemplatePreviewPanel
+                        <TaskTemplatePreview
                             taskTemplatePreview={selectedTaskTemplate}
                             onDuplicate={isMutating ? undefined : onDuplicate}
                             onDelete={isMutating ? undefined : onDelete}

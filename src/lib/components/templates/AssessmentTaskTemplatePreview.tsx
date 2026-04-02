@@ -3,13 +3,15 @@
 import * as React from 'react';
 import { AlarmClock } from 'lucide-react';
 import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
-import { TaskTemplatePreviewPanel } from './TaskTemplatePreviewPanel';
+import { TaskTemplatePreview } from './TaskTemplatePreview';
 
-export interface TaskPreviewProps {
+export interface AssessmentTaskTemplatePreviewProps {
     taskTemplatePreview: TaskTemplateListItemDTO;
 }
 
-export function TaskAssessmentPreview({ taskTemplatePreview }: TaskPreviewProps) {
+export function AssessmentTaskTemplatePreview({
+    taskTemplatePreview,
+}: AssessmentTaskTemplatePreviewProps) {
     const { title } = taskTemplatePreview;
     return (
         <div className="flex h-full w-full flex-col gap-2 px-6 py-4">
@@ -24,7 +26,7 @@ export function TaskAssessmentPreview({ taskTemplatePreview }: TaskPreviewProps)
                 </div>
             </div>
             <div>
-                <TaskTemplatePreviewPanel
+                <TaskTemplatePreview
                     removeHeader={true}
                     taskTemplatePreview={taskTemplatePreview}
                 />

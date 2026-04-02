@@ -7,15 +7,15 @@ import TestCasePanel from '@/lib/components/core/TestCasePanel';
 import type { AssessmentSection } from '@/lib/types/assessment-section.types';
 import GreyWinstonLogoMark from '@/../public/GreyWinstonLogoMark.svg';
 
-interface AssessmentTaskPreviewPanelProps {
+interface AssessmentTaskTemplatePreviewPanelProps {
     selectedSection: AssessmentSection | null;
     onDeleteSection: () => void;
 }
 
-export default function AssessmentTaskPreviewPanel({
+export default function AssessmentTaskTemplatePreviewPanel({
     selectedSection,
     onDeleteSection,
-}: AssessmentTaskPreviewPanelProps) {
+}: AssessmentTaskTemplatePreviewPanelProps) {
     if (!selectedSection || selectedSection.type !== 'task') {
         return (
             <div className="bg-card flex flex-1 flex-col items-center justify-center gap-4">

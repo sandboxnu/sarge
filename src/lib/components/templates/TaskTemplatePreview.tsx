@@ -13,19 +13,19 @@ import { Button } from '@/lib/components/ui/Button';
 import { BlockNoteViewer } from '@/lib/components/core/BlockNoteViewer';
 import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
 
-export interface TaskTemplatePreviewPanelProps {
+export interface TaskTemplatePreviewProps {
     taskTemplatePreview: TaskTemplateListItemDTO;
     onDuplicate?: (taskTemplateId: string) => void;
     onDelete?: (taskTemplateId: string) => void;
     removeHeader?: boolean;
 }
 
-export function TaskTemplatePreviewPanel({
+export function TaskTemplatePreview({
     taskTemplatePreview,
     onDuplicate,
     onDelete,
     removeHeader,
-}: TaskTemplatePreviewPanelProps) {
+}: TaskTemplatePreviewProps) {
     const tags = taskTemplatePreview.tags ?? [];
     const languages = taskTemplatePreview.languages?.map((l) => l.language) ?? [];
 

@@ -4,7 +4,7 @@ import { Chip } from '@/lib/components/ui/Chip';
 import type { TestCaseDTO } from '@/lib/schemas/task-template.schema';
 import type { TestCaseResult } from '@/lib/hooks/useAssessment';
 
-type OATestCaseCardProps = {
+type AssessmentTestCaseCardProps = {
     index: number;
     testCase: TestCaseDTO;
     result: TestCaseResult;
@@ -12,13 +12,13 @@ type OATestCaseCardProps = {
     onToggle: () => void;
 };
 
-export default function OATestCaseCard({
+export default function AssessmentTestCaseCard({
     index,
     testCase,
     result,
     isExpanded,
     onToggle,
-}: OATestCaseCardProps) {
+}: AssessmentTestCaseCardProps) {
     const isFailed = result.status === 'failed';
     const isPassed = result.status === 'passed';
     const isLoading = result.status === 'loading';
@@ -64,7 +64,7 @@ export default function OATestCaseCard({
                     <div className="flex gap-4">
                         <div className="flex-1">
                             <p className="text-sarge-gray-800 mb-2 text-sm font-medium">Input</p>
-                            <div className="bg-background border-sarge-gray-200 text-sarge-gray-500 flex h-10.5 items-center overflow-hidden rounded-lg border px-3 py-2 text-sm">
+                            <div className="bg-background border-sarge-gray-200 text-sarge-gray-500 flex h-10.5 items-center overflow-hidden rounded-md border px-3 py-2 text-sm">
                                 {String(testCase.input ?? '')}
                             </div>
                         </div>
@@ -72,7 +72,7 @@ export default function OATestCaseCard({
                             <p className="text-sarge-gray-800 mb-2 text-sm font-medium">
                                 Expected Output
                             </p>
-                            <div className="bg-background border-sarge-gray-200 text-sarge-gray-500 flex h-10.5 items-center overflow-hidden rounded-lg border px-3 py-2 text-sm">
+                            <div className="bg-background border-sarge-gray-200 text-sarge-gray-500 flex h-10.5 items-center overflow-hidden rounded-md border px-3 py-2 text-sm">
                                 {String(testCase.output ?? '')}
                             </div>
                         </div>

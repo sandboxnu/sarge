@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import TestCard from '@/lib/components/core/TestCard';
+import TestCaseCard from '@/lib/components/core/TestCaseCard';
 import { Tabs, TabsContent, TabsList, TestCaseTabsTrigger } from '@/lib/components/ui/Tabs';
 import { Button } from '@/lib/components/ui/Button';
 import { PlusIcon } from 'lucide-react';
@@ -88,11 +88,11 @@ export default function TestCasePanel(props: TestCasePanelProps) {
         };
 
         if (props.readOnly) {
-            return <TestCard key={`${tab}-${index}`} {...baseProps} readOnly />;
+            return <TestCaseCard key={`${tab}-${index}`} {...baseProps} readOnly />;
         }
 
         return (
-            <TestCard
+            <TestCaseCard
                 key={`${tab}-${index}`}
                 {...baseProps}
                 isSaving={props.isSaving}

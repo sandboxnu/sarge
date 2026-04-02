@@ -5,14 +5,18 @@ import { cn } from '@/lib/utils/cn.utils';
 import { SortableItemHandle, useSortableItemContext } from '@/lib/components/ui/sortable';
 import type { AssessmentSection } from '@/lib/types/assessment-section.types';
 
-interface AssessmentItemProps {
+interface AssessmentTemplateItemProps {
     section: AssessmentSection;
     isSelected: boolean;
     onSelect: () => void;
 }
 
-export default function AssessmentItem({ section, isSelected, onSelect }: AssessmentItemProps) {
-    const { isDragging } = useSortableItemContext('AssessmentItem');
+export default function AssessmentTemplateItem({
+    section,
+    isSelected,
+    onSelect,
+}: AssessmentTemplateItemProps) {
+    const { isDragging } = useSortableItemContext('AssessmentTemplateItem');
 
     const SectionIcon = section.type === 'task' ? CodeXml : Type;
     const title = section.type === 'task' ? section.taskTemplate.title : '';

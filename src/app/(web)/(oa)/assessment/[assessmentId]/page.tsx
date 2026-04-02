@@ -4,9 +4,9 @@ import { use } from 'react';
 import useAssessment from '@/lib/hooks/useAssessment';
 import AssessmentIntro from '@/lib/components/assessment-flow/AssessmentIntro';
 import AssessmentOutro from '@/lib/components/assessment-flow/AssessmentOutro';
-import AssessmentFlowSidebar from '@/lib/components/assessment-flow/AssessmentFlowSidebar';
-import AssessmentFlowNavbar from '@/lib/components/assessment-flow/AssessmentFlowNavbar';
-import AssessmentFlowContent from '@/lib/components/assessment-flow/AssessmentFlowContent';
+import AssessmentSidebar from '@/lib/components/assessment-flow/AssessmentSidebar';
+import AssessmentNavbar from '@/lib/components/assessment-flow/AssessmentNavbar';
+import AssessmentContent from '@/lib/components/assessment-flow/AssessmentContent';
 
 export default function AssessmentPage({ params }: { params: Promise<{ assessmentId: string }> }) {
     const { assessmentId } = use(params);
@@ -46,15 +46,15 @@ export default function AssessmentPage({ params }: { params: Promise<{ assessmen
 
     return (
         <div className="flex h-screen w-full flex-col overflow-hidden">
-            <AssessmentFlowNavbar candidateName={assessment.candidateName} />
+            <AssessmentNavbar candidateName={assessment.candidateName} />
             <div className="flex flex-1 overflow-hidden">
-                <AssessmentFlowSidebar
+                <AssessmentSidebar
                     sections={assessment.sections}
                     currentSectionIndex={assessment.currentSectionIndex}
                     formattedTime={assessment.timer.formattedTime}
                 />
                 <main className="flex-1 overflow-hidden">
-                    <AssessmentFlowContent
+                    <AssessmentContent
                         currentSection={assessment.currentSection}
                         availableLanguages={assessment.availableLanguages}
                         publicTestCases={assessment.publicTestCases}

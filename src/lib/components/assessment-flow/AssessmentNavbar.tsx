@@ -1,10 +1,10 @@
 import Image from 'next/image';
 
-type AssessmentFlowNavbarProps = {
+type AssessmentNavbarProps = {
     candidateName: string;
 };
 
-export default function AssessmentFlowNavbar({ candidateName }: AssessmentFlowNavbarProps) {
+export default function AssessmentNavbar({ candidateName }: AssessmentNavbarProps) {
     return (
         <header className="border-sarge-gray-200 bg-background flex h-[var(--navbar-height)] items-center justify-between border-b px-4">
             <Image

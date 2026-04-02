@@ -2,7 +2,7 @@ import { type TestCaseDTO } from '@/lib/schemas/task-template.schema';
 import { Lock, Trash, CopyPlus, Unlock } from 'lucide-react';
 import { Input } from '@/lib/components/ui/Input';
 
-type TestCardBaseProps = {
+type TestCaseCardBaseProps = {
     test: TestCaseDTO;
     selected: boolean;
     setSelected: () => void;
@@ -10,7 +10,7 @@ type TestCardBaseProps = {
     isPrivate: boolean;
 };
 
-type EditableTestCardProps = TestCardBaseProps & {
+type EditableTestCaseCardProps = TestCaseCardBaseProps & {
     readOnly?: false;
     isSaving?: boolean;
     onDuplicate: () => void;
@@ -19,13 +19,13 @@ type EditableTestCardProps = TestCardBaseProps & {
     onToggle: () => void;
 };
 
-type ReadOnlyTestCardProps = TestCardBaseProps & {
+type ReadOnlyTestCaseCardProps = TestCaseCardBaseProps & {
     readOnly: true;
 };
 
-export type TestCardProps = EditableTestCardProps | ReadOnlyTestCardProps;
+export type TestCaseCardProps = EditableTestCaseCardProps | ReadOnlyTestCaseCardProps;
 
-export default function TestCard(props: TestCardProps) {
+export default function TestCaseCard(props: TestCaseCardProps) {
     const { test, selected, setSelected, index, isPrivate } = props;
     const isSaving = !props.readOnly && props.isSaving;
 

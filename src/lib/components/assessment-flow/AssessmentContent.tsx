@@ -3,17 +3,18 @@ import {
     ResizablePanel,
     ResizableHandle,
 } from '@/lib/components/ui/Resizable';
-import TaskDescriptionPanel from '@/lib/components/assessment-flow/TaskDescriptionPanel';
 import CodeEditorPanel from '@/lib/components/core/CodeEditorPanel';
-import OATestCasesPanel from '@/lib/components/assessment-flow/OATestCasesPanel';
+import AssessmentTestCasesPanel from '@/lib/components/assessment-flow/AssessmentTestCasesPanel';
 import { type editor } from 'monaco-editor';
 import { type Monaco } from '@monaco-editor/react';
 import type { SectionState } from '@/lib/hooks/useAssessment';
 import type { TestCaseDTO } from '@/lib/schemas/task-template.schema';
 import type { TestCaseResult } from '@/lib/hooks/useAssessment';
 import type { TaskLanguageOption } from '@/lib/types/candidate-assessment.types';
+import { BlockNoteViewer } from '@/lib/components/core/BlockNoteViewer';
+import { HighlightGuard } from '@/lib/components/core/HighlightGuard';
 
-type AssessmentFlowContentProps = {
+type AssessmentContentProps = {
     currentSection: SectionState | null;
     availableLanguages: TaskLanguageOption[];
     publicTestCases: TestCaseDTO[];
@@ -25,7 +26,7 @@ type AssessmentFlowContentProps = {
     onSubmit: () => void;
 };
 
-export default function AssessmentFlowContent({
+export default function AssessmentContent({
     currentSection,
     availableLanguages,
     publicTestCases,
@@ -35,7 +36,7 @@ export default function AssessmentFlowContent({
     onEditorMount,
     onRunTests,
     onSubmit,
-}: AssessmentFlowContentProps) {
+}: AssessmentContentProps) {
     if (!currentSection) return null;
 
     return (
@@ -55,9 +56,13 @@ export default function AssessmentFlowContent({
                         </h1>
                     </div>
                     <div className="flex-1 overflow-hidden">
-                        <TaskDescriptionPanel
-                            description={currentSection.taskTemplate.description}
-                        />
+                        <HighlightGuard className="h-full overflow-y-auto px-5 pt-1 pb-4">
+                            <div data-oa-task-description className="min-h-0">
+                                <BlockNoteViewer
+                                    content={currentSection.taskTemplate.description}
+                                />
+                            </div>
+                        </HighlightGuard>
                     </div>
                 </div>
             </ResizablePanel>
@@ -82,7 +87,7 @@ export default function AssessmentFlowContent({
                             defaultValue={currentSection.code}
                         />
                     </div>
-                    <OATestCasesPanel
+                    <AssessmentTestCasesPanel
                         testCases={publicTestCases}
                         results={testCaseResults}
                         onRunTests={onRunTests}

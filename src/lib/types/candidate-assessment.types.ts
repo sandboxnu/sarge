@@ -1,5 +1,6 @@
 import type { AssessmentStatus } from '@/generated/prisma';
 import type { TestCaseDTO } from '@/lib/schemas/task-template.schema';
+import type { BlockNoteContent } from './task-template.types';
 
 export type TaskLanguageOption = {
     id: number;
@@ -10,7 +11,7 @@ export type TaskLanguageOption = {
 export type CandidateTaskView = {
     id: string;
     title: string;
-    description: unknown;
+    description: BlockNoteContent;
     publicTestCases: TestCaseDTO[];
     estimatedTime: number;
     timeout: number;
