@@ -2,7 +2,7 @@ import { Loader2, CircleCheck, CircleX, AlarmClock } from 'lucide-react';
 import { cn } from '@/lib/utils/cn.utils';
 import { Chip } from '@/lib/components/ui/Chip';
 import type { TestCaseDTO } from '@/lib/schemas/task-template.schema';
-import type { TestCaseResult } from '@/lib/hooks/useAssessment';
+import type { TestCaseResult } from '@/lib/types/candidate-assessment.types';
 
 type AssessmentTestCaseCardProps = {
     index: number;

@@ -1,6 +1,6 @@
 import { AlarmClock } from 'lucide-react';
 import AssessmentSidebarQuestion from '@/lib/components/assessment-flow/AssessmentSidebarQuestion';
-import type { SectionState } from '@/lib/hooks/useAssessment';
+import type { SectionState } from '@/lib/types/candidate-assessment.types';
 
 type AssessmentSidebarProps = {
     sections: SectionState[];

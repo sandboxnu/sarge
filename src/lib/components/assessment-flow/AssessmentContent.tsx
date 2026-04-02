@@ -7,10 +7,12 @@ import CodeEditorPanel from '@/lib/components/core/CodeEditorPanel';
 import AssessmentTestCasesPanel from '@/lib/components/assessment-flow/AssessmentTestCasesPanel';
 import { type editor } from 'monaco-editor';
 import { type Monaco } from '@monaco-editor/react';
-import type { SectionState } from '@/lib/hooks/useAssessment';
 import type { TestCaseDTO } from '@/lib/schemas/task-template.schema';
-import type { TestCaseResult } from '@/lib/hooks/useAssessment';
-import type { TaskLanguageOption } from '@/lib/types/candidate-assessment.types';
+import type {
+    SectionState,
+    TaskLanguageOption,
+    TestCaseResult,
+} from '@/lib/types/candidate-assessment.types';
 import { BlockNoteViewer } from '@/lib/components/core/BlockNoteViewer';
 import { HighlightGuard } from '@/lib/components/core/HighlightGuard';
 

@@ -7,29 +7,12 @@ import { toast } from 'sonner';
 import { getCandidateAssessment, submitCandidateAssessment } from '@/lib/api/candidate-assessment';
 import { useAssessmentTimer } from '@/lib/hooks/useAssessmentTimer';
 import type {
-    CandidateAssessment,
-    CandidateTaskView,
+    AssessmentPhase,
     AssessmentQuestion,
+    CandidateAssessment,
+    OutroReason,
+    SectionState,
 } from '@/lib/types/candidate-assessment.types';
-
-export type AssessmentPhase = 'intro' | 'assessment' | 'outro';
-export type OutroReason = 'submitted' | 'expired';
-export type SectionStatus = 'locked' | 'current' | 'completed';
-
-export type TestCaseResult = {
-    status: 'default' | 'loading' | 'passed' | 'failed' | 'runtime_error';
-    actualOutput?: string;
-};
-
-export type SectionState = {
-    taskTemplateId: string;
-    order: number;
-    taskTemplate: CandidateTaskView;
-    status: SectionStatus;
-    code: string;
-    language: string;
-    testCaseResults: TestCaseResult[];
-};
 
 function buildInitialSections(questions: AssessmentQuestion[]): SectionState[] {
     return questions.map((q, i) => {

@@ -4,7 +4,7 @@ import { useState, useRef } from 'react';
 import { ChevronDown, ChevronUp, CircleCheck, CircleX, Play, ChevronRight } from 'lucide-react';
 import AssessmentTestCaseCard from '@/lib/components/assessment-flow/AssessmentTestCaseCard';
 import type { TestCaseDTO } from '@/lib/schemas/task-template.schema';
-import type { TestCaseResult } from '@/lib/hooks/useAssessment';
+import type { TestCaseResult } from '@/lib/types/candidate-assessment.types';
 
 type AssessmentTestCasesPanelProps = {
     testCases: TestCaseDTO[];

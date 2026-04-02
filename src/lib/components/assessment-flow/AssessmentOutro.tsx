@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import type { OutroReason } from '@/lib/hooks/useAssessment';
+import type { OutroReason } from '@/lib/types/candidate-assessment.types';
 
 type AssessmentOutroProps = {
     reason: OutroReason;

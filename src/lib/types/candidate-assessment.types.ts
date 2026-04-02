@@ -36,3 +36,22 @@ export type CandidateAssessment = {
         tasks: AssessmentQuestion[];
     };
 };
+
+export type AssessmentPhase = 'intro' | 'assessment' | 'outro';
+export type OutroReason = 'submitted' | 'expired';
+export type SectionStatus = 'locked' | 'current' | 'completed';
+
+export type TestCaseResult = {
+    status: 'default' | 'loading' | 'passed' | 'failed' | 'runtime_error';
+    actualOutput?: string;
+};
+
+export type SectionState = {
+    taskTemplateId: string;
+    order: number;
+    taskTemplate: CandidateTaskView;
+    status: SectionStatus;
+    code: string;
+    language: string;
+    testCaseResults: TestCaseResult[];
+};

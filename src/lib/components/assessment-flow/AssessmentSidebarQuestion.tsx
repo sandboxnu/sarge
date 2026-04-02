@@ -1,6 +1,6 @@
 import { CircleCheck, Lock } from 'lucide-react';
 import { cn } from '@/lib/utils/cn.utils';
-import type { SectionStatus } from '@/lib/hooks/useAssessment';
+import type { SectionStatus } from '@/lib/types/candidate-assessment.types';
 
 type AssessmentSidebarQuestionProps = {
     index: number;
