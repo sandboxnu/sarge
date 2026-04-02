@@ -26,6 +26,7 @@ type EditablePanelProps = TestCasePanelBaseProps & {
         value: string
     ) => void;
     onToggleTestCaseVisibility: (index: number, tab: TestTab) => void;
+    runTests: (tests: TestCaseDTO[]) => void;
 };
 
 type ReadOnlyPanelProps = TestCasePanelBaseProps & {
@@ -151,15 +152,28 @@ export default function TestCasePanel(props: TestCasePanelProps) {
                         {activeLabel} ({activeTestCases.length})
                     </span>
                     {!props.readOnly && (
-                        <Button
-                            className="items-center gap-1 rounded-md px-3 py-1 text-sm"
-                            variant="secondary"
-                            onClick={() => props.onAddTestCase(activeTab)}
-                            disabled={props.isSaving}
-                        >
-                            <PlusIcon className="stroke-sarge-primary-500" height={18} width={18} />
-                            Add test
-                        </Button>
+                        <div className="flex items-center justify-between gap-2">
+                            <Button
+                                className="items-center gap-1 rounded-md px-3 py-1 text-sm"
+                                variant="secondary"
+                                onClick={() => props.onAddTestCase(activeTab)}
+                                disabled={props.isSaving}
+                            >
+                                <PlusIcon
+                                    className="stroke-sarge-primary-500"
+                                    height={18}
+                                    width={18}
+                                />
+                                Add test
+                            </Button>
+                            <Button
+                                className="items-center rounded-md px-3 py-1 text-sm"
+                                variant="primary"
+                                onClick={() => props.runTests(activeTestCases)}
+                            >
+                                Run
+                            </Button>
+                        </div>
                     )}
                 </div>
 

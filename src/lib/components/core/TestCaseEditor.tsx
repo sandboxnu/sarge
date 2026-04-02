@@ -8,11 +8,18 @@ interface TestCaseEditorProps {
     privateTestCases: TestCaseDTO[];
     setPrivateTestCases: React.Dispatch<React.SetStateAction<TestCaseDTO[]>>;
     isSaving: boolean;
+    runTests: (tests: TestCaseDTO[]) => void;
 }
 
 export default function TestCaseEditor(props: TestCaseEditorProps) {
-    const { publicTestCases, setPublicTestCases, privateTestCases, setPrivateTestCases, isSaving } =
-        props;
+    const {
+        publicTestCases,
+        setPublicTestCases,
+        privateTestCases,
+        setPrivateTestCases,
+        isSaving,
+        runTests,
+    } = props;
     const {
         addTestCase,
         removeTestCase,
@@ -36,6 +43,7 @@ export default function TestCaseEditor(props: TestCaseEditorProps) {
             onRemoveTestCase={removeTestCase}
             onTestCaseUpdate={updateTestCase}
             onToggleTestCaseVisibility={toggleTestCaseVisibility}
+            runTests={runTests}
         />
     );
 }

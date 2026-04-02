@@ -10,10 +10,12 @@ export interface JudgeSubmissionRequestBody {
 
 export interface JudgeResultRequestBody {
     stdout: string;
-    status_id: number;
     language_id: number;
     stderr: string;
-    status: object;
+    status: {
+        id: number;
+        description: string;
+    };
     token: string;
 }
 
@@ -35,7 +37,6 @@ class Judge0Connector {
         if (!body || body.length === 0) {
             throw new BadRequestException('At least one submission is required');
         }
-
         const url = `${process.env.JUDGE_URL}/submissions/batch?fields=${this.fields.join(',')}`;
         const requestBody = { submissions: [...body] };
         const response = await fetch(url, {
@@ -71,7 +72,10 @@ class Judge0Connector {
             throw new InternalServerException(`Judge0 API error: ${jsonResponse.error}`);
         }
 
-        return jsonResponse;
+        if (!('submissions' in jsonResponse)) {
+            throw new InternalServerException(`Submissions Not Returned`);
+        }
+        return jsonResponse['submissions'];
     }
 
     // create the provided submissions w/judge0 for running test cases
@@ -114,7 +118,7 @@ class Judge0Connector {
 
             results.forEach((submissionResult, index) => {
                 const isComplete =
-                    submissionResult.status_id !== 1 && submissionResult.status_id !== 2;
+                    submissionResult.status.id !== 1 && submissionResult.status.id !== 2;
                 if (isComplete) {
                     allResults.push(submissionResult);
                 } else {
@@ -146,7 +150,7 @@ class Judge0Connector {
         };
 
         allResults.forEach((submissionResult) => {
-            switch (submissionResult.status_id) {
+            switch (submissionResult.status.id) {
                 case 3: // Accepted
                     categorizedResults.accepted.push(submissionResult);
                     break;
