@@ -80,10 +80,11 @@ export default function TestCasePanel(props: TestCasePanelProps) {
 
     function renderCard(test: TestCaseDTO, index: number, tab: TestTab, isPrivate: boolean) {
         const baseProps = {
+            variant: 'editor' as const,
             test,
             index,
             selected: isSelected(tab, index),
-            setSelected: () => toggleSelected(tab, index),
+            onSelect: () => toggleSelected(tab, index),
             isPrivate,
         };
 
@@ -99,7 +100,7 @@ export default function TestCasePanel(props: TestCasePanelProps) {
                 onDuplicate={() => props.onDuplicateTestCase(index, tab)}
                 onRemove={() => props.onRemoveTestCase(index, tab)}
                 onUpdate={(field, value) => props.onTestCaseUpdate(index, tab, field, value)}
-                onToggle={() => props.onToggleTestCaseVisibility(index, tab)}
+                onToggleVisibility={() => props.onToggleTestCaseVisibility(index, tab)}
             />
         );
     }

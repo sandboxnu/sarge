@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { ChevronDown, ChevronUp, CircleCheck, CircleX, Play, ChevronRight } from 'lucide-react';
-import AssessmentTestCaseCard from '@/lib/components/assessment-flow/AssessmentTestCaseCard';
+import TestCaseCard from '@/lib/components/core/TestCaseCard';
 import type { TestCaseDTO } from '@/lib/schemas/task-template.schema';
 import type { TestCaseResult } from '@/lib/types/candidate-assessment.types';
 
@@ -27,7 +27,7 @@ export default function AssessmentTestCasesPanel({
 }: AssessmentTestCasesPanelProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [panelHeight, setPanelHeight] = useState(PANEL_DEFAULT_HEIGHT);
-    const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+    const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
     const dragRef = useRef<{ startY: number; startHeight: number } | null>(null);
 
     const passCount = results.filter((r) => r.status === 'passed').length;
@@ -38,8 +38,8 @@ export default function AssessmentTestCasesPanel({
         (r) => r.status === 'passed' || r.status === 'failed' || r.status === 'runtime_error'
     );
 
-    function toggleCard(i: number) {
-        setExpandedIndex((prev) => (prev === i ? null : i));
+    function toggleSelected(i: number) {
+        setSelectedIndex((prev) => (prev === i ? null : i));
     }
 
     // this is the dragging handle for when the panel is open and we want to resize it
@@ -135,13 +135,14 @@ export default function AssessmentTestCasesPanel({
             {isOpen && (
                 <div className="bg-sarge-gray-50 border-sarge-gray-200 flex min-h-0 flex-1 flex-col gap-2.5 overflow-y-auto border-t p-4">
                     {testCases.map((tc, i) => (
-                        <AssessmentTestCaseCard
+                        <TestCaseCard
                             key={i}
+                            variant="assessment"
                             index={i}
-                            testCase={tc}
+                            test={tc}
                             result={results[i] ?? { status: 'default' }}
-                            isExpanded={expandedIndex === i}
-                            onToggle={() => toggleCard(i)}
+                            selected={selectedIndex === i}
+                            onSelect={() => toggleSelected(i)}
                         />
                     ))}
                 </div>
