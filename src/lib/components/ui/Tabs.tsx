@@ -82,7 +82,7 @@ function CodeTabsTrigger({
             className={cn(
                 'inline-flex items-center justify-center',
                 'rounded-none p-2.5 whitespace-nowrap',
-                'tracking-design text-xs font-medium text-white',
+                'tracking-design text-sarge-gray-0 text-xs font-medium',
                 'data-[state=active]:font-bold',
                 'border-sarge-gray-600 border-r border-b',
                 'data-[state=active]:border-b-transparent',
@@ -108,7 +108,7 @@ function TestCaseTabsTrigger({
                 'text-sarge-gray-700 text-sm font-medium',
                 'border-sarge-gray-300 border-t border-r border-b',
                 'bg-sarge-gray-100',
-                'data-[state=active]:bg-white',
+                'data-[state=active]:bg-background',
                 'data-[state=active]:border-b-transparent',
                 'focus-visible:outline-none',
                 'disabled:pointer-events-none disabled:opacity-50',

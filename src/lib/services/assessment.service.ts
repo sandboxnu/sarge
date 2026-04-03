@@ -7,7 +7,10 @@ import type {
 } from '@/lib/schemas/assessment.schema';
 import { AssessmentStatus } from '@/generated/prisma';
 import { BadRequestException, NotFoundException } from '@/lib/utils/errors.utils';
-import { type AssessmentWithRelations } from '@/lib/types/assessment.types';
+import { type AssessmentWithRelations } from '@/lib/types/assessment-template.types';
+import type { CandidateAssessment } from '@/lib/types/candidate-assessment.types';
+import type { BlockNoteContent } from '@/lib/types/task-template.types';
+import type { TestCaseDTO } from '@/lib/schemas/task-template.schema';
 
 async function getAssessmentWithRelations(
     id: string,
@@ -68,9 +71,10 @@ async function createAssessment(
             `Assessment Template with id ${assessment.assessmentTemplateId} not found`
         );
     }
-
+    // the unique link shouldn't be the full link (bc the env of the link matters) so we just use id
+    const id = crypto.randomUUID();
     const newAssessment = await prisma.assessment.create({
-        data: assessment,
+        data: { ...assessment, id, uniqueLink: id },
     });
 
     return newAssessment;
@@ -227,8 +231,116 @@ async function updateAssessment(
     });
 }
 
+async function getAssessmentForCandidate(assessmentId: string): Promise<CandidateAssessment> {
+    const assessment = await prisma.assessment.findFirst({
+        where: {
+            id: assessmentId,
+        },
+        select: {
+            id: true,
+            deadline: true,
+            assignedAt: true,
+            submittedAt: true,
+            application: {
+                select: {
+                    assessmentStatus: true,
+                    candidate: {
+                        select: { name: true },
+                    },
+                },
+            },
+            assessmentTemplate: {
+                select: {
+                    title: true,
+                    tasks: {
+                        select: {
+                            taskTemplateId: true,
+                            order: true,
+                            taskTemplate: {
+                                select: {
+                                    id: true,
+                                    title: true,
+                                    description: true,
+                                    publicTestCases: true,
+                                    estimatedTime: true,
+                                    timeout: true,
+                                    languages: {
+                                        select: {
+                                            id: true,
+                                            language: true,
+                                            stub: true,
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                        orderBy: { order: 'asc' },
+                    },
+                },
+            },
+        },
+    });
+
+    if (!assessment) {
+        throw new NotFoundException(`Assessment with id ${assessmentId} not found`);
+    }
+
+    return {
+        id: assessment.id,
+        deadline: assessment.deadline,
+        assignedAt: assessment.assignedAt,
+        submittedAt: assessment.submittedAt,
+        assessmentStatus: assessment.application.assessmentStatus,
+        candidateName: assessment.application.candidate.name,
+        assessmentTemplate: {
+            title: assessment.assessmentTemplate.title,
+            tasks: assessment.assessmentTemplate.tasks.map((task) => ({
+                taskTemplateId: task.taskTemplateId,
+                order: task.order,
+                taskTemplate: {
+                    id: task.taskTemplate.id,
+                    title: task.taskTemplate.title,
+                    description: task.taskTemplate.description as BlockNoteContent,
+                    publicTestCases: task.taskTemplate.publicTestCases as TestCaseDTO[],
+                    estimatedTime: task.taskTemplate.estimatedTime,
+                    timeout: task.taskTemplate.timeout,
+                    languages: task.taskTemplate.languages,
+                },
+            })),
+        },
+    };
+}
+
+async function submitAssessmentForCandidate(assessmentId: string): Promise<void> {
+    const assessment = await prisma.assessment.findFirst({
+        where: { id: assessmentId },
+        select: { id: true, submittedAt: true, application: { select: { id: true } } },
+    });
+
+    if (!assessment) {
+        throw new NotFoundException(`Assessment with id ${assessmentId} not found`);
+    }
+
+    if (assessment.submittedAt) {
+        throw new BadRequestException('Assessment has already been submitted');
+    }
+
+    await prisma.$transaction([
+        prisma.assessment.update({
+            where: { id: assessmentId },
+            data: { submittedAt: new Date() },
+        }),
+        prisma.application.update({
+            where: { id: assessment.application.id },
+            data: { assessmentStatus: 'SUBMITTED' },
+        }),
+    ]);
+}
+
 const AssessmentService = {
     getAssessmentWithRelations,
+    getAssessmentForCandidate,
+    submitAssessmentForCandidate,
     createAssessment,
     assignTemplateToPosition,
     deleteAssessment,

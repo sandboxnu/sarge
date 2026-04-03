@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { Dialog, DialogContent, DialogTitle } from '@/lib/components/ui/Modal';
 import { Button } from '@/lib/components/ui/Button';
 import { Search } from '@/lib/components/core/Search';
-import TaskCard from '@/lib/components/core/TaskCard';
+import TaskTemplateCard from '@/lib/components/templates/TaskTemplateCard';
 import Pager from '@/lib/components/ui/Pager';
 
 import { useAddTaskModal } from '@/lib/hooks/useAddTaskModal';
@@ -132,7 +132,7 @@ export default function AddTaskModal({
                                 const isAlreadyAdded = alreadyAddedIds.has(task.id);
 
                                 return (
-                                    <TaskCard
+                                    <TaskTemplateCard
                                         key={task.id}
                                         title={task.title}
                                         subtitle={task.taskType ?? ''}

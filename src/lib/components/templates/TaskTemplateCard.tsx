@@ -7,7 +7,7 @@ import { getLanguageLabel } from '@/lib/utils/language.utils';
 import { CircleCheck, Code2 } from 'lucide-react';
 import { cn } from '@/lib/utils/cn.utils';
 
-export interface TaskCardProps {
+export interface TaskTemplateCardProps {
     title: string;
     subtitle: string;
     chips: TagDTO[];
@@ -22,7 +22,7 @@ export interface TaskCardProps {
     isAlreadyAdded?: boolean;
 }
 
-export default function TaskCard({ maxTags = 2, ...props }: TaskCardProps) {
+export default function TaskTemplateCard({ maxTags = 2, ...props }: TaskTemplateCardProps) {
     const visibleChips = props.chips.slice(0, maxTags);
     const overflowChips = props.chips.slice(maxTags);
 

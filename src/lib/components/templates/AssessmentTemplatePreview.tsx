@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import type { AssessmentTemplateListItemDTO } from '@/lib/schemas/assessment-template.schema';
-import { type AssessmentTemplateTaskOrder } from '@/lib/types/assessment.types';
+import { type AssessmentTemplateTaskOrder } from '@/lib/types/assessment-template.types';
 import { getTaskTemplate } from '@/lib/api/task-templates';
 import { Button } from '@/lib/components/ui/Button';
 import {
@@ -14,7 +14,7 @@ import {
 import { ChevronLeft, ChevronRight, SquarePen } from 'lucide-react';
 import Link from 'next/link';
 import { type TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
-import { TaskAssessmentPreview } from './AssessmentTaskPreview';
+import { AssessmentTaskTemplatePreview } from './AssessmentTaskTemplatePreview';
 import { getAssessmentTemplateTaskOrder } from '@/lib/api/assessment-templates';
 
 export interface AssessmentTemplatePreviewProps {
@@ -117,7 +117,7 @@ export function AssessmentTemplatePreview({
 
             <div className="h-full overflow-y-scroll [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 {currentTask ? (
-                    <TaskAssessmentPreview taskTemplatePreview={currentTask} />
+                    <AssessmentTaskTemplatePreview taskTemplatePreview={currentTask} />
                 ) : (
                     <div className="text-body-m text-muted-foreground flex h-full items-center justify-center">
                         Select a task to preview

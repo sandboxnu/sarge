@@ -32,7 +32,7 @@ export default function CodeEditorToolbar({
     const currentLanguage = languages[selectedLanguageIndex];
 
     return (
-        <div className="flex w-full items-stretch text-white">
+        <div className="text-sarge-gray-0 flex w-full items-stretch">
             <Tabs
                 value={activeTab}
                 onValueChange={disabled ? undefined : (v) => onTabChange(v as 'task' | 'solution')}
@@ -54,7 +54,7 @@ export default function CodeEditorToolbar({
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild disabled={disabled}>
                                 <div
-                                    className={`bg-sarge-primary-500 tracking-design flex items-center gap-2.5 rounded-sm px-2.5 py-0.5 text-xs font-medium text-white ${
+                                    className={`bg-sarge-primary-500 tracking-design text-primary-foreground flex items-center gap-2.5 rounded-sm px-2.5 py-0.5 text-xs font-medium ${
                                         disabled
                                             ? 'cursor-not-allowed opacity-50'
                                             : 'cursor-pointer'
@@ -71,11 +71,12 @@ export default function CodeEditorToolbar({
                                 align="center"
                                 className="bg-sarge-primary-500 rounded-sm px-2.5"
                             >
-                                <DropdownMenuGroup className="!hover:bg-sarge-primary-600 !text-primary-foreground p-0">
+                                <DropdownMenuGroup className="text-primary-foreground p-0">
                                     {languages.map((lang: TaskTemplateLanguageDTO) => (
                                         <DropdownMenuItem
-                                            className="!hover:text-sarge-primary-500 !text-primary-foreground cursor-pointer border-none"
                                             key={lang.language}
+                                            variant="primary"
+                                            className="cursor-pointer"
                                             onClick={() => handleLanguageChange(lang)}
                                         >
                                             {getLanguageLabel(lang.language)}

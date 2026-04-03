@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import TestCard from '@/lib/components/core/TestCard';
+import TestCaseCard from '@/lib/components/core/TestCaseCard';
 import { Tabs, TabsContent, TabsList, TestCaseTabsTrigger } from '@/lib/components/ui/Tabs';
 import { Button } from '@/lib/components/ui/Button';
 import { PlusIcon } from 'lucide-react';
@@ -80,26 +80,27 @@ export default function TestCasePanel(props: TestCasePanelProps) {
 
     function renderCard(test: TestCaseDTO, index: number, tab: TestTab, isPrivate: boolean) {
         const baseProps = {
+            variant: 'editor' as const,
             test,
             index,
             selected: isSelected(tab, index),
-            setSelected: () => toggleSelected(tab, index),
+            onSelect: () => toggleSelected(tab, index),
             isPrivate,
         };
 
         if (props.readOnly) {
-            return <TestCard key={`${tab}-${index}`} {...baseProps} readOnly />;
+            return <TestCaseCard key={`${tab}-${index}`} {...baseProps} readOnly />;
         }
 
         return (
-            <TestCard
+            <TestCaseCard
                 key={`${tab}-${index}`}
                 {...baseProps}
                 isSaving={props.isSaving}
                 onDuplicate={() => props.onDuplicateTestCase(index, tab)}
                 onRemove={() => props.onRemoveTestCase(index, tab)}
                 onUpdate={(field, value) => props.onTestCaseUpdate(index, tab, field, value)}
-                onToggle={() => props.onToggleTestCaseVisibility(index, tab)}
+                onToggleVisibility={() => props.onToggleTestCaseVisibility(index, tab)}
             />
         );
     }
