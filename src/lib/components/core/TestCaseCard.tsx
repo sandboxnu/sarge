@@ -66,13 +66,6 @@ function getResultFlags(result: TestCaseResult) {
     return { isFailed, isPassed, isLoading, isRuntimeError, hasRun, isError };
 }
 
-function getRunResult(props: TestCaseCardProps): TestCaseResult | undefined {
-    if (props.variant === 'assessment') {
-        return props.result;
-    }
-    return props.result;
-}
-
 function ResultStatusChips({ flags }: { flags: ReturnType<typeof getResultFlags> }) {
     return (
         <>
@@ -109,7 +102,7 @@ export default function TestCaseCard(props: TestCaseCardProps) {
     const isSaving = !isAssessment && !props.readOnly && props.isSaving;
     const showDetails = props.selected;
 
-    const runResult = getRunResult(props);
+    const runResult = props.result;
     const resultFlags = runResult ? getResultFlags(runResult) : null;
 
     const showReadOnlyIo = isAssessment || props.readOnly;
