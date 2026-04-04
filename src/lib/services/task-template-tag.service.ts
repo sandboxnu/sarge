@@ -8,7 +8,11 @@ async function getTaskTemplateTagsByOrgId(orgId: string): Promise<TaskTemplateTa
     });
 }
 
-async function createTaskTemplateTag(name: string, orgId: string, colorHexCode: string): Promise<TaskTemplateTag> {
+async function createTaskTemplateTag(
+    name: string,
+    orgId: string,
+    colorHexCode: string
+): Promise<TaskTemplateTag> {
     return prisma.taskTemplateTag.create({
         data: {
             name,

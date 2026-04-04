@@ -8,7 +8,11 @@ async function getPositionTagsByOrgId(orgId: string): Promise<PositionTag[]> {
     });
 }
 
-async function createPositionTag(name: string, orgId: string, colorHexCode: string): Promise<PositionTag> {
+async function createPositionTag(
+    name: string,
+    orgId: string,
+    colorHexCode: string
+): Promise<PositionTag> {
     return prisma.positionTag.create({
         data: {
             name,
