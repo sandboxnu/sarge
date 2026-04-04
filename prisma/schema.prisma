@@ -24,7 +24,8 @@ model Organization {
   taskTemplates       TaskTemplate[]
   members             Member[]
   invitations         Invitation[]
-  tags                Tag[]
+  positionTags        PositionTag[]
+  taskTemplateTags    TaskTemplateTag[]
 }
 
 // An internal user of the Sarge platform (e.g. recruiter, reviewer, admin). Users authenticate and may belong to one or more organizations.
@@ -64,7 +65,7 @@ model Position {
   applications       Application[]
   organization       Organization        @relation(fields: [orgId], references: [id])
   creator            User                @relation("CreatedPositions", fields: [createdById], references: [id])
-  tags               Tag[]               @relation("PositionTags")
+  tags               PositionTag[]       @relation("PositionTags")
   assessmentTemplate AssessmentTemplate? @relation("derivedFromPosition", fields: [assessmentId], references: [id])
 }
 
@@ -161,7 +162,7 @@ model TaskTemplate {
   organization Organization           @relation(fields: [orgId], references: [id])
   author       User                   @relation("AuthoredTaskTemplates", fields: [authorId], references: [id], onDelete: Restrict)
   tasks        Task[]                 @relation("derivedFromTaskTemplate")
-  tags         Tag[]                  @relation("TaskTemplateTags")
+  tags         TaskTemplateTag[]      @relation("TaskTemplateTags")
   languages    TaskTemplateLanguage[]
 
   assessments AssessmentTemplateTask[]
@@ -359,20 +360,33 @@ model Invitation {
   @@index([organizationId])
 }
 
-// A label used to categorize and organize task templates within an organization.
-model Tag {
-  id           String   @id @unique @default(cuid())
-  name         String
-  orgId        String
+// A label used to categorize and organize positions within an organization.
+model PositionTag {
+  id         String  @id @default(cuid())
+  name       String 
+  orgId      String
   colorHexCode String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  positions Position[] @relation("PositionTags")
 
-  // These are taggable items.
+  @@unique([name, orgId])
+  @@index([orgId])
+}
+
+// A label used to categorize and organize task templates within an organization.
+model TaskTemplateTag {
+  id         String  @id @default(cuid())
+  name       String 
+  orgId      String
+  colorHexCode String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
   taskTemplates TaskTemplate[] @relation("TaskTemplateTags")
-  positions     Position[]     @relation("PositionTags")
 
   @@unique([name, orgId])
   @@index([orgId])
