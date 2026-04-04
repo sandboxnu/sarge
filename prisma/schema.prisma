@@ -362,15 +362,15 @@ model Invitation {
 
 // A label used to categorize and organize positions within an organization.
 model PositionTag {
-  id         String  @id @default(cuid())
-  name       String 
-  orgId      String
+  id           String   @id @default(cuid())
+  name         String
+  orgId        String
   colorHexCode String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
-  positions Position[] @relation("PositionTags")
+  positions    Position[]   @relation("PositionTags")
 
   @@unique([name, orgId])
   @@index([orgId])
@@ -378,14 +378,14 @@ model PositionTag {
 
 // A label used to categorize and organize task templates within an organization.
 model TaskTemplateTag {
-  id         String  @id @default(cuid())
-  name       String 
-  orgId      String
+  id           String   @id @default(cuid())
+  name         String
+  orgId        String
   colorHexCode String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  organization Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  organization  Organization   @relation(fields: [orgId], references: [id], onDelete: Cascade)
   taskTemplates TaskTemplate[] @relation("TaskTemplateTags")
 
   @@unique([name, orgId])
