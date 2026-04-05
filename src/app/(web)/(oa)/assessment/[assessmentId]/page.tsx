@@ -7,10 +7,12 @@ import AssessmentOutro from '@/lib/components/assessment-flow/AssessmentOutro';
 import AssessmentSidebar from '@/lib/components/assessment-flow/AssessmentSidebar';
 import AssessmentNavbar from '@/lib/components/assessment-flow/AssessmentNavbar';
 import AssessmentContent from '@/lib/components/assessment-flow/AssessmentContent';
+import { useHeartbeat } from '@/lib/hooks/useHeartbeat';
 
 export default function AssessmentPage({ params }: { params: Promise<{ assessmentId: string }> }) {
     const { assessmentId } = use(params);
     const assessment = useAssessment(assessmentId);
+    const { isConnected } = useHeartbeat(assessment.token ?? null);
 
     if (assessment.isLoading)
         return (
@@ -42,6 +44,10 @@ export default function AssessmentPage({ params }: { params: Promise<{ assessmen
                 candidateName={assessment.candidateName}
             />
         );
+    }
+
+    if (!isConnected) {
+        return <div>YOU DISCONNECTED BRUH</div>
     }
 
     return (

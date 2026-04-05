@@ -13,6 +13,7 @@ import type {
     OutroReason,
     SectionState,
 } from '@/lib/types/candidate-assessment.types';
+import { createToken } from '@/lib/api/token';
 
 function buildInitialSections(questions: AssessmentQuestion[]): SectionState[] {
     return questions.map((q, i) => {
@@ -44,6 +45,7 @@ export default function useAssessment(assessmentId: string) {
     const [error, setError] = useState<Error | null>(null);
     const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
     const monacoRef = useRef<Monaco | null>(null);
+    const [token, setToken] = useState<string>();
 
     // the timer is in seconds however our model is in minutes
     const totalEstimatedMinutes = sections.reduce(
@@ -59,7 +61,9 @@ export default function useAssessment(assessmentId: string) {
             try {
                 setIsLoading(true);
                 const data = await getCandidateAssessment(assessmentId);
+                const token = await createToken(data.candidateEmail);
                 setAssessment(data);
+                setToken(token);
                 setSections(buildInitialSections(data.assessmentTemplate.tasks));
             } catch (err) {
                 setError(err as Error);
@@ -214,6 +218,7 @@ export default function useAssessment(assessmentId: string) {
         currentSectionIndex,
         totalTimeSeconds,
         timer,
+        token,
         isLoading,
         isSubmitting,
         isTransitioning,
