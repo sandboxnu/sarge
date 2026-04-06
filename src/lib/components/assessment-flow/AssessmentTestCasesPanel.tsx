@@ -84,7 +84,7 @@ export default function AssessmentTestCasesPanel({
                 <div className="flex items-center gap-4">
                     <div className="flex items-center gap-1">
                         <Button
-                            variant='icon'
+                            variant="icon"
                             onClick={() => setIsOpen((v) => !v)}
                             className="text-sarge-gray-700"
                         >
@@ -115,7 +115,7 @@ export default function AssessmentTestCasesPanel({
                 </div>
                 <div className="flex items-center gap-2">
                     <Button
-                        variant='secondary'
+                        variant="secondary"
                         onClick={onRunTests}
                         className="flex h-9 items-center gap-2 rounded-lg border px-4 text-sm font-medium"
                     >
@@ -123,7 +123,7 @@ export default function AssessmentTestCasesPanel({
                         Run Tests
                     </Button>
                     <Button
-                        variant='primary'
+                        variant="primary"
                         onClick={onSubmit}
                         className="text-primary-foreground flex h-9 items-center gap-2 rounded-lg px-4 text-sm font-medium"
                     >

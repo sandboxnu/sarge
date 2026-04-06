@@ -51,7 +51,7 @@ export default function AssessmentPage({ params }: { params: Promise<{ assessmen
     return (
         <div className="flex h-screen w-full flex-col overflow-hidden">
             {/* onOpenChange is returning nothing as we don't have recovery implemented just yet  */}
-            <LostConnectionModal open={!isConnected} onOpenChange={() => { }} />
+            <LostConnectionModal open={!isConnected} onOpenChange={() => {}} />
             <AssessmentNavbar candidateName={assessment.candidateName} />
             <div className="flex flex-1 overflow-hidden">
                 <AssessmentSidebar
@@ -62,7 +62,7 @@ export default function AssessmentPage({ params }: { params: Promise<{ assessmen
                 <main className="flex-1 overflow-hidden">
                     {!isConnected ? (
                         <AssessmentSkeleton />
-                    ) :
+                    ) : (
                         <AssessmentContent
                             currentSection={assessment.currentSection}
                             availableLanguages={assessment.availableLanguages}
@@ -74,7 +74,7 @@ export default function AssessmentPage({ params }: { params: Promise<{ assessmen
                             onRunTests={assessment.runTests}
                             onSubmit={assessment.submitAndContinue}
                         />
-                    }
+                    )}
                 </main>
             </div>
         </div>
