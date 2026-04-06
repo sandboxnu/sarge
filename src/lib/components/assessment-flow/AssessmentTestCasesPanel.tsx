@@ -5,6 +5,7 @@ import { ChevronDown, ChevronUp, CircleCheck, CircleX, Play, ChevronRight } from
 import TestCaseCard from '@/lib/components/core/TestCaseCard';
 import type { TestCaseDTO } from '@/lib/schemas/task-template.schema';
 import type { TestCaseResult } from '@/lib/types/candidate-assessment.types';
+import { Button } from '@/lib/components/ui/Button';
 
 type AssessmentTestCasesPanelProps = {
     testCases: TestCaseDTO[];
@@ -82,8 +83,8 @@ export default function AssessmentTestCasesPanel({
             <div className="flex h-15 flex-shrink-0 items-center justify-between px-3">
                 <div className="flex items-center gap-4">
                     <div className="flex items-center gap-1">
-                        <button
-                            type="button"
+                        <Button
+                            variant='icon'
                             onClick={() => setIsOpen((v) => !v)}
                             className="text-sarge-gray-700"
                         >
@@ -92,7 +93,7 @@ export default function AssessmentTestCasesPanel({
                             ) : (
                                 <ChevronUp className="size-5" />
                             )}
-                        </button>
+                        </Button>
                         <span className="text-sarge-gray-700 text-sm font-medium">Test Cases</span>
                     </div>
                     {hasResults && (
@@ -113,22 +114,22 @@ export default function AssessmentTestCasesPanel({
                     )}
                 </div>
                 <div className="flex items-center gap-2">
-                    <button
-                        type="button"
+                    <Button
+                        variant='secondary'
                         onClick={onRunTests}
-                        className="bg-sarge-gray-50 border-sarge-primary-500 text-sarge-primary-500 flex h-9 items-center gap-2 rounded-lg border px-4 text-sm font-medium"
+                        className="flex h-9 items-center gap-2 rounded-lg border px-4 text-sm font-medium"
                     >
                         <Play className="size-4" />
                         Run Tests
-                    </button>
-                    <button
-                        type="button"
+                    </Button>
+                    <Button
+                        variant='primary'
                         onClick={onSubmit}
-                        className="bg-sarge-primary-500 text-primary-foreground flex h-9 items-center gap-2 rounded-lg px-4 text-sm font-medium"
+                        className="text-primary-foreground flex h-9 items-center gap-2 rounded-lg px-4 text-sm font-medium"
                     >
                         Submit
                         <ChevronRight className="size-4" />
-                    </button>
+                    </Button>
                 </div>
             </div>
 

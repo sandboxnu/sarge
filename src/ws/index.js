@@ -32,7 +32,7 @@ function startHeartbeat(socket) {
         }
         socket.isAlive = false;
         socket.ping();
-        console.log(`PINGING ${socket.candidateEmail}`);
+        console.log(`[${new Date().toISOString()}] PINGING ${socket.candidateEmail}`);
     }, HEARTBEAT_INTERVAL);
 }
 
@@ -56,6 +56,7 @@ ws.on('connection', async (socket, request) => {
     });
 
     socket.on('pong', () => {
+        console.log(`[${new Date().toISOString()}] PONG FROM ${socket.candidateEmail}`);
         socket.isAlive = true;
     });
 

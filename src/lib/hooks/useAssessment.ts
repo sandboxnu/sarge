@@ -47,6 +47,11 @@ export default function useAssessment(assessmentId: string) {
     const monacoRef = useRef<Monaco | null>(null);
     const [token, setToken] = useState<string>();
 
+    const currentSectionIndexRef = useRef(currentSectionIndex);
+    useEffect(() => {
+        currentSectionIndexRef.current = currentSectionIndex;
+    }, [currentSectionIndex]);
+
     // the timer is in seconds however our model is in minutes
     const totalEstimatedMinutes = sections.reduce(
         (sum, s) => sum + (s.taskTemplate.estimatedTime ?? 0),
@@ -133,7 +138,9 @@ export default function useAssessment(assessmentId: string) {
     }
 
     function updateCode(code: string) {
-        setSections((prev) => prev.map((s, i) => (i === currentSectionIndex ? { ...s, code } : s)));
+        setSections((prev) =>
+            prev.map((s, i) => (i === currentSectionIndexRef.current ? { ...s, code } : s))
+        );
     }
 
     function changeLanguage(language: string) {
@@ -204,6 +211,10 @@ export default function useAssessment(assessmentId: string) {
     function handleEditorMount(editorInstance: editor.IStandaloneCodeEditor, monaco: Monaco) {
         editorRef.current = editorInstance;
         monacoRef.current = monaco;
+
+        editorInstance.onDidChangeModelContent(() => {
+            updateCode(editorInstance.getValue());
+        });
     }
 
     const currentSection = sections[currentSectionIndex] ?? null;
