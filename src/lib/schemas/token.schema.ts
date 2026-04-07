@@ -1,5 +1,5 @@
 import z from 'zod';
 
-export const TokenSchema = z.object({
+export const GenerateOATokenSchema = z.object({
     email: z.email(),
 });
