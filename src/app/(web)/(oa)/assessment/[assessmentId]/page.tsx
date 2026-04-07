@@ -1,6 +1,6 @@
 'use client';
 
-import { use } from 'react';
+import { use, useEffect, useState } from 'react';
 import useAssessment from '@/lib/hooks/useAssessment';
 import AssessmentIntro from '@/lib/components/assessment-flow/AssessmentIntro';
 import AssessmentOutro from '@/lib/components/assessment-flow/AssessmentOutro';
@@ -10,11 +10,26 @@ import AssessmentContent from '@/lib/components/assessment-flow/AssessmentConten
 import { useHeartbeat } from '@/lib/hooks/useHeartbeat';
 import { LostConnectionModal } from '@/lib/components/modal/LostConnectionModal';
 import AssessmentSkeleton from '@/lib/components/assessment-flow/AssessmentSkeleton';
+import { useWindowUnfocused } from '@/lib/hooks/useWindowUnfocused';
+import { WindowUnfocusedModal } from '@/lib/components/modal/WindowUnfocusedModal';
 
 export default function AssessmentPage({ params }: { params: Promise<{ assessmentId: string }> }) {
     const { assessmentId } = use(params);
     const assessment = useAssessment(assessmentId);
     const { isConnected } = useHeartbeat(assessment.token ?? null);
+    const isWindowUnfocused = useWindowUnfocused();
+    const [isUnfocusedModalOpen, setIsUnfocusedModalOpen] = useState(false);
+    const isExamActive =
+        !assessment.isLoading &&
+        !assessment.error &&
+        assessment.phase !== 'intro' &&
+        assessment.phase !== 'outro';
+
+    useEffect(() => {
+        if (isExamActive && isWindowUnfocused) {
+            setIsUnfocusedModalOpen(true);
+        }
+    }, [isExamActive, isWindowUnfocused]);
 
     if (assessment.isLoading)
         return (
@@ -52,6 +67,10 @@ export default function AssessmentPage({ params }: { params: Promise<{ assessmen
         <div className="flex h-screen w-full flex-col overflow-hidden">
             {/* onOpenChange is returning nothing as we don't have recovery implemented just yet  */}
             <LostConnectionModal open={!isConnected} onOpenChange={() => {}} />
+            <WindowUnfocusedModal
+                open={isUnfocusedModalOpen}
+                onAcknowledge={() => setIsUnfocusedModalOpen(false)}
+            />
             <AssessmentNavbar candidateName={assessment.candidateName} />
             <div className="flex flex-1 overflow-hidden">
                 <AssessmentSidebar
