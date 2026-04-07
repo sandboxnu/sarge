@@ -2,6 +2,7 @@ import { handleError } from '@/lib/utils/errors.utils';
 import { assertRecruiterOrAbove } from '@/lib/utils/permissions.utils';
 import { type NextRequest } from 'next/server';
 import judge0Connector, {
+    formatJudgeResult,
     type JudgeSubmissionRequestBody,
 } from '@/lib/connectors/judge0.connector';
 import { TestSubmissionSchema } from '@/lib/schemas/submission.schema';
@@ -21,10 +22,11 @@ export async function POST(request: NextRequest) {
         }));
 
         const result = await judge0Connector.executeSubmissions(formatted);
+        const formattedResults = result.map(formatJudgeResult);
 
         return Response.json({
-            data: result,
-            status: 200,
+            data: formattedResults,
+            status: 201,
         });
     } catch (err) {
         return handleError(err);

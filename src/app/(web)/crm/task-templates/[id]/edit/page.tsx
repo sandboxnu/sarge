@@ -10,6 +10,8 @@ import { Button } from '@/lib/components/ui/Button';
 import TaskEditorSidebar from '@/lib/components/core/TaskEditorSidebar';
 import Breadcrumbs from '@/lib/components/core/Breadcrumbs';
 import useTestRunner from '@/lib/hooks/useTestRunner';
+import { type TestCaseDTO } from '@/lib/schemas/task-template.schema';
+import { type ProgrammingLanguage } from '@/generated/prisma';
 
 export default function TaskTemplateEditPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
@@ -46,10 +48,14 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
         generateStubsForLanguages,
         getEditorContent,
     } = useTaskTemplateEditPage(id);
-    const { runEditPageTests } = useTestRunner(
-        getEditorContent(),
-        languages ? languages[selectedLanguage].language : 'python' // UHHHH
-    );
+    const { runEditPageTests } = useTestRunner();
+
+    const handleRunTests = (tests: TestCaseDTO[]) => {
+        const code = getEditorContent();
+        const language = languages?.[selectedLanguage]?.language;
+        if (!language) return;
+        runEditPageTests(tests, code, language as ProgrammingLanguage);
+    };
 
     if (isLoading) {
         return (
@@ -139,7 +145,7 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
                             setPublicTestCases={setPublicTestCases}
                             privateTestCases={privateTestCases}
                             setPrivateTestCases={setPrivateTestCases}
-                            runTests={runEditPageTests}
+                            runTests={handleRunTests}
                             isSaving={isSaving}
                         />
                     </div>
