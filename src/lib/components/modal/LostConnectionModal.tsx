@@ -1,6 +1,5 @@
 import { Dialog, DialogContent, DialogTitle } from '@/lib/components/ui/Modal';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
-import { Button } from '@/lib/components/ui/Button';
 
 export type LostConnectionModalProps = {
     open: boolean;
@@ -10,19 +9,18 @@ export type LostConnectionModalProps = {
 export function LostConnectionModal({ open, onOpenChange }: LostConnectionModalProps) {
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="h-[234px] w-[381px] gap-4" showCloseButton={true}>
+            <DialogContent className="h-[180px] w-[340px] gap-4" showCloseButton={false}>
                 <VisuallyHidden>
                     <DialogTitle>Network Disconnected</DialogTitle>
                 </VisuallyHidden>
-                <div className="flex flex-col items-center gap-6 text-center">
-                    <p className="text-sarge-gray-800 mt-2 text-base leading-tight font-medium tracking-wide">
-                        You seem to be having issues with your connection.
+                <div className="flex h-full flex-col items-center justify-center gap-4 px-6 text-center">
+                    <p className="text-md font-semibold tracking-wide">
+                        You have been disconnected
                     </p>
-                    <p>
-                        If you disconnect again during this exam, your current progress will be
-                        auto-submitted.
+                    <p className="text-sm">
+                        Please check your internet connection. Do not reload the page when trying to
+                        reconnect.
                     </p>
-                    <Button className="px-4 py-2">I understand</Button>
                 </div>
             </DialogContent>
         </Dialog>
