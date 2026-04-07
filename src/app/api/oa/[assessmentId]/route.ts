@@ -7,6 +7,7 @@ export async function GET(
     { params }: { params: Promise<{ assessmentId: string }> }
 ) {
     try {
+        // TODO: add route security
         const { assessmentId } = await params;
         const result = await AssessmentService.getAssessmentForCandidate(assessmentId);
         return Response.json({ data: result }, { status: 200 });

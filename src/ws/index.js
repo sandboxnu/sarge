@@ -2,11 +2,11 @@ import { WebSocketServer } from 'ws';
 import { jwtVerify } from 'jose';
 
 const ws = new WebSocketServer({ port: 8080 });
-const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+const secret = new TextEncoder().encode('SECRET');
 
 console.log('Sarge WS server listening on 8080');
 
-// <userId, socket>
+// <candidateEmail, socket>
 const clients = new Map();
 
 const HEARTBEAT_INTERVAL = 5000;
@@ -32,6 +32,7 @@ function startHeartbeat(socket) {
         }
         socket.isAlive = false;
         socket.ping();
+        console.log(`[${new Date().toISOString()}] PINGING ${socket.candidateEmail}`);
     }, HEARTBEAT_INTERVAL);
 }
 
@@ -39,9 +40,10 @@ ws.on('connection', async (socket, request) => {
     const token = getTokenFromRequest(request);
     try {
         const payload = await verifyToken(token ?? '');
-        socket.userId = payload.userId;
+        socket.candidateEmail = payload.email;
         socket.isAlive = true;
-        clients.set(payload.userId, socket);
+        console.log(`Candidate Connected: ${socket.candidateEmail}`);
+        clients.set(payload.candidateEmail, socket);
     } catch {
         socket.close(1008, 'Unauthorized');
         return;
@@ -54,20 +56,21 @@ ws.on('connection', async (socket, request) => {
     });
 
     socket.on('pong', () => {
+        console.log(`[${new Date().toISOString()}] PONG FROM ${socket.candidateEmail}`);
         socket.isAlive = true;
     });
 
     socket.on('close', (code, reason) => {
-        if (!socket.userId) return;
+        if (!socket.candidateEmail) return;
         clearInterval(socket.heartbeat);
-        clients.delete(socket.userId);
+        clients.delete(socket.candidateEmail);
         console.log(
-            `Client ${socket.userId} disconnected | code: ${code}, reason: ${reason.toString()}`
+            `Client ${socket.candidateEmail} disconnected | code: ${code}, reason: ${reason.toString()}`
         );
     });
 
     socket.on('error', (err) => {
-        console.error(`Socket error for ${socket.userId}:`, err.message);
+        console.error(`Socket error for ${socket.candidateEmail}:`, err.message);
     });
 });
 
