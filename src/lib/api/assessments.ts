@@ -1,7 +1,10 @@
 import { type Application } from '@/generated/prisma';
 import { type AssessmentStatus } from '@/generated/prisma';
 import { type Assessment, type UpdateAssessmentDTO } from '@/lib/schemas/assessment.schema';
-import { type AssessmentWithRelations } from '@/lib/types/assessment-template.types';
+import {
+    type AssessmentWithRelations,
+    AssessmentInvitationResult,
+} from '@/lib/types/assessment-template.types';
 
 /**
  * GET /api/assessments/:assessmentId
@@ -69,18 +72,9 @@ export async function updateAssessmentStatus(
  * POST /api/assessments/send-invitation
  * Sends assessment invitation emails to all NOT_SENT candidates of a position
  */
-export async function sendAssessmentInvitation(positionId: string): Promise<{
-    totalSent: number;
-    totalFailed: number;
-    results: Array<{
-        success: boolean;
-        message: string;
-        candidateName: string;
-        positionTitle: string;
-        assessmentId: string;
-        applicationId: string;
-    }>;
-}> {
+export async function sendAssessmentInvitation(
+    positionId: string
+): Promise<AssessmentInvitationResult> {
     const res = await fetch('/api/assessments/send-invitation', {
         method: 'POST',
         headers: {

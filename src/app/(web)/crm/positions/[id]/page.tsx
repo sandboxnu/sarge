@@ -12,16 +12,21 @@ import { Plus, ArrowUpDown, SlidersHorizontal, Mail } from 'lucide-react';
 import { use, useState } from 'react';
 import useSearch from '@/lib/hooks/useSearch';
 import Breadcrumbs from '@/lib/components/core/Breadcrumbs';
-import { sendAssessmentInvitation } from '@/lib/api/assessments';
-import { toast } from 'sonner';
 
 export default function CandidatesPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
     const [isModalManualOpen, setIsModalManualOpen] = useState(false);
     const [isCSVModalOpen, setIsCSVModalOpen] = useState(false);
-    const [isSendingAssessments, setIsSendingAssessments] = useState(false);
-    const { candidates, loading, error, positionTitle, createCandidate, batchCreateCandidates } =
-        useCandidates(id);
+    const {
+        candidates,
+        loading,
+        error,
+        positionTitle,
+        createCandidate,
+        batchCreateCandidates,
+        isSendingAssessments,
+        handleSendAssessments,
+    } = useCandidates(id);
     const { value: searchValue, onChange: onSearchChange } = useSearch('applications');
 
     const displayedCandidates = searchValue.trim().length
@@ -29,38 +34,6 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
               c.candidate.name.toLowerCase().includes(searchValue.trim().toLowerCase())
           )
         : candidates;
-
-    const handleSendAssessments = async () => {
-        try {
-            setIsSendingAssessments(true);
-            const result = await sendAssessmentInvitation(id);
-
-            if (result.totalSent > 0) {
-                toast.success(
-                    `Successfully sent ${result.totalSent} assessment invitation${result.totalSent !== 1 ? 's' : ''}`
-                );
-            }
-
-            if (result.totalFailed > 0) {
-                toast.error(
-                    `Failed to send ${result.totalFailed} invitation${result.totalFailed !== 1 ? 's' : ''}`
-                );
-            }
-
-            if (result.totalSent === 0 && result.totalFailed === 0) {
-                toast.info('No candidates with pending assessments to send');
-            }
-        } catch (err) {
-            const errorMessage = (err as Error).message;
-            if (errorMessage.includes('does not have an assessment template assigned')) {
-                toast.error('This position does not have an assessment template assigned');
-            } else {
-                toast.error(errorMessage || 'Failed to send assessment invitations');
-            }
-        } finally {
-            setIsSendingAssessments(false);
-        }
-    };
 
     return (
         <>
@@ -128,28 +101,15 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                         </TabsContent>
 
                         <TabsContent value="assessment">
-                            <div className="border-sarge-gray-200 flex items-center justify-between self-stretch rounded-lg border bg-white p-4">
-                                <div className="flex flex-col gap-3">
-                                    <span className="text-sarge-gray-800 overflow-hidden text-lg leading-6 font-medium tracking-wide text-ellipsis">
-                                        Software Engineer Assessment
-                                    </span>
-                                    <div className="flex items-center gap-3">
-                                        <Chip variant="neutral">10/10 sent</Chip>
-                                        <Chip variant="neutral">0/10 submitted</Chip>
-                                    </div>
-                                </div>
-                                <div className="flex items-end gap-3">
-                                    <Button
-                                        className="px-4 py-3"
-                                        onClick={handleSendAssessments}
-                                        disabled={isSendingAssessments}
-                                    >
-                                        <Mail className="size-5" />
-                                        {isSendingAssessments
-                                            ? 'Sending...'
-                                            : 'Send to all candidates'}
-                                    </Button>
-                                </div>
+                            <div className="flex w-full justify-end">
+                                <Button
+                                    className="px-4 py-3"
+                                    onClick={handleSendAssessments}
+                                    disabled={isSendingAssessments}
+                                >
+                                    <Mail className="size-5" />
+                                    {isSendingAssessments ? 'Sending...' : 'Send to all candidates'}
+                                </Button>
                             </div>
                         </TabsContent>
                     </Tabs>

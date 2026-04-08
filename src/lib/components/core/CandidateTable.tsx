@@ -22,7 +22,6 @@ const getAssessmentLabel = (status?: string) => {
     if (s === 'NOT_STARTED') return 'Not started';
     if (s === 'NOT_ASSIGNED') return 'Not assigned';
     if (s === 'EXPIRED') return 'Expired';
-    if (s === 'NOT_SENT') return 'Not sent';
     return status ?? 'N/A';
 };
 
