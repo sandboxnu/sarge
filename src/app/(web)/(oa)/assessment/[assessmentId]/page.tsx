@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useCallback, useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import useAssessment from '@/lib/hooks/useAssessment';
 import AssessmentIntro from '@/lib/components/assessment-flow/AssessmentIntro';
 import AssessmentOutro from '@/lib/components/assessment-flow/AssessmentOutro';
@@ -19,13 +19,13 @@ export default function AssessmentPage({ params }: { params: Promise<{ assessmen
     const { isConnected } = useHeartbeat(assessment.token ?? null);
     const isWindowUnfocused = useWindowUnfocused();
     const [isUnfocusedModalOpen, setIsUnfocusedModalOpen] = useState(false);
-    const acknowledgeUnfocused = useCallback(() => setIsUnfocusedModalOpen(false), []);
+    const acknowledgeUnfocused = () => setIsUnfocusedModalOpen(false);
 
     useEffect(() => {
-        if (isWindowUnfocused && !isUnfocusedModalOpen) {
+        if (isWindowUnfocused) {
             setIsUnfocusedModalOpen(true);
         }
-    }, [isWindowUnfocused, isUnfocusedModalOpen]);
+    }, [isWindowUnfocused]);
 
     if (assessment.isLoading)
         return (
@@ -64,7 +64,7 @@ export default function AssessmentPage({ params }: { params: Promise<{ assessmen
             {/* onOpenChange is returning nothing as we don't have recovery implemented just yet  */}
             <LostConnectionModal open={!isConnected} onOpenChange={() => {}} />
             <WindowUnfocusedModal
-                open={isUnfocusedModalOpen}
+                open={isUnfocusedModalOpen && isConnected}
                 onAcknowledge={acknowledgeUnfocused}
             />
             <AssessmentNavbar candidateName={assessment.candidateName} />

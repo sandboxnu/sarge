@@ -11,7 +11,7 @@ export type WindowUnfocusedModalProps = {
 
 export function WindowUnfocusedModal({ open, onAcknowledge }: WindowUnfocusedModalProps) {
     return (
-        <Dialog open={open}>
+        <Dialog open={open} onOpenChange={() => {}}>
             <DialogContent
                 className="w-[380px] gap-4"
                 showCloseButton={false}
