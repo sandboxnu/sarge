@@ -55,13 +55,8 @@ export default function AssessmentPage({ params }: { params: Promise<{ assessmen
         );
     }
 
-    if (assessment.phase === 'outro') {
-        return (
-            <AssessmentOutro
-                reason={assessment.outroReason}
-                candidateName={assessment.candidateName}
-            />
-        );
+    if (assessment.phase === 'outro' && assessment.assessment) {
+        return <AssessmentOutro assessment={assessment.assessment} />;
     }
 
     return (
