@@ -27,8 +27,7 @@ class Judge0Connector {
     constructor() {
         this.headers = {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            'x-rapidapi-key': process.env.JUDGE_API_KEY!,
-            'x-rapidapi-host': 'judge0-ce.p.rapidapi.com',
+            'X-Auth-User': process.env.JUDGE_API_KEY!,
         };
         this.fields = ['stdout', 'status', 'language_id', 'stderr', 'token', 'expected_output'];
     }
@@ -47,6 +46,7 @@ class Judge0Connector {
             },
             body: JSON.stringify(requestBody),
         });
+
         const jsonResponse = await response.json();
         if (!response.ok) {
             throw new InternalServerException(`Judge0 API error: ${jsonResponse.error}`);

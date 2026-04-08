@@ -210,7 +210,7 @@ export function mapLanguageToJudge(language: string): number {
     try {
         switch (language) {
             case 'python':
-                return 100;
+                return 71;
             case 'javascript':
                 return 102;
             case 'ruby':
