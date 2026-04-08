@@ -1,13 +1,13 @@
 import { type NextRequest } from 'next/server';
 import { handleError } from '@/lib/utils/errors.utils';
-import PositionTagService from '@/lib/services/position-tag.service';
+import TagService from '@/lib/services/tag.service';
 import { createTagSchema } from '@/lib/schemas/tag.schema';
 import { getSession } from '@/lib/utils/auth.utils';
 
 export async function GET() {
     try {
         const session = await getSession();
-        const tags = await PositionTagService.getPositionTagsByOrgId(session.activeOrganizationId);
+        const tags = await TagService.getPositionTagsByOrgId(session.activeOrganizationId);
         return Response.json({ data: tags }, { status: 200 });
     } catch (err) {
         return handleError(err);
@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
         const body = await request.json();
         const parsed = createTagSchema.parse(body);
 
-        const tag = await PositionTagService.createPositionTag(
+        const tag = await TagService.createPositionTag(
             parsed.name,
             session.activeOrganizationId,
             parsed.colorHexCode
