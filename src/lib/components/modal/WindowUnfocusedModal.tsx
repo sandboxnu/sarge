@@ -2,6 +2,8 @@ import { Dialog, DialogContent, DialogTitle } from '@/lib/components/ui/Modal';
 import { Button } from '@/lib/components/ui/Button';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
+const preventDefault = (e: { preventDefault: () => void }) => e.preventDefault();
+
 export type WindowUnfocusedModalProps = {
     open: boolean;
     onAcknowledge: () => void;
@@ -13,8 +15,8 @@ export function WindowUnfocusedModal({ open, onAcknowledge }: WindowUnfocusedMod
             <DialogContent
                 className="w-[380px] gap-4"
                 showCloseButton={false}
-                onPointerDownOutside={(e) => e.preventDefault()}
-                onEscapeKeyDown={(e) => e.preventDefault()}
+                onPointerDownOutside={preventDefault}
+                onEscapeKeyDown={preventDefault}
                 overlayClassName="backdrop-blur-md"
             >
                 <VisuallyHidden>
