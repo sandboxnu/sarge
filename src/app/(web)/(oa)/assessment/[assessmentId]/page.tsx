@@ -1,6 +1,6 @@
 'use client';
 
-import { use } from 'react';
+import { use, useEffect, useState } from 'react';
 import useAssessment from '@/lib/hooks/useAssessment';
 import AssessmentIntro from '@/lib/components/assessment-flow/AssessmentIntro';
 import AssessmentOutro from '@/lib/components/assessment-flow/AssessmentOutro';
@@ -18,6 +18,13 @@ export default function AssessmentPage({ params }: { params: Promise<{ assessmen
     const assessment = useAssessment(assessmentId);
     const { isConnected } = useHeartbeat(assessment.token ?? null);
     const isWindowUnfocused = useWindowUnfocused();
+    const [isUnfocusedModalOpen, setIsUnfocusedModalOpen] = useState(false);
+
+    useEffect(() => {
+        if (isWindowUnfocused) {
+            setIsUnfocusedModalOpen(true);
+        }
+    }, [isWindowUnfocused]);
 
     if (assessment.isLoading)
         return (
@@ -55,7 +62,10 @@ export default function AssessmentPage({ params }: { params: Promise<{ assessmen
         <div className="flex h-screen w-full flex-col overflow-hidden">
             {/* onOpenChange is returning nothing as we don't have recovery implemented just yet  */}
             <LostConnectionModal open={!isConnected} onOpenChange={() => {}} />
-            <WindowUnfocusedModal open={isWindowUnfocused} onOpenChange={() => {}} />
+            <WindowUnfocusedModal
+                open={isUnfocusedModalOpen}
+                onAcknowledge={() => setIsUnfocusedModalOpen(false)}
+            />
             <AssessmentNavbar candidateName={assessment.candidateName} />
             <div className="flex flex-1 overflow-hidden">
                 <AssessmentSidebar
