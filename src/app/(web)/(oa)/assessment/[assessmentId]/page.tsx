@@ -8,13 +8,16 @@ import AssessmentSidebar from '@/lib/components/assessment-flow/AssessmentSideba
 import AssessmentNavbar from '@/lib/components/assessment-flow/AssessmentNavbar';
 import AssessmentContent from '@/lib/components/assessment-flow/AssessmentContent';
 import { useHeartbeat } from '@/lib/hooks/useHeartbeat';
+import { useWindowUnfocused } from '@/lib/hooks/useWindowUnfocused';
 import { LostConnectionModal } from '@/lib/components/modal/LostConnectionModal';
+import { WindowUnfocusedModal } from '@/lib/components/modal/WindowUnfocusedModal';
 import AssessmentSkeleton from '@/lib/components/assessment-flow/AssessmentSkeleton';
 
 export default function AssessmentPage({ params }: { params: Promise<{ assessmentId: string }> }) {
     const { assessmentId } = use(params);
     const assessment = useAssessment(assessmentId);
     const { isConnected } = useHeartbeat(assessment.token ?? null);
+    const isWindowUnfocused = useWindowUnfocused();
 
     if (assessment.isLoading)
         return (
@@ -52,6 +55,7 @@ export default function AssessmentPage({ params }: { params: Promise<{ assessmen
         <div className="flex h-screen w-full flex-col overflow-hidden">
             {/* onOpenChange is returning nothing as we don't have recovery implemented just yet  */}
             <LostConnectionModal open={!isConnected} onOpenChange={() => {}} />
+            <WindowUnfocusedModal open={isWindowUnfocused} onOpenChange={() => {}} />
             <AssessmentNavbar candidateName={assessment.candidateName} />
             <div className="flex flex-1 overflow-hidden">
                 <AssessmentSidebar
