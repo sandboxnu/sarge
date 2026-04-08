@@ -91,6 +91,7 @@ model Candidate {
 
 enum AssessmentStatus {
   NOT_ASSIGNED // Application created, no assessment assigned yet
+  NOT_SENT // Assessment assigned, link not yet sent to candidate
   NOT_STARTED // Assessment created and link sent to candidate, but candidate has not started yet
   SUBMITTED // Candidate completed and submitted assessment
   EXPIRED // Assessment deadline passed without submission
