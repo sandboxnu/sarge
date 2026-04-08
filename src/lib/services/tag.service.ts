@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { TaskTemplateTag, type PositionTag } from '@/generated/prisma';
+import { type TaskTemplateTag, type PositionTag } from '@/generated/prisma';
 
 async function getPositionTagsByOrgId(orgId: string): Promise<PositionTag[]> {
     return prisma.positionTag.findMany({
