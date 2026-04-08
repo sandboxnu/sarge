@@ -7,7 +7,6 @@ import UploadCSVModal from '@/lib/components/modal/UploadCSVModal';
 import useCandidates from '@/lib/hooks/useCandidates';
 import { Search } from '@/lib/components/core/Search';
 import { Tabs, TabsContent, TabsList, UnderlineTabsTrigger } from '@/lib/components/ui/Tabs';
-import { Chip } from '@/lib/components/ui/Chip';
 import { Plus, ArrowUpDown, SlidersHorizontal, Mail } from 'lucide-react';
 import { use, useState } from 'react';
 import useSearch from '@/lib/hooks/useSearch';
