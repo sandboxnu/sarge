@@ -21,25 +21,23 @@ export default function AssessmentOutro({ assessment }: AssessmentOutroProps) {
                         {assessment.assessmentTemplate.title}
                     </h1>
                     <div>
-                        <p className="mt-2 text-md">
+                        <p className="text-md mt-2">
                             Your submission has been received. The {assessment.organizationName}{' '}
                             team will be in touch with next steps within the next few weeks.
                         </p>
-                        <p className="mt-2 text-md">You can safely close this tab.</p>
+                        <p className="text-md mt-2">You can safely close this tab.</p>
                     </div>
                 </div>
-                
+
                 <div className="flex flex-col items-center">
-                <Button className="w-10 px-12 py-2" onClick={handleCloseTab} variant="primary">
-                    Close Tab
-                </Button>
+                    <Button className="w-10 px-12 py-2" onClick={handleCloseTab} variant="primary">
+                        Close Tab
+                    </Button>
                 </div>
                 <p className="text-sm">
                     For any questions, please reach out to the exam administrator at [email].
                 </p>
-                <div className="m-50">
-
-                </div>
+                <div className="m-50"></div>
             </div>
         </div>
     );
