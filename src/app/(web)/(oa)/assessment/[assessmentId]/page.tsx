@@ -22,6 +22,7 @@ export default function AssessmentPage({ params }: { params: Promise<{ assessmen
     const isExamActive =
         !assessment.isLoading &&
         !assessment.error &&
+        isConnected &&
         assessment.phase !== 'intro' &&
         assessment.phase !== 'outro';
 
