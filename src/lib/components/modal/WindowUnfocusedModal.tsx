@@ -9,7 +9,7 @@ type WindowUnfocusedModalProps = {
 
 export function WindowUnfocusedModal({ open, onAcknowledge }: WindowUnfocusedModalProps) {
     return (
-        <Dialog open={open} onOpenChange={() => { }}>
+        <Dialog open={open} onOpenChange={() => {}}>
             <DialogContent
                 className="h-[184px] w-[361px] gap-4"
                 backgroundClassName="bg-white/25 backdrop-blur-md"
