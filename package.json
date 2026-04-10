@@ -6,6 +6,7 @@
     "scripts": {
         "dev:migrate": "npx prisma migrate dev",
         "dev:start": "next dev",
+        "dev:ws": "node --env-file .env src/ws/index.js",
         "dev": "npm run dev:migrate && npm run dev:start",
         "build": "prisma generate && next build",
         "start": "next start",

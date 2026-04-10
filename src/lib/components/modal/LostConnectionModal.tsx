@@ -9,7 +9,11 @@ export type LostConnectionModalProps = {
 export function LostConnectionModal({ open, onOpenChange }: LostConnectionModalProps) {
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="h-[180px] w-[340px] gap-4" showCloseButton={false}>
+            <DialogContent
+                className="h-[184px] w-[361px] gap-4"
+                backgroundClassName="backdrop-blur-md"
+                showCloseButton={false}
+            >
                 <VisuallyHidden>
                     <DialogTitle>Network Disconnected</DialogTitle>
                 </VisuallyHidden>

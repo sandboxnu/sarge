@@ -1,6 +1,6 @@
 'use client';
 
-import { Home, File, Users, Book, Archive, Settings, ChevronDown } from 'lucide-react';
+import { Home, File, Users, Settings, ChevronDown } from 'lucide-react';
 import { useAuth } from '@/lib/auth/auth-context';
 import Image from 'next/image';
 import useOnboardingState from '@/lib/hooks/useOnboardingState';
@@ -693,16 +693,6 @@ const sidebarMenuItems = [
         title: 'Positions',
         url: '/crm/positions',
         icon: Users,
-    },
-    {
-        title: 'Live Assessments',
-        url: '#',
-        icon: Book,
-    },
-    {
-        title: 'Archived Assessments',
-        url: '#',
-        icon: Archive,
     },
 ];
 
