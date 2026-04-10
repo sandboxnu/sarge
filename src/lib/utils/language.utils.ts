@@ -212,6 +212,7 @@ function cScanLines(varName: string, type: string): string[] {
         ];
     }
     switch (normalized) {
+        // NOTE(laith): both C and C++ implementations require 4 space indenting to be put inside the main function)
         case 'int':
             return [`    int ${varName}; scanf("%d", &${varName});`];
         case 'float':
@@ -261,7 +262,7 @@ function cppCinLines(varName: string, type: string): string[] {
     }
 }
 
-function generatePythonDriver(
+function generatePythonToStdOut(
     functionName: string,
     returnType: string,
     parameters: StubParameter[]
@@ -287,7 +288,7 @@ function generatePythonDriver(
     ].join('\n');
 }
 
-function generateJavaScriptDriver(
+function generateJavaScriptToStdOut(
     functionName: string,
     returnType: string,
     parameters: StubParameter[]
@@ -306,15 +307,15 @@ function generateJavaScriptDriver(
     ].join('\n');
 }
 
-function generateTypeScriptDriver(
+function generateTypeScriptToStdOut(
     functionName: string,
     returnType: string,
     parameters: StubParameter[]
 ): string {
-    return generateJavaScriptDriver(functionName, returnType, parameters);
+    return generateJavaScriptToStdOut(functionName, returnType, parameters);
 }
 
-function generateRubyDriver(
+function generateRubyToStdOut(
     functionName: string,
     returnType: string,
     parameters: StubParameter[]
@@ -334,7 +335,7 @@ function generateRubyDriver(
     return lines.join('\n');
 }
 
-function generateCDriver(
+function generateCToStdOut(
     functionName: string,
     returnType: string,
     parameters: StubParameter[]
@@ -353,7 +354,7 @@ function generateCDriver(
     ].join('\n');
 }
 
-function generateCppDriver(
+function generateCppToStdOut(
     functionName: string,
     returnType: string,
     parameters: StubParameter[]
@@ -372,7 +373,7 @@ function generateCppDriver(
     ].join('\n');
 }
 
-export function generateDriverCode(
+export function generateStdOutCode(
     functionName: string,
     returnType: string,
     parameters: StubParameter[],
@@ -380,19 +381,19 @@ export function generateDriverCode(
 ): string {
     switch (language) {
         case 'python':
-            return generatePythonDriver(functionName, returnType, parameters);
+            return generatePythonToStdOut(functionName, returnType, parameters);
         case 'javascript':
-            return generateJavaScriptDriver(functionName, returnType, parameters);
+            return generateJavaScriptToStdOut(functionName, returnType, parameters);
         case 'typescript':
-            return generateTypeScriptDriver(functionName, returnType, parameters);
+            return generateTypeScriptToStdOut(functionName, returnType, parameters);
         case 'ruby':
-            return generateRubyDriver(functionName, returnType, parameters);
+            return generateRubyToStdOut(functionName, returnType, parameters);
         case 'c':
-            return generateCDriver(functionName, returnType, parameters);
+            return generateCToStdOut(functionName, returnType, parameters);
         case 'cpp':
-            return generateCppDriver(functionName, returnType, parameters);
+            return generateCppToStdOut(functionName, returnType, parameters);
         default:
-            return `// Driver for ${language} is not supported.`;
+            return `// stdout conversion for ${language} is not supported.`;
     }
 }
 
@@ -490,8 +491,8 @@ export function generateCodeStub(
             return `// Code stub for ${language} is not available.`;
     }
 
-    const driver = generateDriverCode(functionName, returnType, parameters, language);
-    return `${stub}\n\n${driver}`;
+    const conversionFunction = generateStdOutCode(functionName, returnType, parameters, language);
+    return `${stub}\n\n${conversionFunction}`;
 }
 
 export function mapLanguageToJudge(language: string): number {
