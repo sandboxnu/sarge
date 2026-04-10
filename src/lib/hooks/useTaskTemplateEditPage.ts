@@ -324,7 +324,7 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
                 toast.error((err as Error).message);
             }
         },
-        [languages, taskTemplateId]
+        [languages, taskTemplateId, activeFileTab, selectedLanguage]
     );
 
     const removeLanguage = useCallback(
