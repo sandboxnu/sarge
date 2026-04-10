@@ -201,6 +201,16 @@ export default function useAssessment(assessmentId: string) {
                     })
                 );
                 setCurrentSectionIndex((prev) => prev + 1);
+                setSections((prev) =>
+                    prev.map((s) => {
+                        return {
+                            ...s,
+                            testCaseResults: s.testCaseResults.map(() => {
+                                return { status: 'default' };
+                            }),
+                        };
+                    })
+                );
                 setIsTransitioning(false);
             }, 200);
         }
