@@ -29,6 +29,7 @@ export type CandidateAssessment = {
     deadline: Date | null;
     assignedAt: Date;
     submittedAt: Date | null;
+    startedAt: Date | null;
     assessmentStatus: AssessmentStatus;
     candidateName: string;
     candidateEmail: string;
@@ -39,7 +40,7 @@ export type CandidateAssessment = {
 };
 
 export type AssessmentPhase = 'intro' | 'assessment' | 'outro';
-export type OutroReason = 'submitted' | 'expired';
+export type OutroReason = 'submitted' | 'expired' | 'already_started';
 export type SectionStatus = 'locked' | 'current' | 'completed';
 
 export type TestCaseResult = {

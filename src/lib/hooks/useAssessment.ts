@@ -4,7 +4,11 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { type editor } from 'monaco-editor';
 import { type Monaco } from '@monaco-editor/react';
 import { toast } from 'sonner';
-import { getCandidateAssessment, submitCandidateAssessment } from '@/lib/api/candidate-assessment';
+import {
+    getCandidateAssessment,
+    submitCandidateAssessment,
+    startCandidateAssessment,
+} from '@/lib/api/candidate-assessment';
 import { useAssessmentTimer } from '@/lib/hooks/useAssessmentTimer';
 import type {
     AssessmentPhase,
@@ -54,7 +58,7 @@ export default function useAssessment(assessmentId: string) {
 
     // the timer is in seconds however our model is in minutes
     const totalEstimatedMinutes = sections.reduce(
-        (sum, s) => sum + (s.taskTemplate.estimatedTime ?? 0),
+        (sum, s) => sum + s.taskTemplate.estimatedTime,
         0
     );
     const totalTimeSeconds = totalEstimatedMinutes * 60;
@@ -69,7 +73,16 @@ export default function useAssessment(assessmentId: string) {
                 const token = await createToken(data.candidateEmail);
                 setAssessment(data);
                 setToken(token);
-                setSections(buildInitialSections(data.assessmentTemplate.tasks));
+
+                if (data.submittedAt) {
+                    setOutroReason('submitted');
+                    setPhase('outro');
+                } else if (data.startedAt) {
+                    setOutroReason('already_started');
+                    setPhase('outro');
+                } else {
+                    setSections(buildInitialSections(data.assessmentTemplate.tasks));
+                }
             } catch (err) {
                 setError(err as Error);
             } finally {
@@ -103,8 +116,13 @@ export default function useAssessment(assessmentId: string) {
         }
     }, [timer.isExpired, phase, handleSubmitAssessment]);
 
-    function startAssessment() {
-        setPhase('assessment');
+    async function startAssessment() {
+        try {
+            await startCandidateAssessment(assessmentId);
+            setPhase('assessment');
+        } catch (err) {
+            toast.error(`Failed to start assessment. Please try again. Error: ${err}`);
+        }
     }
 
     function submitAndContinue() {

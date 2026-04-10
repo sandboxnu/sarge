@@ -155,7 +155,7 @@ model TaskTemplate {
   orgId            String
   taskType         String?
   authorId         String
-  estimatedTime    Int     @default(0)
+  estimatedTime    Int     @default(30)
   timeout          Int     @default(0)
 
   organization Organization           @relation(fields: [orgId], references: [id])
@@ -224,6 +224,7 @@ model Assessment {
   assessmentTemplateId String
   assignedAt           DateTime  @default(now())
   submittedAt          DateTime?
+  startedAt            DateTime?
   uniqueLink           String    @unique
   deadline             DateTime?
 

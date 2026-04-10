@@ -21,3 +21,14 @@ export async function submitCandidateAssessment(assessmentId: string): Promise<v
 
     return json.data;
 }
+
+export async function startCandidateAssessment(assessmentId: string): Promise<void> {
+    const res = await fetch(`/api/oa/${assessmentId}/start`, { method: 'PUT' });
+    const json = await res.json();
+
+    if (!res.ok) {
+        throw new Error(json.message);
+    }
+
+    return json.data;
+}

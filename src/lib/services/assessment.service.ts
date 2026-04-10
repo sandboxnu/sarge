@@ -245,6 +245,7 @@ async function getAssessmentForCandidate(assessmentId: string): Promise<Candidat
             deadline: true,
             assignedAt: true,
             submittedAt: true,
+            startedAt: true,
             application: {
                 select: {
                     assessmentStatus: true,
@@ -294,6 +295,7 @@ async function getAssessmentForCandidate(assessmentId: string): Promise<Candidat
         deadline: assessment.deadline,
         assignedAt: assessment.assignedAt,
         submittedAt: assessment.submittedAt,
+        startedAt: assessment.startedAt,
         assessmentStatus: assessment.application.assessmentStatus,
         candidateName: assessment.application.candidate.name,
         candidateEmail: assessment.application.candidate.email,
@@ -409,9 +411,34 @@ async function sendAssessmentInvitationsToPosition(
     };
 }
 
+async function startAssessmentForCandidate(assessmentId: string): Promise<void> {
+    const assessment = await prisma.assessment.findFirst({
+        where: { id: assessmentId },
+        select: { id: true, startedAt: true, submittedAt: true },
+    });
+
+    if (!assessment) {
+        throw new NotFoundException('Assessment', assessmentId);
+    }
+
+    if (assessment.submittedAt) {
+        throw new BadRequestException('Assessment has already been submitted');
+    }
+
+    if (assessment.startedAt) {
+        throw new BadRequestException('Assessment has already been started');
+    }
+
+    await prisma.assessment.update({
+        where: { id: assessmentId },
+        data: { startedAt: new Date() },
+    });
+}
+
 const AssessmentService = {
     getAssessmentWithRelations,
     getAssessmentForCandidate,
+    startAssessmentForCandidate,
     submitAssessmentForCandidate,
     createAssessment,
     assignTemplateToPosition,
