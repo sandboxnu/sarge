@@ -694,16 +694,6 @@ const sidebarMenuItems = [
         url: '/crm/positions',
         icon: Users,
     },
-    {
-        title: 'Live Assessments',
-        url: '#',
-        icon: Book,
-    },
-    {
-        title: 'Archived Assessments',
-        url: '#',
-        icon: Archive,
-    },
 ];
 
 export function Sidebar() {
