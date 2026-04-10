@@ -1,7 +1,7 @@
 import useWebSocket from 'react-use-websocket';
 import { ReadyState } from 'react-use-websocket';
 
-const WS_URL = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8080';
+const WS_URL = process.env.NEXT_PUBLIC_WS_URL ?? 'ws://localhost:8080';
 
 export function useHeartbeat(token: string | null) {
     const ws = useWebSocket(token ? `${WS_URL}?token=${token}` : null, {
