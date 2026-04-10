@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import sesConnector from '@/lib/connectors/ses.connector';
 import { generateAssessmentInvitationHTML } from '@/lib/templates/invitation';
+import { formatDeadline } from '@/lib/utils/date.utils';
 
 interface SendAssessmentInvitationResult {
     success: boolean;
@@ -19,7 +20,21 @@ export async function sendAssessmentInvitationEmail(
         include: {
             applications: {
                 include: {
-                    assessment: true,
+                    assessment: {
+                        include: {
+                            assessmentTemplate: {
+                                include: {
+                                    tasks: {
+                                        include: {
+                                            taskTemplate: {
+                                                select: { estimatedTime: true },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
                     position: true,
                 },
             },
@@ -50,9 +65,11 @@ export async function sendAssessmentInvitationEmail(
     const assessmentUrl = `${baseUrl}/assessment/${assessment.uniqueLink}`;
     const logoUrl = `${baseUrl}/Sarge_logo.svg`;
 
-    //placeholder duration and expiration
-    const durationMinutes = 120;
-    const expirationDate = 'March 16, 2026 11:59PM EST';
+    const durationMinutes = assessment.assessmentTemplate.tasks.reduce(
+        (sum, task) => sum + task.taskTemplate.estimatedTime,
+        0
+    );
+    const expirationDate = formatDeadline(assessment.deadline);
     const htmlContent = generateAssessmentInvitationHTML({
         candidateName: candidate.name,
         positionTitle: position.title,

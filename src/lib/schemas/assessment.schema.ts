@@ -12,6 +12,7 @@ export const assessmentSchema = z.object({
     assignedAt: z.date(),
     uniqueLink: z.string(),
     submittedAt: z.date().nullable(),
+    startedAt: z.date().nullable(),
 });
 
 export const createAssessmentSchema = assessmentSchema.omit({ id: true, uniqueLink: true });
