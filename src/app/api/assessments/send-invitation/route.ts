@@ -1,13 +1,8 @@
 import { type NextRequest } from 'next/server';
-import { z } from 'zod';
 import { handleError } from '@/lib/utils/errors.utils';
 import { getSession } from '@/lib/utils/auth.utils';
 import { assertRecruiterOrAbove } from '@/lib/utils/permissions.utils';
-import emailService from '@/lib/services/email.service';
-
-const sendAssessmentInvitationSchema = z.object({
-    candidateId: z.string().cuid(),
-});
+import AssessmentService from '@/lib/services/assessment.service';
 
 export async function POST(request: NextRequest) {
     try {
@@ -15,19 +10,14 @@ export async function POST(request: NextRequest) {
         await assertRecruiterOrAbove(request.headers);
 
         const body = await request.json();
-        const { candidateId } = sendAssessmentInvitationSchema.parse(body);
+        const { positionId } = body as { positionId: string };
 
-        const result = await emailService.sendAssessmentInvitationEmail(
-            candidateId,
+        const result = await AssessmentService.sendAssessmentInvitationsToPosition(
+            positionId,
             session.activeOrganizationId
         );
 
-        return Response.json(
-            {
-                data: result,
-            },
-            { status: 200 }
-        );
+        return Response.json({ data: result }, { status: 200 });
     } catch (err) {
         return handleError(err);
     }

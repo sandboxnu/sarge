@@ -7,10 +7,14 @@ import type {
 } from '@/lib/schemas/assessment.schema';
 import { AssessmentStatus } from '@/generated/prisma';
 import { BadRequestException, NotFoundException } from '@/lib/utils/errors.utils';
-import { type AssessmentWithRelations } from '@/lib/types/assessment-template.types';
+import {
+    type AssessmentWithRelations,
+    type AssessmentInvitationResult,
+} from '@/lib/types/assessment-template.types';
 import type { CandidateAssessment } from '@/lib/types/candidate-assessment.types';
 import type { BlockNoteContent } from '@/lib/types/task-template.types';
 import type { TestCaseDTO } from '@/lib/schemas/task-template.schema';
+import emailService from '@/lib/services/email.service';
 
 async function getAssessmentWithRelations(
     id: string,
@@ -338,6 +342,73 @@ async function submitAssessmentForCandidate(assessmentId: string): Promise<void>
     ]);
 }
 
+async function sendAssessmentInvitationsToPosition(
+    positionId: string,
+    orgId: string
+): Promise<AssessmentInvitationResult> {
+    const position = await prisma.position.findUnique({
+        where: { id: positionId },
+        select: { assessmentId: true, orgId: true },
+    });
+
+    if (!position) {
+        throw new NotFoundException('Position', positionId);
+    }
+
+    if (position.orgId !== orgId) {
+        throw new BadRequestException('Position does not belong to your organization');
+    }
+
+    if (!position.assessmentId) {
+        throw new BadRequestException('Position does not have an assessment template assigned');
+    }
+
+    const applications = await prisma.application.findMany({
+        where: {
+            positionId,
+            assessmentStatus: 'NOT_SENT',
+        },
+        include: {
+            candidate: true,
+        },
+    });
+
+    const results = [];
+    for (const application of applications) {
+        try {
+            const result = await emailService.sendAssessmentInvitationEmail(
+                application.candidate.id,
+                orgId
+            );
+
+            await prisma.application.update({
+                where: { id: application.id },
+                data: { assessmentStatus: 'NOT_STARTED' },
+            });
+
+            results.push({
+                ...result,
+                applicationId: application.id,
+            });
+        } catch (err) {
+            results.push({
+                success: false,
+                message: `Failed to send invitation to ${application.candidate.name}: ${(err as Error).message}`,
+                candidateName: application.candidate.name,
+                positionTitle: '',
+                assessmentId: '',
+                applicationId: application.id,
+            });
+        }
+    }
+
+    return {
+        totalSent: results.filter((r) => r.success).length,
+        totalFailed: results.filter((r) => !r.success).length,
+        results,
+    };
+}
+
 const AssessmentService = {
     getAssessmentWithRelations,
     getAssessmentForCandidate,
@@ -346,6 +417,7 @@ const AssessmentService = {
     assignTemplateToPosition,
     deleteAssessment,
     updateAssessment,
+    sendAssessmentInvitationsToPosition,
 };
 
 export default AssessmentService;

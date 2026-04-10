@@ -22,6 +22,19 @@ export type TaskSection = {
     order: number;
 };
 
+export type AssessmentInvitationResult = {
+    totalSent: number;
+    totalFailed: number;
+    results: Array<{
+        success: boolean;
+        message: string;
+        candidateName: string;
+        positionTitle: string;
+        assessmentId: string;
+        applicationId: string;
+    }>;
+};
+
 // TODO: TextSection will be added here
 // export type TextSection = {
 //     type: 'text';

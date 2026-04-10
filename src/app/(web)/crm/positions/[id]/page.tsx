@@ -7,7 +7,7 @@ import UploadCSVModal from '@/lib/components/modal/UploadCSVModal';
 import useCandidates from '@/lib/hooks/useCandidates';
 import { Search } from '@/lib/components/core/Search';
 import { Tabs, TabsContent, TabsList, UnderlineTabsTrigger } from '@/lib/components/ui/Tabs';
-import { Plus, ArrowUpDown, SlidersHorizontal } from 'lucide-react';
+import { Plus, ArrowUpDown, SlidersHorizontal, Mail } from 'lucide-react';
 import { use, useState } from 'react';
 import useSearch from '@/lib/hooks/useSearch';
 import Breadcrumbs from '@/lib/components/core/Breadcrumbs';
@@ -16,8 +16,16 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
     const { id } = use(params);
     const [isModalManualOpen, setIsModalManualOpen] = useState(false);
     const [isCSVModalOpen, setIsCSVModalOpen] = useState(false);
-    const { candidates, loading, error, positionTitle, createCandidate, batchCreateCandidates } =
-        useCandidates(id);
+    const {
+        candidates,
+        loading,
+        error,
+        positionTitle,
+        createCandidate,
+        batchCreateCandidates,
+        isSendingAssessments,
+        handleSendAssessments,
+    } = useCandidates(id);
     const { value: searchValue, onChange: onSearchChange } = useSearch('applications');
 
     const displayedCandidates = searchValue.trim().length
@@ -91,7 +99,18 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                             <br />
                         </TabsContent>
 
-                        <TabsContent value="assessment">{/* No content yet */}</TabsContent>
+                        <TabsContent value="assessment">
+                            <div className="flex w-full justify-end">
+                                <Button
+                                    className="px-4 py-3"
+                                    onClick={handleSendAssessments}
+                                    disabled={isSendingAssessments}
+                                >
+                                    <Mail className="size-5" />
+                                    {isSendingAssessments ? 'Sending...' : 'Send to all candidates'}
+                                </Button>
+                            </div>
+                        </TabsContent>
                     </Tabs>
                 )}
             </div>
