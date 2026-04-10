@@ -74,12 +74,12 @@ export default function useAssessment(assessmentId: string) {
                 setAssessment(data);
                 setToken(token);
 
-                if (data.startedAt) {
+                if (data.submittedAt) {
+                    setOutroReason('submitted');
+                    setPhase('outro');
+                } else if (data.startedAt) {
                     setOutroReason('already_started');
                     setPhase('outro');
-                    if (!data.submittedAt) {
-                        await submitCandidateAssessment(assessmentId);
-                    }
                 } else {
                     setSections(buildInitialSections(data.assessmentTemplate.tasks));
                 }
