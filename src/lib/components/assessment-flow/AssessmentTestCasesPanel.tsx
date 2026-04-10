@@ -116,7 +116,10 @@ export default function AssessmentTestCasesPanel({
                 <div className="flex items-center gap-2">
                     <Button
                         variant="secondary"
-                        onClick={onRunTests}
+                        onClick={() => {
+                            setIsOpen(true);
+                            onRunTests();
+                        }}
                         className="flex h-9 items-center gap-2 rounded-lg border px-4 text-sm font-medium"
                     >
                         <Play className="size-4" />
