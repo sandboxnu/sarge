@@ -2,7 +2,7 @@ import { WebSocketServer } from 'ws';
 import { jwtVerify } from 'jose';
 
 const ws = new WebSocketServer({ port: 8080 });
-const secret = new TextEncoder().encode('SECRET');
+const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 
 console.log('Sarge WS server listening on 8080');
 
@@ -46,6 +46,7 @@ ws.on('connection', async (socket, request) => {
         clients.set(payload.candidateEmail, socket);
     } catch {
         socket.close(1008, 'Unauthorized');
+        console.log(`[${new Date().toISOString()}] Unauthorized connection. Closing.`);
         return;
     }
 
