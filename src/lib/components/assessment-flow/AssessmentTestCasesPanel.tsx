@@ -28,7 +28,7 @@ export default function AssessmentTestCasesPanel({
 }: AssessmentTestCasesPanelProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [panelHeight, setPanelHeight] = useState(PANEL_DEFAULT_HEIGHT);
-    const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+    const [selectedIndices, setSelectedIndices] = useState<Set<number>>(new Set());
     const dragRef = useRef<{ startY: number; startHeight: number } | null>(null);
 
     const passCount = results.filter((r) => r.status === 'passed').length;
@@ -40,7 +40,15 @@ export default function AssessmentTestCasesPanel({
     );
 
     function toggleSelected(i: number) {
-        setSelectedIndex((prev) => (prev === i ? null : i));
+        setSelectedIndices((prev) => {
+            const next = new Set(prev);
+            if (next.has(i)) {
+                next.delete(i);
+            } else {
+                next.add(i);
+            }
+            return next;
+        });
     }
 
     // this is the dragging handle for when the panel is open and we want to resize it
@@ -145,7 +153,7 @@ export default function AssessmentTestCasesPanel({
                             index={i}
                             test={tc}
                             result={results[i] ?? { status: 'default' }}
-                            selected={selectedIndex === i}
+                            selected={selectedIndices.has(i)}
                             onSelect={() => toggleSelected(i)}
                         />
                     ))}

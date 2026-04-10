@@ -41,6 +41,7 @@ import {
 } from '@/lib/components/ui/Modal';
 import { useAuth } from '@/lib/auth/auth-context';
 import { AssessmentTemplatePreview } from '@/lib/components/templates/AssessmentTemplatePreview';
+import { toast } from 'sonner';
 
 export default function TemplatesPage() {
     const [selectedTaskTemplate, setSelectedTaskTemplate] =
@@ -132,7 +133,7 @@ export default function TemplatesPage() {
             });
             router.push(`/crm/task-templates/${created.id}/edit`);
         } catch (err) {
-            console.error('Failed to create task template:', err);
+            toast.error(`Failed to create task template: ${err}`);
         } finally {
             setIsCreating(false);
         }
