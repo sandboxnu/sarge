@@ -2,6 +2,7 @@ import { handleError } from '@/lib/utils/errors.utils';
 import { assertRecruiterOrAbove } from '@/lib/utils/permissions.utils';
 import { type NextRequest } from 'next/server';
 import judge0Connector, {
+    formatJudgeResult,
     type JudgeSubmissionRequestBody,
 } from '@/lib/connectors/judge0.connector';
 import { TestSubmissionSchema } from '@/lib/schemas/submission.schema';
@@ -16,15 +17,20 @@ export async function POST(request: NextRequest) {
         const formatted: JudgeSubmissionRequestBody[] = parsed.tests.map((test) => ({
             source_code: parsed.code,
             language_id: languageId,
-            stdin: test.input,
-            expected_output: test.output,
+            // NOTE(laith): we're replacing newline characters to actual newline characters to
+            // display on the client that newline characters indicate the next parameter
+            stdin: test.input.replace(/\\n/g, '\n'),
+            // NOTE(laith): print() and console.log() auto append a newline character, so it would
+            // double append, this removes it and the judge0Connector will normalize it for us
+            expected_output: test.output.endsWith('\n') ? test.output : `${test.output}\n`,
         }));
 
         const result = await judge0Connector.executeSubmissions(formatted);
+        const formattedResults = result.map(formatJudgeResult);
 
         return Response.json({
-            data: result,
-            status: 200,
+            data: formattedResults,
+            status: 201,
         });
     } catch (err) {
         return handleError(err);

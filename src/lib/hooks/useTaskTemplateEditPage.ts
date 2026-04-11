@@ -277,11 +277,38 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
                     if (lang) {
                         editorModels.current[lang.language]?.setValue(stub);
 
-                        if (editorModels.current[`${lang.language}-solution`].getValue() === '') {
+                        // NOTE(laith): update Monaco models directly after generation so the editor
+                        // reflects new stubs immediately without requiring a tab switch to trigger a re-render
+                        if (
+                            (editorModels.current[`${lang.language}-solution`]?.getValue() ??
+                                '') === ''
+                        ) {
                             editorModels.current[`${lang.language}-solution`]?.setValue(stub);
                         }
                     }
                 });
+
+                // NOTE(laith): handles the case where the model doesn't exist yet (e.g. the user
+                // never visited that tab), since the setValue calls above don't do anything on "undefined" models
+                const activeLang = currentLanguages[selectedLanguage];
+                if (activeLang && editorRef.current && monacoRef.current) {
+                    const newStub = generatedById.get(activeLang.id);
+                    if (newStub !== undefined) {
+                        const key =
+                            activeFileTab === 'task'
+                                ? activeLang.language
+                                : `${activeLang.language}-solution`;
+                        if (!editorModels.current[key]) {
+                            const newModel = monacoRef.current.editor.createModel(
+                                newStub,
+                                activeLang.language
+                            );
+                            editorModels.current[key] = newModel;
+                            editorRef.current.setModel(newModel);
+                        }
+                        // If model already exists, setValue above already handled it
+                    }
+                }
 
                 setLanguages((prev) =>
                     (prev ?? []).map((lang) => ({
@@ -297,7 +324,7 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
                 toast.error((err as Error).message);
             }
         },
-        [languages, taskTemplateId]
+        [languages, taskTemplateId, activeFileTab, selectedLanguage]
     );
 
     const removeLanguage = useCallback(

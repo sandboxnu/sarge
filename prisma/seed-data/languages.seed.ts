@@ -9,7 +9,17 @@ export const languageData = [
     :type target: int
     :rtype: List[int]
     """
-    pass`,
+    pass
+
+# Do not edit below
+import sys
+
+if __name__ == "__main__":
+    _lines = sys.stdin.read().split('\\n')
+    nums = list(map(int, _lines[0].split()))
+    target = int(_lines[1])
+    result = two_sum(nums, target)
+    print(' '.join(str(x) for x in result))`,
         solution: `def two_sum(nums, target):
     """
     :type nums: List[int]
@@ -22,7 +32,17 @@ export const languageData = [
         if complement in seen:
             return [seen[complement], i]
         seen[num] = i
-    return []`,
+    return []
+
+# Do not edit below
+import sys
+
+if __name__ == "__main__":
+    _lines = sys.stdin.read().split('\\n')
+    nums = list(map(int, _lines[0].split()))
+    target = int(_lines[1])
+    result = two_sum(nums, target)
+    print(' '.join(str(x) for x in result))`,
     },
     // Two Sum - JavaScript
     {
@@ -35,7 +55,14 @@ export const languageData = [
  */
 function twoSum(nums, target) {
     // Your code here
-}`,
+}
+
+// Do not edit below
+const _lines = require('fs').readFileSync('/dev/stdin', 'utf8').split('\\n');
+const nums = _lines[0].split(' ').map(Number);
+const target = Number(_lines[1]);
+const result = twoSum(nums, target);
+console.log(result.join(' '));`,
         solution: `/**
  * @param {number[]} nums
  * @param {number} target
@@ -51,7 +78,14 @@ function twoSum(nums, target) {
         seen.set(nums[i], i);
     }
     return [];
-}`,
+}
+
+// Do not edit below
+const _lines = require('fs').readFileSync('/dev/stdin', 'utf8').split('\\n');
+const nums = _lines[0].split(' ').map(Number);
+const target = Number(_lines[1]);
+const result = twoSum(nums, target);
+console.log(result.join(' '));`,
     },
     // Two Sum - TypeScript
     {
@@ -59,7 +93,14 @@ function twoSum(nums, target) {
         language: 'typescript',
         stub: `function twoSum(nums: number[], target: number): number[] {
     // Your code here
-}`,
+}
+
+// Do not edit below
+const _lines = require('fs').readFileSync('/dev/stdin', 'utf8').split('\\n');
+const nums: number[] = _lines[0].split(' ').map(Number);
+const target: number = Number(_lines[1]);
+const result = twoSum(nums, target);
+console.log(result.join(' '));`,
         solution: `function twoSum(nums: number[], target: number): number[] {
     const seen = new Map<number, number>();
     for (let i = 0; i < nums.length; i++) {
@@ -70,7 +111,14 @@ function twoSum(nums, target) {
         seen.set(nums[i], i);
     }
     return [];
-}`,
+}
+
+// Do not edit below
+const _lines = require('fs').readFileSync('/dev/stdin', 'utf8').split('\\n');
+const nums: number[] = _lines[0].split(' ').map(Number);
+const target: number = Number(_lines[1]);
+const result = twoSum(nums, target);
+console.log(result.join(' '));`,
     },
 
     // Reverse String - Python
@@ -82,7 +130,16 @@ function twoSum(nums, target) {
     :type s: List[str]
     :rtype: None Do not return anything, modify s in-place instead.
     """
-    pass`,
+    pass
+
+# Do not edit below
+import sys
+
+if __name__ == "__main__":
+    _lines = sys.stdin.read().split('\\n')
+    s = _lines[0].split()
+    reverse_string(s)
+    print(' '.join(s))`,
         solution: `def reverse_string(s):
     """
     :type s: List[str]
@@ -92,7 +149,16 @@ function twoSum(nums, target) {
     while left < right:
         s[left], s[right] = s[right], s[left]
         left += 1
-        right -= 1`,
+        right -= 1
+
+# Do not edit below
+import sys
+
+if __name__ == "__main__":
+    _lines = sys.stdin.read().split('\\n')
+    s = _lines[0].split()
+    reverse_string(s)
+    print(' '.join(s))`,
     },
     // Reverse String - JavaScript
     {
@@ -104,7 +170,13 @@ function twoSum(nums, target) {
  */
 function reverseString(s) {
     // Your code here
-}`,
+}
+
+// Do not edit below
+const _lines = require('fs').readFileSync('/dev/stdin', 'utf8').split('\\n');
+const s = _lines[0].split(' ');
+reverseString(s);
+console.log(s.join(' '));`,
         solution: `/**
  * @param {character[]} s
  * @return {void} Do not return anything, modify s in-place instead.
@@ -116,7 +188,13 @@ function reverseString(s) {
         left++;
         right--;
     }
-}`,
+}
+
+// Do not edit below
+const _lines = require('fs').readFileSync('/dev/stdin', 'utf8').split('\\n');
+const s = _lines[0].split(' ');
+reverseString(s);
+console.log(s.join(' '));`,
     },
     // Reverse String - TypeScript
     {
@@ -124,7 +202,13 @@ function reverseString(s) {
         language: 'typescript',
         stub: `function reverseString(s: string[]): void {
     // Your code here
-}`,
+}
+
+// Do not edit below
+const _lines = require('fs').readFileSync('/dev/stdin', 'utf8').split('\\n');
+const s: string[] = _lines[0].split(' ');
+reverseString(s);
+console.log(s.join(' '));`,
         solution: `function reverseString(s: string[]): void {
     let left = 0, right = s.length - 1;
     while (left < right) {
@@ -132,7 +216,13 @@ function reverseString(s) {
         left++;
         right--;
     }
-}`,
+}
+
+// Do not edit below
+const _lines = require('fs').readFileSync('/dev/stdin', 'utf8').split('\\n');
+const s: string[] = _lines[0].split(' ');
+reverseString(s);
+console.log(s.join(' '));`,
     },
 
     // Valid Palindrome - Python
@@ -144,14 +234,32 @@ function reverseString(s) {
     :type s: str
     :rtype: bool
     """
-    pass`,
+    pass
+
+# Do not edit below
+import sys
+
+if __name__ == "__main__":
+    _lines = sys.stdin.read().split('\\n')
+    s = _lines[0]
+    result = is_palindrome(s)
+    print(str(result).lower())`,
         solution: `def is_palindrome(s):
     """
     :type s: str
     :rtype: bool
     """
     cleaned = ''.join(c.lower() for c in s if c.isalnum())
-    return cleaned == cleaned[::-1]`,
+    return cleaned == cleaned[::-1]
+
+# Do not edit below
+import sys
+
+if __name__ == "__main__":
+    _lines = sys.stdin.read().split('\\n')
+    s = _lines[0]
+    result = is_palindrome(s)
+    print(str(result).lower())`,
     },
     // Valid Palindrome - JavaScript
     {
@@ -163,7 +271,13 @@ function reverseString(s) {
  */
 function isPalindrome(s) {
     // Your code here
-}`,
+}
+
+// Do not edit below
+const _lines = require('fs').readFileSync('/dev/stdin', 'utf8').split('\\n');
+const s = _lines[0];
+const result = isPalindrome(s);
+console.log(JSON.stringify(result));`,
         solution: `/**
  * @param {string} s
  * @return {boolean}
@@ -171,7 +285,13 @@ function isPalindrome(s) {
 function isPalindrome(s) {
     const cleaned = s.toLowerCase().replace(/[^a-z0-9]/g, '');
     return cleaned === cleaned.split('').reverse().join('');
-}`,
+}
+
+// Do not edit below
+const _lines = require('fs').readFileSync('/dev/stdin', 'utf8').split('\\n');
+const s = _lines[0];
+const result = isPalindrome(s);
+console.log(JSON.stringify(result));`,
     },
     // Valid Palindrome - TypeScript
     {
@@ -179,64 +299,118 @@ function isPalindrome(s) {
         language: 'typescript',
         stub: `function isPalindrome(s: string): boolean {
     // Your code here
-}`,
+}
+
+// Do not edit below
+const _lines = require('fs').readFileSync('/dev/stdin', 'utf8').split('\\n');
+const s: string = _lines[0];
+const result = isPalindrome(s);
+console.log(JSON.stringify(result));`,
         solution: `function isPalindrome(s: string): boolean {
     const cleaned = s.toLowerCase().replace(/[^a-z0-9]/g, '');
     return cleaned === cleaned.split('').reverse().join('');
-}`,
+}
+
+// Do not edit below
+const _lines = require('fs').readFileSync('/dev/stdin', 'utf8').split('\\n');
+const s: string = _lines[0];
+const result = isPalindrome(s);
+console.log(JSON.stringify(result));`,
     },
 
     // FizzBuzz - Python
     {
         taskTemplateId: 'task_template_fizzbuzz_001',
         language: 'python',
-        stub: `# Write your FizzBuzz solution here
-`,
-        solution: `for i in range(1, 101):
-    if i % 15 == 0:
-        print("FizzBuzz")
-    elif i % 3 == 0:
-        print("Fizz")
-    elif i % 5 == 0:
-        print("Buzz")
+        stub: `def fizzbuzz(n: int) -> str:
+    pass
+
+# Do not edit below
+import sys
+
+if __name__ == "__main__":
+    _lines = sys.stdin.read().split('\\n')
+    n = int(_lines[0])
+    result = fizzbuzz(n)
+    print(result)`,
+        solution: `def fizzbuzz(n: int) -> str:
+    if n % 15 == 0:
+        return "FizzBuzz"
+    elif n % 3 == 0:
+        return "Fizz"
+    elif n % 5 == 0:
+        return "Buzz"
     else:
-        print(i)`,
+        return str(n)
+
+# Do not edit below
+import sys
+
+if __name__ == "__main__":
+    _lines = sys.stdin.read().split('\\n')
+    n = int(_lines[0])
+    result = fizzbuzz(n)
+    print(result)`,
     },
     // FizzBuzz - JavaScript
     {
         taskTemplateId: 'task_template_fizzbuzz_001',
         language: 'javascript',
-        stub: `// Write your FizzBuzz solution here
-`,
-        solution: `for (let i = 1; i <= 100; i++) {
-    if (i % 15 === 0) {
-        console.log("FizzBuzz");
-    } else if (i % 3 === 0) {
-        console.log("Fizz");
-    } else if (i % 5 === 0) {
-        console.log("Buzz");
-    } else {
-        console.log(i);
-    }
-}`,
+        stub: `/**
+ * @param {number} n
+ * @return {string}
+ */
+function fizzBuzz(n) {
+    // Your code here
+}
+
+// Do not edit below
+const _lines = require('fs').readFileSync('/dev/stdin', 'utf8').split('\\n');
+const n = Number(_lines[0]);
+const result = fizzBuzz(n);
+console.log(result);`,
+        solution: `/**
+ * @param {number} n
+ * @return {string}
+ */
+function fizzBuzz(n) {
+    if (n % 15 === 0) return 'FizzBuzz';
+    if (n % 3 === 0) return 'Fizz';
+    if (n % 5 === 0) return 'Buzz';
+    return String(n);
+}
+
+// Do not edit below
+const _lines = require('fs').readFileSync('/dev/stdin', 'utf8').split('\\n');
+const n = Number(_lines[0]);
+const result = fizzBuzz(n);
+console.log(result);`,
     },
     // FizzBuzz - TypeScript
     {
         taskTemplateId: 'task_template_fizzbuzz_001',
         language: 'typescript',
-        stub: `// Write your FizzBuzz solution here
-`,
-        solution: `for (let i = 1; i <= 100; i++) {
-    if (i % 15 === 0) {
-        console.log("FizzBuzz");
-    } else if (i % 3 === 0) {
-        console.log("Fizz");
-    } else if (i % 5 === 0) {
-        console.log("Buzz");
-    } else {
-        console.log(i);
-    }
-}`,
+        stub: `function fizzBuzz(n: number): string {
+    // Your code here
+}
+
+// Do not edit below
+const _lines = require('fs').readFileSync('/dev/stdin', 'utf8').split('\\n');
+const n: number = Number(_lines[0]);
+const result = fizzBuzz(n);
+console.log(result);`,
+        solution: `function fizzBuzz(n: number): string {
+    if (n % 15 === 0) return 'FizzBuzz';
+    if (n % 3 === 0) return 'Fizz';
+    if (n % 5 === 0) return 'Buzz';
+    return String(n);
+}
+
+// Do not edit below
+const _lines = require('fs').readFileSync('/dev/stdin', 'utf8').split('\\n');
+const n: number = Number(_lines[0]);
+const result = fizzBuzz(n);
+console.log(result);`,
     },
 
     // Quick Warmup - Python
@@ -276,7 +450,16 @@ console.log("Hello, World!");`,
     :type nums: List[int]
     :rtype: int
     """
-    pass`,
+    pass
+
+# Do not edit below
+import sys
+
+if __name__ == "__main__":
+    _lines = sys.stdin.read().split('\\n')
+    nums = list(map(int, _lines[0].split()))
+    result = max_subarray(nums)
+    print(result)`,
         solution: `def max_subarray(nums):
     """
     :type nums: List[int]
@@ -286,7 +469,16 @@ console.log("Hello, World!");`,
     for num in nums[1:]:
         current_sum = max(num, current_sum + num)
         max_sum = max(max_sum, current_sum)
-    return max_sum`,
+    return max_sum
+
+# Do not edit below
+import sys
+
+if __name__ == "__main__":
+    _lines = sys.stdin.read().split('\\n')
+    nums = list(map(int, _lines[0].split()))
+    result = max_subarray(nums)
+    print(result)`,
     },
     // Maximum Subarray - JavaScript
     {
@@ -298,7 +490,13 @@ console.log("Hello, World!");`,
  */
 function maxSubArray(nums) {
     // Your code here
-}`,
+}
+
+// Do not edit below
+const _lines = require('fs').readFileSync('/dev/stdin', 'utf8').split('\\n');
+const nums = _lines[0].split(' ').map(Number);
+const result = maxSubArray(nums);
+console.log(result);`,
         solution: `/**
  * @param {number[]} nums
  * @return {number}
@@ -313,7 +511,13 @@ function maxSubArray(nums) {
     }
 
     return maxSum;
-}`,
+}
+
+// Do not edit below
+const _lines = require('fs').readFileSync('/dev/stdin', 'utf8').split('\\n');
+const nums = _lines[0].split(' ').map(Number);
+const result = maxSubArray(nums);
+console.log(result);`,
     },
     // Maximum Subarray - TypeScript
     {
@@ -321,7 +525,13 @@ function maxSubArray(nums) {
         language: 'typescript',
         stub: `function maxSubArray(nums: number[]): number {
     // Your code here
-}`,
+}
+
+// Do not edit below
+const _lines = require('fs').readFileSync('/dev/stdin', 'utf8').split('\\n');
+const nums: number[] = _lines[0].split(' ').map(Number);
+const result = maxSubArray(nums);
+console.log(result);`,
         solution: `function maxSubArray(nums: number[]): number {
     let maxSum = nums[0];
     let currentSum = nums[0];
@@ -332,7 +542,13 @@ function maxSubArray(nums) {
     }
 
     return maxSum;
-}`,
+}
+
+// Do not edit below
+const _lines = require('fs').readFileSync('/dev/stdin', 'utf8').split('\\n');
+const nums: number[] = _lines[0].split(' ').map(Number);
+const result = maxSubArray(nums);
+console.log(result);`,
     },
 
     // Binary Search - Python
@@ -345,7 +561,17 @@ function maxSubArray(nums) {
     :type target: int
     :rtype: int
     """
-    pass`,
+    pass
+
+# Do not edit below
+import sys
+
+if __name__ == "__main__":
+    _lines = sys.stdin.read().split('\\n')
+    nums = list(map(int, _lines[0].split()))
+    target = int(_lines[1])
+    result = search(nums, target)
+    print(result)`,
         solution: `def search(nums, target):
     """
     :type nums: List[int]
@@ -363,7 +589,17 @@ function maxSubArray(nums) {
         else:
             right = mid - 1
 
-    return -1`,
+    return -1
+
+# Do not edit below
+import sys
+
+if __name__ == "__main__":
+    _lines = sys.stdin.read().split('\\n')
+    nums = list(map(int, _lines[0].split()))
+    target = int(_lines[1])
+    result = search(nums, target)
+    print(result)`,
     },
     // Binary Search - JavaScript
     {
@@ -376,7 +612,14 @@ function maxSubArray(nums) {
  */
 function search(nums, target) {
     // Your code here
-}`,
+}
+
+// Do not edit below
+const _lines = require('fs').readFileSync('/dev/stdin', 'utf8').split('\\n');
+const nums = _lines[0].split(' ').map(Number);
+const target = Number(_lines[1]);
+const result = search(nums, target);
+console.log(result);`,
         solution: `/**
  * @param {number[]} nums
  * @param {number} target
@@ -397,7 +640,14 @@ function search(nums, target) {
     }
 
     return -1;
-}`,
+}
+
+// Do not edit below
+const _lines = require('fs').readFileSync('/dev/stdin', 'utf8').split('\\n');
+const nums = _lines[0].split(' ').map(Number);
+const target = Number(_lines[1]);
+const result = search(nums, target);
+console.log(result);`,
     },
     // Binary Search - TypeScript
     {
@@ -405,7 +655,14 @@ function search(nums, target) {
         language: 'typescript',
         stub: `function search(nums: number[], target: number): number {
     // Your code here
-}`,
+}
+
+// Do not edit below
+const _lines = require('fs').readFileSync('/dev/stdin', 'utf8').split('\\n');
+const nums: number[] = _lines[0].split(' ').map(Number);
+const target: number = Number(_lines[1]);
+const result = search(nums, target);
+console.log(result);`,
         solution: `function search(nums: number[], target: number): number {
     let left = 0, right = nums.length - 1;
 
@@ -421,7 +678,14 @@ function search(nums, target) {
     }
 
     return -1;
-}`,
+}
+
+// Do not edit below
+const _lines = require('fs').readFileSync('/dev/stdin', 'utf8').split('\\n');
+const nums: number[] = _lines[0].split(' ').map(Number);
+const target: number = Number(_lines[1]);
+const result = search(nums, target);
+console.log(result);`,
     },
 
     // Valid Parentheses - Python
@@ -433,7 +697,16 @@ function search(nums, target) {
     :type s: str
     :rtype: bool
     """
-    pass`,
+    pass
+
+# Do not edit below
+import sys
+
+if __name__ == "__main__":
+    _lines = sys.stdin.read().split('\\n')
+    s = _lines[0]
+    result = is_valid(s)
+    print(str(result).lower())`,
         solution: `def is_valid(s):
     """
     :type s: str
@@ -450,7 +723,16 @@ function search(nums, target) {
         else:
             stack.append(char)
 
-    return not stack`,
+    return not stack
+
+# Do not edit below
+import sys
+
+if __name__ == "__main__":
+    _lines = sys.stdin.read().split('\\n')
+    s = _lines[0]
+    result = is_valid(s)
+    print(str(result).lower())`,
     },
     // Valid Parentheses - JavaScript
     {
@@ -462,7 +744,13 @@ function search(nums, target) {
  */
 function isValid(s) {
     // Your code here
-}`,
+}
+
+// Do not edit below
+const _lines = require('fs').readFileSync('/dev/stdin', 'utf8').split('\\n');
+const s = _lines[0];
+const result = isValid(s);
+console.log(JSON.stringify(result));`,
         solution: `/**
  * @param {string} s
  * @return {boolean}
@@ -483,7 +771,13 @@ function isValid(s) {
     }
 
     return stack.length === 0;
-}`,
+}
+
+// Do not edit below
+const _lines = require('fs').readFileSync('/dev/stdin', 'utf8').split('\\n');
+const s = _lines[0];
+const result = isValid(s);
+console.log(JSON.stringify(result));`,
     },
     // Valid Parentheses - TypeScript
     {
@@ -491,7 +785,13 @@ function isValid(s) {
         language: 'typescript',
         stub: `function isValid(s: string): boolean {
     // Your code here
-}`,
+}
+
+// Do not edit below
+const _lines = require('fs').readFileSync('/dev/stdin', 'utf8').split('\\n');
+const s: string = _lines[0];
+const result = isValid(s);
+console.log(JSON.stringify(result));`,
         solution: `function isValid(s: string): boolean {
     const stack: string[] = [];
     const mapping: Record<string, string> = { ')': '(', '}': '{', ']': '[' };
@@ -508,7 +808,13 @@ function isValid(s) {
     }
 
     return stack.length === 0;
-}`,
+}
+
+// Do not edit below
+const _lines = require('fs').readFileSync('/dev/stdin', 'utf8').split('\\n');
+const s: string = _lines[0];
+const result = isValid(s);
+console.log(JSON.stringify(result));`,
     },
 
     // Merge Two Sorted Lists - Python
@@ -521,7 +827,17 @@ function isValid(s) {
     :type list2: List[int]
     :rtype: List[int]
     """
-    pass`,
+    pass
+
+# Do not edit below
+import sys
+
+if __name__ == "__main__":
+    _lines = sys.stdin.read().split('\\n')
+    list1 = list(map(int, _lines[0].split())) if _lines[0].strip() else []
+    list2 = list(map(int, _lines[1].split())) if _lines[1].strip() else []
+    result = merge_two_lists(list1, list2)
+    print(' '.join(str(x) for x in result))`,
         solution: `def merge_two_lists(list1, list2):
     """
     :type list1: List[int]
@@ -542,7 +858,17 @@ function isValid(s) {
     result.extend(list1[i:])
     result.extend(list2[j:])
 
-    return result`,
+    return result
+
+# Do not edit below
+import sys
+
+if __name__ == "__main__":
+    _lines = sys.stdin.read().split('\\n')
+    list1 = list(map(int, _lines[0].split())) if _lines[0].strip() else []
+    list2 = list(map(int, _lines[1].split())) if _lines[1].strip() else []
+    result = merge_two_lists(list1, list2)
+    print(' '.join(str(x) for x in result))`,
     },
     // Merge Two Sorted Lists - JavaScript
     {
@@ -555,7 +881,14 @@ function isValid(s) {
  */
 function mergeTwoLists(list1, list2) {
     // Your code here
-}`,
+}
+
+// Do not edit below
+const _lines = require('fs').readFileSync('/dev/stdin', 'utf8').split('\\n');
+const list1 = _lines[0].trim() ? _lines[0].split(' ').map(Number) : [];
+const list2 = _lines[1].trim() ? _lines[1].split(' ').map(Number) : [];
+const result = mergeTwoLists(list1, list2);
+console.log(result.join(' '));`,
         solution: `/**
  * @param {number[]} list1
  * @param {number[]} list2
@@ -576,7 +909,14 @@ function mergeTwoLists(list1, list2) {
     }
 
     return result.concat(list1.slice(i)).concat(list2.slice(j));
-}`,
+}
+
+// Do not edit below
+const _lines = require('fs').readFileSync('/dev/stdin', 'utf8').split('\\n');
+const list1 = _lines[0].trim() ? _lines[0].split(' ').map(Number) : [];
+const list2 = _lines[1].trim() ? _lines[1].split(' ').map(Number) : [];
+const result = mergeTwoLists(list1, list2);
+console.log(result.join(' '));`,
     },
     // Merge Two Sorted Lists - TypeScript
     {
@@ -584,7 +924,14 @@ function mergeTwoLists(list1, list2) {
         language: 'typescript',
         stub: `function mergeTwoLists(list1: number[], list2: number[]): number[] {
     // Your code here
-}`,
+}
+
+// Do not edit below
+const _lines = require('fs').readFileSync('/dev/stdin', 'utf8').split('\\n');
+const list1: number[] = _lines[0].trim() ? _lines[0].split(' ').map(Number) : [];
+const list2: number[] = _lines[1].trim() ? _lines[1].split(' ').map(Number) : [];
+const result = mergeTwoLists(list1, list2);
+console.log(result.join(' '));`,
         solution: `function mergeTwoLists(list1: number[], list2: number[]): number[] {
     const result: number[] = [];
     let i = 0, j = 0;
@@ -600,7 +947,14 @@ function mergeTwoLists(list1, list2) {
     }
 
     return result.concat(list1.slice(i)).concat(list2.slice(j));
-}`,
+}
+
+// Do not edit below
+const _lines = require('fs').readFileSync('/dev/stdin', 'utf8').split('\\n');
+const list1: number[] = _lines[0].trim() ? _lines[0].split(' ').map(Number) : [];
+const list2: number[] = _lines[1].trim() ? _lines[1].split(' ').map(Number) : [];
+const result = mergeTwoLists(list1, list2);
+console.log(result.join(' '));`,
     },
 
     // Longest Common Prefix - Python
@@ -612,7 +966,16 @@ function mergeTwoLists(list1, list2) {
     :type strs: List[str]
     :rtype: str
     """
-    pass`,
+    pass
+
+# Do not edit below
+import sys
+
+if __name__ == "__main__":
+    _lines = sys.stdin.read().split('\\n')
+    strs = _lines[0].split()
+    result = longest_common_prefix(strs)
+    print(result)`,
         solution: `def longest_common_prefix(strs):
     """
     :type strs: List[str]
@@ -628,7 +991,16 @@ function mergeTwoLists(list1, list2) {
             if not prefix:
                 return ""
 
-    return prefix`,
+    return prefix
+
+# Do not edit below
+import sys
+
+if __name__ == "__main__":
+    _lines = sys.stdin.read().split('\\n')
+    strs = _lines[0].split()
+    result = longest_common_prefix(strs)
+    print(result)`,
     },
     // Longest Common Prefix - JavaScript
     {
@@ -640,7 +1012,13 @@ function mergeTwoLists(list1, list2) {
  */
 function longestCommonPrefix(strs) {
     // Your code here
-}`,
+}
+
+// Do not edit below
+const _lines = require('fs').readFileSync('/dev/stdin', 'utf8').split('\\n');
+const strs = _lines[0].split(' ');
+const result = longestCommonPrefix(strs);
+console.log(result);`,
         solution: `/**
  * @param {string[]} strs
  * @return {string}
@@ -657,7 +1035,13 @@ function longestCommonPrefix(strs) {
     }
 
     return prefix;
-}`,
+}
+
+// Do not edit below
+const _lines = require('fs').readFileSync('/dev/stdin', 'utf8').split('\\n');
+const strs = _lines[0].split(' ');
+const result = longestCommonPrefix(strs);
+console.log(result);`,
     },
     // Longest Common Prefix - TypeScript
     {
@@ -665,7 +1049,13 @@ function longestCommonPrefix(strs) {
         language: 'typescript',
         stub: `function longestCommonPrefix(strs: string[]): string {
     // Your code here
-}`,
+}
+
+// Do not edit below
+const _lines = require('fs').readFileSync('/dev/stdin', 'utf8').split('\\n');
+const strs: string[] = _lines[0].split(' ');
+const result = longestCommonPrefix(strs);
+console.log(result);`,
         solution: `function longestCommonPrefix(strs: string[]): string {
     if (strs.length === 0) return "";
 
@@ -678,6 +1068,12 @@ function longestCommonPrefix(strs) {
     }
 
     return prefix;
-}`,
+}
+
+// Do not edit below
+const _lines = require('fs').readFileSync('/dev/stdin', 'utf8').split('\\n');
+const strs: string[] = _lines[0].split(' ');
+const result = longestCommonPrefix(strs);
+console.log(result);`,
     },
 ];

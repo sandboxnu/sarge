@@ -1,15 +1,25 @@
 import { useState } from 'react';
 import { runEditorSubmission, runAssessmentSubmission } from '@/lib/api/runner';
-import { type JudgeResultRequestBody } from '@/lib/connectors/judge0.connector';
 import { type ProgrammingLanguage } from '@/generated/prisma';
 import { type TestCaseDTO } from '@/lib/schemas/task-template.schema';
+import type { CandidateTestResult } from '@/lib/types/candidate-assessment.types';
 
-export default function useTestRunner(code: string, language: ProgrammingLanguage) {
-    const [error, setError] = useState<Error>();
+export default function useTestRunner() {
+    const [error, setError] = useState<Error | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
-    const [output, setOutput] = useState<JudgeResultRequestBody>();
+    const [output, setOutput] = useState<CandidateTestResult[]>();
 
-    async function runEditPageTests(tests: TestCaseDTO[]) {
+    function reset() {
+        setError(null);
+        setLoading(false);
+        setOutput(undefined);
+    }
+
+    async function runEditPageTests(
+        tests: TestCaseDTO[],
+        code: string,
+        language: ProgrammingLanguage
+    ) {
         try {
             setLoading(true);
             const result = await runEditorSubmission({
@@ -18,7 +28,6 @@ export default function useTestRunner(code: string, language: ProgrammingLanguag
                 tests,
             });
             setOutput(result);
-            console.warn(result);
         } catch (err) {
             setError(err as Error);
         } finally {
@@ -26,7 +35,11 @@ export default function useTestRunner(code: string, language: ProgrammingLanguag
         }
     }
 
-    async function runAssessmentTests(taskTemplateId: string) {
+    async function runAssessmentTests(
+        taskTemplateId: string,
+        code: string,
+        language: ProgrammingLanguage
+    ) {
         try {
             setLoading(true);
             const result = await runAssessmentSubmission(taskTemplateId, {
@@ -44,6 +57,7 @@ export default function useTestRunner(code: string, language: ProgrammingLanguag
     return {
         runAssessmentTests,
         runEditPageTests,
+        reset,
         error,
         loading,
         output,

@@ -2,11 +2,11 @@ import {
     type SubmissionSchemaDTO,
     type TestSubmissionSchemaDTO,
 } from '@/lib/schemas/submission.schema';
-import { type JudgeResultRequestBody } from '@/lib/connectors/judge0.connector';
+import type { CandidateTestResult } from '@/lib/types/candidate-assessment.types';
 
 export async function runEditorSubmission(
     submission: TestSubmissionSchemaDTO
-): Promise<JudgeResultRequestBody> {
+): Promise<CandidateTestResult[]> {
     const result = await fetch(`/api/runner`, {
         method: 'POST',
         headers: {
@@ -27,7 +27,7 @@ export async function runEditorSubmission(
 export async function runAssessmentSubmission(
     taskTemplateId: string,
     submission: SubmissionSchemaDTO
-): Promise<JudgeResultRequestBody> {
+): Promise<CandidateTestResult[]> {
     const result = await fetch(`/api/runner/${taskTemplateId}`, {
         method: 'POST',
         headers: {

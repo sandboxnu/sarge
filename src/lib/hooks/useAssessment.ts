@@ -6,14 +6,17 @@ import { type Monaco } from '@monaco-editor/react';
 import { toast } from 'sonner';
 import { getCandidateAssessment, submitCandidateAssessment } from '@/lib/api/candidate-assessment';
 import { useAssessmentTimer } from '@/lib/hooks/useAssessmentTimer';
+import useTestRunner from '@/lib/hooks/useTestRunner';
 import type {
     AssessmentPhase,
     AssessmentQuestion,
     CandidateAssessment,
     OutroReason,
     SectionState,
+    TestCaseResultStatus,
 } from '@/lib/types/candidate-assessment.types';
 import { createToken } from '@/lib/api/token';
+import { type ProgrammingLanguage } from '@/generated/prisma';
 
 function buildInitialSections(questions: AssessmentQuestion[]): SectionState[] {
     return questions.map((q, i) => {
@@ -51,6 +54,71 @@ export default function useAssessment(assessmentId: string) {
     useEffect(() => {
         currentSectionIndexRef.current = currentSectionIndex;
     }, [currentSectionIndex]);
+
+    const {
+        error: testError,
+        loading: testLoading,
+        output: testOutput,
+        runAssessmentTests,
+        reset: resetTests,
+    } = useTestRunner();
+
+    useEffect(() => {
+        if (testLoading) {
+            setSections((prev) =>
+                prev.map((section) => ({
+                    ...section,
+                    testCaseResults: section.testCaseResults.map((test) => ({
+                        ...test,
+                        status: 'loading',
+                    })),
+                }))
+            );
+        } else if (testError) {
+            setSections((prev) =>
+                prev.map((section) => ({
+                    ...section,
+                    testCaseResults: section.testCaseResults.map((test) => ({
+                        ...test,
+                        status: 'runtime_error',
+                        actualOutput: 'An error occurred while running tests.',
+                    })),
+                }))
+            );
+        } else if (testOutput) {
+            setSections((prev) =>
+                prev.map((section) => {
+                    return {
+                        ...section,
+                        testCaseResults: section.testCaseResults.map((test, i) => ({
+                            ...test,
+                            status: resolveStatusId(testOutput[i]?.statusId ?? 0),
+                            actualOutput: testOutput[i]?.stdout ?? testOutput[i]?.stderr ?? '',
+                        })),
+                    };
+                })
+            );
+        }
+    }, [testLoading, testError, testOutput, currentSectionIndex]);
+
+    function resolveStatusId(statusId: number): TestCaseResultStatus {
+        switch (statusId) {
+            case 3:
+                return 'passed';
+            case 5:
+            case 7:
+            case 8:
+            case 9:
+            case 10:
+            case 11:
+            case 12:
+                return 'runtime_error';
+            case 4:
+                return 'failed';
+            default:
+                return 'failed';
+        }
+    }
 
     // the timer is in seconds however our model is in minutes
     const totalEstimatedMinutes = sections.reduce(
@@ -122,6 +190,7 @@ export default function useAssessment(assessmentId: string) {
             handleSubmitAssessment('submitted');
         } else {
             setIsTransitioning(true);
+            resetTests();
             setTimeout(() => {
                 setSections((prev) =>
                     prev.map((s, i) => {
@@ -132,15 +201,34 @@ export default function useAssessment(assessmentId: string) {
                     })
                 );
                 setCurrentSectionIndex((prev) => prev + 1);
+                setSections((prev) =>
+                    prev.map((s) => {
+                        return {
+                            ...s,
+                            testCaseResults: s.testCaseResults.map(() => {
+                                return { status: 'default' };
+                            }),
+                        };
+                    })
+                );
                 setIsTransitioning(false);
             }, 200);
         }
     }
 
-    function updateCode(code: string) {
-        setSections((prev) =>
-            prev.map((s, i) => (i === currentSectionIndexRef.current ? { ...s, code } : s))
-        );
+    function updateCode() {
+        const code = editorRef.current?.getValue() ?? '';
+        setSections((prev) => prev.map((s, i) => (i === currentSectionIndex ? { ...s, code } : s)));
+
+        return code;
+    }
+
+    function runTests() {
+        const code = updateCode() || '';
+        const section = sections[currentSectionIndex];
+        if (!section) return;
+
+        runAssessmentTests(section.taskTemplateId, code, section.language as ProgrammingLanguage);
     }
 
     function changeLanguage(language: string) {
@@ -162,58 +250,12 @@ export default function useAssessment(assessmentId: string) {
         }
     }
 
-    // TODO: Replace with Judge0 execution
-    function runTests() {
-        const section = sections[currentSectionIndex];
-        if (!section) return;
-        if (section.testCaseResults.some((r) => r.status === 'loading')) return;
-
-        const MOCK_STATUSES = ['passed', 'failed', 'runtime_error'] as const;
-
-        setSections((prev) =>
-            prev.map((s, i) =>
-                i === currentSectionIndex
-                    ? {
-                          ...s,
-                          testCaseResults: s.testCaseResults.map(() => ({
-                              status: 'loading' as const,
-                          })),
-                      }
-                    : s
-            )
-        );
-
-        setTimeout(() => {
-            setSections((prev) =>
-                prev.map((s, i) => {
-                    if (i !== currentSectionIndex) return s;
-                    return {
-                        ...s,
-                        testCaseResults: s.testCaseResults.map((_, idx) => {
-                            const status =
-                                MOCK_STATUSES[Math.floor(Math.random() * MOCK_STATUSES.length)];
-                            const tc = section.taskTemplate.publicTestCases[idx];
-                            if (status === 'passed')
-                                return { status, actualOutput: tc?.output ?? '' };
-                            if (status === 'runtime_error')
-                                return {
-                                    status,
-                                    actualOutput: 'Timeout Error: Execution Time Exceeded',
-                                };
-                            return { status, actualOutput: 'wrong_answer' };
-                        }),
-                    };
-                })
-            );
-        }, 1500);
-    }
-
     function handleEditorMount(editorInstance: editor.IStandaloneCodeEditor, monaco: Monaco) {
         editorRef.current = editorInstance;
         monacoRef.current = monaco;
 
         editorInstance.onDidChangeModelContent(() => {
-            updateCode(editorInstance.getValue());
+            updateCode();
         });
     }
 
@@ -234,6 +276,7 @@ export default function useAssessment(assessmentId: string) {
         isSubmitting,
         isTransitioning,
         error,
+        testError,
         startAssessment,
         submitAndContinue,
         updateCode,

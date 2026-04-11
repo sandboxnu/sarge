@@ -7,6 +7,7 @@ import { Combobox } from '@/lib/components/ui/Combobox';
 import { createTag } from '@/lib/api/tags';
 import type { BlockNoteContent } from '@/lib/types/task-template.types';
 import type { TagDTO } from '@/lib/schemas/tag.schema';
+import { toast } from 'sonner';
 
 // BlockNote: https://www.blocknotejs.org/docs/nextjs
 const BlockNoteEditor = dynamic(() => import('@/lib/components/core/BlockNoteEditor'), {
@@ -58,7 +59,7 @@ export default function TaskDetailsTab({
             setAvailableTags((prev) => [...prev, newTag]);
             setTags((prev: TagDTO[]) => [...prev, newTag]);
         } catch (err) {
-            console.error('Failed to create tag:', err);
+            toast.error(`Failed to create tag: ${err}`);
         }
     };
 
