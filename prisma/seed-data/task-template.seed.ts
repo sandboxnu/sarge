@@ -47,15 +47,15 @@ export const taskTemplatesData = [
             paragraph('two_sum_c3', ['- -10^9 <= target <= 10^9']),
             paragraph('two_sum_c4', ['- Only one valid answer exists.']),
         ],
-        // stdin: first line is space-separated nums, second line is target
+        // stdin: line 0 = space-separated nums, line 1 = target
         // stdout: space-separated indices
         publicTestCases: [
-            { input: '2 7 11 15\n9', output: '0 1' },
-            { input: '3 2 4\n6', output: '1 2' },
+            { input: '2 7 11 15\\n9', output: '0 1' },
+            { input: '3 2 4\\n6', output: '1 2' },
         ],
         privateTestCases: [
-            { input: '3 3\n6', output: '0 1' },
-            { input: '1 5 3 7 9\n10', output: '1 3' },
+            { input: '3 3\\n6', output: '0 1' },
+            { input: '1 5 3 7 9\\n10', output: '2 3' },
         ],
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
@@ -95,7 +95,7 @@ export const taskTemplatesData = [
             paragraph('rs_c1', ['- 1 <= s.length <= 10^5']),
             paragraph('rs_c2', ['- s[i] is a printable ascii character.']),
         ],
-        // stdin: space-separated characters
+        // stdin: line 0 = space-separated characters
         // stdout: space-separated reversed characters
         publicTestCases: [{ input: 'h e l l o', output: 'o l l e h' }],
         privateTestCases: [
@@ -140,8 +140,8 @@ export const taskTemplatesData = [
             paragraph('vp_c1', ['- 1 <= s.length <= 2 * 10^5']),
             paragraph('vp_c2', ['- s consists only of printable ASCII characters.']),
         ],
-        // stdin: the string
-        // stdout: true or false
+        // stdin: line 0 = raw string
+        // stdout: true or false (lowercase)
         publicTestCases: [
             { input: 'A man, a plan, a canal: Panama', output: 'true' },
             { input: 'race a car', output: 'false' },
@@ -177,8 +177,8 @@ export const taskTemplatesData = [
                 'Write a solution (or reduce an existing one) so it has as few characters as possible.',
             ]),
         ],
-        // stdin: empty — no input needed
-        // stdout: fizzbuzz output from 1 to 100
+        // stdin: line 0 = integer n
+        // stdout: FizzBuzz string for n
         publicTestCases: [
             { input: '3', output: 'Fizz' },
             { input: '5', output: 'Buzz' },
@@ -237,7 +237,7 @@ export const taskTemplatesData = [
             paragraph('ms_c1', ['- 1 <= nums.length <= 10^5']),
             paragraph('ms_c2', ['- -10^4 <= nums[i] <= 10^4']),
         ],
-        // stdin: space-separated nums
+        // stdin: line 0 = space-separated nums
         // stdout: the maximum subarray sum
         publicTestCases: [
             { input: '-2 1 -3 4 -1 2 1 -5 4', output: '6' },
@@ -283,15 +283,15 @@ export const taskTemplatesData = [
             paragraph('bs_c2', ['- -10^4 < nums[i], target < 10^4']),
             paragraph('bs_c3', ['- nums is sorted in ascending order.']),
         ],
-        // stdin: first line is space-separated nums, second line is target
+        // stdin: line 0 = space-separated nums, line 1 = target
         // stdout: the index, or -1
         publicTestCases: [
-            { input: '-1 0 3 5 9 12\n9', output: '4' },
-            { input: '-1 0 3 5 9 12\n2', output: '-1' },
+            { input: '-1 0 3 5 9 12\\n9', output: '4' },
+            { input: '-1 0 3 5 9 12\\n2', output: '-1' },
         ],
         privateTestCases: [
-            { input: '5\n5', output: '0' },
-            { input: '2 5\n5', output: '1' },
+            { input: '5\\n5', output: '0' },
+            { input: '2 5\\n5', output: '1' },
         ],
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
@@ -326,8 +326,8 @@ export const taskTemplatesData = [
             paragraph('vp2_c1', ['- 1 <= s.length <= 10^4']),
             paragraph('vp2_c2', ["- s consists of parentheses only '()[]{}'."]),
         ],
-        // stdin: the bracket string
-        // stdout: true or false
+        // stdin: line 0 = raw bracket string
+        // stdout: true or false (lowercase)
         publicTestCases: [
             { input: '()', output: 'true' },
             { input: '()[]{}', output: 'true' },
@@ -377,16 +377,15 @@ export const taskTemplatesData = [
             paragraph('mts_c2', ['- -100 <= Node.val <= 100']),
             paragraph('mts_c3', ['- Both list1 and list2 are sorted in non-decreasing order.']),
         ],
-        // stdin: first line is space-separated list1, second line is space-separated list2
-        //        empty line represents an empty list
+        // stdin: line 0 = space-separated list1 (empty line = empty list), line 1 = space-separated list2
         // stdout: space-separated merged list, or empty string for empty result
         publicTestCases: [
-            { input: '1 2 4\n1 3 4', output: '1 1 2 3 4 4' },
-            { input: '\n', output: '' },
+            { input: '1 2 4\\n1 3 4', output: '1 1 2 3 4 4' },
+            { input: '\\n', output: '' },
         ],
         privateTestCases: [
-            { input: '\n0', output: '0' },
-            { input: '1\n2', output: '1 2' },
+            { input: '\\n0', output: '0' },
+            { input: '1\\n2', output: '1 2' },
         ],
         orgId: 'org_nextlab_001',
         taskType: 'Single Function',
@@ -421,7 +420,7 @@ export const taskTemplatesData = [
             paragraph('lcp_c2', ['- 0 <= strs[i].length <= 200']),
             paragraph('lcp_c3', ['- strs[i] consists of only lowercase English letters.']),
         ],
-        // stdin: space-separated strings
+        // stdin: line 0 = space-separated strings
         // stdout: the longest common prefix, or empty string
         publicTestCases: [
             { input: 'flower flow flight', output: 'fl' },

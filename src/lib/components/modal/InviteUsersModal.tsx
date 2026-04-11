@@ -98,8 +98,7 @@ export default function InviteUsersModal({
                 toast.error('An error occurred... please try again');
             }
         } catch (err) {
-            console.error('Error inviting users:', err);
-            toast.error('An error occurred... please try again');
+            toast.error(`Error inviting users: ${err}`);
         } finally {
             setInviting(false);
         }

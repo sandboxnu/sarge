@@ -1,5 +1,6 @@
 import { BadRequestException, InternalServerException } from '@/lib/utils/errors.utils';
 import { sleep } from '@/lib/utils/utils';
+import type { CandidateTestResult } from '@/lib/types/candidate-assessment.types';
 
 export interface JudgeSubmissionRequestBody {
     source_code: string;
@@ -17,6 +18,15 @@ export interface JudgeResultRequestBody {
         description: string;
     };
     token: string;
+}
+
+export function formatJudgeResult(result: JudgeResultRequestBody): CandidateTestResult {
+    return {
+        stdout: result.stdout,
+        stderr: result.stderr,
+        description: result.status?.description,
+        statusId: result.status?.id,
+    };
 }
 
 class Judge0Connector {
@@ -193,6 +203,13 @@ class Judge0Connector {
     ): Promise<JudgeResultRequestBody[]> {
         const tokens = await this.registerSubmissions(submissions);
         const { allResults } = await this.waitForSubmissions(tokens, totalTimeout);
+        const tokenIndexMap = new Map(tokens.map((token, index) => [token, index]));
+
+        // Sort results by their original submission order (this assumes judge0 returns the tokens in the right order)\
+        // in my practice this is true but I am unsure
+        allResults.sort(
+            (a, b) => (tokenIndexMap.get(a.token) ?? 0) - (tokenIndexMap.get(b.token) ?? 0)
+        );
         return allResults;
     }
 }

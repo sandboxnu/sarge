@@ -41,9 +41,27 @@ export type CandidateAssessment = {
 export type AssessmentPhase = 'intro' | 'assessment' | 'outro';
 export type OutroReason = 'submitted' | 'expired';
 export type SectionStatus = 'locked' | 'current' | 'completed';
+export type TestCaseResultStatus =
+    | 'default'
+    | 'loading'
+    | 'passed'
+    | 'failed'
+    | 'runtime_error'
+    | 'error';
+
+/**
+ * CandidateTestResult represents the parsed and normalized test result returned to the frontend.
+ * It is distinct from TestCaseResult which is used to track the UI state of a test case.
+ */
+export type CandidateTestResult = {
+    stdout: string;
+    stderr: string;
+    description: string;
+    statusId: number;
+};
 
 export type TestCaseResult = {
-    status: 'default' | 'loading' | 'passed' | 'failed' | 'runtime_error';
+    status: TestCaseResultStatus;
     actualOutput?: string;
 };
 
