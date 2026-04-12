@@ -93,10 +93,10 @@ export function AssessmentTemplatePreview({
                     <h1 className="text-display-xs text-foreground truncate font-medium">
                         {assessmentTemplatePreview.title}
                     </h1>
-                    <div className="flex flex-row items-center gap-0.5 flex-wrap">
-                        <p className="text-body-s font-medium text-gray-400">Assigned to{" "}</p>
-                        {assessmentTemplatePreview.positions.length > 0
-                            ? assessmentTemplatePreview.positions.map((position, index) => (
+                    <div className="flex flex-row flex-wrap items-center gap-0.5">
+                        <p className="text-body-s font-medium text-gray-400">Assigned to </p>
+                        {assessmentTemplatePreview.positions.length > 0 ? (
+                            assessmentTemplatePreview.positions.map((position, index) => (
                                 <span key={position.id}>
                                     <span className="text-label-s text-sarge-primary-600 underline">
                                         {position.title}
@@ -104,7 +104,11 @@ export function AssessmentTemplatePreview({
                                     {index < assessmentTemplatePreview.positions.length - 1 && ','}
                                 </span>
                             ))
-                            : <p className="text-label-s text-sarge-primary-600 underline">0 positions</p>}
+                        ) : (
+                            <p className="text-label-s text-sarge-primary-600 underline">
+                                0 positions
+                            </p>
+                        )}
                     </div>
                 </div>
                 <Button variant="secondary" className="h-fit px-4 py-2" asChild>

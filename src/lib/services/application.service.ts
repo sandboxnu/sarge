@@ -1,4 +1,3 @@
-import crypto from 'node:crypto';
 import { prisma } from '@/lib/prisma';
 import { NotFoundException, ForbiddenException } from '@/lib/utils/errors.utils';
 import { type AddApplicationWithCandidateDataDTO } from '@/lib/schemas/application.schema';
