@@ -21,7 +21,8 @@ async function main() {
                 "Application",
                 "Candidate",
                 "Position",
-                "Tag",
+                "PositionTag",
+                "TaskTemplateTag",
                 "Member",
                 "Invitation",
                 "Session",
@@ -29,7 +30,6 @@ async function main() {
                 "Verification",
                 "User",
                 "Organization",
-                "_TaskTemplateTags"
             RESTART IDENTITY CASCADE;
         `;
 

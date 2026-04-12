@@ -7,7 +7,8 @@ import { candidatesData } from './seed-data/candidates.seed';
 import { taskTemplatesData } from './seed-data/task-template.seed';
 import { assessmentTemplatesData } from './seed-data/assessment-template.seed';
 import { assessmentsData } from './seed-data/assessment.seed';
-import { tagsData } from './seed-data/tags.seed';
+import { positionTagsData } from './seed-data/position-tags.seed';
+import { taskTemplateTagsData } from './seed-data/task-template-tags.seed';
 import { languageData } from './seed-data/languages.seed';
 
 /**
@@ -249,21 +250,21 @@ async function seedLanguages() {
 async function seedTags() {
     console.log('Seeding tags...');
 
-    for (const tag of tagsData) {
-        await prisma.tag.upsert({
+    for (const tag of taskTemplateTagsData) {
+        await prisma.taskTemplateTag.upsert({
             where: { id: tag.id },
             update: {},
             create: tag,
         });
 
-        console.log(`  Created tag: ${tag.name}`);
+        console.log(`  Created task template tag: ${tag.name}`);
     }
 
     await prisma.taskTemplate.update({
         where: { id: taskTemplatesData[0].id },
         data: {
             tags: {
-                connect: tagsData.map((tag) => ({ id: tag.id })),
+                connect: taskTemplateTagsData.map((tag) => ({ id: tag.id })),
             },
         },
     });
@@ -272,7 +273,7 @@ async function seedTags() {
         where: { id: taskTemplatesData[1].id },
         data: {
             tags: {
-                connect: [{ id: tagsData[0].id }, { id: tagsData[1].id }],
+                connect: [{ id: taskTemplateTagsData[0].id }, { id: taskTemplateTagsData[1].id }],
             },
         },
     });
@@ -281,7 +282,7 @@ async function seedTags() {
         where: { id: taskTemplatesData[2].id },
         data: {
             tags: {
-                connect: [{ id: tagsData[2].id }, { id: tagsData[0].id }],
+                connect: [{ id: taskTemplateTagsData[2].id }, { id: taskTemplateTagsData[0].id }],
             },
         },
     });
@@ -290,7 +291,7 @@ async function seedTags() {
         where: { id: taskTemplatesData[3].id },
         data: {
             tags: {
-                connect: [{ id: tagsData[3].id }, { id: tagsData[4].id }],
+                connect: [{ id: taskTemplateTagsData[3].id }, { id: taskTemplateTagsData[4].id }],
             },
         },
     });
@@ -299,7 +300,7 @@ async function seedTags() {
         where: { id: taskTemplatesData[5].id },
         data: {
             tags: {
-                connect: [{ id: tagsData[0].id }, { id: tagsData[3].id }],
+                connect: [{ id: taskTemplateTagsData[0].id }, { id: taskTemplateTagsData[3].id }],
             },
         },
     });
@@ -308,7 +309,7 @@ async function seedTags() {
         where: { id: taskTemplatesData[6].id },
         data: {
             tags: {
-                connect: [{ id: tagsData[0].id }, { id: tagsData[1].id }],
+                connect: [{ id: taskTemplateTagsData[0].id }, { id: taskTemplateTagsData[1].id }],
             },
         },
     });
@@ -317,7 +318,7 @@ async function seedTags() {
         where: { id: taskTemplatesData[7].id },
         data: {
             tags: {
-                connect: [{ id: tagsData[1].id }, { id: tagsData[0].id }],
+                connect: [{ id: taskTemplateTagsData[1].id }, { id: taskTemplateTagsData[0].id }],
             },
         },
     });
@@ -326,7 +327,7 @@ async function seedTags() {
         where: { id: taskTemplatesData[8].id },
         data: {
             tags: {
-                connect: [{ id: tagsData[1].id }, { id: tagsData[0].id }],
+                connect: [{ id: taskTemplateTagsData[1].id }, { id: taskTemplateTagsData[0].id }],
             },
         },
     });
@@ -335,7 +336,26 @@ async function seedTags() {
         where: { id: taskTemplatesData[9].id },
         data: {
             tags: {
-                connect: [{ id: tagsData[0].id }, { id: tagsData[1].id }],
+                connect: [{ id: taskTemplateTagsData[0].id }, { id: taskTemplateTagsData[1].id }],
+            },
+        },
+    });
+
+    for (const tag of positionTagsData) {
+        await prisma.positionTag.upsert({
+            where: { id: tag.id },
+            update: {},
+            create: tag,
+        });
+
+        console.log(`  Created position tag: ${tag.name}`);
+    }
+
+    await prisma.position.update({
+        where: { id: positionsData[0].id },
+        data: {
+            tags: {
+                connect: [{ id: positionTagsData[0].id }, { id: positionTagsData[1].id }],
             },
         },
     });

@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import { Field, FieldLabel } from '@/lib/components/ui/Field';
 import { RemovableChip } from '@/lib/components/ui/RemovableChip';
 import { Combobox } from '@/lib/components/ui/Combobox';
-import { createTag } from '@/lib/api/tags';
+import { createTaskTemplateTag } from '@/lib/api/task-template-tags';
 import type { BlockNoteContent } from '@/lib/types/task-template.types';
 import type { TagDTO } from '@/lib/schemas/tag.schema';
 import { toast } from 'sonner';
@@ -55,7 +55,7 @@ export default function TaskDetailsTab({
     const handleCreateTag = async (name: string) => {
         if (isSaving) return;
         try {
-            const newTag = await createTag({ name });
+            const newTag = await createTaskTemplateTag({ name });
             setAvailableTags((prev) => [...prev, newTag]);
             setTags((prev: TagDTO[]) => [...prev, newTag]);
         } catch (err) {

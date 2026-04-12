@@ -7,7 +7,7 @@ import { getSession } from '@/lib/utils/auth.utils';
 export async function GET() {
     try {
         const session = await getSession();
-        const tags = await TagService.getTagsByOrgId(session.activeOrganizationId);
+        const tags = await TagService.getTaskTemplateTagsByOrgId(session.activeOrganizationId);
         return Response.json({ data: tags }, { status: 200 });
     } catch (err) {
         return handleError(err);
@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
         const body = await request.json();
         const parsed = createTagSchema.parse(body);
 
-        const tag = await TagService.createTag(
+        const tag = await TagService.createTaskTemplateTag(
             parsed.name,
             session.activeOrganizationId,
             parsed.colorHexCode

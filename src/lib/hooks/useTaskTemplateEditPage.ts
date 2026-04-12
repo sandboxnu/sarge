@@ -6,7 +6,7 @@ import {
     generateTaskTemplateLanguageStub,
     type GenerateTaskTemplateStubPayload,
 } from '@/lib/api/task-templates';
-import { getOrgTags } from '@/lib/api/tags';
+import { getOrgTaskTemplateTags } from '@/lib/api/task-template-tags';
 import {
     type TestCaseDTO,
     type TaskTemplateEditorDTO,
@@ -53,7 +53,7 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
             try {
                 const [taskTemplate, orgTags] = await Promise.all([
                     getTaskTemplate(taskTemplateId),
-                    getOrgTags(),
+                    getOrgTaskTemplateTags(),
                 ]);
 
                 setTaskTemplate(taskTemplate);
