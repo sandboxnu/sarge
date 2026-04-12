@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import { toast } from 'sonner';
 
 function formatTime(seconds: number): string {
     const mins = Math.floor(seconds / 60);
@@ -10,6 +11,8 @@ function formatTime(seconds: number): string {
 
 export function useAssessmentTimer(totalTimeSeconds: number, started: boolean) {
     const [remainingSeconds, setRemainingSeconds] = useState(totalTimeSeconds);
+    const [hidden, setHidden] = useState(false);
+    const hasToasted = useRef(false);
 
     // totalTimeSeconds is 0 on first render (sections not loaded); sync when tasks arrive.
     useEffect(() => {
@@ -32,9 +35,21 @@ export function useAssessmentTimer(totalTimeSeconds: number, started: boolean) {
         return () => clearInterval(id);
     }, [started]);
 
+    useEffect(() => {
+        if (started && remainingSeconds <= 300 && remainingSeconds > 0 && !hasToasted.current) {
+            hasToasted.current = true;
+            toast.error('5 minutes remaining!', {
+                position: 'bottom-left',
+            });
+        }
+    }, [remainingSeconds, started]);
+
     return {
         remainingSeconds,
         formattedTime: formatTime(remainingSeconds),
         isExpired: remainingSeconds === 0 && started,
+        isBelowFiveMins: started && remainingSeconds > 0 && remainingSeconds <= 300,
+        hidden,
+        setHidden,
     };
 }

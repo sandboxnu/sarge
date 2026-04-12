@@ -4,6 +4,7 @@ import localFont from 'next/font/local';
 import '@blocknote/shadcn/style.css';
 import './globals.css';
 import { AuthProvider } from '@/lib/auth/auth-context';
+import { Toaster } from '@/lib/components/ui/Sonner';
 
 const inter = Inter({
     variable: '--font-inter',
@@ -45,6 +46,7 @@ export default function RootLayout({
                 className={`${inter.variable} ${satoshi.variable} flex h-dvh flex-col antialiased`}
             >
                 <AuthProvider>
+                    <Toaster />
                     <main className="flex-1 overflow-hidden">{children}</main>
                 </AuthProvider>
             </body>
