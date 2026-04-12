@@ -75,6 +75,8 @@ export default function AssessmentPage({ params }: { params: Promise<{ assessmen
             <AssessmentNavbar candidateName={assessment.candidateName} />
             <div className="flex flex-1 overflow-hidden">
                 <AssessmentSidebar
+                    hidden={assessment.timer.hidden}
+                    setHidden={assessment.timer.setHidden}
                     sections={assessment.sections}
                     currentSectionIndex={assessment.currentSectionIndex}
                     formattedTime={assessment.timer.formattedTime}
