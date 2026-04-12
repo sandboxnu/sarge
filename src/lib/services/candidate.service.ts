@@ -72,7 +72,6 @@ async function addCandidateToPosition(
             assessment: {
                 select: {
                     id: true,
-                    uniqueLink: true,
                     submittedAt: true,
                 },
             },
@@ -149,7 +148,6 @@ async function batchAddCandidatesToPosition(
             assessment: {
                 select: {
                     id: true,
-                    uniqueLink: true,
                     submittedAt: true,
                 },
             },
@@ -198,7 +196,6 @@ async function getPositionCandidates(
             assessment: {
                 select: {
                     id: true,
-                    uniqueLink: true,
                     submittedAt: true,
                 },
             },

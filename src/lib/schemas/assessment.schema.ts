@@ -10,11 +10,10 @@ export const assessmentSchema = z.object({
     assessmentTemplateId: z.string(),
     deadline: z.date().nullable(),
     assignedAt: z.date(),
-    uniqueLink: z.string(),
     submittedAt: z.date().nullable(),
 });
 
-export const createAssessmentSchema = assessmentSchema.omit({ id: true, uniqueLink: true });
+export const createAssessmentSchema = assessmentSchema.omit({ id: true });
 
 export const updateAssessmentSchema = assessmentSchema.partial().extend({
     id: z.string(),
