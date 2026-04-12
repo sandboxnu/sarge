@@ -65,7 +65,6 @@ async function addApplicationToPosition(
                 data: {
                     applicationId: createdApplication.id,
                     assessmentTemplateId: position.assessmentId,
-                    uniqueLink: crypto.randomUUID(),
                 },
             });
 
@@ -93,7 +92,6 @@ async function addApplicationToPosition(
                 assessment: {
                     select: {
                         id: true,
-                        uniqueLink: true,
                         submittedAt: true,
                     },
                 },
@@ -184,7 +182,6 @@ async function batchAddApplicationsToPosition(
                         data: {
                             applicationId: application.id,
                             assessmentTemplateId,
-                            uniqueLink: crypto.randomUUID(),
                         },
                     });
 
@@ -218,7 +215,6 @@ async function batchAddApplicationsToPosition(
             assessment: {
                 select: {
                     id: true,
-                    uniqueLink: true,
                     submittedAt: true,
                 },
             },
@@ -270,7 +266,6 @@ async function getPositionApplications(
             assessment: {
                 select: {
                     id: true,
-                    uniqueLink: true,
                     submittedAt: true,
                 },
             },

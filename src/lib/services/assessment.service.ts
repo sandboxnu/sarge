@@ -75,17 +75,12 @@ async function createAssessment(
             `Assessment Template with id ${assessment.assessmentTemplateId} not found`
         );
     }
-    // the unique link shouldn't be the full link (bc the env of the link matters) so we just use id
     const id = crypto.randomUUID();
     const newAssessment = await prisma.assessment.create({
-        data: { ...assessment, id, uniqueLink: id },
+        data: { ...assessment, id },
     });
 
     return newAssessment;
-}
-
-function buildAssessmentLinkToken() {
-    return crypto.randomUUID();
 }
 
 async function assignTemplateToPosition(params: {
@@ -165,7 +160,6 @@ async function assignTemplateToPosition(params: {
                 data: {
                     applicationId: application.id,
                     assessmentTemplateId,
-                    uniqueLink: buildAssessmentLinkToken(),
                 },
             });
 

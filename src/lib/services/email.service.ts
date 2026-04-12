@@ -47,7 +47,7 @@ export async function sendAssessmentInvitationEmail(
 
     const baseUrl =
         process.env.BETTER_AUTH_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
-    const assessmentUrl = `${baseUrl}/assessment/${assessment.uniqueLink}`;
+    const assessmentUrl = `${baseUrl}/assessment/${assessment.id}`;
     const logoUrl = `${baseUrl}/Sarge_logo.svg`;
 
     //placeholder duration and expiration

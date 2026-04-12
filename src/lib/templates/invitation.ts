@@ -20,7 +20,7 @@ export function generateAssessmentInvitationHTML(data: AssessmentInvitationEmail
     </head>
     <body style="margin: 0; padding: 20px; background-color: #f5f5f5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;">
         <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #e5e5e7; border-radius: 12px; overflow: hidden;">
-            
+
             <!-- Header -->
             <div style="background-color: #4D38EF; padding: 24px; display: flex; align-items: flex-end; justify-content: space-between; gap: 20px;">
                 <div style="flex: 1;">
@@ -34,7 +34,7 @@ export function generateAssessmentInvitationHTML(data: AssessmentInvitationEmail
             <!-- Body -->
             <div style="padding: 32px 24px; color: #000000;">
                 <p style="margin: 0 0 16px 0; font-size: 16px; line-height: 1.5;">Hello ${data.candidateName},</p>
-                
+
                 <p style="margin: 0 0 24px 0; font-size: 14px; line-height: 1.6; color: #333333;">
                     Thank you for your application and interest in ${data.organizationName}! The first step in our application process is a coding assessment to evaluate your technical and problem-solving skills.
                 </p>
@@ -59,8 +59,8 @@ export function generateAssessmentInvitationHTML(data: AssessmentInvitationEmail
                 </div>
 
                 <div style="text-align: center; margin: 0 0 24px 0;">
-                    <a 
-                        href="/assessment/${data.assessmentId}" 
+                    <a
+                        href="${data.assessmentUrl}"
                         style="display: inline-block; background-color: #5D5BF7; color: white; font-weight: 500; padding: 12px 28px; text-decoration: none; border-radius: 8px; font-size: 15px;"
                     >
                         Open Assessment

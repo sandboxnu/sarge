@@ -399,14 +399,12 @@ async function seedAssessments() {
             where: { applicationId: application.id },
             update: {
                 assessmentTemplateId: assessmentData.assessmentTemplateId,
-                uniqueLink: assessmentData.uniqueLink,
                 deadline: assessmentData.deadline,
             },
             create: {
                 id: assessmentData.id,
                 applicationId: application.id,
                 assessmentTemplateId: assessmentData.assessmentTemplateId,
-                uniqueLink: assessmentData.uniqueLink,
                 deadline: assessmentData.deadline,
             },
         });

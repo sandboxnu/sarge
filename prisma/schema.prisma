@@ -224,7 +224,6 @@ model Assessment {
   assessmentTemplateId String
   assignedAt           DateTime  @default(now())
   submittedAt          DateTime?
-  uniqueLink           String    @unique
   deadline             DateTime?
 
   application        Application        @relation(fields: [applicationId], references: [id], onDelete: Cascade)
