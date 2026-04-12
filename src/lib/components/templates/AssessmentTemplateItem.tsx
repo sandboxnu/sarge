@@ -51,7 +51,7 @@ export default function AssessmentTemplateItem({
                 </div>
 
                 {estimatedTime > 0 && (
-                    <span className="text-label-xs ml-2 shrink-0">{estimatedTime}min</span>
+                    <span className="text-label-xs ml-2 shrink-0">{estimatedTime} minutes</span>
                 )}
             </div>
         </div>

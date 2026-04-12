@@ -122,7 +122,7 @@ export default function useAssessment(assessmentId: string) {
 
     // the timer is in seconds however our model is in minutes
     const totalEstimatedMinutes = sections.reduce(
-        (sum, s) => sum + (s.taskTemplate.estimatedTime ?? 0),
+        (sum, s) => sum + s.taskTemplate.estimatedTime,
         0
     );
     const totalTimeSeconds = totalEstimatedMinutes * 60;

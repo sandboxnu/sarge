@@ -19,7 +19,21 @@ export async function sendAssessmentInvitationEmail(
         include: {
             applications: {
                 include: {
-                    assessment: true,
+                    assessment: {
+                        include: {
+                            assessmentTemplate: {
+                                include: {
+                                    tasks: {
+                                        include: {
+                                            taskTemplate: {
+                                                select: { estimatedTime: true },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
                     position: true,
                 },
             },
@@ -51,7 +65,10 @@ export async function sendAssessmentInvitationEmail(
     const logoUrl = `${baseUrl}/Sarge_logo.svg`;
 
     //placeholder duration and expiration
-    const durationMinutes = 120;
+    const durationMinutes = assessment.assessmentTemplate.tasks.reduce(
+        (sum, task) => sum + task.taskTemplate.estimatedTime,
+        0
+    );
     const expirationDate = 'April 12, 2026 11:59PM EST';
     const htmlContent = generateAssessmentInvitationHTML({
         candidateName: candidate.name,
