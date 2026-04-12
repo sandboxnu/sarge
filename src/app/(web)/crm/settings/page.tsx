@@ -9,11 +9,11 @@ import { useAuth } from '@/lib/auth/auth-context';
 import { canInviteMembers, type OrgRole } from '@/lib/utils/roles.utils';
 
 export default function OrgSettingsPage() {
-    const { activeMember, activeOrganization } = useAuth();
+    const { activeMember, activeOrganization, memberPending } = useAuth();
     const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
 
     const currentUserRole = (activeMember?.role ?? 'member') as OrgRole;
-    const showInviteButton = canInviteMembers(currentUserRole);
+    const showInviteButton = !memberPending && canInviteMembers(currentUserRole);
 
     return (
         <div className="flex flex-col gap-3 pt-4 pr-5 pb-5 pl-7">
