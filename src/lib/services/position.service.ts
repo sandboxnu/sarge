@@ -138,7 +138,6 @@ async function getPositionPreview(positionId: string, orgId: string): Promise<Po
                     assessment: {
                         select: {
                             id: true,
-                            uniqueLink: true,
                             submittedAt: true,
                             assessmentTemplate: {
                                 select: {
@@ -206,7 +205,6 @@ async function getPositionPreview(positionId: string, orgId: string): Promise<Po
             assessment: app.assessment
                 ? {
                       id: app.assessment.id,
-                      uniqueLink: app.assessment.uniqueLink,
                       submittedAt: app.assessment.submittedAt,
                       reviews: app.assessment.reviews.map((review) => ({
                           reviewer: review.reviewer,

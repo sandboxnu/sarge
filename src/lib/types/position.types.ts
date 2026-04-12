@@ -26,7 +26,6 @@ export interface ApplicationDisplayInfo {
     };
     assessment: {
         id: string;
-        uniqueLink: string;
         submittedAt: Date | null;
     } | null;
     grader: {
@@ -55,7 +54,6 @@ export interface PositionPreviewCandidate {
     };
     assessment: {
         id: string;
-        uniqueLink: string;
         submittedAt: Date | null;
         reviews: {
             reviewer: {
@@ -106,7 +104,6 @@ export interface PositionPreviewResponse {
         };
         assessment: {
             id: string;
-            uniqueLink: string;
             submittedAt: string | null;
             reviews: {
                 reviewer: {

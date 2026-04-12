@@ -1,8 +1,8 @@
 export const organizationsData = [
     {
         id: 'org_nextlab_001',
-        name: 'Next Lab',
-        slug: 'next-lab',
+        name: 'NExT',
+        slug: 'next',
         logo: null,
     },
 ];

@@ -1,4 +1,3 @@
-import crypto from 'node:crypto';
 import { prisma } from '@/lib/prisma';
 import { NotFoundException, ForbiddenException } from '@/lib/utils/errors.utils';
 import { type AddApplicationWithCandidateDataDTO } from '@/lib/schemas/application.schema';
@@ -65,7 +64,6 @@ async function addApplicationToPosition(
                 data: {
                     applicationId: createdApplication.id,
                     assessmentTemplateId: position.assessmentId,
-                    uniqueLink: crypto.randomUUID(),
                 },
             });
 
@@ -93,7 +91,6 @@ async function addApplicationToPosition(
                 assessment: {
                     select: {
                         id: true,
-                        uniqueLink: true,
                         submittedAt: true,
                     },
                 },
@@ -184,7 +181,6 @@ async function batchAddApplicationsToPosition(
                         data: {
                             applicationId: application.id,
                             assessmentTemplateId,
-                            uniqueLink: crypto.randomUUID(),
                         },
                     });
 
@@ -218,7 +214,6 @@ async function batchAddApplicationsToPosition(
             assessment: {
                 select: {
                     id: true,
-                    uniqueLink: true,
                     submittedAt: true,
                 },
             },
@@ -270,7 +265,6 @@ async function getPositionApplications(
             assessment: {
                 select: {
                     id: true,
-                    uniqueLink: true,
                     submittedAt: true,
                 },
             },
