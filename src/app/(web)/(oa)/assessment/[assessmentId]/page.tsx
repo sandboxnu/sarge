@@ -47,20 +47,27 @@ export default function AssessmentPage({ params }: { params: Promise<{ assessmen
 
     if (assessment.phase === 'intro' && assessment.assessment) {
         return (
-            <AssessmentIntro
-                assessment={assessment.assessment}
-                totalTimeSeconds={assessment.totalTimeSeconds}
-                onStart={assessment.startAssessment}
-            />
+            <div className="flex h-screen w-full flex-col overflow-hidden">
+                <AssessmentNavbar candidateName={assessment.candidateName} />
+                <div className="flex-1 overflow-y-auto">
+                    <AssessmentIntro
+                        assessment={assessment.assessment}
+                        totalTimeSeconds={assessment.totalTimeSeconds}
+                        onStart={assessment.startAssessment}
+                    />
+                </div>
+            </div>
         );
     }
 
-    if (assessment.phase === 'outro') {
+    if (assessment.phase === 'outro' && assessment.assessment) {
         return (
-            <AssessmentOutro
-                reason={assessment.outroReason}
-                candidateName={assessment.candidateName}
-            />
+            <div className="flex h-screen w-full flex-col overflow-hidden">
+                <AssessmentNavbar candidateName={assessment.candidateName} />
+                <div className="flex-1 overflow-y-auto">
+                    <AssessmentOutro assessment={assessment.assessment} />
+                </div>
+            </div>
         );
     }
 
