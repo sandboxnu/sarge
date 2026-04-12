@@ -12,7 +12,7 @@ export interface AssessmentTaskTemplatePreviewProps {
 export function AssessmentTaskTemplatePreview({
     taskTemplatePreview,
 }: AssessmentTaskTemplatePreviewProps) {
-    const { title } = taskTemplatePreview;
+    const { title, estimatedTime } = taskTemplatePreview;
     return (
         <div className="flex h-full w-full flex-col gap-2 px-6 py-4">
             <div className="inline-flex flex-col items-start gap-1 self-stretch pl-3">
@@ -21,8 +21,9 @@ export function AssessmentTaskTemplatePreview({
                 </h2>
                 <div className="inline-flex items-center justify-start gap-2 self-stretch">
                     <AlarmClock className="h-5 w-5 text-neutral-700" />
-                    {/* TODO: add task template time limit field here */}
-                    <p className="text-body-s font-medium text-neutral-800"> Coming Soon... </p>
+                    <p className="text-body-s font-medium text-neutral-800">
+                        {estimatedTime} minutes
+                    </p>
                 </div>
             </div>
             <div>
