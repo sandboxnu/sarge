@@ -1,5 +1,6 @@
 export function formatDeadline(date: Date | null): string {
-    if (!date) return 'No deadline';
+    // TODO(laith): update when deadlines are a thing
+    if (!date) return 'April 12, 2026 11:59PM EST';
     return new Date(date).toLocaleString('en-US', {
         month: 'long',
         day: 'numeric',
