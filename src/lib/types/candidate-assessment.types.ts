@@ -31,6 +31,7 @@ export type CandidateAssessment = {
     submittedAt: Date | null;
     assessmentStatus: AssessmentStatus;
     candidateName: string;
+    organizationName: string;
     candidateEmail: string;
     assessmentTemplate: {
         title: string;
