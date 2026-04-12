@@ -52,7 +52,7 @@ export async function sendAssessmentInvitationEmail(
 
     //placeholder duration and expiration
     const durationMinutes = 120;
-    const expirationDate = 'March 16, 2026 11:59PM EST';
+    const expirationDate = 'April 12, 2026 11:59PM EST';
     const htmlContent = generateAssessmentInvitationHTML({
         candidateName: candidate.name,
         positionTitle: position.title,

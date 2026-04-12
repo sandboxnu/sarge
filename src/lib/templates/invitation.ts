@@ -69,7 +69,7 @@ export function generateAssessmentInvitationHTML(data: AssessmentInvitationEmail
 
                 <div style="text-align: center; font-size: 14px; color: #333333; margin: 0 0 16px 0;">
                     <p style="margin: 0;">
-                        You can also use <a href="/assessment/${data.assessmentId}" style="color: #4D38EF; text-decoration: underline; font-weight: 600;">this link</a> to access your assessment. Visiting this link will not begin the assessment.
+                        You can also use <a href=${data.assessmentUrl}" style="color: #4D38EF; text-decoration: underline; font-weight: 600;">this link</a> to access your assessment. Visiting this link will not begin the assessment.
                     </p>
                 </div>
             </div>
