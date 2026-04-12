@@ -28,7 +28,7 @@ export default function AssessmentSidebar({
                         <AlarmClock className="text-sarge-gray-500 size-5" />
                     )}
                     <span
-                        className={`font-mono text-xs tracking-tight tabular-nums ${isBelowFiveMins ? 'text-error-500' : 'text-sarge-gray-700'}`}
+                        className={`font-mono text-xs tracking-tight tabular-nums ${isBelowFiveMins ? 'text-sarge-error-500' : 'text-sarge-gray-700'}`}
                     >
                         {hidden ? '--:--' : formattedTime}
                     </span>
