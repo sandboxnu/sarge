@@ -80,8 +80,17 @@ export function AssessmentTemplatePreview({
 
     if (totalTasks === 0) {
         return (
-            <div className="text-body-m text-muted-foreground flex h-full items-center justify-center">
-                No tasks in this assessment template
+            <div className="text-body-m text-muted-foreground flex h-full flex-col items-center justify-center gap-3">
+                <p>No tasks in this assessment template</p>
+                <Button variant="secondary" className="h-fit px-4 py-2" asChild>
+                    <Link
+                        aria-label="Edit assessment template"
+                        href={`/crm/assessment-templates/${assessmentTemplatePreview.id}/edit`}
+                    >
+                        <SquarePen className="size-5" />
+                        Edit details
+                    </Link>
+                </Button>
             </div>
         );
     }
