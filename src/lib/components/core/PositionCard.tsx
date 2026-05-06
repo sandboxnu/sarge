@@ -1,8 +1,15 @@
 'use client';
-import { MoreVertical } from 'lucide-react';
+import { Archive, MoreVertical, Trash2 } from 'lucide-react';
 import { PositionAssessmentCard } from '@/lib/components/core/PositionAssessmentCard';
 import { cn } from '@/lib/utils/cn.utils';
 import { Chip } from '@/lib/components/ui/Chip';
+import { Button } from '@/lib/components/ui/Button';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/lib/components/ui/Dropdown';
 import { getSubmissionVariant } from '@/lib/utils/status.utils';
 
 type PositionCardProps = {
@@ -13,6 +20,8 @@ type PositionCardProps = {
     className?: string;
     onPositionClick?: () => void;
     onAssessmentClick?: () => void;
+    onArchive: () => void;
+    onDelete: () => void;
 };
 
 export default function PositionCard({
@@ -23,6 +32,8 @@ export default function PositionCard({
     className,
     onPositionClick,
     onAssessmentClick,
+    onArchive,
+    onDelete,
 }: PositionCardProps) {
     const submissionVariant = getSubmissionVariant(submittedCount, sentCount);
 
@@ -66,13 +77,42 @@ export default function PositionCard({
                     </p>
                 </div>
 
-                <button
-                    data-menu-button
-                    className="text-sarge-gray-800 grid min-h-[44px] min-w-[44px] place-items-center"
-                    onClick={(e) => e.stopPropagation()}
-                >
-                    <MoreVertical className="h-5 w-5" />
-                </button>
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button
+                            data-menu-button
+                            variant="icon"
+                            className="text-sarge-gray-800 grid min-h-[44px] min-w-[44px] place-items-center bg-transparent p-0"
+                            aria-label="More options"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <MoreVertical className="h-5 w-5" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                        align="end"
+                        className="border-sarge-gray-200 w-48 border bg-white"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <DropdownMenuItem
+                            onSelect={() => onArchive()}
+                            className="text-sarge-gray-700 hover:bg-sarge-gray-50 focus:bg-sarge-gray-50 bg-white hover:cursor-pointer"
+                        >
+                            <Archive className="size-4" />
+                            Archive
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                            onSelect={(event) => {
+                                event.preventDefault();
+                                onDelete();
+                            }}
+                            className="text-destructive hover:text-destructive focus:text-destructive hover:bg-sarge-gray-50 focus:bg-sarge-gray-50 bg-white hover:cursor-pointer"
+                        >
+                            <Trash2 className="text-destructive size-4" />
+                            Delete
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
             </div>
             <PositionAssessmentCard
                 className="mt-4 w-full"

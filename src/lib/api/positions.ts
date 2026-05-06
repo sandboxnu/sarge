@@ -28,6 +28,40 @@ export async function createPosition(title: string): Promise<Position> {
 }
 
 /**
+ * DELETE /api/positions/:positionId
+ */
+export async function deletePosition(positionId: string): Promise<Position> {
+    const res = await fetch(`/api/positions/${positionId}`, {
+        method: 'DELETE',
+    });
+
+    const json = await res.json();
+
+    if (!res.ok) {
+        throw new Error(json.message);
+    }
+
+    return json.data;
+}
+
+/**
+ * PATCH /api/positions/:positionId/archive
+ */
+export async function archivePosition(positionId: string): Promise<Position> {
+    const res = await fetch(`/api/positions/${positionId}/archive`, {
+        method: 'PATCH',
+    });
+
+    const json = await res.json();
+
+    if (!res.ok) {
+        throw new Error(json.message);
+    }
+
+    return json.data;
+}
+
+/**
  * GET /api/positions/:positionId/candidates
  */
 export async function getCandidates(positionId: string): Promise<ApplicationDisplayInfo[]> {

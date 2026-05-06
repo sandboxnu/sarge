@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import { type PositionWithCounts } from '@/lib/types/position.types';
 import { useSession } from '@/lib/auth/auth-client';
-import { getPositions } from '@/lib/api/positions';
+import { archivePosition, deletePosition, getPositions } from '@/lib/api/positions';
 
 function usePositionContent() {
     const { data: session } = useSession();
@@ -50,6 +51,31 @@ function usePositionContent() {
         window.open(`/crm/positions/${positionId}`, '_blank', 'noopener,noreferrer');
     }
 
+    async function onArchive(positionId: string) {
+        try {
+            await archivePosition(positionId);
+            setActive((prev) => {
+                const target = prev.find((p) => p.id === positionId);
+                if (target) {
+                    setArchived((prevArchived) => [...prevArchived, { ...target, archived: true }]);
+                }
+                return prev.filter((p) => p.id !== positionId);
+            });
+        } catch (err) {
+            toast.error(`Failed to archive position: ${(err as Error).message}`);
+        }
+    }
+
+    async function onDelete(positionId: string) {
+        try {
+            await deletePosition(positionId);
+            setActive((prev) => prev.filter((p) => p.id !== positionId));
+            setArchived((prev) => prev.filter((p) => p.id !== positionId));
+        } catch (err) {
+            toast.error(`Failed to delete position: ${(err as Error).message}`);
+        }
+    }
+
     return {
         isCreateModalOpen,
         setIsCreateModalOpen,
@@ -58,6 +84,8 @@ function usePositionContent() {
         setActive,
         setArchived,
         handlePositionClick,
+        onArchive,
+        onDelete,
         error,
         loading,
     };
