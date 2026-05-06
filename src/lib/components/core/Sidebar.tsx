@@ -787,7 +787,7 @@ export function Sidebar() {
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton
-                            tooltip="Organization Settings"
+                            tooltip="Settings"
                             className="hover:!bg-sarge-primary-100 focus:!bg-sarge-primary-200 p-2.5 transition-colors duration-600 ease-out group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8 group-data-[collapsible=icon]:p-0 hover:cursor-pointer"
                             onClick={() => router.push('/crm/settings')}
                         >
