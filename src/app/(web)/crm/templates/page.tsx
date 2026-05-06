@@ -80,6 +80,14 @@ export default function TemplatesPage() {
     const isSearchingForTaskTemplate = taskTemplateSearch.value.trim().length >= 1;
     const isSearchingForAssessmentTemplate = assessmentTemplateSearch.value.trim().length >= 1;
 
+    const displayedTaskTemplates = isSearchingForTaskTemplate
+        ? taskTemplateSearch.data
+        : taskTemplateList;
+
+    const displayedAssessmentTemplates = isSearchingForAssessmentTemplate
+        ? assessmentTemplateSearch.data
+        : assessmentTemplateList.assessmentTemplateList;
+
     const { activeOrganizationId } = useAuth();
 
     const onDuplicate = async (taskTemplateId: string) => {
@@ -150,10 +158,10 @@ export default function TemplatesPage() {
                 <div className="flex flex-row items-center justify-between">
                     <TabsList className="h-auto gap-5 rounded-none bg-transparent p-0">
                         <UnderlineTabsTrigger value="tasks">
-                            Tasks ({total ?? 0})
+                            Tasks ({displayedTaskTemplates.length ?? 0})
                         </UnderlineTabsTrigger>
                         <UnderlineTabsTrigger value="assessments">
-                            Assessments ({assessmentTemplateList.total ?? 0})
+                            Assessments ({displayedAssessmentTemplates.length ?? 0})
                         </UnderlineTabsTrigger>
                     </TabsList>
                     <div className="flex items-center gap-4">
@@ -210,10 +218,7 @@ export default function TemplatesPage() {
                             </div>
                         ) : error ? (
                             <div>Error: {error.message}</div>
-                        ) : (isSearchingForTaskTemplate
-                              ? taskTemplateSearch.data
-                              : taskTemplateList
-                          ).length === 0 ? (
+                        ) : displayedTaskTemplates.length === 0 ? (
                             <div className="text-sarge-gray-500 flex h-full w-full flex-col items-center justify-center gap-4">
                                 <Image
                                     src={GreyWinstonLogoMark}
@@ -226,10 +231,7 @@ export default function TemplatesPage() {
                                     : 'You currently have no tasks'}
                             </div>
                         ) : (
-                            (isSearchingForTaskTemplate
-                                ? taskTemplateSearch.data
-                                : taskTemplateList
-                            ).map((task: TaskTemplateListItemDTO, idx: number) => {
+                            displayedTaskTemplates.map((task: TaskTemplateListItemDTO, idx: number) => {
                                 const absoluteIdx = page * limit + idx;
                                 return (
                                     <TaskTemplateCard
@@ -332,10 +334,7 @@ export default function TemplatesPage() {
                             </div>
                         ) : assessmentTemplateList.error ? (
                             <div>Error: {assessmentTemplateList.error.message}</div>
-                        ) : (isSearchingForAssessmentTemplate
-                              ? assessmentTemplateSearch.data
-                              : assessmentTemplateList.assessmentTemplateList
-                          ).length === 0 ? (
+                        ) : displayedAssessmentTemplates.length === 0 ? (
                             <div className="text-sarge-gray-500 flex h-full w-full flex-col items-center justify-center gap-4">
                                 <Image
                                     src={GreyWinstonLogoMark}
@@ -348,10 +347,7 @@ export default function TemplatesPage() {
                                     : 'You currently have no assessments'}
                             </div>
                         ) : (
-                            (isSearchingForAssessmentTemplate
-                                ? assessmentTemplateSearch.data
-                                : assessmentTemplateList.assessmentTemplateList
-                            ).map((assessment: AssessmentTemplateListItemDTO) => (
+                            displayedAssessmentTemplates.map((assessment: AssessmentTemplateListItemDTO) => (
                                 <AssessmentTemplateCard
                                     key={assessment.id}
                                     template={assessment}
