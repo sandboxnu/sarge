@@ -29,7 +29,7 @@ export default function TaskTemplateCard({ maxTags = 2, ...props }: TaskTemplate
     return (
         <div
             className={cn(
-                'relative flex cursor-pointer gap-4.5 rounded-xl border-1 p-4',
+                'relative flex flex-col-reverse cursor-pointer gap-4.5 rounded-xl border-1 p-4 sm:flex-row',
                 props.isAlreadyAdded && 'pointer-events-none opacity-50',
                 props.isPreviewSelected && !props.isAlreadyAdded
                     ? 'border-sarge-primary-500 bg-sarge-primary-50 ring-sarge-primary-200 ring-2 ring-inset'
@@ -69,7 +69,7 @@ export default function TaskTemplateCard({ maxTags = 2, ...props }: TaskTemplate
                         </div>
                     )}
                 </div>
-                <div className="flex flex-wrap gap-1">
+                <div className="hidden flex-wrap gap-1 sm:flex">
                     {visibleChips.map((chip, idx) => (
                         <Chip
                             key={chip.id ?? idx}

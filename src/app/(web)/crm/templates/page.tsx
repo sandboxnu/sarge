@@ -190,7 +190,7 @@ export default function TemplatesPage() {
                     value="tasks"
                     className="border-sarge-gray-200 flex min-h-0 w-1/4 shrink-0 flex-col border-r-1"
                 >
-                    <div className="flex items-center gap-2.5 px-3 pt-3">
+                    <div className="flex flex-col gap-2.5 px-3 pt-3 sm:flex-row sm:items-center">
                         <Search
                             className="border-none"
                             value={taskTemplateSearch.value}
@@ -199,10 +199,10 @@ export default function TemplatesPage() {
                         />
                         <div className="flex">
                             <Button variant="icon" className="px-3 py-2">
-                                <SlidersHorizontal className="size-5" />
+                                <ArrowDownUp className="size-5" />
                             </Button>
                             <Button variant="icon" className="px-3 py-2">
-                                <ArrowDownUp className="size-5" />
+                                <SlidersHorizontal className="size-5" />
                             </Button>
                         </div>
                     </div>
@@ -269,7 +269,13 @@ export default function TemplatesPage() {
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
                                         <div className="flex items-center gap-2.5">
-                                            <div>{selected?.length ?? 0} selected</div>
+                                            <div>
+                                                {selected?.length ?? 0}
+                                                <span className="hidden lg:inline">
+                                                    {' '}
+                                                    selected
+                                                </span>
+                                            </div>
                                         </div>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent
@@ -296,7 +302,8 @@ export default function TemplatesPage() {
                                 </DropdownMenu>
                             </div>
                             <Button className="flex-1 px-4 py-2" variant="secondary">
-                                Create Assessment
+                                <Plus className="lg:hidden" />
+                                <span className="hidden lg:inline">Create Assessment</span>
                             </Button>
                         </div>
                     </div>
@@ -306,7 +313,7 @@ export default function TemplatesPage() {
                     value="assessments"
                     className="border-sarge-gray-200 flex min-h-0 w-1/4 shrink-0 flex-col border-r-1"
                 >
-                    <div className="flex items-center gap-2.5 px-3 pt-3">
+                    <div className="flex flex-col gap-2.5 px-3 pt-3 sm:flex-row sm:items-center">
                         <Search
                             className="border-none"
                             value={assessmentTemplateSearch.value}
@@ -315,10 +322,10 @@ export default function TemplatesPage() {
                         />
                         <div className="flex">
                             <Button variant="icon" className="px-3 py-2">
-                                <SlidersHorizontal className="size-5" />
+                                <ArrowDownUp className="size-5" />
                             </Button>
                             <Button variant="icon" className="px-3 py-2">
-                                <ArrowDownUp className="size-5" />
+                                <SlidersHorizontal className="size-5" />
                             </Button>
                         </div>
                     </div>
