@@ -793,7 +793,7 @@ export function Sidebar() {
                         >
                             <Settings className="text-sarge-gray-600 !h-4 !w-4" />
                             <span className="text-sarge-gray-800 text-xs font-medium group-data-[collapsible=icon]:hidden">
-                                Organization Settings
+                                Settings
                             </span>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
