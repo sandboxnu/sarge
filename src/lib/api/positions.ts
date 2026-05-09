@@ -62,6 +62,23 @@ export async function archivePosition(positionId: string): Promise<Position> {
 }
 
 /**
+ * PATCH /api/positions/:positionId/unarchive
+ */
+export async function unarchivePosition(positionId: string): Promise<Position> {
+    const res = await fetch(`/api/positions/${positionId}/unarchive`, {
+        method: 'PATCH',
+    });
+
+    const json = await res.json();
+
+    if (!res.ok) {
+        throw new Error(json.message);
+    }
+
+    return json.data;
+}
+
+/**
  * GET /api/positions/:positionId/candidates
  */
 export async function getCandidates(positionId: string): Promise<ApplicationDisplayInfo[]> {

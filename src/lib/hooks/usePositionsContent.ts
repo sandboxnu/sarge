@@ -4,7 +4,12 @@ import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { type PositionWithCounts } from '@/lib/types/position.types';
 import { useSession } from '@/lib/auth/auth-client';
-import { archivePosition, deletePosition, getPositions } from '@/lib/api/positions';
+import {
+    archivePosition,
+    deletePosition,
+    getPositions,
+    unarchivePosition,
+} from '@/lib/api/positions';
 
 function usePositionContent() {
     const { data: session } = useSession();
@@ -65,6 +70,20 @@ function usePositionContent() {
         }
     }
 
+    async function onUnarchive(positionId: string) {
+        try {
+            await unarchivePosition(positionId);
+            const target = archived.find((p) => p.id === positionId);
+            if (target) {
+                setArchived((prev) => prev.filter((p) => p.id !== positionId));
+                setActive((prev) => [...prev, { ...target, archived: false }]);
+            }
+            toast.success('Position unarchived successfully');
+        } catch (err) {
+            toast.error(`Position failed to unarchive: ${(err as Error).message}`);
+        }
+    }
+
     async function onDelete(positionId: string) {
         try {
             await deletePosition(positionId);
@@ -88,6 +107,7 @@ function usePositionContent() {
         setArchived,
         handlePositionClick,
         onArchive,
+        onUnarchive,
         onDelete,
         error,
         loading,

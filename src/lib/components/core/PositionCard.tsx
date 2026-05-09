@@ -1,5 +1,5 @@
 'use client';
-import { Archive, MoreVertical, Trash2 } from 'lucide-react';
+import { Archive, ArchiveRestore, MoreVertical, Trash2 } from 'lucide-react';
 import { PositionAssessmentCard } from '@/lib/components/core/PositionAssessmentCard';
 import { cn } from '@/lib/utils/cn.utils';
 import { Chip } from '@/lib/components/ui/Chip';
@@ -17,10 +17,12 @@ type PositionCardProps = {
     candidateCount: number;
     sentCount?: number;
     submittedCount?: number;
+    archived?: boolean;
     className?: string;
     onPositionClick?: () => void;
     onAssessmentClick?: () => void;
     onArchive: () => void;
+    onUnarchive: () => void;
     onDelete: () => void;
 };
 
@@ -29,10 +31,12 @@ export default function PositionCard({
     candidateCount,
     sentCount = 0,
     submittedCount = 0,
+    archived = false,
     className,
     onPositionClick,
     onAssessmentClick,
     onArchive,
+    onUnarchive,
     onDelete,
 }: PositionCardProps) {
     const submissionVariant = getSubmissionVariant(submittedCount, sentCount);
@@ -95,11 +99,15 @@ export default function PositionCard({
                         onClick={(e) => e.stopPropagation()}
                     >
                         <DropdownMenuItem
-                            onSelect={() => onArchive()}
+                            onSelect={() => (archived ? onUnarchive() : onArchive())}
                             className="text-sarge-gray-700 hover:bg-sarge-gray-50 focus:bg-sarge-gray-50 bg-white hover:cursor-pointer"
                         >
-                            <Archive className="size-4" />
-                            Archive
+                            {archived ? (
+                                <ArchiveRestore className="size-4" />
+                            ) : (
+                                <Archive className="size-4" />
+                            )}
+                            {archived ? 'Unarchive' : 'Archive'}
                         </DropdownMenuItem>
                         <DropdownMenuItem
                             onSelect={(event) => {

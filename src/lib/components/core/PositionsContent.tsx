@@ -20,6 +20,7 @@ export default function PositionsContent() {
         archived,
         handlePositionClick,
         onArchive,
+        onUnarchive,
         onDelete,
     } = usePositionContent();
 
@@ -88,6 +89,7 @@ export default function PositionsContent() {
                             positions={displayedActivePositions}
                             onPositionClick={handlePositionClick}
                             onArchive={onArchive}
+                            onUnarchive={onUnarchive}
                             onDelete={onDelete}
                         />
                     ) : (
@@ -115,6 +117,7 @@ export default function PositionsContent() {
                             positions={displayedArchivedPositions}
                             onPositionClick={handlePositionClick}
                             onArchive={onArchive}
+                            onUnarchive={onUnarchive}
                             onDelete={onDelete}
                         />
                     ) : (
@@ -148,11 +151,13 @@ function PositionCardGrid({
     positions,
     onPositionClick,
     onArchive,
+    onUnarchive,
     onDelete,
 }: {
     positions: PositionWithCounts[];
     onPositionClick: (positionId: string) => void;
     onArchive: (positionId: string) => void;
+    onUnarchive: (positionId: string) => void;
     onDelete: (positionId: string) => void;
 }) {
     return (
@@ -164,8 +169,10 @@ function PositionCardGrid({
                     candidateCount={position.numCandidates}
                     sentCount={position.assessmentSentCount}
                     submittedCount={position.assessmentSubmittedCount}
+                    archived={position.archived}
                     onPositionClick={() => onPositionClick(position.id)}
                     onArchive={() => onArchive(position.id)}
+                    onUnarchive={() => onUnarchive(position.id)}
                     onDelete={() => onDelete(position.id)}
                 />
             ))}
