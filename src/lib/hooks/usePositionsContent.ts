@@ -54,13 +54,12 @@ function usePositionContent() {
     async function onArchive(positionId: string) {
         try {
             await archivePosition(positionId);
-            setActive((prev) => {
-                const target = prev.find((p) => p.id === positionId);
-                if (target) {
-                    setArchived((prevArchived) => [...prevArchived, { ...target, archived: true }]);
-                }
-                return prev.filter((p) => p.id !== positionId);
-            });
+            const target = active.find((p) => p.id === positionId);
+            if (target) {
+                setActive((prev) => prev.filter((p) => p.id !== positionId));
+                setArchived((prev) => [...prev, { ...target, archived: true }]);
+            }
+            toast.success('Successfully archived position');
         } catch (err) {
             toast.error(`Failed to archive position: ${(err as Error).message}`);
         }
@@ -69,8 +68,12 @@ function usePositionContent() {
     async function onDelete(positionId: string) {
         try {
             await deletePosition(positionId);
-            setActive((prev) => prev.filter((p) => p.id !== positionId));
-            setArchived((prev) => prev.filter((p) => p.id !== positionId));
+            const target = active.find((p) => p.id === positionId);
+            if (target) {
+                setActive((prev) => prev.filter((p) => p.id !== positionId));
+                setArchived((prev) => prev.filter((p) => p.id !== positionId));
+            }
+            toast.success('Successfully deleted position');
         } catch (err) {
             toast.error(`Failed to delete position: ${(err as Error).message}`);
         }
