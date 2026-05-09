@@ -141,7 +141,7 @@ export default function TemplatesPage() {
             });
             router.push(`/crm/task-templates/${created.id}/edit`);
         } catch (err) {
-            toast.error(`Failed to create task template: ${err}`);
+            toast.error(`Task template failed to create: ${err}`);
         } finally {
             setIsCreating(false);
         }

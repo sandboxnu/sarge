@@ -229,7 +229,7 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
             const updatedTaskTemplate = await editTaskTemplate(taskTemplateId, payload);
             setTaskTemplate(updatedTaskTemplate);
             setLanguages(updatedTaskTemplate.languages);
-            toast.success('Successfully saved task template');
+            toast.success('Task template saved successfully');
         } catch (err) {
             setError(err as Error);
             toast.error((err as Error).message);
@@ -318,7 +318,7 @@ export default function useTaskTemplateEditPage(taskTemplateId: string) {
                     }))
                 );
 
-                toast.success('Successfully generated stubs for selected languages');
+                toast.success('Stubs generated successfully for selected languages');
             } catch (err) {
                 setError(err as Error);
                 toast.error((err as Error).message);

@@ -59,9 +59,9 @@ function usePositionContent() {
                 setActive((prev) => prev.filter((p) => p.id !== positionId));
                 setArchived((prev) => [...prev, { ...target, archived: true }]);
             }
-            toast.success('Successfully archived position');
+            toast.success('Position archived successfully');
         } catch (err) {
-            toast.error(`Failed to archive position: ${(err as Error).message}`);
+            toast.error(`Position failed to archive: ${(err as Error).message}`);
         }
     }
 
@@ -73,9 +73,9 @@ function usePositionContent() {
                 setActive((prev) => prev.filter((p) => p.id !== positionId));
                 setArchived((prev) => prev.filter((p) => p.id !== positionId));
             }
-            toast.success('Successfully deleted position');
+            toast.success('Position deleted successfully');
         } catch (err) {
-            toast.error(`Failed to delete position: ${(err as Error).message}`);
+            toast.error(`Position failed to delete: ${(err as Error).message}`);
         }
     }
 
