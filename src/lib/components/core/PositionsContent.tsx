@@ -8,8 +8,15 @@ import { type PositionWithCounts } from '@/lib/types/position.types';
 import { Tabs, TabsContent, TabsList, UnderlineTabsTrigger } from '@/lib/components/ui/Tabs';
 import CreatePositionModal from '@/lib/components/modal/CreatePositionModal';
 import Image from 'next/image';
-import usePositionContent from '@/lib/hooks/usePositionsContent';
+import usePositionContent, { type PositionSortBy } from '@/lib/hooks/usePositionsContent';
 import useSearch from '@/lib/hooks/useSearch';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuRadioGroup,
+    DropdownMenuRadioItem,
+    DropdownMenuTrigger,
+} from '@/lib/components/ui/Dropdown';
 
 export default function PositionsContent() {
     const {
@@ -22,15 +29,22 @@ export default function PositionsContent() {
         onArchive,
         onUnarchive,
         onDelete,
+        sortBy,
+        setSortBy,
+        sortAndFilter,
     } = usePositionContent();
 
     const { value, onChange, data, loading } = useSearch('positions');
 
     const isSearching = value.trim().length >= 1;
 
-    const displayedActivePositions = isSearching ? data.filter((p) => !p.archived) : active;
+    const displayedActivePositions = sortAndFilter(
+        isSearching ? data.filter((p) => !p.archived) : active
+    );
 
-    const displayedArchivedPositions = isSearching ? data.filter((p) => p.archived) : archived;
+    const displayedArchivedPositions = sortAndFilter(
+        isSearching ? data.filter((p) => p.archived) : archived
+    );
 
     return (
         <>
@@ -45,10 +59,38 @@ export default function PositionsContent() {
                     </div>
 
                     <div className="flex items-center gap-3">
-                        <Button variant="dropdown">
-                            <ArrowUpDown className="size-5" />
-                            <span className="text-label-s hidden sm:inline">Sort</span>
-                        </Button>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="dropdown">
+                                    <ArrowUpDown className="size-5" />
+                                    <span className="text-label-s hidden sm:inline">Sort</span>
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="bg-white">
+                                <DropdownMenuRadioGroup
+                                    value={sortBy ?? ''}
+                                    onValueChange={(v) =>
+                                        setSortBy(v === '' ? null : (v as PositionSortBy))
+                                    }
+                                >
+                                    <DropdownMenuRadioItem value="">
+                                        Default
+                                    </DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="title-asc">
+                                        Title (A → Z)
+                                    </DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="title-desc">
+                                        Title (Z → A)
+                                    </DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="created-desc">
+                                        Created (Newest first)
+                                    </DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="created-asc">
+                                        Created (Oldest first)
+                                    </DropdownMenuRadioItem>
+                                </DropdownMenuRadioGroup>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                         <Button variant="dropdown">
                             <SlidersHorizontal className="size-5" />
                             <span className="text-label-s hidden sm:inline">Filter</span>

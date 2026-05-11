@@ -1,6 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
 import { getTaskTemplateList } from '@/lib/api/task-templates';
+
+export type TaskTemplateSortBy =
+    | 'title-asc'
+    | 'title-desc'
+    | 'estimated-asc'
+    | 'estimated-desc';
 
 export function useTaskTemplateList() {
     const [allTaskTemplates, setAllTaskTemplates] = useState<TaskTemplateListItemDTO[]>([]);
@@ -10,6 +16,30 @@ export function useTaskTemplateList() {
     const [limit, setLimit] = useState<number>(10);
     const [page, setPage] = useState<number>(0);
     const [total, setTotal] = useState<number>(0);
+    const [sortBy, setSortBy] = useState<TaskTemplateSortBy | null>(null);
+
+    const sortAndFilter = useCallback(
+        (items: TaskTemplateListItemDTO[]): TaskTemplateListItemDTO[] => {
+            if (!sortBy) return items;
+            const next = [...items];
+            switch (sortBy) {
+                case 'title-asc':
+                    next.sort((a, b) => a.title.localeCompare(b.title));
+                    break;
+                case 'title-desc':
+                    next.sort((a, b) => b.title.localeCompare(a.title));
+                    break;
+                case 'estimated-asc':
+                    next.sort((a, b) => a.estimatedTime - b.estimatedTime);
+                    break;
+                case 'estimated-desc':
+                    next.sort((a, b) => b.estimatedTime - a.estimatedTime);
+                    break;
+            }
+            return next;
+        },
+        [sortBy]
+    );
 
     useEffect(() => {
         async function fetchTaskList() {
@@ -92,5 +122,8 @@ export function useTaskTemplateList() {
         total,
         updatePageTemplates,
         insertTaskTemplateAtTopOfPage,
+        sortBy,
+        setSortBy,
+        sortAndFilter,
     };
 }

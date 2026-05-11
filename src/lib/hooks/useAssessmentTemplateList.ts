@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { getAssessmentTemplateList } from '@/lib/api/assessment-templates';
 import { type AssessmentTemplateListItemDTO } from '@/lib/schemas/assessment-template.schema';
+
+export type AssessmentTemplateSortBy = 'title-asc' | 'title-desc';
 
 export function useAssessmentTemplateList() {
     const [assessmentTemplates, setAssessmentTemplates] = useState<AssessmentTemplateListItemDTO[]>(
@@ -12,6 +14,24 @@ export function useAssessmentTemplateList() {
     const [page, setPage] = useState<number>(0);
     const [total, setTotal] = useState<number>(0);
     const [selectedId, setSelectedId] = useState<string | null>(null);
+    const [sortBy, setSortBy] = useState<AssessmentTemplateSortBy | null>(null);
+
+    const sortAndFilter = useCallback(
+        (items: AssessmentTemplateListItemDTO[]): AssessmentTemplateListItemDTO[] => {
+            if (!sortBy) return items;
+            const next = [...items];
+            switch (sortBy) {
+                case 'title-asc':
+                    next.sort((a, b) => a.title.localeCompare(b.title));
+                    break;
+                case 'title-desc':
+                    next.sort((a, b) => b.title.localeCompare(a.title));
+                    break;
+            }
+            return next;
+        },
+        [sortBy]
+    );
 
     useEffect(() => {
         async function fetchAssessmentList() {
@@ -61,5 +81,8 @@ export function useAssessmentTemplateList() {
         setLimit,
         selectedId,
         handleSelectTemplate,
+        sortBy,
+        setSortBy,
+        sortAndFilter,
     };
 }
