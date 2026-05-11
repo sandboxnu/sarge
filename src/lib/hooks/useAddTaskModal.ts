@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getTaskTemplateList } from '@/lib/api/task-templates';
 import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
 import useSearch from '@/lib/hooks/useSearch';
@@ -66,9 +66,8 @@ export function useAddTaskModal(open: boolean) {
         setPage(0);
     }, [search.value]);
 
-    const sortedSearchData = useMemo(() => applySort(search.data, sortBy), [search.data, sortBy]);
-
-    const sortedPage = useMemo(() => applySort(taskTemplates, sortBy), [taskTemplates, sortBy]);
+    const sortedSearchData = applySort(search.data, sortBy);
+    const sortedPage = applySort(taskTemplates, sortBy);
 
     const displayList = isSearching
         ? sortedSearchData.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
