@@ -71,22 +71,22 @@ export function useAddTaskModal(open: boolean) {
         sortBy: TaskTemplateSortBy | null
     ): TaskTemplateListItemDTO[] {
         if (!sortBy) return items;
-        const next = [...items];
+        const sortedTaskTemplates = [...items];
         switch (sortBy) {
             case 'title-asc':
-                next.sort((a, b) => a.title.localeCompare(b.title));
+                sortedTaskTemplates.sort((a, b) => a.title.localeCompare(b.title));
                 break;
             case 'title-desc':
-                next.sort((a, b) => b.title.localeCompare(a.title));
+                sortedTaskTemplates.sort((a, b) => b.title.localeCompare(a.title));
                 break;
             case 'estimated-asc':
-                next.sort((a, b) => a.estimatedTime - b.estimatedTime);
+                sortedTaskTemplates.sort((a, b) => a.estimatedTime - b.estimatedTime);
                 break;
             case 'estimated-desc':
-                next.sort((a, b) => b.estimatedTime - a.estimatedTime);
+                sortedTaskTemplates.sort((a, b) => b.estimatedTime - a.estimatedTime);
                 break;
         }
-        return next;
+        return sortedTaskTemplates;
     }
 
     const sortedSearchData = applySort(search.data, sortBy);

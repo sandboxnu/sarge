@@ -75,7 +75,7 @@ export default function TemplatesPage() {
         updatePageTemplates,
         sortBy: taskSortBy,
         setSortBy: setTaskSortBy,
-        sortAndFilter: sortAndFilterTaskTemplates,
+        applySort: applyTaskTemplateSort,
     } = useTaskTemplateList();
 
     const assessmentTemplateList = useAssessmentTemplateList();
@@ -88,11 +88,11 @@ export default function TemplatesPage() {
     const isSearchingForTaskTemplate = taskTemplateSearch.value.trim().length >= 1;
     const isSearchingForAssessmentTemplate = assessmentTemplateSearch.value.trim().length >= 1;
 
-    const displayedTaskTemplates = sortAndFilterTaskTemplates(
+    const displayedTaskTemplates = applyTaskTemplateSort(
         isSearchingForTaskTemplate ? taskTemplateSearch.data : taskTemplateList
     );
 
-    const displayedAssessmentTemplates = assessmentTemplateList.sortAndFilter(
+    const displayedAssessmentTemplates = assessmentTemplateList.applySort(
         isSearchingForAssessmentTemplate
             ? assessmentTemplateSearch.data
             : assessmentTemplateList.assessmentTemplateList

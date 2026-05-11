@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
 import { getTaskTemplateList } from '@/lib/api/task-templates';
 
@@ -14,28 +14,25 @@ export function useTaskTemplateList() {
     const [total, setTotal] = useState<number>(0);
     const [sortBy, setSortBy] = useState<TaskTemplateSortBy | null>(null);
 
-    const sortAndFilter = useCallback(
-        (items: TaskTemplateListItemDTO[]): TaskTemplateListItemDTO[] => {
-            if (!sortBy) return items;
-            const next = [...items];
-            switch (sortBy) {
-                case 'title-asc':
-                    next.sort((a, b) => a.title.localeCompare(b.title));
-                    break;
-                case 'title-desc':
-                    next.sort((a, b) => b.title.localeCompare(a.title));
-                    break;
-                case 'estimated-asc':
-                    next.sort((a, b) => a.estimatedTime - b.estimatedTime);
-                    break;
-                case 'estimated-desc':
-                    next.sort((a, b) => b.estimatedTime - a.estimatedTime);
-                    break;
-            }
-            return next;
-        },
-        [sortBy]
-    );
+    function applySort(items: TaskTemplateListItemDTO[]): TaskTemplateListItemDTO[] {
+        if (!sortBy) return items;
+        const sortedTaskTemplates = [...items];
+        switch (sortBy) {
+            case 'title-asc':
+                sortedTaskTemplates.sort((a, b) => a.title.localeCompare(b.title));
+                break;
+            case 'title-desc':
+                sortedTaskTemplates.sort((a, b) => b.title.localeCompare(a.title));
+                break;
+            case 'estimated-asc':
+                sortedTaskTemplates.sort((a, b) => a.estimatedTime - b.estimatedTime);
+                break;
+            case 'estimated-desc':
+                sortedTaskTemplates.sort((a, b) => b.estimatedTime - a.estimatedTime);
+                break;
+        }
+        return sortedTaskTemplates;
+    }
 
     useEffect(() => {
         async function fetchTaskList() {
@@ -120,6 +117,6 @@ export function useTaskTemplateList() {
         insertTaskTemplateAtTopOfPage,
         sortBy,
         setSortBy,
-        sortAndFilter,
+        applySort,
     };
 }

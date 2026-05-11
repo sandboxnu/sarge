@@ -31,18 +31,18 @@ export default function PositionsContent() {
         onDelete,
         sortBy,
         setSortBy,
-        sortAndFilter,
+        applySort,
     } = usePositionContent();
 
     const { value, onChange, data, loading } = useSearch('positions');
 
     const isSearching = value.trim().length >= 1;
 
-    const displayedActivePositions = sortAndFilter(
+    const displayedActivePositions = applySort(
         isSearching ? data.filter((p) => !p.archived) : active
     );
 
-    const displayedArchivedPositions = sortAndFilter(
+    const displayedArchivedPositions = applySort(
         isSearching ? data.filter((p) => p.archived) : archived
     );
 
