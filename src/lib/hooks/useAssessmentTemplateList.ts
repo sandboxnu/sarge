@@ -16,9 +16,7 @@ export function useAssessmentTemplateList() {
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const [sortBy, setSortBy] = useState<AssessmentTemplateSortBy | null>(null);
 
-    function applySort(
-        items: AssessmentTemplateListItemDTO[]
-    ): AssessmentTemplateListItemDTO[] {
+    function applySort(items: AssessmentTemplateListItemDTO[]): AssessmentTemplateListItemDTO[] {
         if (!sortBy) return items;
         const sortedAssessmentTemplates = [...items];
         switch (sortBy) {
