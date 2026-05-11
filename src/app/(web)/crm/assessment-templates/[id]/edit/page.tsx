@@ -1,15 +1,15 @@
 'use client';
 
-import { use, useState } from 'react';
+import { use } from 'react';
 import { ChevronDown, Users } from 'lucide-react';
 import Image from 'next/image';
-import { toast } from 'sonner';
 import AddTaskModal from '@/lib/components/modal/AddTaskModal';
 import AssessmentTemplateEditorSidebar from '@/lib/components/templates/AssessmentTemplateEditorSidebar';
 import AssessmentTaskTemplatePreviewPanel from '@/lib/components/templates/AssessmentTaskTemplatePreviewPanel';
 import Breadcrumbs from '@/lib/components/core/Breadcrumbs';
 import useAssessmentTemplateEditPage from '@/lib/hooks/useAssessmentTemplateEditPage';
 import { Combobox } from '@/lib/components/ui/Combobox';
+import { RemovableChip } from '@/lib/components/ui/RemovableChip';
 
 export default function AssessmentTemplateEditPage({
     params,
@@ -23,7 +23,7 @@ export default function AssessmentTemplateEditPage({
         error,
         title,
         positions,
-        selectedPositionId,
+        selectedPositionIds,
         sections,
         notes,
         selectedSection,
@@ -35,21 +35,12 @@ export default function AssessmentTemplateEditPage({
         deleteSection,
         reorderSections,
         selectSection,
-        updateSelectedPosition,
-        save,
+        updateSelectedPositions,
+        onSave,
+        addTaskOpen,
+        setAddTaskOpen
     } = useAssessmentTemplateEditPage(id);
 
-    const [addTaskOpen, setAddTaskOpen] = useState(false);
-
-    const onSave = async () => {
-        const result = await save();
-        if (result.success) {
-            toast.success('Assessment template saved');
-        } else {
-            const message = result.errorMessage ?? 'Failed to save assessment template';
-            toast.error(message);
-        }
-    };
 
     if (isLoading) {
         return (
@@ -97,25 +88,55 @@ export default function AssessmentTemplateEditPage({
                 <div className="w-full max-w-[320px] shrink-0">
                     <Combobox
                         options={positionOptions}
-                        value={selectedPositionId ?? undefined}
-                        onChange={(value) => updateSelectedPosition((value as string) || null)}
-                        placeholder="Assign to a position"
+                        value={selectedPositionIds}
+                        onChange={(value) => updateSelectedPositions(value as string[])}
+                        multiple
+                        variant="checkbox"
+                        showSelectAll
+                        placeholder="Assign to position(s)"
                         searchPlaceholder="Search positions..."
                         emptyText="No positions found."
                         showSearchIcon
-                        triggerClassName="h-14 rounded-xl border px-4"
+                        triggerClassName="rounded-xl border px-4"
                         contentClassName="rounded-xl"
                         trigger={
                             <button
                                 type="button"
-                                className="border-sarge-gray-200 bg-sarge-gray-0 text-sarge-gray-800 flex h-14 w-full items-center gap-3 rounded-xl border px-4 text-left"
+                                className="border-sarge-gray-200 bg-sarge-gray-0 text-sarge-gray-800 flex min-h-14 w-full items-center gap-3 rounded-xl border px-4 text-left"
                             >
                                 <Users className="text-sarge-gray-600 size-5 shrink-0" />
-                                <span className="text-label-s min-w-0 flex-1 truncate">
-                                    {positions.find(
-                                        (position) => position.id === selectedPositionId
-                                    )?.title ?? 'Assign to a position'}
-                                </span>
+                                <div className="flex min-w-0 flex-1 flex-nowrap items-center gap-2 overflow-hidden py-2">
+                                    {selectedPositionIds.length > 0 ? (
+                                        <>
+                                            {selectedPositionIds.slice(0, 2).map((id) => {
+                                                const pos = positions.find((p) => p.id === id);
+                                                if (!pos) return null;
+                                                return (
+                                                    <RemovableChip
+                                                        key={id}
+                                                        label={pos.title}
+                                                        onRemove={() =>
+                                                            updateSelectedPositions(
+                                                                selectedPositionIds.filter(
+                                                                    (x) => x !== id
+                                                                )
+                                                            )
+                                                        }
+                                                    />
+                                                );
+                                            })}
+                                            {selectedPositionIds.length > 2 && (
+                                                <span className="text-label-s text-sarge-gray-500 shrink-0">
+                                                    ...
+                                                </span>
+                                            )}
+                                        </>
+                                    ) : (
+                                        <span className="text-label-s text-sarge-gray-500">
+                                            Assign to position(s)
+                                        </span>
+                                    )}
+                                </div>
                                 <ChevronDown className="text-sarge-gray-600 size-5 shrink-0" />
                             </button>
                         }
