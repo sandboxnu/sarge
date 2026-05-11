@@ -11,11 +11,7 @@ import {
     unarchivePosition,
 } from '@/lib/api/positions';
 
-export type PositionSortBy =
-    | 'title-asc'
-    | 'title-desc'
-    | 'created-desc'
-    | 'created-asc';
+export type PositionSortBy = 'title-asc' | 'title-desc' | 'created-desc' | 'created-asc';
 
 function usePositionContent() {
     const { data: session } = useSession();
@@ -41,14 +37,12 @@ function usePositionContent() {
                     break;
                 case 'created-desc':
                     next.sort(
-                        (a, b) =>
-                            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+                        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
                     );
                     break;
                 case 'created-asc':
                     next.sort(
-                        (a, b) =>
-                            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+                        (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
                     );
                     break;
             }

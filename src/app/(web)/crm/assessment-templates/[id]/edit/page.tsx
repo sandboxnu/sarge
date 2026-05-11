@@ -38,9 +38,8 @@ export default function AssessmentTemplateEditPage({
         updateSelectedPositions,
         onSave,
         addTaskOpen,
-        setAddTaskOpen
+        setAddTaskOpen,
     } = useAssessmentTemplateEditPage(id);
-
 
     if (isLoading) {
         return (

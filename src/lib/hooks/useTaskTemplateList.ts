@@ -2,11 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
 import { getTaskTemplateList } from '@/lib/api/task-templates';
 
-export type TaskTemplateSortBy =
-    | 'title-asc'
-    | 'title-desc'
-    | 'estimated-asc'
-    | 'estimated-desc';
+export type TaskTemplateSortBy = 'title-asc' | 'title-desc' | 'estimated-asc' | 'estimated-desc';
 
 export function useTaskTemplateList() {
     const [allTaskTemplates, setAllTaskTemplates] = useState<TaskTemplateListItemDTO[]>([]);

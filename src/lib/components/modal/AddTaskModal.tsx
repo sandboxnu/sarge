@@ -112,9 +112,7 @@ export default function AddTaskModal({
                                         setSortBy(v === '' ? null : (v as TaskTemplateSortBy))
                                     }
                                 >
-                                    <DropdownMenuRadioItem value="">
-                                        Default
-                                    </DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="">Default</DropdownMenuRadioItem>
                                     <DropdownMenuRadioItem value="title-asc">
                                         Title (A → Z)
                                     </DropdownMenuRadioItem>

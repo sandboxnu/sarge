@@ -4,10 +4,7 @@ import { handleError } from '@/lib/utils/errors.utils';
 import { assertRecruiterOrAbove } from '@/lib/utils/permissions.utils';
 import PositionService from '@/lib/services/position.service';
 
-export async function PATCH(
-    request: NextRequest,
-    { params }: { params: Promise<{ id: string }> }
-) {
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         const session = await getSession();
         await assertRecruiterOrAbove(request.headers);

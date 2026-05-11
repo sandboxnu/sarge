@@ -73,9 +73,7 @@ export default function PositionsContent() {
                                         setSortBy(v === '' ? null : (v as PositionSortBy))
                                     }
                                 >
-                                    <DropdownMenuRadioItem value="">
-                                        Default
-                                    </DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="">Default</DropdownMenuRadioItem>
                                     <DropdownMenuRadioItem value="title-asc">
                                         Title (A → Z)
                                     </DropdownMenuRadioItem>

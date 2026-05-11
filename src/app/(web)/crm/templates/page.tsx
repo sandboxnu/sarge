@@ -15,10 +15,7 @@ import {
 } from '@/lib/components/ui/Dropdown';
 import { Tabs, TabsContent, TabsList, UnderlineTabsTrigger } from '@/lib/components/ui/Tabs';
 import { ArrowDownUp, File, Plus, SlidersHorizontal } from 'lucide-react';
-import {
-    useTaskTemplateList,
-    type TaskTemplateSortBy,
-} from '@/lib/hooks/useTaskTemplateList';
+import { useTaskTemplateList, type TaskTemplateSortBy } from '@/lib/hooks/useTaskTemplateList';
 import TaskTemplateCard from '@/lib/components/templates/TaskTemplateCard';
 import { TaskTemplatePreview } from '@/lib/components/templates/TaskTemplatePreview';
 import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
@@ -277,27 +274,29 @@ export default function TemplatesPage() {
                                     : 'You currently have no tasks'}
                             </div>
                         ) : (
-                            displayedTaskTemplates.map((task: TaskTemplateListItemDTO, idx: number) => {
-                                const absoluteIdx = page * limit + idx;
-                                return (
-                                    <TaskTemplateCard
-                                        key={task.id}
-                                        title={task.title}
-                                        subtitle={task.taskType ?? ''}
-                                        chips={task.tags ?? []}
-                                        languages={task.languages}
-                                        isSelected={selected?.includes(absoluteIdx) ?? false}
-                                        setIsSelected={handleSelectTask}
-                                        index={idx}
-                                        taskTemplateId={task.id}
-                                        isPreviewSelected={selectedTaskTemplate?.id === task.id}
-                                        onPreviewSelect={() => {
-                                            setSelectedAssessmentTemplate(null);
-                                            setSelectedTaskTemplate(task);
-                                        }}
-                                    />
-                                );
-                            })
+                            displayedTaskTemplates.map(
+                                (task: TaskTemplateListItemDTO, idx: number) => {
+                                    const absoluteIdx = page * limit + idx;
+                                    return (
+                                        <TaskTemplateCard
+                                            key={task.id}
+                                            title={task.title}
+                                            subtitle={task.taskType ?? ''}
+                                            chips={task.tags ?? []}
+                                            languages={task.languages}
+                                            isSelected={selected?.includes(absoluteIdx) ?? false}
+                                            setIsSelected={handleSelectTask}
+                                            index={idx}
+                                            taskTemplateId={task.id}
+                                            isPreviewSelected={selectedTaskTemplate?.id === task.id}
+                                            onPreviewSelect={() => {
+                                                setSelectedAssessmentTemplate(null);
+                                                setSelectedTaskTemplate(task);
+                                            }}
+                                        />
+                                    );
+                                }
+                            )
                         )}
                     </div>
                     <div className="border-sarge-gray-200 flex flex-col gap-2.5 border-t-1 p-3">
@@ -317,10 +316,7 @@ export default function TemplatesPage() {
                                         <div className="flex items-center gap-2.5">
                                             <div>
                                                 {selected?.length ?? 0}
-                                                <span className="hidden lg:inline">
-                                                    {' '}
-                                                    selected
-                                                </span>
+                                                <span className="hidden lg:inline"> selected</span>
                                             </div>
                                         </div>
                                     </DropdownMenuTrigger>
@@ -378,9 +374,7 @@ export default function TemplatesPage() {
                                         value={assessmentTemplateList.sortBy ?? ''}
                                         onValueChange={(v) =>
                                             assessmentTemplateList.setSortBy(
-                                                v === ''
-                                                    ? null
-                                                    : (v as AssessmentTemplateSortBy)
+                                                v === '' ? null : (v as AssessmentTemplateSortBy)
                                             )
                                         }
                                     >
@@ -426,17 +420,21 @@ export default function TemplatesPage() {
                                     : 'You currently have no assessments'}
                             </div>
                         ) : (
-                            displayedAssessmentTemplates.map((assessment: AssessmentTemplateListItemDTO) => (
-                                <AssessmentTemplateCard
-                                    key={assessment.id}
-                                    template={assessment}
-                                    isSelected={selectedAssessmentTemplate?.id === assessment.id}
-                                    onClick={() => {
-                                        setSelectedTaskTemplate(null);
-                                        setSelectedAssessmentTemplate(assessment);
-                                    }}
-                                />
-                            ))
+                            displayedAssessmentTemplates.map(
+                                (assessment: AssessmentTemplateListItemDTO) => (
+                                    <AssessmentTemplateCard
+                                        key={assessment.id}
+                                        template={assessment}
+                                        isSelected={
+                                            selectedAssessmentTemplate?.id === assessment.id
+                                        }
+                                        onClick={() => {
+                                            setSelectedTaskTemplate(null);
+                                            setSelectedAssessmentTemplate(assessment);
+                                        }}
+                                    />
+                                )
+                            )
                         )}
                     </div>
                     <div className="border-sarge-gray-200 flex flex-col gap-2.5 border-t-1 p-3">

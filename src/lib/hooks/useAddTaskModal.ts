@@ -66,10 +66,7 @@ export function useAddTaskModal(open: boolean) {
         setPage(0);
     }, [search.value]);
 
-    const sortedSearchData = useMemo(
-        () => applySort(search.data, sortBy),
-        [search.data, sortBy]
-    );
+    const sortedSearchData = useMemo(() => applySort(search.data, sortBy), [search.data, sortBy]);
 
     const sortedPage = useMemo(() => applySort(taskTemplates, sortBy), [taskTemplates, sortBy]);
 
