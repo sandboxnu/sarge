@@ -66,6 +66,29 @@ export function useAddTaskModal(open: boolean) {
         setPage(0);
     }, [search.value]);
 
+    function applySort(
+        items: TaskTemplateListItemDTO[],
+        sortBy: TaskTemplateSortBy | null
+    ): TaskTemplateListItemDTO[] {
+        if (!sortBy) return items;
+        const next = [...items];
+        switch (sortBy) {
+            case 'title-asc':
+                next.sort((a, b) => a.title.localeCompare(b.title));
+                break;
+            case 'title-desc':
+                next.sort((a, b) => b.title.localeCompare(a.title));
+                break;
+            case 'estimated-asc':
+                next.sort((a, b) => a.estimatedTime - b.estimatedTime);
+                break;
+            case 'estimated-desc':
+                next.sort((a, b) => b.estimatedTime - a.estimatedTime);
+                break;
+        }
+        return next;
+    }
+
     const sortedSearchData = applySort(search.data, sortBy);
     const sortedPage = applySort(taskTemplates, sortBy);
 
@@ -91,27 +114,4 @@ export function useAddTaskModal(open: boolean) {
         sortBy,
         setSortBy,
     };
-}
-
-function applySort(
-    items: TaskTemplateListItemDTO[],
-    sortBy: TaskTemplateSortBy | null
-): TaskTemplateListItemDTO[] {
-    if (!sortBy) return items;
-    const next = [...items];
-    switch (sortBy) {
-        case 'title-asc':
-            next.sort((a, b) => a.title.localeCompare(b.title));
-            break;
-        case 'title-desc':
-            next.sort((a, b) => b.title.localeCompare(a.title));
-            break;
-        case 'estimated-asc':
-            next.sort((a, b) => a.estimatedTime - b.estimatedTime);
-            break;
-        case 'estimated-desc':
-            next.sort((a, b) => b.estimatedTime - a.estimatedTime);
-            break;
-    }
-    return next;
 }
