@@ -13,9 +13,8 @@ export interface TaskTemplateCardProps {
     chips: TagDTO[];
     languages?: TaskTemplateLanguageDTO[];
     isSelected: boolean;
-    setIsSelected: (index: number) => void;
-    index: number;
-    taskTemplateId?: string;
+    setIsSelected: (id: string) => void;
+    taskTemplateId: string;
     isPreviewSelected?: boolean;
     onPreviewSelect?: () => void;
     maxTags?: number;
@@ -51,7 +50,7 @@ export default function TaskTemplateCard({ maxTags = 2, ...props }: TaskTemplate
             >
                 <Checkbox
                     checked={props.isSelected || !!props.isAlreadyAdded}
-                    onCheckedChange={() => props.setIsSelected(props.index)}
+                    onCheckedChange={() => props.setIsSelected(props.taskTemplateId)}
                 />
             </div>
             <div className="flex min-w-0 flex-1 flex-col gap-2.5">

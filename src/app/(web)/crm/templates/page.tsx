@@ -274,29 +274,23 @@ export default function TemplatesPage() {
                                     : 'You currently have no tasks'}
                             </div>
                         ) : (
-                            displayedTaskTemplates.map(
-                                (task: TaskTemplateListItemDTO, idx: number) => {
-                                    const absoluteIdx = page * limit + idx;
-                                    return (
-                                        <TaskTemplateCard
-                                            key={task.id}
-                                            title={task.title}
-                                            subtitle={task.taskType ?? ''}
-                                            chips={task.tags ?? []}
-                                            languages={task.languages}
-                                            isSelected={selected?.includes(absoluteIdx) ?? false}
-                                            setIsSelected={handleSelectTask}
-                                            index={idx}
-                                            taskTemplateId={task.id}
-                                            isPreviewSelected={selectedTaskTemplate?.id === task.id}
-                                            onPreviewSelect={() => {
-                                                setSelectedAssessmentTemplate(null);
-                                                setSelectedTaskTemplate(task);
-                                            }}
-                                        />
-                                    );
-                                }
-                            )
+                            displayedTaskTemplates.map((task: TaskTemplateListItemDTO) => (
+                                <TaskTemplateCard
+                                    key={task.id}
+                                    title={task.title}
+                                    subtitle={task.taskType ?? ''}
+                                    chips={task.tags ?? []}
+                                    languages={task.languages}
+                                    isSelected={selected?.includes(task.id) ?? false}
+                                    setIsSelected={handleSelectTask}
+                                    taskTemplateId={task.id}
+                                    isPreviewSelected={selectedTaskTemplate?.id === task.id}
+                                    onPreviewSelect={() => {
+                                        setSelectedAssessmentTemplate(null);
+                                        setSelectedTaskTemplate(task);
+                                    }}
+                                />
+                            ))
                         )}
                     </div>
                     <div className="border-sarge-gray-200 flex flex-col gap-2.5 border-t-1 p-3">
@@ -327,11 +321,11 @@ export default function TemplatesPage() {
                                     >
                                         <DropdownMenuGroup>
                                             {selected && selected.length > 0 ? (
-                                                selected.map((absoluteIdx) => (
-                                                    <DropdownMenuLabel key={absoluteIdx}>
-                                                        {taskTemplateList?.[
-                                                            absoluteIdx - page * limit
-                                                        ]?.title ?? `Item ${absoluteIdx}`}
+                                                selected.map((id) => (
+                                                    <DropdownMenuLabel key={id}>
+                                                        {taskTemplateList.find(
+                                                            (t) => t.id === id
+                                                        )?.title ?? id}
                                                     </DropdownMenuLabel>
                                                 ))
                                             ) : (

@@ -164,7 +164,7 @@ export default function AddTaskModal({
                         </div>
                     ) : (
                         <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-                            {displayList.map((task, idx) => {
+                            {displayList.map((task) => {
                                 const isAlreadyAdded = alreadyAddedIds.has(task.id);
 
                                 return (
@@ -176,7 +176,6 @@ export default function AddTaskModal({
                                         languages={task.languages}
                                         isSelected={selectedIds.has(task.id)}
                                         setIsSelected={() => toggleSelection(task.id)}
-                                        index={idx}
                                         taskTemplateId={task.id}
                                         isPreviewSelected={selectedIds.has(task.id)}
                                         onPreviewSelect={() => toggleSelection(task.id)}
