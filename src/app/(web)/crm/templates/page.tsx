@@ -323,9 +323,8 @@ export default function TemplatesPage() {
                                             {selected && selected.length > 0 ? (
                                                 selected.map((id) => (
                                                     <DropdownMenuLabel key={id}>
-                                                        {taskTemplateList.find(
-                                                            (t) => t.id === id
-                                                        )?.title ?? id}
+                                                        {taskTemplateList.find((t) => t.id === id)
+                                                            ?.title ?? id}
                                                     </DropdownMenuLabel>
                                                 ))
                                             ) : (
