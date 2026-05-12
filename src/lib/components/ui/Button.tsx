@@ -20,6 +20,8 @@ const buttonVariants = cva(
                 dropdown:
                     'bg-sarge-gray-0 border-sarge-gray-200 hover:bg-sarge-gray-100 text-foreground [&_svg]:text-sarge-gray-600 hover:[&_svg]:text-sarge-gray-800 h-11 gap-2 border py-2 pr-4 pl-3 transition-colors duration-200 disabled:opacity-50',
                 link: 'text-sarge-primary-500 [&_svg]:text-sarge-primary-500 gap-[10px] px-1 py-2 underline-offset-4 hover:underline disabled:opacity-50',
+                destructive:
+                    'bg-sarge-error-500 hover:bg-sarge-error-700 text-sarge-gray-50 [&_svg]:text-sarge-gray-50 gap-[10px] px-1 py-2 transition-colors duration-200 disabled:bg-sarge-error-200 disabled:opacity-100 disabled:cursor-not-allowed',
             },
         },
         defaultVariants: {
