@@ -144,7 +144,7 @@ async function transferOwnership(
         throw new NotFoundException('Member', targetMemberId);
     }
 
-    // we need to promote before demoting to avoid zero owners 
+    // we need to promote before demoting to avoid zero owners
     await auth.api.updateMemberRole({
         body: { role: 'owner', memberId: targetMemberId, organizationId },
         headers,

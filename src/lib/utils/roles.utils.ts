@@ -13,7 +13,7 @@ export function canInviteMembers(role: string): boolean {
 /**
  * Returns roles strictly below the given role in the hierarchy.
  * This is UI only filtering - Better Auth's server enforces
- * the actual invitation:create permission check :) 
+ * the actual invitation:create permission check :)
  */
 export function getInvitableRoles(currentUserRole: string): OrgRole[] {
     const index = ROLE_HIERARCHY.indexOf(currentUserRole as OrgRole);

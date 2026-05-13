@@ -1,11 +1,6 @@
 'use client';
 
-import {
-    Tabs,
-    TabsContent,
-    TabsList,
-    UnderlineTabsTrigger,
-} from '@/lib/components/ui/Tabs';
+import { Tabs, TabsContent, TabsList, UnderlineTabsTrigger } from '@/lib/components/ui/Tabs';
 import MembersTab from '@/lib/components/settings/MembersTab';
 import OrganizationTab from '@/lib/components/settings/OrganizationTab';
 
@@ -17,9 +12,7 @@ export default function OrgSettingsPage() {
             <Tabs defaultValue="members" className="flex flex-col gap-0">
                 <TabsList className="border-sarge-gray-200 h-auto w-full justify-start gap-5 rounded-none border-b bg-transparent p-0">
                     <UnderlineTabsTrigger value="members">Members</UnderlineTabsTrigger>
-                    <UnderlineTabsTrigger value="organization">
-                        Organization
-                    </UnderlineTabsTrigger>
+                    <UnderlineTabsTrigger value="organization">Organization</UnderlineTabsTrigger>
                 </TabsList>
 
                 <TabsContent value="members" className="pt-5">

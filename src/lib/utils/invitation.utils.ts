@@ -5,7 +5,9 @@ import type { MemberRowStatus, OrgInvitation } from '@/lib/types/invitation.type
  * Better Auth can leave `status` as `pending` after `expiresAt`, so we also
  * compare `expiresAt` to the current time.
  */
-export function getInvitationStatus(invitation: Pick<OrgInvitation, 'status' | 'expiresAt'>): MemberRowStatus {
+export function getInvitationStatus(
+    invitation: Pick<OrgInvitation, 'status' | 'expiresAt'>
+): MemberRowStatus {
     if (invitation.status === 'pending') {
         return invitation.expiresAt.getTime() <= Date.now() ? 'invite-expired' : 'invite-sent';
     }
@@ -24,7 +26,9 @@ export function getMemberRowStatusLabel(status: MemberRowStatus): string {
     }
 }
 
-export function getMemberRowStatusVariant(status: MemberRowStatus): 'success' | 'neutral' | 'error' {
+export function getMemberRowStatusVariant(
+    status: MemberRowStatus
+): 'success' | 'neutral' | 'error' {
     switch (status) {
         case 'active':
             return 'success';

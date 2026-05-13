@@ -15,45 +15,39 @@ export default function OrganizationTab() {
     const router = useRouter();
     const { activeOrganization, activeMember } = useAuth();
     const orgId = activeOrganization?.id;
-    const role = activeMember?.role;
+    const isOwner = activeMember?.role === 'owner';
 
     const { members, refresh } = useOrgMembersAndInvites(orgId);
     const { renameOrg, isMutating, transferOwnership, deleteOrg } = useOrgSettings(orgId);
 
-    const [nameInput, setNameInput] = useState(activeOrganization?.name ?? '');
+    const [nameDraft, setNameDraft] = useState(activeOrganization?.name ?? '');
     const [transferOpen, setTransferOpen] = useState(false);
     const [deleteOpen, setDeleteOpen] = useState(false);
 
-    // Keep input in sync when the active organization changes (swithcing orgs)
     useEffect(() => {
-        setNameInput(activeOrganization?.name ?? '');
+        setNameDraft(activeOrganization?.name ?? '');
     }, [activeOrganization?.name]);
 
-    if (!activeOrganization || !orgId) return null;
+    if (!activeOrganization) return null;
 
-    const trimmed = nameInput.trim();
-    const renameDisabled = trimmed === activeOrganization.name || trimmed === '' || isMutating;
+    const trimmedName = nameDraft.trim();
+    const renameDisabled =
+        trimmedName === '' || trimmedName === activeOrganization.name || isMutating;
 
     const handleRename = async () => {
         if (renameDisabled) return;
-        const ok = await renameOrg(trimmed);
-        if (ok) {
-            router.refresh();
-        }
+        const ok = await renameOrg(trimmedName);
+        if (ok) router.refresh();
     };
 
-    const handleLogoUpdated = () => {
-        router.refresh();
-    };
-
-    const handleAfterDestructive = () => {
+    const redirectToDashboard = () => {
         refresh();
         router.push('/crm/dashboard');
         router.refresh();
     };
 
     const eligibleTransferMembers =
-        role === 'owner' && activeMember ? members.filter((m) => m.id !== activeMember.id) : [];
+        isOwner && activeMember ? members.filter((m) => m.id !== activeMember.id) : [];
 
     return (
         <div className="flex flex-col gap-6">
@@ -66,7 +60,7 @@ export default function OrganizationTab() {
                         name: activeOrganization.name,
                         logo: activeOrganization.logo ?? null,
                     }}
-                    onUpdated={handleLogoUpdated}
+                    onUpdated={() => router.refresh()}
                 />
 
                 <div className="col-start-2 flex min-w-0 flex-col gap-2">
@@ -76,8 +70,8 @@ export default function OrganizationTab() {
                     <div className="flex min-w-0 items-center gap-3">
                         <Input
                             id="org-name-input"
-                            value={nameInput}
-                            onChange={(e) => setNameInput(e.target.value)}
+                            value={nameDraft}
+                            onChange={(e) => setNameDraft(e.target.value)}
                             className="h-11 min-w-0 flex-1"
                         />
                         <Button
@@ -96,7 +90,7 @@ export default function OrganizationTab() {
                 </p>
             </div>
 
-            {role === 'owner' && activeMember && (
+            {isOwner && activeMember && (
                 <div className="border-sarge-gray-200 flex flex-col gap-3 border-t pt-6">
                     <h3 className="text-display-xs">Danger Zone</h3>
 
@@ -145,7 +139,7 @@ export default function OrganizationTab() {
                         onOpenChange={setTransferOpen}
                         eligibleMembers={eligibleTransferMembers}
                         onConfirm={transferOwnership}
-                        onSuccess={handleAfterDestructive}
+                        onSuccess={redirectToDashboard}
                     />
                     <DeleteOrganizationModal
                         open={deleteOpen}
@@ -155,7 +149,7 @@ export default function OrganizationTab() {
                             name: activeOrganization.name,
                         }}
                         onConfirm={deleteOrg}
-                        onSuccess={handleAfterDestructive}
+                        onSuccess={redirectToDashboard}
                     />
                 </div>
             )}

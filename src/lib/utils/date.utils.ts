@@ -5,8 +5,7 @@ const SHORT_MONTH_DAY_YEAR = new Intl.DateTimeFormat('en-US', {
 });
 
 export function formatShortMonthDayYear(value: Date | number | string): string {
-    const date =
-        typeof value === 'string' || typeof value === 'number' ? new Date(value) : value;
+    const date = typeof value === 'string' || typeof value === 'number' ? new Date(value) : value;
     return SHORT_MONTH_DAY_YEAR.format(date);
 }
 

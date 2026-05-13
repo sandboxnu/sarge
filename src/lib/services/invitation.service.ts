@@ -4,7 +4,7 @@ import { NotFoundException } from '@/lib/utils/errors.utils';
 import { assertAdminOrOwner, assertPermission } from '@/lib/utils/permissions.utils';
 
 /**
- * Pending invitations for the org members table better auth omits createdAt and expiresAt 
+ * Pending invitations for the org members table better auth omits createdAt and expiresAt
  * (so thats why we're not using the better auth list api)
  */
 async function listPendingInvitationsForOrganization(

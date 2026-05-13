@@ -14,17 +14,23 @@ type OrgLogoUploaderProps = {
 };
 
 export default function OrgLogoUploader({ organization, onUpdated }: OrgLogoUploaderProps) {
-    const { file, preview, fileInputRef, handleFileChange, handleProfileImageClick } =
-        useFileClient();
+    const {
+        file,
+        preview,
+        fileInputRef,
+        handleFileChange,
+        handleProfileImageClick: openFilePicker,
+    } = useFileClient();
     const { uploadFile } = useFileUpload('organization');
-    const [busy, setBusy] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
 
-    const initial = organization.name?.[0]?.toUpperCase() ?? '?';
+    const orgInitial = organization.name?.[0]?.toUpperCase() ?? '?';
+    const logoSrc = preview || organization.logo;
 
     useEffect(() => {
         if (!file) return;
         const upload = async () => {
-            setBusy(true);
+            setIsUploading(true);
             try {
                 const url = await uploadFile(file, organization.id);
                 if (!url) {
@@ -42,45 +48,43 @@ export default function OrgLogoUploader({ organization, onUpdated }: OrgLogoUplo
                     `Failed to update logo: ${err instanceof Error ? err.message : 'Unknown error'}`
                 );
             } finally {
-                setBusy(false);
+                setIsUploading(false);
             }
         };
         upload();
     }, [file, organization.id, uploadFile, onUpdated]);
 
-    const displaySrc = preview || organization.logo;
-
     return (
         <div>
             <button
                 type="button"
-                onClick={handleProfileImageClick}
-                disabled={busy}
-                className="group bg-sarge-gray-500 text-sarge-gray-0 relative flex h-[72px] w-[72px] shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-[10.286px] disabled:cursor-not-allowed"
+                onClick={openFilePicker}
+                disabled={isUploading}
+                className="group bg-sarge-gray-500 text-sarge-gray-0 relative flex size-18 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-lg disabled:cursor-not-allowed"
             >
-                {displaySrc ? (
+                {logoSrc ? (
                     <Image
-                        src={displaySrc}
+                        src={logoSrc}
                         alt={`${organization.name} logo`}
                         fill
                         sizes="72px"
-                        className="z-0 object-cover"
+                        className="object-cover"
                     />
                 ) : (
-                    <span className="text-display-xs text-sarge-gray-0 relative z-0 font-semibold">
-                        {initial}
+                    <span className="text-display-xs text-sarge-gray-0 font-semibold">
+                        {orgInitial}
                     </span>
                 )}
-                {!busy && (
+                {!isUploading && (
                     <span
-                        className="bg-sarge-gray-900/50 absolute inset-0 z-[1] flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100"
+                        className="bg-sarge-gray-900/50 absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100"
                         aria-hidden
                     >
                         <Upload className="text-sarge-gray-0 size-6" strokeWidth={1.5} />
                     </span>
                 )}
-                {busy && (
-                    <span className="bg-sarge-gray-800/40 absolute inset-0 z-[2] flex items-center justify-center">
+                {isUploading && (
+                    <span className="bg-sarge-gray-800/40 absolute inset-0 flex items-center justify-center">
                         <Loader2 className="text-sarge-gray-0 size-6 animate-spin" />
                     </span>
                 )}

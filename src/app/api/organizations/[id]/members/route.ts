@@ -4,17 +4,11 @@ import MemberService from '@/lib/services/member.service';
 import { handleError } from '@/lib/utils/errors.utils';
 import type { OrgMembersAndInvitations } from '@/lib/types/invitation.types';
 
-export async function GET(
-    request: NextRequest,
-    { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         const { id: organizationId } = await params;
 
-        const members = await MemberService.listMembersWithUsers(
-            organizationId,
-            request.headers
-        );
+        const members = await MemberService.listMembersWithUsers(organizationId, request.headers);
 
         const invitations = await InvitationService.listPendingInvitationsForOrganization(
             organizationId,

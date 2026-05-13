@@ -9,10 +9,7 @@ const transferOwnershipSchema = z.object({
     targetMemberId: z.string().min(1),
 });
 
-export async function POST(
-    request: NextRequest,
-    { params }: { params: Promise<{ id: string }> }
-) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
         const { id: organizationId } = await params;
 

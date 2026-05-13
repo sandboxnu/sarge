@@ -73,14 +73,11 @@ export async function updateInvitationRole(
     invitationId: string,
     payload: UpdateInvitationRolePayload
 ): Promise<OrgInvitation> {
-    const res = await fetch(
-        `/api/organizations/${organizationId}/invitations/${invitationId}`,
-        {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-        }
-    );
+    const res = await fetch(`/api/organizations/${organizationId}/invitations/${invitationId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+    });
 
     const json = await res.json();
 
@@ -98,10 +95,9 @@ export async function deleteOrganizationInvitation(
     organizationId: string,
     invitationId: string
 ): Promise<void> {
-    const res = await fetch(
-        `/api/organizations/${organizationId}/invitations/${invitationId}`,
-        { method: 'DELETE' }
-    );
+    const res = await fetch(`/api/organizations/${organizationId}/invitations/${invitationId}`, {
+        method: 'DELETE',
+    });
 
     if (res.ok) {
         return;
