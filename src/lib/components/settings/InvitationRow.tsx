@@ -78,11 +78,15 @@ export default function InvitationRow({
     const handleResendInvite = async () => {
         setBusy(true);
         try {
+            const isExpired = status === 'invite-expired';
+            if (isExpired) {
+                await deleteOrganizationInvitation(organizationId, invitation.id);
+            }
             await authClient.organization.inviteMember({
                 email: invitation.email,
                 role: currentRole as OrgRole,
                 organizationId,
-                resend: true,
+                resend: !isExpired,
             });
             toast.success('Invitation resent');
             onRoleChanged();
@@ -100,7 +104,7 @@ export default function InvitationRow({
                     <div className="bg-sarge-gray-200 text-sarge-gray-600 text-label-s flex h-10 w-10 items-center justify-center rounded-full">
                         {initial}
                     </div>
-                    <span className="text-body-s text-sarge-gray-600">{invitation.email}</span>
+                    <span className="text-label-xs text-sarge-gray-500">{invitation.email}</span>
                 </div>
             </td>
             <td className="text-label-s px-4 py-3">{createdLabel}</td>
