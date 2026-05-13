@@ -203,142 +203,142 @@ export default function TemplatesPage() {
                     value="tasks"
                     className="border-sarge-gray-200 flex min-h-0 w-1/4 shrink-0 flex-col border-r-1"
                 >
-                        <div className="flex flex-col gap-2.5 px-3 pt-3 sm:flex-row sm:items-center">
-                            <Search
-                                className="border-none"
-                                value={taskTemplateSearch.value}
-                                onChange={taskTemplateSearch.onChange}
-                                placeholder="Type to search"
+                    <div className="flex flex-col gap-2.5 px-3 pt-3 sm:flex-row sm:items-center">
+                        <Search
+                            className="border-none"
+                            value={taskTemplateSearch.value}
+                            onChange={taskTemplateSearch.onChange}
+                            placeholder="Type to search"
+                        />
+                        <div className="flex">
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="icon" className="px-3 py-2">
+                                        <ArrowDownUp className="size-5" />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="bg-white">
+                                    <DropdownMenuRadioGroup
+                                        value={taskSortBy ?? ''}
+                                        onValueChange={(v) =>
+                                            setTaskSortBy(
+                                                v === '' ? null : (v as TaskTemplateSortBy)
+                                            )
+                                        }
+                                    >
+                                        <DropdownMenuRadioItem value="">
+                                            Default
+                                        </DropdownMenuRadioItem>
+                                        <DropdownMenuRadioItem value="title-asc">
+                                            Title (A → Z)
+                                        </DropdownMenuRadioItem>
+                                        <DropdownMenuRadioItem value="title-desc">
+                                            Title (Z → A)
+                                        </DropdownMenuRadioItem>
+                                        <DropdownMenuRadioItem value="estimated-asc">
+                                            Estimated time (Low → High)
+                                        </DropdownMenuRadioItem>
+                                        <DropdownMenuRadioItem value="estimated-desc">
+                                            Estimated time (High → Low)
+                                        </DropdownMenuRadioItem>
+                                    </DropdownMenuRadioGroup>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </div>
+                    </div>
+                    <div className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-scroll px-3 py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                        {isLoading || taskTemplateSearch.loading ? (
+                            <div className="flex h-full w-full items-center justify-center">
+                                <Image
+                                    src="/CreateOrgLoading.gif"
+                                    alt="Loading GIF"
+                                    width={66}
+                                    height={66}
+                                />
+                            </div>
+                        ) : error ? (
+                            <div>Error: {error.message}</div>
+                        ) : displayedTaskTemplates.length === 0 ? (
+                            <div className="text-sarge-gray-500 flex h-full w-full flex-col items-center justify-center gap-4">
+                                <Image
+                                    src={GreyWinstonLogoMark}
+                                    height={78}
+                                    width={140}
+                                    alt="Winston Logo"
+                                />
+                                {isSearchingForTaskTemplate
+                                    ? 'Could not find task'
+                                    : 'You currently have no tasks'}
+                            </div>
+                        ) : (
+                            displayedTaskTemplates.map((task: TaskTemplateListItemDTO) => (
+                                <TaskTemplateCard
+                                    key={task.id}
+                                    title={task.title}
+                                    subtitle={task.taskType ?? ''}
+                                    chips={task.tags ?? []}
+                                    languages={task.languages}
+                                    isSelected={selected?.includes(task.id) ?? false}
+                                    setIsSelected={handleSelectTask}
+                                    taskTemplateId={task.id}
+                                    isPreviewSelected={selectedTaskTemplate?.id === task.id}
+                                    onPreviewSelect={() => {
+                                        setSelectedAssessmentTemplate(null);
+                                        setSelectedTaskTemplate(task);
+                                    }}
+                                />
+                            ))
+                        )}
+                    </div>
+                    <div className="border-sarge-gray-200 flex flex-col gap-2.5 border-t-1 p-3">
+                        <div className="flex-1 justify-end">
+                            <Pager
+                                page={page}
+                                limit={limit}
+                                total={total}
+                                changePage={setPage}
+                                changeLimit={setLimit}
                             />
-                            <div className="flex">
+                        </div>
+                        <div className="flex w-full items-center gap-2.5">
+                            <div className="text-sarge-primary-500 hover:cursor-pointer">
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
-                                        <Button variant="icon" className="px-3 py-2">
-                                            <ArrowDownUp className="size-5" />
-                                        </Button>
+                                        <div className="flex items-center gap-2.5">
+                                            <div>
+                                                {selected?.length ?? 0}
+                                                <span className="hidden lg:inline"> selected</span>
+                                            </div>
+                                        </div>
                                     </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end" className="bg-white">
-                                        <DropdownMenuRadioGroup
-                                            value={taskSortBy ?? ''}
-                                            onValueChange={(v) =>
-                                                setTaskSortBy(
-                                                    v === '' ? null : (v as TaskTemplateSortBy)
-                                                )
-                                            }
-                                        >
-                                            <DropdownMenuRadioItem value="">
-                                                Default
-                                            </DropdownMenuRadioItem>
-                                            <DropdownMenuRadioItem value="title-asc">
-                                                Title (A → Z)
-                                            </DropdownMenuRadioItem>
-                                            <DropdownMenuRadioItem value="title-desc">
-                                                Title (Z → A)
-                                            </DropdownMenuRadioItem>
-                                            <DropdownMenuRadioItem value="estimated-asc">
-                                                Estimated time (Low → High)
-                                            </DropdownMenuRadioItem>
-                                            <DropdownMenuRadioItem value="estimated-desc">
-                                                Estimated time (High → Low)
-                                            </DropdownMenuRadioItem>
-                                        </DropdownMenuRadioGroup>
+                                    <DropdownMenuContent
+                                        side="top"
+                                        align="start"
+                                        className="bg-white"
+                                    >
+                                        <DropdownMenuGroup>
+                                            {selected && selected.length > 0 ? (
+                                                selected.map((id) => (
+                                                    <DropdownMenuLabel key={id}>
+                                                        {taskTemplateList.find((t) => t.id === id)
+                                                            ?.title ?? id}
+                                                    </DropdownMenuLabel>
+                                                ))
+                                            ) : (
+                                                <DropdownMenuLabel>
+                                                    No items selected
+                                                </DropdownMenuLabel>
+                                            )}
+                                        </DropdownMenuGroup>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                             </div>
+                            <Button className="flex-1 px-4 py-2" variant="secondary">
+                                <Plus className="lg:hidden" />
+                                <span className="hidden lg:inline">Create Assessment</span>
+                            </Button>
                         </div>
-                        <div className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-scroll px-3 py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                            {isLoading || taskTemplateSearch.loading ? (
-                                <div className="flex h-full w-full items-center justify-center">
-                                    <Image
-                                        src="/CreateOrgLoading.gif"
-                                        alt="Loading GIF"
-                                        width={66}
-                                        height={66}
-                                    />
-                                </div>
-                            ) : error ? (
-                                <div>Error: {error.message}</div>
-                            ) : displayedTaskTemplates.length === 0 ? (
-                                <div className="text-sarge-gray-500 flex h-full w-full flex-col items-center justify-center gap-4">
-                                    <Image
-                                        src={GreyWinstonLogoMark}
-                                        height={78}
-                                        width={140}
-                                        alt="Winston Logo"
-                                    />
-                                    {isSearchingForTaskTemplate
-                                        ? 'Could not find task'
-                                        : 'You currently have no tasks'}
-                                </div>
-                            ) : (
-                                displayedTaskTemplates.map((task: TaskTemplateListItemDTO) => (
-                                    <TaskTemplateCard
-                                        key={task.id}
-                                        title={task.title}
-                                        subtitle={task.taskType ?? ''}
-                                        chips={task.tags ?? []}
-                                        languages={task.languages}
-                                        isSelected={selected?.includes(task.id) ?? false}
-                                        setIsSelected={handleSelectTask}
-                                        taskTemplateId={task.id}
-                                        isPreviewSelected={selectedTaskTemplate?.id === task.id}
-                                        onPreviewSelect={() => {
-                                            setSelectedAssessmentTemplate(null);
-                                            setSelectedTaskTemplate(task);
-                                        }}
-                                    />
-                                ))
-                            )}
-                        </div>
-                        <div className="border-sarge-gray-200 flex flex-col gap-2.5 border-t-1 p-3">
-                            <div className="flex-1 justify-end">
-                                <Pager
-                                    page={page}
-                                    limit={limit}
-                                    total={total}
-                                    changePage={setPage}
-                                    changeLimit={setLimit}
-                                />
-                            </div>
-                            <div className="flex w-full items-center gap-2.5">
-                                <div className="text-sarge-primary-500 hover:cursor-pointer">
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <div className="flex items-center gap-2.5">
-                                                <div>
-                                                    {selected?.length ?? 0}
-                                                    <span className="hidden lg:inline"> selected</span>
-                                                </div>
-                                            </div>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent
-                                            side="top"
-                                            align="start"
-                                            className="bg-white"
-                                        >
-                                            <DropdownMenuGroup>
-                                                {selected && selected.length > 0 ? (
-                                                    selected.map((id) => (
-                                                        <DropdownMenuLabel key={id}>
-                                                            {taskTemplateList.find((t) => t.id === id)
-                                                                ?.title ?? id}
-                                                        </DropdownMenuLabel>
-                                                    ))
-                                                ) : (
-                                                    <DropdownMenuLabel>
-                                                        No items selected
-                                                    </DropdownMenuLabel>
-                                                )}
-                                            </DropdownMenuGroup>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
-                                </div>
-                                <Button className="flex-1 px-4 py-2" variant="secondary">
-                                    <Plus className="lg:hidden" />
-                                    <span className="hidden lg:inline">Create Assessment</span>
-                                </Button>
-                            </div>
-                        </div>
+                    </div>
                 </TabsContent>
 
                 <TabsContent

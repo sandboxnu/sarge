@@ -258,12 +258,12 @@ async function getPositionPreview(positionId: string, orgId: string): Promise<Po
             candidate: app.candidate,
             assessment: app.assessment
                 ? {
-                    id: app.assessment.id,
-                    submittedAt: app.assessment.submittedAt,
-                    reviews: app.assessment.reviews.map((review) => ({
-                        reviewer: review.reviewer,
-                    })),
-                }
+                      id: app.assessment.id,
+                      submittedAt: app.assessment.submittedAt,
+                      reviews: app.assessment.reviews.map((review) => ({
+                          reviewer: review.reviewer,
+                      })),
+                  }
                 : null,
         })),
         stats,

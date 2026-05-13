@@ -22,7 +22,7 @@ export const updateOrganizationSchema = z
             .trim(),
         logo: z.url(),
     })
-    .partial()
+    .partial();
 
 export type CreateOrganizationDTO = z.infer<typeof createOrganizationSchema>;
 export type UpdateOrganizationDTO = z.infer<typeof updateOrganizationSchema>;
