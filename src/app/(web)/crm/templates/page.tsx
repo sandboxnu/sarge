@@ -14,7 +14,7 @@ import {
     DropdownMenuTrigger,
 } from '@/lib/components/ui/Dropdown';
 import { Tabs, TabsContent, TabsList, UnderlineTabsTrigger } from '@/lib/components/ui/Tabs';
-import { ArrowDownUp, File, Plus, SlidersHorizontal } from 'lucide-react';
+import { ArrowDownUp, File, Plus } from 'lucide-react';
 import { useTaskTemplateList, type TaskTemplateSortBy } from '@/lib/hooks/useTaskTemplateList';
 import TaskTemplateCard from '@/lib/components/templates/TaskTemplateCard';
 import { TaskTemplatePreview } from '@/lib/components/templates/TaskTemplatePreview';
@@ -203,7 +203,6 @@ export default function TemplatesPage() {
                     value="tasks"
                     className="border-sarge-gray-200 flex min-h-0 w-1/4 shrink-0 flex-col border-r-1"
                 >
-                    <div className="flex flex-col gap-2.5 px-3 pt-3 sm:flex-row sm:items-center">
                         <div className="flex flex-col gap-2.5 px-3 pt-3 sm:flex-row sm:items-center">
                             <Search
                                 className="border-none"
