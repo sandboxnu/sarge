@@ -41,6 +41,60 @@ async function deletePosition(positionId: string, orgId: string): Promise<Positi
     return prisma.position.delete({ where: { id: positionId } });
 }
 
+async function archivePosition(positionId: string, orgId: string): Promise<Position> {
+    const existingPosition = await prisma.position.findFirst({
+        where: { id: positionId, orgId },
+        select: {
+            archived: true,
+        },
+    });
+
+    if (!existingPosition) {
+        throw new NotFoundException('Position', positionId);
+    }
+
+    if (existingPosition.archived) {
+        throw new ConflictException('Position', 'archived');
+    }
+
+    return prisma.position.update({
+        where: {
+            orgId,
+            id: positionId,
+        },
+        data: {
+            archived: true,
+        },
+    });
+}
+
+async function unarchivePosition(positionId: string, orgId: string): Promise<Position> {
+    const existingPosition = await prisma.position.findFirst({
+        where: { id: positionId, orgId },
+        select: {
+            archived: true,
+        },
+    });
+
+    if (!existingPosition) {
+        throw new NotFoundException('Position', positionId);
+    }
+
+    if (!existingPosition.archived) {
+        throw new ConflictException('Position', 'unarchived');
+    }
+
+    return prisma.position.update({
+        where: {
+            orgId,
+            id: positionId,
+        },
+        data: {
+            archived: false,
+        },
+    });
+}
+
 async function getPosition(positionId: string, orgId: string): Promise<Position> {
     const position = await prisma.position.findFirst({
         where: { id: positionId, orgId },
@@ -268,6 +322,8 @@ async function getPositionsByTitle(title: string, orgId: string): Promise<Positi
 const PositionService = {
     createPosition,
     deletePosition,
+    archivePosition,
+    unarchivePosition,
     getPosition,
     getPositionsByOrgId,
     getPositionPreview,

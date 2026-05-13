@@ -100,13 +100,13 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
 
             if (result.totalSent > 0) {
                 toast.success(
-                    `Successfully sent ${result.totalSent} assessment invitation${result.totalSent !== 1 ? 's' : ''}`
+                    `${result.totalSent} assessment invitation${result.totalSent !== 1 ? 's' : ''} sent successfully`
                 );
             }
 
             if (result.totalFailed > 0) {
                 toast.error(
-                    `Failed to send ${result.totalFailed} invitation${result.totalFailed !== 1 ? 's' : ''}`
+                    `${result.totalFailed} invitation${result.totalFailed !== 1 ? 's' : ''} failed to send`
                 );
             }
 
@@ -118,7 +118,7 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
             if (errorMessage.includes('does not have an assessment template assigned')) {
                 toast.error('This position does not have an assessment template assigned');
             } else {
-                toast.error(errorMessage || 'Failed to send assessment invitations');
+                toast.error(errorMessage || 'Assessment invitations failed to send');
             }
         } finally {
             setIsSendingAssessments(false);

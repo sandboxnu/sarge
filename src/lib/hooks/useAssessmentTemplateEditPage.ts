@@ -9,6 +9,7 @@ import type { AssessmentSection } from '@/lib/types/assessment-template.types';
 import type { BlockNoteContent } from '@/lib/types/task-template.types';
 import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
 import type { PositionWithCounts } from '@/lib/types/position.types';
+import { toast } from 'sonner';
 
 export default function useAssessmentTemplateEditPage(assessmentTemplateId: string) {
     const [isLoading, setIsLoading] = useState(true);
@@ -16,13 +17,15 @@ export default function useAssessmentTemplateEditPage(assessmentTemplateId: stri
 
     const [title, setTitle] = useState('');
     const [positions, setPositions] = useState<PositionWithCounts[]>([]);
-    const [selectedPositionId, setSelectedPositionId] = useState<string | null>(null);
+    const [selectedPositionIds, setSelectedPositionIds] = useState<string[]>([]);
+    const [initialPositionIds, setInitialPositionIds] = useState<string[]>([]);
     const [sections, setSections] = useState<AssessmentSection[]>([]);
     const [notes, setNotes] = useState<BlockNoteContent>([]);
     const [selectedSection, setSelectedSection] = useState<AssessmentSection | null>(null);
 
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
+    const [addTaskOpen, setAddTaskOpen] = useState(false);
 
     useEffect(() => {
         let cancelled = false;
@@ -41,7 +44,9 @@ export default function useAssessmentTemplateEditPage(assessmentTemplateId: stri
                 setTitle(template.title);
                 setNotes(template.notes);
                 setPositions(availablePositions);
-                setSelectedPositionId(template.positions[0]?.id ?? null);
+                const linkedIds = template.positions.map((p) => p.id);
+                setSelectedPositionIds(linkedIds);
+                setInitialPositionIds(linkedIds);
 
                 const initialSections: AssessmentSection[] = template.tasks.map((t) => ({
                     type: 'task' as const,
@@ -122,14 +127,20 @@ export default function useAssessmentTemplateEditPage(assessmentTemplateId: stri
         setSelectedSection(section);
     }
 
-    function updateSelectedPosition(positionId: string | null) {
-        setSelectedPositionId(positionId);
+    function updateSelectedPositions(ids: string[]) {
+        setSelectedPositionIds(ids);
         setHasUnsavedChanges(true);
     }
 
-    async function save(): Promise<{ success: boolean; errorMessage?: string }> {
+    async function onSave() {
         setIsSaving(true);
         try {
+            const newlyAddedIds = selectedPositionIds.filter(
+                (id) => !initialPositionIds.includes(id)
+            );
+            // TODO(laith): add unassigning positions from assessment templates
+            // const removedIds = initialPositionIds.filter((id) => !selectedPositionIds.includes(id));
+
             await Promise.all([
                 updateAssessmentTemplate(assessmentTemplateId, {
                     title,
@@ -139,18 +150,18 @@ export default function useAssessmentTemplateEditPage(assessmentTemplateId: stri
                     assessmentTemplateId,
                     sections.map((s) => ({ taskTemplateId: s.taskTemplateId }))
                 ),
+                ...newlyAddedIds.map((id) =>
+                    assignAssessmentTemplateToPosition(id, assessmentTemplateId)
+                ),
             ]);
 
-            if (selectedPositionId) {
-                await assignAssessmentTemplateToPosition(selectedPositionId, assessmentTemplateId);
-            }
-
+            setInitialPositionIds(selectedPositionIds);
             setHasUnsavedChanges(false);
-            return { success: true };
+            toast.success('Assessment template saved successfully');
         } catch (err) {
             const errorMessage =
-                err instanceof Error ? err.message : 'Failed to save assessment template';
-
+                err instanceof Error ? err.message : 'Assessment template failed to save';
+            toast.error(errorMessage);
             return {
                 success: false,
                 errorMessage,
@@ -165,7 +176,7 @@ export default function useAssessmentTemplateEditPage(assessmentTemplateId: stri
         error,
         title,
         positions,
-        selectedPositionId,
+        selectedPositionIds,
         sections,
         notes,
         selectedSection,
@@ -177,7 +188,9 @@ export default function useAssessmentTemplateEditPage(assessmentTemplateId: stri
         deleteSection,
         reorderSections,
         selectSection,
-        updateSelectedPosition,
-        save,
+        updateSelectedPositions,
+        onSave,
+        addTaskOpen,
+        setAddTaskOpen,
     };
 }

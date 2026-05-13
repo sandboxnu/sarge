@@ -37,7 +37,7 @@ export default function Pager({
 
     return (
         <div className="bg-sarge-gray-0 border-sarge-gray-200 flex items-center rounded-lg border-1">
-            <div className="flex-1">
+            <div className="hidden flex-1 sm:block">
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <div className="bg-sarge-gray-0 hover:bg-sarge-gray-100 border-sarge-gray-200 flex cursor-pointer items-center gap-2 rounded-l-lg border-r-1 px-3 py-2">

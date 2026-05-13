@@ -128,7 +128,7 @@ async function assignTemplateToPosition(params: {
 
     if (position.assessmentId && position.assessmentId !== assessmentTemplateId) {
         throw new BadRequestException(
-            'This position is already assigned to a different assessment template.'
+            `${position.title} is already assigned to a different assessment template.`
         );
     }
 
@@ -143,7 +143,7 @@ async function assignTemplateToPosition(params: {
 
     if (assessmentsWithDifferentTemplate.length > 0) {
         throw new BadRequestException(
-            'This position already has assessments. Reassignment is not supported.'
+            `${position.title} already has assessments. Reassignment is not supported.`
         );
     }
 

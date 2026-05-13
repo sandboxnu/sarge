@@ -87,8 +87,8 @@ export default function InviteUsersModal({
             if (successfulCount > 0) {
                 const message =
                     normalizedEmails.length > successfulCount
-                        ? `Successfully invited ${successfulCount} of ${normalizedEmails.length} user${successfulCount > 1 ? 's' : ''}`
-                        : `Successfully invited ${successfulCount} user${successfulCount > 1 ? 's' : ''}`;
+                        ? `${successfulCount} of ${normalizedEmails.length} user${successfulCount > 1 ? 's' : ''} invited successfully`
+                        : `${successfulCount} user${successfulCount > 1 ? 's' : ''} invited successfully`;
                 toast.success(message);
             }
 
@@ -98,7 +98,7 @@ export default function InviteUsersModal({
                 toast.error('An error occurred... please try again');
             }
         } catch (err) {
-            toast.error(`Error inviting users: ${err}`);
+            toast.error(`Users failed to get invited: ${err}`);
         } finally {
             setInviting(false);
         }

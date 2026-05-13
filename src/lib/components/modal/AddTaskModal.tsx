@@ -8,8 +8,16 @@ import { Button } from '@/lib/components/ui/Button';
 import { Search } from '@/lib/components/core/Search';
 import TaskTemplateCard from '@/lib/components/templates/TaskTemplateCard';
 import Pager from '@/lib/components/ui/Pager';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuRadioGroup,
+    DropdownMenuRadioItem,
+    DropdownMenuTrigger,
+} from '@/lib/components/ui/Dropdown';
 
 import { useAddTaskModal } from '@/lib/hooks/useAddTaskModal';
+import type { TaskTemplateSortBy } from '@/lib/hooks/useTaskTemplateList';
 import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
 import GreyWinstonLogoMark from '@/../public/GreyWinstonLogoMark.svg';
 
@@ -37,6 +45,8 @@ export default function AddTaskModal({
         searchQuery,
         handleSearchChange,
         isSearching,
+        sortBy,
+        setSortBy,
     } = useAddTaskModal(open);
 
     const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -88,10 +98,36 @@ export default function AddTaskModal({
                         onChange={handleSearchChange}
                     />
                     <div className="flex items-center gap-3">
-                        <Button variant="dropdown">
-                            <ArrowDownUp className="size-5" />
-                            <span className="text-label-s">Sort</span>
-                        </Button>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="dropdown">
+                                    <ArrowDownUp className="size-5" />
+                                    <span className="text-label-s">Sort</span>
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="bg-white">
+                                <DropdownMenuRadioGroup
+                                    value={sortBy ?? ''}
+                                    onValueChange={(v) =>
+                                        setSortBy(v === '' ? null : (v as TaskTemplateSortBy))
+                                    }
+                                >
+                                    <DropdownMenuRadioItem value="">Default</DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="title-asc">
+                                        Title (A → Z)
+                                    </DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="title-desc">
+                                        Title (Z → A)
+                                    </DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="estimated-asc">
+                                        Estimated time (Low → High)
+                                    </DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="estimated-desc">
+                                        Estimated time (High → Low)
+                                    </DropdownMenuRadioItem>
+                                </DropdownMenuRadioGroup>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
 
                         <Button variant="dropdown">
                             <SlidersHorizontal className="size-5" />
@@ -128,7 +164,7 @@ export default function AddTaskModal({
                         </div>
                     ) : (
                         <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-                            {displayList.map((task, idx) => {
+                            {displayList.map((task) => {
                                 const isAlreadyAdded = alreadyAddedIds.has(task.id);
 
                                 return (
@@ -140,7 +176,6 @@ export default function AddTaskModal({
                                         languages={task.languages}
                                         isSelected={selectedIds.has(task.id)}
                                         setIsSelected={() => toggleSelection(task.id)}
-                                        index={idx}
                                         taskTemplateId={task.id}
                                         isPreviewSelected={selectedIds.has(task.id)}
                                         onPreviewSelect={() => toggleSelection(task.id)}

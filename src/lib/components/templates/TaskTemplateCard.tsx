@@ -13,9 +13,8 @@ export interface TaskTemplateCardProps {
     chips: TagDTO[];
     languages?: TaskTemplateLanguageDTO[];
     isSelected: boolean;
-    setIsSelected: (index: number) => void;
-    index: number;
-    taskTemplateId?: string;
+    setIsSelected: (id: string) => void;
+    taskTemplateId: string;
     isPreviewSelected?: boolean;
     onPreviewSelect?: () => void;
     maxTags?: number;
@@ -29,7 +28,7 @@ export default function TaskTemplateCard({ maxTags = 2, ...props }: TaskTemplate
     return (
         <div
             className={cn(
-                'relative flex cursor-pointer gap-4.5 rounded-xl border-1 p-4',
+                'relative flex cursor-pointer flex-col-reverse gap-4.5 rounded-xl border-1 p-4 sm:flex-row',
                 props.isAlreadyAdded && 'pointer-events-none opacity-50',
                 props.isPreviewSelected && !props.isAlreadyAdded
                     ? 'border-sarge-primary-500 bg-sarge-primary-50 ring-sarge-primary-200 ring-2 ring-inset'
@@ -51,7 +50,7 @@ export default function TaskTemplateCard({ maxTags = 2, ...props }: TaskTemplate
             >
                 <Checkbox
                     checked={props.isSelected || !!props.isAlreadyAdded}
-                    onCheckedChange={() => props.setIsSelected(props.index)}
+                    onCheckedChange={() => props.setIsSelected(props.taskTemplateId)}
                 />
             </div>
             <div className="flex min-w-0 flex-1 flex-col gap-2.5">
@@ -69,7 +68,7 @@ export default function TaskTemplateCard({ maxTags = 2, ...props }: TaskTemplate
                         </div>
                     )}
                 </div>
-                <div className="flex flex-wrap gap-1">
+                <div className="hidden flex-wrap gap-1 sm:flex">
                     {visibleChips.map((chip, idx) => (
                         <Chip
                             key={chip.id ?? idx}

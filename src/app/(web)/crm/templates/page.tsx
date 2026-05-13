@@ -9,11 +9,13 @@ import {
     DropdownMenuContent,
     DropdownMenuGroup,
     DropdownMenuLabel,
+    DropdownMenuRadioGroup,
+    DropdownMenuRadioItem,
     DropdownMenuTrigger,
 } from '@/lib/components/ui/Dropdown';
 import { Tabs, TabsContent, TabsList, UnderlineTabsTrigger } from '@/lib/components/ui/Tabs';
-import { ArrowDownUp, Plus, SlidersHorizontal } from 'lucide-react';
-import { useTaskTemplateList } from '@/lib/hooks/useTaskTemplateList';
+import { ArrowDownUp, File, Plus, SlidersHorizontal } from 'lucide-react';
+import { useTaskTemplateList, type TaskTemplateSortBy } from '@/lib/hooks/useTaskTemplateList';
 import TaskTemplateCard from '@/lib/components/templates/TaskTemplateCard';
 import { TaskTemplatePreview } from '@/lib/components/templates/TaskTemplatePreview';
 import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
@@ -21,7 +23,10 @@ import Image from 'next/image';
 import Pager from '@/lib/components/ui/Pager';
 import GreyWinstonLogoMark from '@/../public/GreyWinstonLogoMark.svg';
 import useSearch from '@/lib/hooks/useSearch';
-import { useAssessmentTemplateList } from '@/lib/hooks/useAssessmentTemplateList';
+import {
+    useAssessmentTemplateList,
+    type AssessmentTemplateSortBy,
+} from '@/lib/hooks/useAssessmentTemplateList';
 import CreateAssessmentTemplateModal from '@/lib/components/modal/CreateAssessmentModal';
 import { type AssessmentTemplateListItemDTO } from '@/lib/schemas/assessment-template.schema';
 import AssessmentTemplateCard from '@/lib/components/templates/AssessmentTemplateCard';
@@ -68,6 +73,9 @@ export default function TemplatesPage() {
         total,
         insertTaskTemplateAtTopOfPage,
         updatePageTemplates,
+        sortBy: taskSortBy,
+        setSortBy: setTaskSortBy,
+        applySort: applyTaskTemplateSort,
     } = useTaskTemplateList();
 
     const assessmentTemplateList = useAssessmentTemplateList();
@@ -79,6 +87,16 @@ export default function TemplatesPage() {
 
     const isSearchingForTaskTemplate = taskTemplateSearch.value.trim().length >= 1;
     const isSearchingForAssessmentTemplate = assessmentTemplateSearch.value.trim().length >= 1;
+
+    const displayedTaskTemplates = applyTaskTemplateSort(
+        isSearchingForTaskTemplate ? taskTemplateSearch.data : taskTemplateList
+    );
+
+    const displayedAssessmentTemplates = assessmentTemplateList.applySort(
+        isSearchingForAssessmentTemplate
+            ? assessmentTemplateSearch.data
+            : assessmentTemplateList.assessmentTemplateList
+    );
 
     const { activeOrganizationId } = useAuth();
 
@@ -133,7 +151,7 @@ export default function TemplatesPage() {
             });
             router.push(`/crm/task-templates/${created.id}/edit`);
         } catch (err) {
-            toast.error(`Failed to create task template: ${err}`);
+            toast.error(`Task template failed to create: ${err}`);
         } finally {
             setIsCreating(false);
         }
@@ -146,14 +164,17 @@ export default function TemplatesPage() {
             onValueChange={(v) => setActiveTab(v as 'tasks' | 'assessments')}
         >
             <div className="flex flex-col gap-3 border-b-1 px-5 pt-4">
-                <h1 className="text-xl font-bold">Templates</h1>
+                <div className="flex items-center gap-2">
+                    <File className="size-5" />
+                    <h1 className="text-xl font-bold">Templates</h1>
+                </div>
                 <div className="flex flex-row items-center justify-between">
                     <TabsList className="h-auto gap-5 rounded-none bg-transparent p-0">
                         <UnderlineTabsTrigger value="tasks">
-                            Tasks ({total ?? 0})
+                            Tasks ({displayedTaskTemplates.length ?? 0})
                         </UnderlineTabsTrigger>
                         <UnderlineTabsTrigger value="assessments">
-                            Assessments ({assessmentTemplateList.total ?? 0})
+                            Assessments ({displayedAssessmentTemplates.length ?? 0})
                         </UnderlineTabsTrigger>
                     </TabsList>
                     <div className="flex items-center gap-4">
@@ -182,7 +203,7 @@ export default function TemplatesPage() {
                     value="tasks"
                     className="border-sarge-gray-200 flex min-h-0 w-1/4 shrink-0 flex-col border-r-1"
                 >
-                    <div className="flex items-center gap-2.5 px-3 pt-3">
+                    <div className="flex flex-col gap-2.5 px-3 pt-3 sm:flex-row sm:items-center">
                         <Search
                             className="border-none"
                             value={taskTemplateSearch.value}
@@ -190,11 +211,41 @@ export default function TemplatesPage() {
                             placeholder="Type to search"
                         />
                         <div className="flex">
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="icon" className="px-3 py-2">
+                                        <ArrowDownUp className="size-5" />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="bg-white">
+                                    <DropdownMenuRadioGroup
+                                        value={taskSortBy ?? ''}
+                                        onValueChange={(v) =>
+                                            setTaskSortBy(
+                                                v === '' ? null : (v as TaskTemplateSortBy)
+                                            )
+                                        }
+                                    >
+                                        <DropdownMenuRadioItem value="">
+                                            Default
+                                        </DropdownMenuRadioItem>
+                                        <DropdownMenuRadioItem value="title-asc">
+                                            Title (A → Z)
+                                        </DropdownMenuRadioItem>
+                                        <DropdownMenuRadioItem value="title-desc">
+                                            Title (Z → A)
+                                        </DropdownMenuRadioItem>
+                                        <DropdownMenuRadioItem value="estimated-asc">
+                                            Estimated time (Low → High)
+                                        </DropdownMenuRadioItem>
+                                        <DropdownMenuRadioItem value="estimated-desc">
+                                            Estimated time (High → Low)
+                                        </DropdownMenuRadioItem>
+                                    </DropdownMenuRadioGroup>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                             <Button variant="icon" className="px-3 py-2">
                                 <SlidersHorizontal className="size-5" />
-                            </Button>
-                            <Button variant="icon" className="px-3 py-2">
-                                <ArrowDownUp className="size-5" />
                             </Button>
                         </div>
                     </div>
@@ -210,10 +261,7 @@ export default function TemplatesPage() {
                             </div>
                         ) : error ? (
                             <div>Error: {error.message}</div>
-                        ) : (isSearchingForTaskTemplate
-                              ? taskTemplateSearch.data
-                              : taskTemplateList
-                          ).length === 0 ? (
+                        ) : displayedTaskTemplates.length === 0 ? (
                             <div className="text-sarge-gray-500 flex h-full w-full flex-col items-center justify-center gap-4">
                                 <Image
                                     src={GreyWinstonLogoMark}
@@ -226,30 +274,23 @@ export default function TemplatesPage() {
                                     : 'You currently have no tasks'}
                             </div>
                         ) : (
-                            (isSearchingForTaskTemplate
-                                ? taskTemplateSearch.data
-                                : taskTemplateList
-                            ).map((task: TaskTemplateListItemDTO, idx: number) => {
-                                const absoluteIdx = page * limit + idx;
-                                return (
-                                    <TaskTemplateCard
-                                        key={task.id}
-                                        title={task.title}
-                                        subtitle={task.taskType ?? ''}
-                                        chips={task.tags ?? []}
-                                        languages={task.languages}
-                                        isSelected={selected?.includes(absoluteIdx) ?? false}
-                                        setIsSelected={handleSelectTask}
-                                        index={idx}
-                                        taskTemplateId={task.id}
-                                        isPreviewSelected={selectedTaskTemplate?.id === task.id}
-                                        onPreviewSelect={() => {
-                                            setSelectedAssessmentTemplate(null);
-                                            setSelectedTaskTemplate(task);
-                                        }}
-                                    />
-                                );
-                            })
+                            displayedTaskTemplates.map((task: TaskTemplateListItemDTO) => (
+                                <TaskTemplateCard
+                                    key={task.id}
+                                    title={task.title}
+                                    subtitle={task.taskType ?? ''}
+                                    chips={task.tags ?? []}
+                                    languages={task.languages}
+                                    isSelected={selected?.includes(task.id) ?? false}
+                                    setIsSelected={handleSelectTask}
+                                    taskTemplateId={task.id}
+                                    isPreviewSelected={selectedTaskTemplate?.id === task.id}
+                                    onPreviewSelect={() => {
+                                        setSelectedAssessmentTemplate(null);
+                                        setSelectedTaskTemplate(task);
+                                    }}
+                                />
+                            ))
                         )}
                     </div>
                     <div className="border-sarge-gray-200 flex flex-col gap-2.5 border-t-1 p-3">
@@ -267,7 +308,10 @@ export default function TemplatesPage() {
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
                                         <div className="flex items-center gap-2.5">
-                                            <div>{selected?.length ?? 0} selected</div>
+                                            <div>
+                                                {selected?.length ?? 0}
+                                                <span className="hidden lg:inline"> selected</span>
+                                            </div>
                                         </div>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent
@@ -277,11 +321,10 @@ export default function TemplatesPage() {
                                     >
                                         <DropdownMenuGroup>
                                             {selected && selected.length > 0 ? (
-                                                selected.map((absoluteIdx) => (
-                                                    <DropdownMenuLabel key={absoluteIdx}>
-                                                        {taskTemplateList?.[
-                                                            absoluteIdx - page * limit
-                                                        ]?.title ?? `Item ${absoluteIdx}`}
+                                                selected.map((id) => (
+                                                    <DropdownMenuLabel key={id}>
+                                                        {taskTemplateList.find((t) => t.id === id)
+                                                            ?.title ?? id}
                                                     </DropdownMenuLabel>
                                                 ))
                                             ) : (
@@ -294,7 +337,8 @@ export default function TemplatesPage() {
                                 </DropdownMenu>
                             </div>
                             <Button className="flex-1 px-4 py-2" variant="secondary">
-                                Create Assessment
+                                <Plus className="lg:hidden" />
+                                <span className="hidden lg:inline">Create Assessment</span>
                             </Button>
                         </div>
                     </div>
@@ -304,7 +348,7 @@ export default function TemplatesPage() {
                     value="assessments"
                     className="border-sarge-gray-200 flex min-h-0 w-1/4 shrink-0 flex-col border-r-1"
                 >
-                    <div className="flex items-center gap-2.5 px-3 pt-3">
+                    <div className="flex flex-col gap-2.5 px-3 pt-3 sm:flex-row sm:items-center">
                         <Search
                             className="border-none"
                             value={assessmentTemplateSearch.value}
@@ -312,11 +356,35 @@ export default function TemplatesPage() {
                             placeholder="Type to search"
                         />
                         <div className="flex">
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="icon" className="px-3 py-2">
+                                        <ArrowDownUp className="size-5" />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="bg-white">
+                                    <DropdownMenuRadioGroup
+                                        value={assessmentTemplateList.sortBy ?? ''}
+                                        onValueChange={(v) =>
+                                            assessmentTemplateList.setSortBy(
+                                                v === '' ? null : (v as AssessmentTemplateSortBy)
+                                            )
+                                        }
+                                    >
+                                        <DropdownMenuRadioItem value="">
+                                            Default
+                                        </DropdownMenuRadioItem>
+                                        <DropdownMenuRadioItem value="title-asc">
+                                            Title (A → Z)
+                                        </DropdownMenuRadioItem>
+                                        <DropdownMenuRadioItem value="title-desc">
+                                            Title (Z → A)
+                                        </DropdownMenuRadioItem>
+                                    </DropdownMenuRadioGroup>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                             <Button variant="icon" className="px-3 py-2">
                                 <SlidersHorizontal className="size-5" />
-                            </Button>
-                            <Button variant="icon" className="px-3 py-2">
-                                <ArrowDownUp className="size-5" />
                             </Button>
                         </div>
                     </div>
@@ -332,10 +400,7 @@ export default function TemplatesPage() {
                             </div>
                         ) : assessmentTemplateList.error ? (
                             <div>Error: {assessmentTemplateList.error.message}</div>
-                        ) : (isSearchingForAssessmentTemplate
-                              ? assessmentTemplateSearch.data
-                              : assessmentTemplateList.assessmentTemplateList
-                          ).length === 0 ? (
+                        ) : displayedAssessmentTemplates.length === 0 ? (
                             <div className="text-sarge-gray-500 flex h-full w-full flex-col items-center justify-center gap-4">
                                 <Image
                                     src={GreyWinstonLogoMark}
@@ -348,20 +413,21 @@ export default function TemplatesPage() {
                                     : 'You currently have no assessments'}
                             </div>
                         ) : (
-                            (isSearchingForAssessmentTemplate
-                                ? assessmentTemplateSearch.data
-                                : assessmentTemplateList.assessmentTemplateList
-                            ).map((assessment: AssessmentTemplateListItemDTO) => (
-                                <AssessmentTemplateCard
-                                    key={assessment.id}
-                                    template={assessment}
-                                    isSelected={selectedAssessmentTemplate?.id === assessment.id}
-                                    onClick={() => {
-                                        setSelectedTaskTemplate(null);
-                                        setSelectedAssessmentTemplate(assessment);
-                                    }}
-                                />
-                            ))
+                            displayedAssessmentTemplates.map(
+                                (assessment: AssessmentTemplateListItemDTO) => (
+                                    <AssessmentTemplateCard
+                                        key={assessment.id}
+                                        template={assessment}
+                                        isSelected={
+                                            selectedAssessmentTemplate?.id === assessment.id
+                                        }
+                                        onClick={() => {
+                                            setSelectedTaskTemplate(null);
+                                            setSelectedAssessmentTemplate(assessment);
+                                        }}
+                                    />
+                                )
+                            )
                         )}
                     </div>
                     <div className="border-sarge-gray-200 flex flex-col gap-2.5 border-t-1 p-3">

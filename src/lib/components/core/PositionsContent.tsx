@@ -8,8 +8,15 @@ import { type PositionWithCounts } from '@/lib/types/position.types';
 import { Tabs, TabsContent, TabsList, UnderlineTabsTrigger } from '@/lib/components/ui/Tabs';
 import CreatePositionModal from '@/lib/components/modal/CreatePositionModal';
 import Image from 'next/image';
-import usePositionContent from '@/lib/hooks/usePositionsContent';
+import usePositionContent, { type PositionSortBy } from '@/lib/hooks/usePositionsContent';
 import useSearch from '@/lib/hooks/useSearch';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuRadioGroup,
+    DropdownMenuRadioItem,
+    DropdownMenuTrigger,
+} from '@/lib/components/ui/Dropdown';
 
 export default function PositionsContent() {
     const {
@@ -19,21 +26,31 @@ export default function PositionsContent() {
         setActive,
         archived,
         handlePositionClick,
+        onArchive,
+        onUnarchive,
+        onDelete,
+        sortBy,
+        setSortBy,
+        applySort,
     } = usePositionContent();
 
     const { value, onChange, data, loading } = useSearch('positions');
 
     const isSearching = value.trim().length >= 1;
 
-    const displayedActivePositions = isSearching ? data.filter((p) => !p.archived) : active;
+    const displayedActivePositions = applySort(
+        isSearching ? data.filter((p) => !p.archived) : active
+    );
 
-    const displayedArchivedPositions = isSearching ? data.filter((p) => p.archived) : archived;
+    const displayedArchivedPositions = applySort(
+        isSearching ? data.filter((p) => p.archived) : archived
+    );
 
     return (
         <>
             <Tabs defaultValue="active" className="flex flex-col gap-3">
                 <div className="flex items-center gap-4">
-                    <div className="flex-1">
+                    <div className="min-w-56 flex-1">
                         <Search
                             value={value}
                             onChange={onChange}
@@ -42,13 +59,39 @@ export default function PositionsContent() {
                     </div>
 
                     <div className="flex items-center gap-3">
-                        <Button variant="dropdown">
-                            <ArrowUpDown className="size-5" />
-                            <span className="text-label-s">Sort</span>
-                        </Button>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="dropdown">
+                                    <ArrowUpDown className="size-5" />
+                                    <span className="text-label-s hidden sm:inline">Sort</span>
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="bg-white">
+                                <DropdownMenuRadioGroup
+                                    value={sortBy ?? ''}
+                                    onValueChange={(v) =>
+                                        setSortBy(v === '' ? null : (v as PositionSortBy))
+                                    }
+                                >
+                                    <DropdownMenuRadioItem value="">Default</DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="title-asc">
+                                        Title (A → Z)
+                                    </DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="title-desc">
+                                        Title (Z → A)
+                                    </DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="created-desc">
+                                        Created (Newest first)
+                                    </DropdownMenuRadioItem>
+                                    <DropdownMenuRadioItem value="created-asc">
+                                        Created (Oldest first)
+                                    </DropdownMenuRadioItem>
+                                </DropdownMenuRadioGroup>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                         <Button variant="dropdown">
                             <SlidersHorizontal className="size-5" />
-                            <span className="text-label-s">Filter</span>
+                            <span className="text-label-s hidden sm:inline">Filter</span>
                         </Button>
                     </div>
 
@@ -61,7 +104,7 @@ export default function PositionsContent() {
                         onClick={() => setIsCreateModalOpen(true)}
                     >
                         <Plus className="size-5" />
-                        <span>New position</span>
+                        <span className="hidden sm:inline">New position</span>
                     </Button>
                 </div>
 
@@ -85,6 +128,9 @@ export default function PositionsContent() {
                         <PositionCardGrid
                             positions={displayedActivePositions}
                             onPositionClick={handlePositionClick}
+                            onArchive={onArchive}
+                            onUnarchive={onUnarchive}
+                            onDelete={onDelete}
                         />
                     ) : (
                         <EmptyState
@@ -110,6 +156,9 @@ export default function PositionsContent() {
                         <PositionCardGrid
                             positions={displayedArchivedPositions}
                             onPositionClick={handlePositionClick}
+                            onArchive={onArchive}
+                            onUnarchive={onUnarchive}
+                            onDelete={onDelete}
                         />
                     ) : (
                         <EmptyState
@@ -141,9 +190,15 @@ export default function PositionsContent() {
 function PositionCardGrid({
     positions,
     onPositionClick,
+    onArchive,
+    onUnarchive,
+    onDelete,
 }: {
     positions: PositionWithCounts[];
     onPositionClick: (positionId: string) => void;
+    onArchive: (positionId: string) => void;
+    onUnarchive: (positionId: string) => void;
+    onDelete: (positionId: string) => void;
 }) {
     return (
         <div className="flex flex-wrap gap-4">
@@ -154,7 +209,11 @@ function PositionCardGrid({
                     candidateCount={position.numCandidates}
                     sentCount={position.assessmentSentCount}
                     submittedCount={position.assessmentSubmittedCount}
+                    archived={position.archived}
                     onPositionClick={() => onPositionClick(position.id)}
+                    onArchive={() => onArchive(position.id)}
+                    onUnarchive={() => onUnarchive(position.id)}
+                    onDelete={() => onDelete(position.id)}
                 />
             ))}
         </div>

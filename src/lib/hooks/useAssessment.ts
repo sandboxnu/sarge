@@ -157,7 +157,7 @@ export default function useAssessment(assessmentId: string) {
                 setOutroReason(reason);
                 setPhase('outro');
             } catch (err) {
-                toast.error(`Failed to submit assessment. Please try again. Error: ${err}`);
+                toast.error(`Assessment failed to submit. Please try again. Error: ${err}`);
                 setIsSubmitting(false);
             }
         },
