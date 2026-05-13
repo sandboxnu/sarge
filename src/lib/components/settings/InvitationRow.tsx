@@ -139,6 +139,9 @@ export default function InvitationRow({
                                     </DropdownMenuRadioItem>
                                 ))}
                             </DropdownMenuRadioGroup>
+                        </DropdownMenuGroup>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuGroup>
                             <DropdownMenuItem
                                 inset
                                 variant="destructive"
@@ -147,9 +150,6 @@ export default function InvitationRow({
                             >
                                 Remove
                             </DropdownMenuItem>
-                        </DropdownMenuGroup>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuGroup>
                             <DropdownMenuItem
                                 inset
                                 disabled={busy}
