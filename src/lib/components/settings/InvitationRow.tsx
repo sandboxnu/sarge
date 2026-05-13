@@ -37,7 +37,7 @@ export default function InvitationRow({
     organizationId,
     onRoleChanged,
 }: InvitationRowProps) {
-    const [busy, setBusy] = useState(false);
+    const [updating, setUpdating] = useState(false);
     const [currentRole, setCurrentRole] = useState(invitation.role);
     const status = getInvitationStatus(invitation);
     const initial = invitation.email[0]?.toUpperCase() ?? '?';
@@ -45,7 +45,7 @@ export default function InvitationRow({
 
     const handleRoleChange = async (newRole: string) => {
         if (newRole === currentRole) return;
-        setBusy(true);
+        setUpdating(true);
         const previous = currentRole;
         setCurrentRole(newRole);
         try {
@@ -58,12 +58,12 @@ export default function InvitationRow({
             setCurrentRole(previous);
             toast.error('Failed to update invitation role');
         } finally {
-            setBusy(false);
+            setUpdating(false);
         }
     };
 
     const handleRemoveInvitation = async () => {
-        setBusy(true);
+        setUpdating(true);
         try {
             await deleteOrganizationInvitation(organizationId, invitation.id);
             toast.success('Invitation removed');
@@ -71,12 +71,12 @@ export default function InvitationRow({
         } catch {
             toast.error('Failed to remove invitation');
         } finally {
-            setBusy(false);
+            setUpdating(false);
         }
     };
 
     const handleResendInvite = async () => {
-        setBusy(true);
+        setUpdating(true);
         try {
             const isExpired = status === 'invite-expired';
             if (isExpired) {
@@ -93,7 +93,7 @@ export default function InvitationRow({
         } catch {
             toast.error('Failed to resend invitation');
         } finally {
-            setBusy(false);
+            setUpdating(false);
         }
     };
 
@@ -118,7 +118,7 @@ export default function InvitationRow({
                     <DropdownMenuTrigger asChild>
                         <button
                             type="button"
-                            disabled={busy}
+                            disabled={updating}
                             className="border-sarge-gray-200 bg-sarge-gray-0 text-sarge-gray-800 hover:bg-sarge-gray-50 data-[state=open]:bg-sarge-gray-50 focus:bg-sarge-gray-50 focus:ring-sarge-primary-500 flex h-11 w-full items-center justify-between rounded-lg border px-3 py-2 text-sm transition-colors focus:ring-2 focus:outline-none focus:ring-inset disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             <span className="truncate font-normal">
@@ -134,7 +134,7 @@ export default function InvitationRow({
                                 onValueChange={(r) => handleRoleChange(r)}
                             >
                                 {getAssignableRoles().map((r) => (
-                                    <DropdownMenuRadioItem key={r} value={r} disabled={busy}>
+                                    <DropdownMenuRadioItem key={r} value={r} disabled={updating}>
                                         {getRoleLabel(r)}
                                     </DropdownMenuRadioItem>
                                 ))}
@@ -145,14 +145,14 @@ export default function InvitationRow({
                             <DropdownMenuItem
                                 inset
                                 variant="destructive"
-                                disabled={busy}
+                                disabled={updating}
                                 onSelect={() => handleRemoveInvitation()}
                             >
                                 Remove
                             </DropdownMenuItem>
                             <DropdownMenuItem
                                 inset
-                                disabled={busy}
+                                disabled={updating}
                                 onSelect={() => handleResendInvite()}
                             >
                                 Resend invite
