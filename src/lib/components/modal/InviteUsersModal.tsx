@@ -15,14 +15,14 @@ import {
 import { Field, FieldLabel } from '@/lib/components/ui/Field';
 import { InviteEmailInput } from '@/lib/components/ui/InviteEmailInput';
 import { getInvalidEmails } from '@/lib/utils/email.utils';
-import { getInvitableRoles, type OrgRole } from '@/lib/utils/roles.utils';
+import { getInvitableRoles, getRoleLabel, type OrgRole } from '@/lib/utils/roles.utils';
 import { authClient } from '@/lib/auth/auth-client';
 
 type InviteUsersModalProps = {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     organization: { id: string; name: string };
-    currentUserRole: OrgRole;
+    currentUserRole: string;
 };
 
 export default function InviteUsersModal({
@@ -126,7 +126,6 @@ export default function InviteUsersModal({
                                 type="button"
                                 variant="icon"
                                 onClick={() => handleOpenChange(false)}
-                                aria-label="Close invite modal"
                             >
                                 <X className="size-5" />
                             </Button>
@@ -160,7 +159,7 @@ export default function InviteUsersModal({
                             <SelectContent>
                                 {invitableRoles.map((roleOption) => (
                                     <SelectItem key={roleOption} value={roleOption}>
-                                        {roleOption.charAt(0).toUpperCase() + roleOption.slice(1)}
+                                        {getRoleLabel(roleOption)}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
