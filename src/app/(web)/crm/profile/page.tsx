@@ -9,7 +9,6 @@ import { authClient } from '@/lib/auth/auth-client';
 import { Button } from '@/lib/components/ui/Button';
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/lib/components/ui/Field';
 import { Input } from '@/lib/components/ui/Input';
-import { Skeleton } from '@/lib/components/ui/Skeleton';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/lib/components/ui/Tooltip';
 import { updateProfileSchema, type UpdateProfileDTO } from '@/lib/schemas/user.schema';
 
@@ -75,23 +74,8 @@ export default function ProfilePage() {
         }
     };
 
-    if (isPending || !user) {
-        return (
-            <div className="flex flex-col gap-6 pt-4 pr-5 pb-5 pl-7">
-                <div className="flex items-center justify-between gap-4">
-                    <Skeleton className="h-8 w-48" />
-                    <div className="flex gap-3">
-                        <Skeleton className="h-11 w-36" />
-                        <Skeleton className="h-11 w-32" />
-                    </div>
-                </div>
-                <div className="mx-auto flex w-full max-w-6xl flex-col gap-7">
-                    <Skeleton className="h-11 w-full" />
-                    <Skeleton className="h-11 w-full" />
-                </div>
-            </div>
-        );
-    }
+    const authReady = !isPending && Boolean(user);
+    const fieldsLocked = isSaving || !authReady;
 
     return (
         <form
@@ -105,7 +89,7 @@ export default function ProfilePage() {
                         type="button"
                         variant="secondary"
                         className="h-11 px-4"
-                        disabled={!hasUnsavedChanges || isSaving}
+                        disabled={!hasUnsavedChanges || fieldsLocked}
                         onClick={() => form.reset()}
                     >
                         Discard Changes
@@ -114,7 +98,7 @@ export default function ProfilePage() {
                         type="submit"
                         variant="primary"
                         className="h-11 px-4"
-                        disabled={!hasUnsavedChanges || isSaving}
+                        disabled={!hasUnsavedChanges || fieldsLocked}
                     >
                         Save Changes
                     </Button>
@@ -136,7 +120,7 @@ export default function ProfilePage() {
                                     id="profile-name"
                                     autoComplete="name"
                                     aria-invalid={fieldState.invalid}
-                                    disabled={isSaving}
+                                    disabled={fieldsLocked}
                                     className="h-11 w-full"
                                 />
                                 <FieldError
@@ -160,7 +144,7 @@ export default function ProfilePage() {
                                     type="email"
                                     autoComplete="email"
                                     aria-invalid={fieldState.invalid}
-                                    disabled={isSaving}
+                                    disabled={fieldsLocked}
                                     className="h-11 w-full"
                                 />
                                 <FieldError
@@ -209,6 +193,7 @@ export default function ProfilePage() {
                             type="button"
                             variant="secondary"
                             className="h-11 px-4"
+                            disabled={!authReady}
                             onClick={handleSignOut}
                         >
                             Log Out
