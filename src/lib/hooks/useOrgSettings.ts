@@ -3,7 +3,10 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { authClient } from '@/lib/auth/auth-client';
-import { transferOwnership as transferOwnershipApi } from '@/lib/api/organizations';
+import {
+    transferOwnership as transferOwnershipApi,
+    updateOrganization as updateOrganizationApi,
+} from '@/lib/api/organizations';
 
 export type UseOrgSettingsResult = {
     renameOrg: (newName: string) => Promise<boolean>;
@@ -51,10 +54,7 @@ export function useOrgSettings(organizationId: string | undefined): UseOrgSettin
         }
         try {
             setIsMutating(true);
-            await authClient.organization.update({
-                data: { logo: logoUrl },
-                organizationId,
-            });
+            await updateOrganizationApi(organizationId, { logo: logoUrl });
             toast.success('Logo updated');
             return true;
         } catch (err) {

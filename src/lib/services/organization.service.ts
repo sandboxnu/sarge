@@ -74,8 +74,6 @@ async function updateOrganization(
     id: string,
     organization: UpdateOrganizationDTO
 ): Promise<Organization> {
-    const { name, logo } = organization;
-
     const existingOrg = await prisma.organization.findUnique({
         where: { id },
     });
@@ -84,15 +82,20 @@ async function updateOrganization(
         throw new NotFoundException('Organization', id);
     }
 
-    const orgWithSameName = await prisma.organization.findFirst({
-        where: {
-            name,
-            id: { not: id },
-        },
-    });
+    const nextName = organization.name ?? existingOrg.name;
+    const nextLogo = organization.logo ?? existingOrg.logo;
 
-    if (orgWithSameName) {
-        throw new ConflictException('Organization', 'with that name');
+    if (organization.name !== undefined && organization.name !== existingOrg.name) {
+        const orgWithSameName = await prisma.organization.findFirst({
+            where: {
+                name: organization.name,
+                id: { not: id },
+            },
+        });
+
+        if (orgWithSameName) {
+            throw new ConflictException('Organization', 'with that name');
+        }
     }
 
     const updated = await prisma.organization.update({
@@ -100,8 +103,8 @@ async function updateOrganization(
             id,
         },
         data: {
-            name,
-            logo,
+            name: nextName,
+            logo: nextLogo,
         },
     });
     return updated;

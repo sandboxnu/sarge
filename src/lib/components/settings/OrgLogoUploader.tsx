@@ -6,14 +6,20 @@ import { Loader2, Upload } from 'lucide-react';
 import { toast } from 'sonner';
 import useFileUpload from '@/lib/hooks/useFileUpload';
 import useFileClient from '@/lib/hooks/useFileClient';
-import { authClient } from '@/lib/auth/auth-client';
 
 type OrgLogoUploaderProps = {
     organization: { id: string; name: string; logo: string | null };
+    updateLogo: (logoUrl: string) => Promise<boolean>;
+    disabled?: boolean;
     onUpdated: () => void;
 };
 
-export default function OrgLogoUploader({ organization, onUpdated }: OrgLogoUploaderProps) {
+export default function OrgLogoUploader({
+    organization,
+    updateLogo,
+    disabled = false,
+    onUpdated,
+}: OrgLogoUploaderProps) {
     const {
         file,
         preview,
@@ -37,12 +43,8 @@ export default function OrgLogoUploader({ organization, onUpdated }: OrgLogoUplo
                     toast.error('Failed to upload logo');
                     return;
                 }
-                await authClient.organization.update({
-                    data: { logo: url },
-                    organizationId: organization.id,
-                });
-                toast.success('Logo updated');
-                onUpdated();
+                const ok = await updateLogo(url);
+                if (ok) onUpdated();
             } catch (err) {
                 toast.error(
                     `Failed to update logo: ${err instanceof Error ? err.message : 'Unknown error'}`
@@ -52,14 +54,14 @@ export default function OrgLogoUploader({ organization, onUpdated }: OrgLogoUplo
             }
         };
         upload();
-    }, [file, organization.id, uploadFile, onUpdated]);
+    }, [file, organization.id, uploadFile, updateLogo, onUpdated]);
 
     return (
         <div>
             <button
                 type="button"
                 onClick={openFilePicker}
-                disabled={isUploading}
+                disabled={isUploading || disabled}
                 className="group bg-sarge-gray-500 text-sarge-gray-0 relative flex size-18 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-lg disabled:cursor-not-allowed"
             >
                 {logoSrc ? (

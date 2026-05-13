@@ -17,8 +17,9 @@ export default function OrganizationTab() {
     const orgId = activeOrganization?.id;
     const isOwner = activeMember?.role === 'owner';
 
-    const { members, refresh } = useOrgMembersAndInvites(orgId);
-    const { renameOrg, isMutating, transferOwnership, deleteOrg } = useOrgSettings(orgId);
+    const { members } = useOrgMembersAndInvites(orgId);
+    const { renameOrg, updateLogo, isMutating, transferOwnership, deleteOrg } =
+        useOrgSettings(orgId);
 
     const [nameDraft, setNameDraft] = useState(activeOrganization?.name ?? '');
     const [transferOpen, setTransferOpen] = useState(false);
@@ -41,7 +42,6 @@ export default function OrganizationTab() {
     };
 
     const redirectToDashboard = () => {
-        refresh();
         router.push('/crm/dashboard');
         router.refresh();
     };
@@ -60,6 +60,8 @@ export default function OrganizationTab() {
                         name: activeOrganization.name,
                         logo: activeOrganization.logo ?? null,
                     }}
+                    updateLogo={updateLogo}
+                    disabled={isMutating}
                     onUpdated={() => router.refresh()}
                 />
 
