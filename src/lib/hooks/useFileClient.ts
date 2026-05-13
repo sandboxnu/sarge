@@ -15,6 +15,7 @@ export default function useFileClient() {
         if (preview) URL.revokeObjectURL(preview);
 
         const nextFile = e.target.files?.[0];
+        e.target.value = '';
         if (!nextFile) return;
 
         const url = URL.createObjectURL(nextFile);
