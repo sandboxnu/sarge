@@ -73,9 +73,7 @@ export default function OrgLogoUploader({
                         className="object-cover"
                     />
                 ) : (
-                    <span className="text-display-xs text-sarge-gray-0 font-semibold">
-                        {orgInitial}
-                    </span>
+                    <span className="text-display-xs text-sarge-gray-0">{orgInitial}</span>
                 )}
                 {!isUploading && (
                     <span

@@ -19,3 +19,7 @@ export type OrgMembersAndInvitations = {
     members: MemberWithUser[];
     invitations: OrgInvitation[];
 };
+
+export type MemberTableRow =
+    | { type: 'member'; data: MemberWithUser }
+    | { type: 'invitation'; data: OrgInvitation };

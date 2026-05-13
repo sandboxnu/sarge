@@ -1,3 +1,5 @@
+import type { OrgInvitation } from '@/lib/types/invitation.types';
+
 export type Member = {
     id: string;
     organizationId: string;
@@ -14,3 +16,7 @@ export type MemberWithUser = Member & {
         image: string | null;
     };
 };
+
+export type MemberTableRow =
+    | { type: 'member'; data: MemberWithUser }
+    | { type: 'invitation'; data: OrgInvitation };

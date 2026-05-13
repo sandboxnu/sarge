@@ -66,7 +66,7 @@ export default function OrganizationTab() {
                 />
 
                 <div className="col-start-2 flex min-w-0 flex-col gap-2">
-                    <label className="text-label-m" htmlFor="org-name-input">
+                    <label className="text-label-s" htmlFor="org-name-input">
                         Organization name
                     </label>
                     <div className="flex min-w-0 items-center gap-3">
@@ -87,28 +87,28 @@ export default function OrganizationTab() {
                         </Button>
                     </div>
                 </div>
-                <p className="text-label-xs text-sarge-gray-600 col-span-2 min-w-0 break-all">
+                <p className="text-label-xs text-sarge-gray-500 col-span-2 min-w-0 break-all">
                     Organization ID: {activeOrganization.id}
                 </p>
             </div>
 
             {isOwner && activeMember && (
                 <div className="border-sarge-gray-200 flex flex-col gap-3 border-t pt-6">
-                    <h3 className="text-display-xs">Danger Zone</h3>
+                    <h3 className="text-label-s">Danger Zone</h3>
 
                     <div className="bg-sarge-gray-0 border-sarge-error-200 flex flex-col rounded-lg border">
                         <div className="flex items-center justify-between gap-4 p-6">
-                            <div className="flex flex-col gap-1">
-                                <h4 className="text-label-m font-semibold">Transfer ownership</h4>
-                                <p className="text-body-s text-sarge-gray-600">
-                                    Transfer ownership of this organization to another member.
+                            <div className="flex flex-col gap-2">
+                                <h4 className="text-label-s">Transfer ownership</h4>
+                                <p className="text-label-s text-sarge-gray-500">
+                                    Transfer ownership of this organization to another user.
                                 </p>
                             </div>
                             <Button
                                 type="button"
                                 variant="secondary"
                                 onClick={() => setTransferOpen(true)}
-                                className="h-9 shrink-0 px-4"
+                                className="h-11 shrink-0 px-4"
                                 disabled={eligibleTransferMembers.length === 0}
                             >
                                 Transfer ownership
@@ -118,18 +118,17 @@ export default function OrganizationTab() {
                         <div className="border-sarge-gray-200 border-t" />
 
                         <div className="flex items-center justify-between gap-4 p-6">
-                            <div className="flex flex-col gap-1">
-                                <h4 className="text-label-m font-semibold">Delete Organization</h4>
-                                <p className="text-body-s text-sarge-gray-600">
-                                    Permanently delete this organization and all of its data. This
-                                    cannot be undone.
+                            <div className="flex flex-col gap-2">
+                                <h4 className="text-label-s">Delete this organization</h4>
+                                <p className="text-label-s text-sarge-gray-500">
+                                    This action cannot be undone.
                                 </p>
                             </div>
                             <Button
                                 type="button"
                                 variant="destructive"
                                 onClick={() => setDeleteOpen(true)}
-                                className="h-9 shrink-0 px-4"
+                                className="h-11 shrink-0 px-4"
                             >
                                 Delete Organization
                             </Button>

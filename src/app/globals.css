@@ -196,6 +196,7 @@
 }
 
 @layer components {
+
     /* Display Styles */
     .text-display-l {
         @apply text-foreground tracking-design font-sans text-5xl leading-16 font-bold;
@@ -244,7 +245,7 @@
     }
 
     .text-label-s {
-        @apply text-foreground tracking-design font-sans text-sm leading-4.5 font-medium;
+        @apply text-foreground tracking-design font-sans text-sm leading-5 font-medium;
     }
 
     .text-label-xs {
@@ -259,7 +260,7 @@
     padding-left: 0;
 }
 
-[data-blocknote-no-side-menu] .bn-block-group > .bn-block-outer {
+[data-blocknote-no-side-menu] .bn-block-group>.bn-block-outer {
     margin-left: 0;
 }
 
@@ -327,6 +328,7 @@
 
 /* shake used for char limit feedback */
 @keyframes shake {
+
     10%,
     90% {
         transform: translate3d(-1px, 0, 0);
