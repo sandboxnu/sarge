@@ -12,6 +12,7 @@ import {
 } from '@/lib/utils/errors.utils';
 import { auth } from '@/lib/auth/auth';
 import { generateSlugFromName } from '@/lib/utils/auth.utils';
+import { assertOwner } from '@/lib/utils/permissions.utils';
 
 async function createOrganization(
     createOrgRequest: CreateOrganizationDTO,
@@ -123,11 +124,49 @@ async function deleteOrganization(id: string): Promise<Organization> {
     return deleted;
 }
 
+async function transferOwnership(
+    organizationId: string,
+    targetMemberId: string,
+    currentMemberId: string,
+    headers: Headers
+): Promise<{ newOwnerMemberId: string; demotedMemberId: string }> {
+    await assertOwner(headers);
+
+    if (targetMemberId === currentMemberId) {
+        throw new ConflictException('Member', 'cannot transfer ownership to yourself');
+    }
+
+    const target = await prisma.member.findFirst({
+        where: { id: targetMemberId, organizationId },
+    });
+
+    if (!target) {
+        throw new NotFoundException('Member', targetMemberId);
+    }
+
+    // we need to promote before demoting to avoid zero owners 
+    await auth.api.updateMemberRole({
+        body: { role: 'owner', memberId: targetMemberId, organizationId },
+        headers,
+    });
+
+    await auth.api.updateMemberRole({
+        body: { role: 'admin', memberId: currentMemberId, organizationId },
+        headers,
+    });
+
+    return {
+        newOwnerMemberId: targetMemberId,
+        demotedMemberId: currentMemberId,
+    };
+}
+
 const OrganizationService = {
     createOrganization,
     getOrganization,
     updateOrganization,
     deleteOrganization,
+    transferOwnership,
 };
 
 export default OrganizationService;
