@@ -1,0 +1,36 @@
+services:
+    web:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - '127.0.0.1:3000:3000'
+        environment:
+            DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
+        depends_on:
+            - db
+            - ws
+        restart: unless-stopped
+
+    db:
+        image: postgres:17
+        restart: unless-stopped
+        environment:
+            POSTGRES_USER: ${DB_USER}
+            POSTGRES_PASSWORD: ${DB_PASSWORD}
+            POSTGRES_DB: ${DB_NAME}
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+
+    ws:
+        build:
+            context: ./src/ws/
+            dockerfile: Dockerfile
+        env_file:
+            - .env
+        ports:
+            - '127.0.0.1:8080:8080'
+        restart: unless-stopped
+
+volumes:
+    postgres_data:
