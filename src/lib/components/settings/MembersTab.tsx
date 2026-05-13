@@ -15,7 +15,11 @@ import { useAuth } from '@/lib/auth/auth-context';
 import { useDebounce } from '@/lib/hooks/useDebounce';
 import { useOrgMembersAndInvites } from '@/lib/hooks/useOrgMembersAndInvites';
 import { canInviteMembers } from '@/lib/utils/roles.utils';
-import { getInvitationStatus, getMemberRowStatusLabel, getMemberRowStatusVariant } from '@/lib/utils/invitation.utils';
+import {
+    getInvitationStatus,
+    getMemberRowStatusLabel,
+    getMemberRowStatusVariant,
+} from '@/lib/utils/invitation.utils';
 import { formatShortMonthDayYear } from '@/lib/utils/date.utils';
 import type { MemberTableRow } from '@/lib/types/invitation.types';
 
@@ -35,10 +39,10 @@ export default function MembersTab() {
     const filteredMembers = !searchTerm
         ? members
         : members.filter(
-            (m) =>
-                m.user.name?.toLowerCase().includes(searchTerm) ||
-                m.user.email.toLowerCase().includes(searchTerm)
-        );
+              (m) =>
+                  m.user.name?.toLowerCase().includes(searchTerm) ||
+                  m.user.email.toLowerCase().includes(searchTerm)
+          );
 
     const filteredInvitations = !searchTerm
         ? invitations
@@ -174,11 +178,7 @@ export default function MembersTab() {
                 <div className="text-body-m text-sarge-gray-600 py-8 text-center">Loading...</div>
             ) : (
                 <div className="border-sarge-gray-200 overflow-hidden rounded-lg border">
-                    <DataTable
-                        columns={columns}
-                        data={rows}
-                        headerClassName="bg-sarge-gray-50"
-                    />
+                    <DataTable columns={columns} data={rows} headerClassName="bg-sarge-gray-50" />
                 </div>
             )}
 
