@@ -94,8 +94,10 @@ export default function ActiveMemberRow({
                         </div>
                     )}
                     <div className="flex flex-col">
-                        <span className="text-label-m">{member.user.name}</span>
-                        <span className="text-body-s text-sarge-gray-600">{member.user.email}</span>
+                        <span className="text-label-s">{member.user.name}</span>
+                        <span className="text-label-xs text-sarge-gray-500">
+                            {member.user.email}
+                        </span>
                     </div>
                 </div>
             </td>
