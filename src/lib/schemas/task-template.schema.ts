@@ -23,8 +23,8 @@ export const TaskTemplateSchema = z.object({
     authorId: z.string(),
     estimatedTime: z.number().int().default(0),
     timeout: z.number().int().default(0),
-    createdAt: z.coerce.date(),
-    updatedAt: z.coerce.date(),
+    createdAt: z.date(),
+    updatedAt: z.date(),
 });
 
 export const TaskTemplateEditorSchema = TaskTemplateSchema.extend({

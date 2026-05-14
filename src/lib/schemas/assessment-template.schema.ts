@@ -10,8 +10,8 @@ export const AssessmentTemplateSchema = z.object({
     orgId: z.string(),
     authorId: z.string(),
     notes: blockNoteContentSchema.default([]),
-    createdAt: z.coerce.date(),
-    updatedAt: z.coerce.date(),
+    createdAt: z.date(),
+    updatedAt: z.date(),
 });
 
 export const CreateAssessmentTemplateSchema = AssessmentTemplateSchema.omit({
