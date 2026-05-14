@@ -132,7 +132,7 @@ export function CandidateTable({ candidates }: CandidateTableProps) {
             },
             {
                 id: 'reviewers',
-                header: () => <HeaderLabel>REVIEWER</HeaderLabel>,
+                header: () => <HeaderLabel>REVIEWER(S)</HeaderLabel>,
                 cell: ({ row }) => {
                     const reviewers = row.original.assessment?.reviewers ?? [];
                     if (reviewers.length === 0) {
