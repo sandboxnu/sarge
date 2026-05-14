@@ -23,6 +23,8 @@ export const TaskTemplateSchema = z.object({
     authorId: z.string(),
     estimatedTime: z.number().int().default(0),
     timeout: z.number().int().default(0),
+    createdAt: z.coerce.date(),
+    updatedAt: z.coerce.date(),
 });
 
 export const TaskTemplateEditorSchema = TaskTemplateSchema.extend({
@@ -66,6 +68,8 @@ export const taskTemplateListItemSchema = taskTemplateWithTagsSchema.extend({
 export const taskTemplateEditorSaveSchema = TaskTemplateSchema.omit({
     orgId: true,
     authorId: true,
+    createdAt: true,
+    updatedAt: true,
 }).extend({
     description: blockNoteContentSchema,
     tags: z.array(z.string()),

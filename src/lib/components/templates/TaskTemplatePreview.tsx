@@ -139,7 +139,7 @@ export function TaskTemplatePreview({
                 </section>
                 <section className="mb-2">
                     <p className="text-body-s text-muted-foreground">
-                        Authored by{' '}
+                        Created by{' '}
                         <span className="text-label-xs text-muted-foreground font-bold">
                             {taskTemplatePreview.author?.name ?? '-'}
                         </span>
