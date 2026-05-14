@@ -24,14 +24,14 @@ export async function createTask(payload: CreateTaskDTO): Promise<TaskDTO> {
 /**
  * PUT /api/tasks/:taskId
  */
-export async function updateTask(taskId: string, candidateCode: string): Promise<TaskDTO> {
+export async function updateTask(taskId: string, submission: string): Promise<TaskDTO> {
     const res = await fetch(`/api/tasks/${taskId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            candidateCode,
+            submission,
         }),
     });
 

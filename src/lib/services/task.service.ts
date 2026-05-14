@@ -55,7 +55,7 @@ async function createTask(task: CreateTaskDTO, orgId: string): Promise<TaskDTO> 
         data: {
             assessmentId: task.assessmentId,
             taskTemplateId: task.taskTemplateId,
-            candidateCode: task.candidateCode,
+            submission: task.submission,
         },
     });
 

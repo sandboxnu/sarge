@@ -26,7 +26,7 @@ function toTaskTemplateListItem(template: TaskTemplateListQueryResult): TaskTemp
         ...rest,
         author,
         assessmentTemplatesCount: _count.assessments,
-    } as TaskTemplateListItemDTO;
+    } as unknown as TaskTemplateListItemDTO;
 }
 
 async function getTaskTemplate(id: string, orgId: string): Promise<TaskTemplateEditorDTO> {
@@ -47,7 +47,7 @@ async function getTaskTemplate(id: string, orgId: string): Promise<TaskTemplateE
 
     // TODO typecasting as TaskTemplateEditorDTO due to JsonValue[] in prisma
     // not including input and output fields
-    return foundTaskTemplate as TaskTemplateEditorDTO;
+    return foundTaskTemplate as unknown as TaskTemplateEditorDTO;
 }
 
 async function getAllTaskTemplates(
@@ -304,7 +304,7 @@ async function editTaskTemplate(
         },
     });
 
-    return updated as TaskTemplateEditorDTO;
+    return updated as unknown as TaskTemplateEditorDTO;
 }
 
 async function getTaskTemplateLanguage(

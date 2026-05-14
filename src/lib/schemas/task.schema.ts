@@ -4,7 +4,7 @@ export const TaskSchema = z.object({
     id: z.string(),
     assessmentId: z.string(),
     taskTemplateId: z.string(),
-    candidateCode: z.string(),
+    submission: z.string(),
 });
 
 export const CreateTaskSchema = TaskSchema.omit({ id: true });

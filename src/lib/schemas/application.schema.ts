@@ -47,8 +47,6 @@ export const ApplicationSchema = z.object({
     positionId: z.cuid(),
     assessmentStatus: z.enum(AssessmentStatus),
     decisionStatus: z.enum(DecisionStatus),
-    graderId: z.cuid().nullable(),
-    decidedAt: z.date().nullable(),
     createdAt: z.date(),
     updatedAt: z.date(),
 });
