@@ -142,8 +142,8 @@ export function TaskTemplatePreview({
                         Created on {new Date(taskTemplatePreview.createdAt).toDateString()} by{' '}
                         <span className="text-label-xs text-muted-foreground font-bold">
                             {taskTemplatePreview.author?.name ?? '-'}
-                        </span>. Last updated on{' '}
-                        {new Date(taskTemplatePreview.updatedAt).toDateString()}.
+                        </span>
+                        . Last updated on {new Date(taskTemplatePreview.updatedAt).toDateString()}.
                     </p>
                     <Link
                         href="#"
