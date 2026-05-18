@@ -2,7 +2,7 @@ import type { Member, MemberWithUser } from '@/lib/types/member.types';
 import { prisma } from '@/lib/prisma';
 import { ConflictException, NotFoundException } from '@/lib/utils/errors.utils';
 import { auth } from '@/lib/auth/auth';
-import { assertAdminOrOwner, assertPermission } from '@/lib/utils/permissions.utils';
+import { assertPermission } from '@/lib/utils/permissions.utils';
 
 async function updateMemberRole(
     memberIdToUpdate: string,
@@ -52,12 +52,7 @@ async function updateMemberRole(
     };
 }
 
-async function listMembersWithUsers(
-    organizationId: string,
-    headers: Headers
-): Promise<MemberWithUser[]> {
-    await assertAdminOrOwner(headers);
-
+async function listMembersWithUsers(organizationId: string): Promise<MemberWithUser[]> {
     const members = await prisma.member.findMany({
         where: { organizationId },
         include: {

@@ -12,7 +12,6 @@ import {
 } from '@/lib/utils/errors.utils';
 import { auth } from '@/lib/auth/auth';
 import { generateSlugFromName } from '@/lib/utils/auth.utils';
-import { assertOwner } from '@/lib/utils/permissions.utils';
 
 async function createOrganization(
     createOrgRequest: CreateOrganizationDTO,
@@ -133,8 +132,6 @@ async function transferOwnership(
     currentMemberId: string,
     headers: Headers
 ): Promise<{ newOwnerMemberId: string; demotedMemberId: string }> {
-    await assertOwner(headers);
-
     if (targetMemberId === currentMemberId) {
         throw new ConflictException('Member', 'cannot transfer ownership to yourself');
     }

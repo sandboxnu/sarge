@@ -1,8 +1,6 @@
 'use client';
 
-import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
-import { toast } from 'sonner';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -13,9 +11,9 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/lib/components/ui/Dropdown';
-import { authClient } from '@/lib/auth/auth-client';
-import { getAssignableRoles, getRoleLabel, type OrgRole } from '@/lib/utils/roles.utils';
+import useMemberRoleCell from '@/lib/hooks/useMemberRoleCell';
 import type { MemberWithUser } from '@/lib/types/member.types';
+import { getAssignableRoles, getRoleLabel } from '@/lib/utils/roles.utils';
 
 type MemberRoleCellProps = {
     member: MemberWithUser;
@@ -24,46 +22,8 @@ type MemberRoleCellProps = {
 };
 
 export default function MemberRoleCell({ member, organizationId, onChanged }: MemberRoleCellProps) {
-    const [updating, setUpdating] = useState(false);
-    const [currentRole, setCurrentRole] = useState(member.role);
-    const isOwner = currentRole === 'owner';
-
-    const handleRoleChange = async (newRole: string) => {
-        if (newRole === currentRole) return;
-        setUpdating(true);
-        const previousRole = currentRole;
-        setCurrentRole(newRole);
-        try {
-            await authClient.organization.updateMemberRole({
-                memberId: member.id,
-                role: newRole as OrgRole,
-                organizationId,
-            });
-            toast.success(`${member.user.name}'s role updated to ${getRoleLabel(newRole)}`);
-            onChanged();
-        } catch {
-            setCurrentRole(previousRole);
-            toast.error('Failed to update role');
-        } finally {
-            setUpdating(false);
-        }
-    };
-
-    const handleRemoveMember = async () => {
-        setUpdating(true);
-        try {
-            await authClient.organization.removeMember({
-                memberIdOrEmail: member.id,
-                organizationId,
-            });
-            toast.success(`${member.user.name ?? member.user.email} removed from organization`);
-            onChanged();
-        } catch {
-            toast.error('Failed to remove member');
-        } finally {
-            setUpdating(false);
-        }
-    };
+    const { updating, currentRole, isOwner, handleRoleChange, handleRemoveMember } =
+        useMemberRoleCell({ member, organizationId, onChanged });
 
     if (isOwner) {
         return (

@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
 import { X } from 'lucide-react';
 import { Dialog, DialogContent, DialogTitle } from '@/lib/components/ui/Modal';
 import { Button } from '@/lib/components/ui/Button';
 import { Combobox } from '@/lib/components/ui/Combobox';
 import { Field, FieldLabel } from '@/lib/components/ui/Field';
+import useTransferOwnershipModal from '@/lib/hooks/useTransferOwnershipModal';
 import type { MemberWithUser } from '@/lib/types/member.types';
 
 type TransferOwnershipModalProps = {
@@ -23,38 +23,14 @@ export default function TransferOwnershipModal({
     onConfirm,
     onSuccess,
 }: TransferOwnershipModalProps) {
-    const [selectedMemberId, setSelectedMemberId] = useState<string>('');
-    const [submitting, setSubmitting] = useState(false);
-
-    const options = eligibleMembers.map((m) => ({
-        value: m.id,
-        label: m.user.name || m.user.email,
-    }));
-
-    const resetState = () => {
-        setSelectedMemberId('');
-    };
-
-    const handleOpenChange = (nextOpen: boolean) => {
-        if (!nextOpen) {
-            resetState();
-        }
-        onOpenChange(nextOpen);
-    };
-
-    const handleTransfer = async () => {
-        if (!selectedMemberId || submitting) return;
-        setSubmitting(true);
-        try {
-            const ok = await onConfirm(selectedMemberId);
-            if (ok) {
-                onSuccess();
-                onOpenChange(false);
-            }
-        } finally {
-            setSubmitting(false);
-        }
-    };
+    const {
+        selectedMemberId,
+        setSelectedMemberId,
+        submitting,
+        options,
+        handleOpenChange,
+        handleTransfer,
+    } = useTransferOwnershipModal({ eligibleMembers, onOpenChange, onConfirm, onSuccess });
 
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>

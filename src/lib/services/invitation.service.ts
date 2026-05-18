@@ -1,18 +1,14 @@
 import { prisma } from '@/lib/prisma';
 import type { OrgInvitation } from '@/lib/types/invitation.types';
 import { NotFoundException } from '@/lib/utils/errors.utils';
-import { assertAdminOrOwner, assertPermission } from '@/lib/utils/permissions.utils';
 
 /**
  * Pending invitations for the org members table better auth omits createdAt and expiresAt
  * (so thats why we're not using the better auth list api)
  */
 async function listPendingInvitationsForOrganization(
-    organizationId: string,
-    headers: Headers
+    organizationId: string
 ): Promise<OrgInvitation[]> {
-    await assertAdminOrOwner(headers);
-
     const invitations = await prisma.invitation.findMany({
         where: {
             organizationId,
@@ -36,15 +32,8 @@ async function listPendingInvitationsForOrganization(
 async function updatePendingInvitationRole(
     organizationId: string,
     invitationId: string,
-    role: string,
-    headers: Headers
+    role: string
 ): Promise<OrgInvitation> {
-    await assertPermission(
-        headers,
-        { member: ['update'] },
-        'You are not an admin of this organization'
-    );
-
     const existing = await prisma.invitation.findFirst({
         where: {
             id: invitationId,
@@ -76,15 +65,8 @@ async function updatePendingInvitationRole(
 
 async function deletePendingInvitation(
     organizationId: string,
-    invitationId: string,
-    headers: Headers
+    invitationId: string
 ): Promise<void> {
-    await assertPermission(
-        headers,
-        { member: ['update'] },
-        'You are not an admin of this organization'
-    );
-
     const existing = await prisma.invitation.findFirst({
         where: {
             id: invitationId,

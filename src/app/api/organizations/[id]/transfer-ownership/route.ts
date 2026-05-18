@@ -4,6 +4,7 @@ import { auth } from '@/lib/auth/auth';
 import { prisma } from '@/lib/prisma';
 import OrganizationService from '@/lib/services/organization.service';
 import { ForbiddenException, handleError } from '@/lib/utils/errors.utils';
+import { assertOwner } from '@/lib/utils/permissions.utils';
 
 const transferOwnershipSchema = z.object({
     targetMemberId: z.string().min(1),
@@ -11,6 +12,8 @@ const transferOwnershipSchema = z.object({
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
+        await assertOwner(request.headers);
+
         const { id: organizationId } = await params;
 
         const session = await auth.api.getSession({ headers: request.headers });

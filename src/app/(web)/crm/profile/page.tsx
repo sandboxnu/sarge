@@ -1,81 +1,15 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Controller, useForm } from 'react-hook-form';
-import { toast } from 'sonner';
-import { useAuth } from '@/lib/auth/auth-context';
-import { authClient } from '@/lib/auth/auth-client';
+import { Controller } from 'react-hook-form';
 import { Button } from '@/lib/components/ui/Button';
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/lib/components/ui/Field';
 import { Input } from '@/lib/components/ui/Input';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/lib/components/ui/Tooltip';
-import { updateProfileSchema, type UpdateProfileDTO } from '@/lib/schemas/user.schema';
+import useProfilePage from '@/lib/hooks/useProfilePage';
 
 export default function ProfilePage() {
-    const router = useRouter();
-    const { user, isPending } = useAuth();
-
-    const form = useForm<UpdateProfileDTO>({
-        resolver: zodResolver(updateProfileSchema),
-        defaultValues: { name: '', email: '' },
-        values: user ? { name: user.name, email: user.email } : undefined,
-    });
-
-    const {
-        isDirty: hasUnsavedChanges,
-        isSubmitting: isSaving,
-        dirtyFields: changedFields,
-    } = form.formState;
-
-    const handleSaveProfile = async (values: UpdateProfileDTO) => {
-        try {
-            if (changedFields.name) {
-                const nameResult = await authClient.updateUser({ name: values.name });
-                if (nameResult.error) {
-                    toast.error(
-                        nameResult.error.message ?? 'Failed to update name. Please try again.'
-                    );
-                    return;
-                }
-            }
-
-            if (changedFields.email) {
-                const emailResult = await authClient.changeEmail({
-                    newEmail: values.email,
-                    callbackURL: '/crm/profile',
-                });
-                if (emailResult.error) {
-                    toast.error(
-                        emailResult.error.message ?? 'Failed to update email. Please try again.'
-                    );
-                    return;
-                }
-            }
-
-            toast.success('Profile updated');
-            router.refresh();
-        } catch (err) {
-            toast.error(
-                `Failed to save profile: ${err instanceof Error ? err.message : 'Unknown error'}`
-            );
-        }
-    };
-
-    const handleSignOut = async () => {
-        try {
-            await authClient.signOut();
-            router.push('/signin');
-            router.refresh();
-        } catch (err) {
-            toast.error(
-                `Failed to sign out: ${err instanceof Error ? err.message : 'Unknown error'}`
-            );
-        }
-    };
-
-    const authReady = !isPending && Boolean(user);
-    const fieldsLocked = isSaving || !authReady;
+    const { form, hasUnsavedChanges, fieldsLocked, authReady, handleSaveProfile, handleSignOut } =
+        useProfilePage();
 
     return (
         <form
@@ -169,6 +103,9 @@ export default function ProfilePage() {
                                 className="h-11 w-full"
                             />
                         </Field>
+                        {/* TODO(brad): wire up the password-change flow. Needs:
+                            1. Current-password authentication using via better-auth's `changePassword` API.
+                            2. we need to also implement the email-change verification flow when that ships*/}
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <span className="inline-flex shrink-0 sm:self-end">

@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
 import { X } from 'lucide-react';
 import { Dialog, DialogContent, DialogTitle } from '@/lib/components/ui/Modal';
 import { Button } from '@/lib/components/ui/Button';
 import { Input } from '@/lib/components/ui/Input';
 import { Field, FieldLabel } from '@/lib/components/ui/Field';
+import useDeleteOrganizationModal from '@/lib/hooks/useDeleteOrganizationModal';
 
 type DeleteOrganizationModalProps = {
     open: boolean;
@@ -22,35 +22,13 @@ export default function DeleteOrganizationModal({
     onConfirm,
     onSuccess,
 }: DeleteOrganizationModalProps) {
-    const [typedValue, setTypedValue] = useState('');
-    const [submitting, setSubmitting] = useState(false);
-
-    const confirmMatch = typedValue === organization.name;
-
-    const resetState = () => {
-        setTypedValue('');
-    };
-
-    const handleOpenChange = (nextOpen: boolean) => {
-        if (!nextOpen) {
-            resetState();
-        }
-        onOpenChange(nextOpen);
-    };
-
-    const handleDelete = async () => {
-        if (!confirmMatch || submitting) return;
-        setSubmitting(true);
-        try {
-            const ok = await onConfirm();
-            if (ok) {
-                onSuccess();
-                onOpenChange(false);
-            }
-        } finally {
-            setSubmitting(false);
-        }
-    };
+    const { typedValue, setTypedValue, submitting, confirmMatch, handleOpenChange, handleDelete } =
+        useDeleteOrganizationModal({
+            organizationName: organization.name,
+            onOpenChange,
+            onConfirm,
+            onSuccess,
+        });
 
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
