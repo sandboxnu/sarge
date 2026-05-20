@@ -49,3 +49,6 @@ next-env.d.ts
 
 # ws
 /src/ws/node_modules
+
+# release
+/dist
