@@ -73,8 +73,6 @@ async function updateOrganization(
     id: string,
     organization: UpdateOrganizationDTO
 ): Promise<Organization> {
-    const { name, logo } = organization;
-
     const existingOrg = await prisma.organization.findUnique({
         where: { id },
     });
@@ -83,15 +81,20 @@ async function updateOrganization(
         throw new NotFoundException('Organization', id);
     }
 
-    const orgWithSameName = await prisma.organization.findFirst({
-        where: {
-            name,
-            id: { not: id },
-        },
-    });
+    const nextName = organization.name ?? existingOrg.name;
+    const nextLogo = organization.logo ?? existingOrg.logo;
 
-    if (orgWithSameName) {
-        throw new ConflictException('Organization', 'with that name');
+    if (organization.name !== undefined && organization.name !== existingOrg.name) {
+        const orgWithSameName = await prisma.organization.findFirst({
+            where: {
+                name: organization.name,
+                id: { not: id },
+            },
+        });
+
+        if (orgWithSameName) {
+            throw new ConflictException('Organization', 'with that name');
+        }
     }
 
     const updated = await prisma.organization.update({
@@ -99,8 +102,8 @@ async function updateOrganization(
             id,
         },
         data: {
-            name,
-            logo,
+            name: nextName,
+            logo: nextLogo,
         },
     });
     return updated;
@@ -123,11 +126,47 @@ async function deleteOrganization(id: string): Promise<Organization> {
     return deleted;
 }
 
+async function transferOwnership(
+    organizationId: string,
+    targetMemberId: string,
+    currentMemberId: string,
+    headers: Headers
+): Promise<{ newOwnerMemberId: string; demotedMemberId: string }> {
+    if (targetMemberId === currentMemberId) {
+        throw new ConflictException('Member', 'cannot transfer ownership to yourself');
+    }
+
+    const target = await prisma.member.findFirst({
+        where: { id: targetMemberId, organizationId },
+    });
+
+    if (!target) {
+        throw new NotFoundException('Member', targetMemberId);
+    }
+
+    // we need to promote before demoting to avoid zero owners
+    await auth.api.updateMemberRole({
+        body: { role: 'owner', memberId: targetMemberId, organizationId },
+        headers,
+    });
+
+    await auth.api.updateMemberRole({
+        body: { role: 'admin', memberId: currentMemberId, organizationId },
+        headers,
+    });
+
+    return {
+        newOwnerMemberId: targetMemberId,
+        demotedMemberId: currentMemberId,
+    };
+}
+
 const OrganizationService = {
     createOrganization,
     getOrganization,
     updateOrganization,
     deleteOrganization,
+    transferOwnership,
 };
 
 export default OrganizationService;

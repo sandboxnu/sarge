@@ -244,7 +244,7 @@
     }
 
     .text-label-s {
-        @apply text-foreground tracking-design font-sans text-sm leading-4.5 font-medium;
+        @apply text-foreground tracking-design font-sans text-sm leading-5 font-medium;
     }
 
     .text-label-xs {

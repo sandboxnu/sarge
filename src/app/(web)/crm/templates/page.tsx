@@ -14,7 +14,7 @@ import {
     DropdownMenuTrigger,
 } from '@/lib/components/ui/Dropdown';
 import { Tabs, TabsContent, TabsList, UnderlineTabsTrigger } from '@/lib/components/ui/Tabs';
-import { ArrowDownUp, File, Plus, SlidersHorizontal } from 'lucide-react';
+import { ArrowDownUp, File, Plus } from 'lucide-react';
 import { useTaskTemplateList, type TaskTemplateSortBy } from '@/lib/hooks/useTaskTemplateList';
 import TaskTemplateCard from '@/lib/components/templates/TaskTemplateCard';
 import { TaskTemplatePreview } from '@/lib/components/templates/TaskTemplatePreview';
@@ -244,9 +244,6 @@ export default function TemplatesPage() {
                                     </DropdownMenuRadioGroup>
                                 </DropdownMenuContent>
                             </DropdownMenu>
-                            <Button variant="icon" className="px-3 py-2">
-                                <SlidersHorizontal className="size-5" />
-                            </Button>
                         </div>
                     </div>
                     <div className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-scroll px-3 py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -383,9 +380,6 @@ export default function TemplatesPage() {
                                     </DropdownMenuRadioGroup>
                                 </DropdownMenuContent>
                             </DropdownMenu>
-                            <Button variant="icon" className="px-3 py-2">
-                                <SlidersHorizontal className="size-5" />
-                            </Button>
                         </div>
                     </div>
                     <div className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-scroll px-3 py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">

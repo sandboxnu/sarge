@@ -39,8 +39,12 @@ export const UserSchema = z.object({
     email: createUserSchema.shape.email,
 });
 
+export const updateProfileSchema = UserSchema.pick({ name: true, email: true });
+
 export type UserDTO = z.infer<typeof UserSchema>;
 
 export type CreateUserDTO = z.infer<typeof createUserSchema>;
 
 export type LoginUserDTO = z.infer<typeof loginUserSchema>;
+
+export type UpdateProfileDTO = z.infer<typeof updateProfileSchema>;

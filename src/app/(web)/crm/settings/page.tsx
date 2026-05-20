@@ -1,61 +1,36 @@
 'use client';
 
-import { useState } from 'react';
-import { UserPlus } from 'lucide-react';
+import { Settings } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, UnderlineTabsTrigger } from '@/lib/components/ui/Tabs';
-import { Button } from '@/lib/components/ui/Button';
-import InviteUsersModal from '@/lib/components/modal/InviteUsersModal';
-import { useAuth } from '@/lib/auth/auth-context';
-import { canInviteMembers, type OrgRole } from '@/lib/utils/roles.utils';
+import MembersTab from '@/lib/components/settings/MembersTab';
+import OrganizationTab from '@/lib/components/settings/OrganizationTab';
 
 export default function OrgSettingsPage() {
-    const { activeMember, activeOrganization, memberPending } = useAuth();
-    const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
-
-    const currentUserRole = (activeMember?.role ?? 'member') as OrgRole;
-    const showInviteButton = !memberPending && canInviteMembers(currentUserRole);
-
     return (
         <div className="flex flex-col gap-3 pt-4 pr-5 pb-5 pl-7">
-            <h1 className="text-display-xs">Organization Settings</h1>
+            <div className="flex items-center gap-2">
+                <Settings className="size-5 shrink-0" aria-hidden />
+                <h1 className="text-display-xs">Settings</h1>
+            </div>
 
             <Tabs defaultValue="members" className="flex flex-col gap-0">
                 <TabsList className="border-sarge-gray-200 h-auto w-full justify-start gap-5 rounded-none border-b bg-transparent p-0">
                     <UnderlineTabsTrigger value="members">Members</UnderlineTabsTrigger>
-                    <UnderlineTabsTrigger value="candidates">Candidates</UnderlineTabsTrigger>
+                    <UnderlineTabsTrigger value="organization">Organization</UnderlineTabsTrigger>
                 </TabsList>
 
                 <TabsContent value="members" className="pt-5">
-                    <div className="flex flex-col gap-5">
-                        {showInviteButton && (
-                            <div className="flex justify-end">
-                                <Button
-                                    type="button"
-                                    variant="primary"
-                                    onClick={() => setIsInviteModalOpen(true)}
-                                    className="h-9 px-4"
-                                >
-                                    <UserPlus className="size-4" />
-                                    Invite Members
-                                </Button>
-                            </div>
-                        )}
+                    <div className="mx-auto w-full max-w-6xl">
+                        <MembersTab />
                     </div>
                 </TabsContent>
 
-                <TabsContent value="candidates" className="pt-5">
-                    <div />
+                <TabsContent value="organization" className="pt-5">
+                    <div className="mx-auto w-full max-w-6xl">
+                        <OrganizationTab />
+                    </div>
                 </TabsContent>
             </Tabs>
-
-            {activeOrganization && (
-                <InviteUsersModal
-                    open={isInviteModalOpen}
-                    onOpenChange={setIsInviteModalOpen}
-                    organization={activeOrganization}
-                    currentUserRole={currentUserRole}
-                />
-            )}
         </div>
     );
 }

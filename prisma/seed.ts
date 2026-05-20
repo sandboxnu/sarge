@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth/auth';
 import { organizationsData } from './seed-data/organizations.seed';
 import { usersData } from './seed-data/users.seed';
+import { invitationsSeedData } from './seed-data/invitations.seed';
 import { positionsData } from './seed-data/positions.seed';
 import { candidatesData } from './seed-data/candidates.seed';
 import { taskTemplatesData } from './seed-data/task-template.seed';
@@ -127,6 +128,26 @@ async function seedOrganizationMemberships() {
     }
 }
 
+async function seedInvitations() {
+    console.log('Seeding invitations...');
+
+    for (const row of invitationsSeedData) {
+        await prisma.invitation.upsert({
+            where: { id: row.id },
+            update: {
+                email: row.email,
+                role: row.role,
+                status: row.status,
+                expiresAt: row.expiresAt,
+                createdAt: row.createdAt,
+                inviterId: row.inviterId,
+            },
+            create: row,
+        });
+        console.log(`  Upserted invitation for ${row.email}`);
+    }
+}
+
 /**
  * Seed Positions
  */
@@ -189,6 +210,11 @@ async function seedApplications() {
 
         console.log(`  Created application for ${candidateData.name}`);
     }
+
+    await prisma.application.updateMany({
+        data: { graderId: 'user_prof_fontenot_001' },
+    });
+    console.log('  Assigned default grader (Prof Fontenot) on applications');
 }
 
 /**
@@ -442,6 +468,7 @@ async function main() {
     await seedUsers();
     await seedOrganizations();
     await seedOrganizationMemberships();
+    await seedInvitations();
     await seedPositions();
     await seedCandidates();
     await seedApplications();

@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { authClient } from '@/lib/auth/auth-client';
 import { useAuthSession } from '@/lib/auth/auth-context';
 import { Button } from '@/lib/components/ui/Button';
+import { getRoleLabel } from '@/lib/utils/roles.utils';
 import { Mail, CheckCircle, XCircle, Clock, Loader2 } from 'lucide-react';
 
 type InvitationData = {
@@ -183,7 +184,7 @@ export default function AcceptInvitation() {
                     label="Organization"
                     value={invitation.organizationName ?? invitation.organizationId}
                 />
-                <DetailRow label="Role" value={formatRole(invitation.role)} />
+                <DetailRow label="Role" value={getRoleLabel(invitation.role)} />
                 <DetailRow label="Email" value={invitation.email} />
             </div>
 
@@ -257,8 +258,4 @@ function DetailRow({ label, value }: { label: string; value: string }) {
             <span className="text-body-s text-sarge-gray-800">{value}</span>
         </div>
     );
-}
-
-function formatRole(role: string): string {
-    return role.charAt(0).toUpperCase() + role.slice(1);
 }

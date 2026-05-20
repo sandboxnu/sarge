@@ -37,3 +37,17 @@ export async function assertRecruiterOrAbove(
 ): Promise<void> {
     await assertPermission(headers, { assessment: ['assign'] }, message);
 }
+
+export async function assertAdminOrOwner(
+    headers: Headers,
+    message = 'Admin or owner role required'
+): Promise<void> {
+    await assertPermission(headers, { organization: ['update'] }, message);
+}
+
+export async function assertOwner(
+    headers: Headers,
+    message = 'Owner role required'
+): Promise<void> {
+    await assertPermission(headers, { organization: ['delete'] }, message);
+}

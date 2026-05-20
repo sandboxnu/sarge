@@ -20,3 +20,23 @@ export function getInvitableRoles(currentUserRole: string): OrgRole[] {
     if (index === -1) return [];
     return [...ROLE_HIERARCHY.slice(index + 1)];
 }
+
+export const ROLE_LABELS: Record<OrgRole, string> = {
+    owner: 'Owner',
+    admin: 'Admin',
+    recruiter: 'Recruiter',
+    reviewer: 'Reviewer',
+    member: 'Member',
+};
+
+export function getRoleLabel(role: string): string {
+    return ROLE_LABELS[role as OrgRole] ?? role;
+}
+
+/**
+ * Roles available when editing a member in org settings.
+ * Owner is omitted so we cannot promote someone to owner.
+ */
+export function getAssignableRoles(): OrgRole[] {
+    return ROLE_HIERARCHY.filter((r) => r !== 'owner') as OrgRole[];
+}
