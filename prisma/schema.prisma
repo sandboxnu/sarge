@@ -278,6 +278,7 @@ model Snapshot {
   id        String       @id @unique @default(cuid())
   taskId    String
   type      SnapshotType
+  content   String?
   createdAt DateTime     @default(now())
 
   task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
