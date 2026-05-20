@@ -16,7 +16,6 @@ export type PositionWithCounts = {
 export interface ApplicationDisplayInfo {
     assessmentStatus: AssessmentStatus;
     decisionStatus: DecisionStatus;
-    decidedAt: Date | null;
     candidate: {
         name: string;
         major: string | null;
@@ -27,12 +26,11 @@ export interface ApplicationDisplayInfo {
     assessment: {
         id: string;
         submittedAt: Date | null;
+        reviewers: {
+            id: string;
+            name: string;
+        }[];
     } | null;
-    grader: {
-        name: string;
-        email: string;
-    } | null;
-    graderName?: string;
 }
 
 export interface BatchAddResult {
@@ -55,13 +53,11 @@ export interface PositionPreviewCandidate {
     assessment: {
         id: string;
         submittedAt: Date | null;
-        reviews: {
-            reviewer: {
-                id: string;
-                name: string;
-                email: string;
-                image: string | null;
-            };
+        reviewers: {
+            id: string;
+            name: string;
+            email: string;
+            image: string | null;
         }[];
     } | null;
 }
@@ -105,13 +101,11 @@ export interface PositionPreviewResponse {
         assessment: {
             id: string;
             submittedAt: string | null;
-            reviews: {
-                reviewer: {
-                    id: string;
-                    name: string;
-                    email: string;
-                    image: string | null;
-                };
+            reviewers: {
+                id: string;
+                name: string;
+                email: string;
+                image: string | null;
             }[];
         } | null;
     }[];

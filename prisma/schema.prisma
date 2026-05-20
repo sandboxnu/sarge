@@ -39,16 +39,15 @@ model User {
   updatedAt     DateTime @updatedAt
 
   reviews                     Review[]
-  comments                    Comment[]
   sessions                    Session[]
   accounts                    Account[]
   verifications               Verification[]
   members                     Member[]
   invitations                 Invitation[]         @relation("Inviter")
   positions                   Position[]           @relation("CreatedPositions")
-  decidedApplications         Application[]        @relation("ApplicationDecision")
   authoredTaskTemplates       TaskTemplate[]       @relation("AuthoredTaskTemplates")
   authoredAssessmentTemplates AssessmentTemplate[] @relation("AuthoredAssessmentTemplates")
+  assessmentsReviews          Assessment[]
 }
 
 // A role or position that an organization is hiring for (e.g. "Software Engineer"). Positions collect applications from candidates.
@@ -113,16 +112,13 @@ model Application {
   // Canonical assessment workflow state for the application. Other assessment fields (submittedAt, reviews, deadline) are derived indicators.
   assessmentStatus AssessmentStatus @default(NOT_ASSIGNED)
   decisionStatus   DecisionStatus   @default(PENDING)
-  graderId         String?
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  decidedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   candidate  Candidate   @relation(fields: [candidateId], references: [id], onDelete: Cascade)
   position   Position    @relation(fields: [positionId], references: [id], onDelete: Cascade)
   assessment Assessment?
-  grader     User?       @relation("ApplicationDecision", fields: [graderId], references: [id], onDelete: SetNull)
 
   @@unique([candidateId, positionId])
   @@index([positionId, assessmentStatus]) // For position stats queries
@@ -131,11 +127,13 @@ model Application {
 
 // Represents an assessment composed of tasks (questions) that could be assigned to a position.
 model AssessmentTemplate {
-  id       String @id @unique @default(cuid())
-  title    String
-  orgId    String
-  authorId String
-  notes    Json   @default("[]")
+  id        String   @id @unique @default(cuid())
+  title     String
+  orgId     String
+  authorId  String
+  notes     Json     @default("[]")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   organization Organization             @relation(fields: [orgId], references: [id])
   assessments  Assessment[]             @relation("derivedFromAssessmentTemplate")
@@ -148,7 +146,7 @@ model AssessmentTemplate {
 
 // A task (question) that could be asked in an assessment. Contains test cases, description, and starter code.
 model TaskTemplate {
-  id               String  @id @unique @default(cuid())
+  id               String   @id @unique @default(cuid())
   title            String
   description      Json
   publicTestCases  Json[]
@@ -156,8 +154,10 @@ model TaskTemplate {
   orgId            String
   taskType         String?
   authorId         String
-  estimatedTime    Int     @default(0)
-  timeout          Int     @default(0)
+  estimatedTime    Int      @default(0)
+  timeout          Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
   organization Organization           @relation(fields: [orgId], references: [id])
   author       User                   @relation("AuthoredTaskTemplates", fields: [authorId], references: [id], onDelete: Restrict)
@@ -177,7 +177,7 @@ model TaskTemplateLanguage {
   stub           String
 
   language     ProgrammingLanguage
-  taskTemplate TaskTemplate        @relation(fields: [taskTemplateId], references: [id])
+  taskTemplate TaskTemplate        @relation(fields: [taskTemplateId], references: [id], onDelete: Cascade)
 }
 
 enum ProgrammingLanguage {
@@ -204,18 +204,24 @@ model AssessmentTemplateTask {
   @@index([assessmentTemplateId, order])
 }
 
-// A task within an assessment, containing the candidate's submitted code.
+// A submitted TaskTemplate within an assessment, containing the candidate's submitted code and
+// reviewers' reviews
 model Task {
-  id             String @id @unique @default(cuid())
-  assessmentId   String
-  taskTemplateId String
-  candidateCode  String @db.Text
+  id              String   @id @unique @default(cuid())
+  assessmentId    String
+  taskTemplateId  String
+  // Candidate's code submission
+  submission      String   @db.Text
+  // NOTE(laith): we may want to pivot our test cases to be their own tables eventually due to these
+  // also being fields in TaskTemplate
+  passedTestCases Json[]
+  failedTestCases Json[]
+  submittedAt     DateTime @default(now())
 
-  updatedAt DateTime? @updatedAt
-
-  assessment   Assessment   @relation("combineToFormAssessment", fields: [assessmentId], references: [id])
-  taskTemplate TaskTemplate @relation("derivedFromTaskTemplate", fields: [taskTemplateId], references: [id])
-  comments     Comment[]
+  assessment   Assessment   @relation("combineToFormAssessment", fields: [assessmentId], references: [id], onDelete: Cascade)
+  taskTemplate TaskTemplate @relation("derivedFromTaskTemplate", fields: [taskTemplateId], references: [id], onDelete: Restrict)
+  reviews      Review[]
+  snapshots    Snapshot[]
 }
 
 // An assessment instance assigned to an application. Generated from an assessment template and composed of multiple tasks.
@@ -230,32 +236,51 @@ model Assessment {
   application        Application        @relation(fields: [applicationId], references: [id], onDelete: Cascade)
   assessmentTemplate AssessmentTemplate @relation("derivedFromAssessmentTemplate", fields: [assessmentTemplateId], references: [id])
   tasks              Task[]             @relation("combineToFormAssessment")
-  reviews            Review[]
+  reviewers          User[]
 }
 
-// A review of an assessment submitted by a user, including a rating and feedback.
+// A review of an assessment submitted by a reviewer, including a rating and feedback.
 model Review {
-  id           String   @id @unique @default(cuid())
-  assessmentId String
-  reviewerId   String
-  rating       Int
-  content      String
-  reviewedAt   DateTime @default(now())
-
-  assessment Assessment @relation(fields: [assessmentId], references: [id])
-  reviewer   User       @relation(fields: [reviewerId], references: [id])
-}
-
-// A comment left by a reviewer on a specific task within an assessment.
-model Comment {
   id         String   @id @unique @default(cuid())
   taskId     String
-  content    String   @db.Text
   reviewerId String
+  score      Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  comments Comment[]
+  task     Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  reviewer User      @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
+}
+
+// A comment left by a reviewer on a review of a specific task within an assessment.
+model Comment {
+  id         String   @id @unique @default(cuid())
+  reviewId   String
+  line       Int
+  content    String   @db.Text
   reviewedAt DateTime @default(now())
 
-  task     Task @relation(fields: [taskId], references: [id])
-  reviewer User @relation(fields: [reviewerId], references: [id])
+  review Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+}
+
+// The type of snapshots tracked throughout a task
+enum SnapshotType {
+  META // refers to starting or ending a task
+  CONTENT // candidate's content within the IDE
+  DISCONNECT // candidate disconnects from the network
+  COPYPASTE // candidate copies or pastes within the window
+  HIGHLIGHT // candidate attempts to highlight description
+}
+
+// A history snapshot of an ongoing assessment.
+model Snapshot {
+  id        String       @id @unique @default(cuid())
+  taskId    String
+  type      SnapshotType
+  createdAt DateTime     @default(now())
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
 }
 
 // An authenticated session for a user. Stores login state and the user's active organization context.
@@ -331,6 +356,7 @@ model Member {
   @@index([organizationId])
 }
 
+// TODO(laith): before merge - capitalize these
 enum InvitationStatus {
   pending
   accepted

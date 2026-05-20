@@ -78,7 +78,6 @@ async function addApplicationToPosition(
             select: {
                 assessmentStatus: true,
                 decisionStatus: true,
-                decidedAt: true,
                 candidate: {
                     select: {
                         name: true,
@@ -92,13 +91,12 @@ async function addApplicationToPosition(
                     select: {
                         id: true,
                         submittedAt: true,
-                    },
-                },
-                grader: {
-                    select: {
-                        id: true,
-                        name: true,
-                        email: true,
+                        reviewers: {
+                            select: {
+                                id: true,
+                                name: true,
+                            },
+                        },
                     },
                 },
             },
@@ -201,7 +199,6 @@ async function batchAddApplicationsToPosition(
         select: {
             assessmentStatus: true,
             decisionStatus: true,
-            decidedAt: true,
             candidate: {
                 select: {
                     name: true,
@@ -215,13 +212,12 @@ async function batchAddApplicationsToPosition(
                 select: {
                     id: true,
                     submittedAt: true,
-                },
-            },
-            grader: {
-                select: {
-                    id: true,
-                    name: true,
-                    email: true,
+                    reviewers: {
+                        select: {
+                            id: true,
+                            name: true,
+                        },
+                    },
                 },
             },
         },
@@ -231,10 +227,7 @@ async function batchAddApplicationsToPosition(
         candidatesCreated: candidatesCreated.count,
         entriesCreated: applicationsCreated.count,
         totalProcessed: candidates.length,
-        candidates: applications.map((app) => ({
-            ...app,
-            graderName: app.grader?.name ?? '-',
-        })),
+        candidates: applications,
     };
 }
 
@@ -252,7 +245,6 @@ async function getPositionApplications(
         select: {
             assessmentStatus: true,
             decisionStatus: true,
-            decidedAt: true,
             candidate: {
                 select: {
                     name: true,
@@ -266,23 +258,19 @@ async function getPositionApplications(
                 select: {
                     id: true,
                     submittedAt: true,
-                },
-            },
-            grader: {
-                select: {
-                    id: true,
-                    name: true,
-                    email: true,
+                    reviewers: {
+                        select: {
+                            id: true,
+                            name: true,
+                        },
+                    },
                 },
             },
         },
         orderBy: { assessmentStatus: 'desc' },
     });
 
-    return applications.map((app) => ({
-        ...app,
-        graderName: app.grader?.name ?? '-',
-    }));
+    return applications;
 }
 
 /**
