@@ -27,11 +27,6 @@ const SARGE_PRIMARY_700 = "#4125dc"
 const SARGE_SUCCESS_800 = "#00592e"
 const SARGE_ERROR_700 = "#b42318"
 
-var (
-	detectedOS   string
-	detectedArch string
-)
-
 // Go's way of defining enum values. Think of this as enum Step {...}
 type step int
 
@@ -90,8 +85,8 @@ func InitialModel() model {
 			{step: permission, runningStr: "Checking root permissions", completedStr: "Verified root permissions", run: func() error { return command.CheckPermission() }},
 			{step: dependencies, runningStr: "Installing dependencies", completedStr: "Dependencies successfully installed", run: func() error { return command.InstallDependencies() }},
 			// NOTE(laith): these values are dynamic so we only define the step right now
-			{step: hostname, runningStr: "Input your hostname:", run: fakeWork(2000 * time.Millisecond)},
-			{step: bootstrap, runningStr: "Bootstrapping Sarge", completedStr: "Sarge successfully bootstrapped", run: fakeWork(2000 * time.Millisecond)},
+			{step: hostname, runningStr: "Input your hostname:"},
+			{step: bootstrap, runningStr: "Bootstrapping Sarge", completedStr: "Sarge successfully bootstrapped", run: func() error { return command.BootstrapSarge() }},
 			// NOTE(laith): this has a different display entirely
 			{step: complete},
 		},
@@ -197,8 +192,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, nil
 }
 
-// Update simply draws the model at its given state. For each step we are rendering a new set of
-// content. Content is just a string
+// View draws the model at its current state.
 func (m model) View() tea.View {
 	width, height, _ := term.GetSize(os.Stdout.Fd())
 
@@ -250,20 +244,19 @@ func (m model) View() tea.View {
 
 	header := lipgloss.Place(width, bannerH, lipgloss.Center, lipgloss.Top, banner)
 
-	var main string
 	var steps string
 	if m.setupComplete {
 		steps = fmt.Sprintf("Sarge installation complete!\nYou can start using Sarge now by visiting:\n\nhttps://%s\n\nSarge will automatically install updates at 2:00 AM each day.\nRun the `sarge` command to view your administrator options.", m.hostname)
-		main = lipgloss.Place(width, mainH, lipgloss.Center, lipgloss.Center, steps)
 	} else {
 		steps = lipgloss.JoinVertical(lipgloss.Center, stepLines...)
-		main = lipgloss.Place(width, mainH, lipgloss.Center, lipgloss.Center, steps)
 	}
 
 	if m.errMessage != "" {
 		stepsStyle := lipgloss.NewStyle().Foreground(lipgloss.Color(SARGE_ERROR_700)).Bold(true)
 		steps = stepsStyle.Render(fmt.Sprintf("Error: %s", m.errMessage))
 	}
+
+	main := lipgloss.Place(width, mainH, lipgloss.Center, lipgloss.Center, steps)
 
 	footer := lipgloss.Place(width, footerH, lipgloss.Center, lipgloss.Top, quit)
 
