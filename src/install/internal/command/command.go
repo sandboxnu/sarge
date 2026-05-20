@@ -2,7 +2,9 @@ package command
 
 import (
 	"bytes"
+	"crypto/rand"
 	_ "embed"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"os"
@@ -159,6 +161,7 @@ const (
 	sargeRepoURL    = "https://github.com/sandboxnu/sarge"
 	sargeRepoPath   = "/opt/sarge"
 	composeFileName = "docker-compose.yaml"
+	envFileName     = ".env"
 )
 
 func BootstrapSarge() error {
@@ -167,6 +170,9 @@ func BootstrapSarge() error {
 	}
 	if err := writeComposeFile(); err != nil {
 		return fmt.Errorf("writing %s: %w", composeFileName, err)
+	}
+	if err := writeEnvFile(); err != nil {
+		return fmt.Errorf("writing %s: %w", envFileName, err)
 	}
 	if err := startSarge(); err != nil {
 		return fmt.Errorf("starting sarge: %w", err)
@@ -183,6 +189,21 @@ func cloneSarge() error {
 
 func writeComposeFile() error {
 	return os.WriteFile(sargeRepoPath+"/"+composeFileName, compose, 0644)
+}
+
+func writeEnvFile() error {
+	envPath := sargeRepoPath + "/" + envFileName
+	if _, err := os.Stat(envPath); err == nil {
+		return nil
+	}
+
+	pw := make([]byte, 24)
+	if _, err := rand.Read(pw); err != nil {
+		return err
+	}
+
+	contents := fmt.Sprintf("DB_USER=sarge\nDB_PASSWORD=%s\nDB_NAME=sarge\n", hex.EncodeToString(pw))
+	return os.WriteFile(envPath, []byte(contents), 0600)
 }
 
 func startSarge() error {
