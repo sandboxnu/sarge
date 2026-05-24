@@ -17,9 +17,7 @@ export function useWindowUnfocused(assessmentId: string, taskId: string | null):
         const reportUnfocus = () => {
             const currentTaskId = taskIdRef.current;
             if (!currentTaskId) return;
-            createCandidateSnapshot(assessmentId, currentTaskId, SnapshotType.UNFOCUS).catch(
-                () => {}
-            );
+            createCandidateSnapshot(assessmentId, currentTaskId, SnapshotType.UNFOCUS);
         };
 
         let wasUnfocused = getIsUnfocused();
