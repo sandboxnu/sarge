@@ -68,8 +68,9 @@ export type TestCaseResult = {
 
 export type SectionState = {
     taskTemplateId: string;
-    // The Task row this section is bound to once the candidate enters it. Null
-    // until the server has created the Task; snapshots cannot fire until set.
+    // NOTE(laith): Task DB row this section is bound to once the candidate enters it. It is null
+    // until the server has created the Task entry. Snapshots can't be created until that happens.
+    // See "createCandidateTask" in useAssessment
     taskId: string | null;
     order: number;
     taskTemplate: CandidateTaskView;

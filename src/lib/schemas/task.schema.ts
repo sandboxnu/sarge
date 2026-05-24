@@ -22,12 +22,12 @@ export const UpdateTaskSchema = TaskSchema.partial().extend({
     id: z.string(),
 });
 
-// Candidate creates a Task by entering a question; only the template id is needed.
+// Candidate creates a Task by entering a question, so only the template's ID is needed
 export const CreateTaskForCandidateSchema = z.object({
     taskTemplateId: z.string(),
 });
 
-// Candidate submits a task: their code plus the test results computed client-side.
+// Candidate submits a task, their code and test results are retrieved from the client side
 export const SubmitTaskForCandidateSchema = z.object({
     submission: z.string(),
     passedTestCases: z.array(testCaseSchema),

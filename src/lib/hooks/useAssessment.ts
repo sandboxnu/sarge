@@ -25,6 +25,7 @@ import type {
 import { createToken } from '@/lib/api/token';
 import { type ProgrammingLanguage, SnapshotType } from '@/generated/prisma';
 
+// TODO(laith): this should become configurable in the org settings eventually
 const CONTENT_SNAPSHOT_INTERVAL_MS = 30_000;
 
 function buildInitialSections(questions: AssessmentQuestion[]): SectionState[] {

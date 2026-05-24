@@ -20,14 +20,10 @@ function usePreventHighlight<T extends HTMLElement>(assessmentId: string, taskId
         const container = containerRef.current;
         if (!container) return;
 
-        const reportHighlight = () => {
+        const snapshotHighlight = () => {
             const currentTaskId = taskIdRef.current;
             if (!currentTaskId) return;
-            createCandidateSnapshot(assessmentId, currentTaskId, SnapshotType.HIGHLIGHT).catch(
-                () => {
-                    // Non-fatal — don't surface snapshot errors to the candidate.
-                }
-            );
+            createCandidateSnapshot(assessmentId, currentTaskId, SnapshotType.HIGHLIGHT);
         };
 
         const showToast = () => {
@@ -50,7 +46,7 @@ function usePreventHighlight<T extends HTMLElement>(assessmentId: string, taskId
             event.preventDefault();
             clearSelection();
             showToast();
-            reportHighlight();
+            snapshotHighlight();
         };
 
         const handleSelectionChange = () => {
@@ -65,7 +61,7 @@ function usePreventHighlight<T extends HTMLElement>(assessmentId: string, taskId
 
             clearSelection();
             showToast();
-            reportHighlight();
+            snapshotHighlight();
         };
 
         container.addEventListener('selectstart', handleSelectStart);

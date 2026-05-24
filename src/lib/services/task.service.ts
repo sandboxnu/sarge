@@ -121,10 +121,7 @@ async function updateTask(task: UpdateTaskDTO, orgId: string): Promise<TaskDTO> 
     });
 }
 
-// Creates a Task when the candidate enters a question, or returns the existing
-// in-flight Task if one exists for this (assessment, taskTemplate). Idempotent so
-// re-mounts / refreshes don't fan out into duplicate rows. Fires the task-start
-// META snapshot in the same transaction on first creation.
+// Called when candidate enters an OA question
 async function createForCandidate(assessmentId: string, taskTemplateId: string): Promise<Task> {
     const assessment = await prisma.assessment.findUnique({
         where: { id: assessmentId },
@@ -165,6 +162,7 @@ async function createForCandidate(assessmentId: string, taskTemplateId: string):
             data: { assessmentId, taskTemplateId },
         });
 
+        // META snapshot to log when the task was started
         await tx.snapshot.create({
             data: { taskId: task.id, type: SnapshotType.META },
         });
@@ -173,8 +171,7 @@ async function createForCandidate(assessmentId: string, taskTemplateId: string):
     });
 }
 
-// Persists the candidate's submission for a task and fires the task-end META
-// snapshot in the same transaction.
+// Called when candidate submits an OA question
 async function submitForCandidate(taskId: string, data: SubmitTaskForCandidateDTO): Promise<Task> {
     const task = await prisma.task.findUnique({
         where: { id: taskId },
@@ -200,6 +197,7 @@ async function submitForCandidate(taskId: string, data: SubmitTaskForCandidateDT
             },
         });
 
+        // META snapshot to log when the task was submitted
         await tx.snapshot.create({
             data: { taskId, type: SnapshotType.META },
         });

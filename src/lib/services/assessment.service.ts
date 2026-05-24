@@ -318,8 +318,6 @@ async function getAssessmentForCandidate(assessmentId: string): Promise<Candidat
     };
 }
 
-// Called when the candidate clicks "Begin Assessment". Flips the application
-// status to IN_PROGRESS. Idempotent — re-calling when already IN_PROGRESS is a no-op.
 async function startForCandidate(assessmentId: string): Promise<void> {
     const assessment = await prisma.assessment.findUnique({
         where: { id: assessmentId },
