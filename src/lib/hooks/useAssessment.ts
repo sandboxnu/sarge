@@ -186,21 +186,18 @@ export default function useAssessment(assessmentId: string) {
             await startCandidateAssessment(assessmentId);
             setPhase('assessment');
         } catch (err) {
+            // NOTE(laith): we're definitely going to want better copy for candidate side errors eventually
             toast.error(`Failed to start assessment: ${(err as Error).message}`);
         }
     }
 
-    // Create (or recover) the Task row for whichever section the candidate is
-    // looking at, so subsequent snapshots have a taskId to attach to. Idempotent
-    // server-side; safe under React strict-mode double-invocation.
+    // Creates a Task for the current section so snapshots have a taskId to attach to.
     useEffect(() => {
         if (phase !== 'assessment') return;
         const section = sections[currentSectionIndex];
         if (!section || section.taskId) return;
-        let cancelled = false;
         createCandidateTask(assessmentId, section.taskTemplateId)
             .then((task) => {
-                if (cancelled) return;
                 setSections((prev) =>
                     prev.map((s, i) => (i === currentSectionIndex ? { ...s, taskId: task.id } : s))
                 );
@@ -208,9 +205,6 @@ export default function useAssessment(assessmentId: string) {
             .catch((err) => {
                 toast.error(`Failed to start task: ${(err as Error).message}`);
             });
-        return () => {
-            cancelled = true;
-        };
     }, [assessmentId, phase, currentSectionIndex, sections]);
 
     // Periodic CONTENT snapshot while the candidate is actively in a task.
@@ -222,32 +216,30 @@ export default function useAssessment(assessmentId: string) {
         const interval = setInterval(() => {
             const code = editorRef.current?.getValue() ?? '';
             if (!code) return;
-            createCandidateSnapshot(assessmentId, taskId, SnapshotType.CONTENT, code).catch(() => {
-                // Snapshot failures are non-fatal — don't disrupt the candidate.
-            });
+            // NOTE(laith): don't want this blocking so won't await
+            createCandidateSnapshot(assessmentId, taskId, SnapshotType.CONTENT, code);
         }, CONTENT_SNAPSHOT_INTERVAL_MS);
         return () => clearInterval(interval);
     }, [assessmentId, phase, currentSectionIndex, sections]);
 
-    // Copy/paste anywhere on the page during the assessment phase records a
-    // COPYPASTE snapshot against the current task.
+    // Copy/paste anywhere on the page during the assessment phase records a COPYPASTE snapshot on the current task
     useEffect(() => {
         if (phase !== 'assessment') return;
         const section = sections[currentSectionIndex];
         if (!section?.taskId) return;
         const taskId = section.taskId;
-        const handler = () => {
+        const callback = () => {
             createCandidateSnapshot(assessmentId, taskId, SnapshotType.COPYPASTE).catch(() => {});
         };
-        document.addEventListener('copy', handler);
-        document.addEventListener('paste', handler);
+        document.addEventListener('copy', callback);
+        document.addEventListener('paste', callback);
         return () => {
-            document.removeEventListener('copy', handler);
-            document.removeEventListener('paste', handler);
+            document.removeEventListener('copy', callback);
+            document.removeEventListener('paste', callback);
         };
     }, [assessmentId, phase, currentSectionIndex, sections]);
 
-    function buildSubmitPayload(section: SectionState, code: string) {
+    function createTaskSubmissionPayload(section: SectionState, code: string) {
         const publicTestCases = section.taskTemplate.publicTestCases;
         const passedTestCases = publicTestCases.filter(
             (_, i) => section.testCaseResults[i]?.status === 'passed'
@@ -259,12 +251,12 @@ export default function useAssessment(assessmentId: string) {
         return { submission: code, passedTestCases, failedTestCases };
     }
 
-    async function submitAndContinue() {
+    async function submitTaskAndContinue() {
         const isLastSection = currentSectionIndex === sections.length - 1;
         const section = sections[currentSectionIndex];
         if (!section) return;
         const currentCode = editorRef.current?.getValue() ?? section.code ?? '';
-        const submitPayload = buildSubmitPayload(section, currentCode);
+        const payload = createTaskSubmissionPayload(section, currentCode);
 
         if (isLastSection) {
             setSections((prev) =>
@@ -272,11 +264,12 @@ export default function useAssessment(assessmentId: string) {
                     i === currentSectionIndex ? { ...s, code: currentCode, status: 'completed' } : s
                 )
             );
-            // Await the final task submit so a network error doesn't lose the
-            // candidate's last submission before the assessment is marked done.
+
+            // Unlike other task submissions, we want to await the final task submit so a network error
+            // doesn't lose the candidate's last submission before the assessment is marked as completed
             if (section.taskId) {
                 try {
-                    await submitCandidateTask(assessmentId, section.taskId, submitPayload);
+                    await submitCandidateTask(assessmentId, section.taskId, payload);
                 } catch (err) {
                     toast.error(`Failed to save your submission: ${(err as Error).message}`);
                 }
@@ -284,9 +277,9 @@ export default function useAssessment(assessmentId: string) {
             handleSubmitAssessment('submitted');
         } else {
             setIsTransitioning(true);
-            // Fire-and-forget so the candidate isn't blocked moving forward.
+            // NOTE(laith) don't want this blocking so don't await
             if (section.taskId) {
-                submitCandidateTask(assessmentId, section.taskId, submitPayload).catch((err) => {
+                submitCandidateTask(assessmentId, section.taskId, payload).catch((err) => {
                     toast.error(`Failed to save your submission: ${(err as Error).message}`);
                 });
             }
@@ -378,7 +371,7 @@ export default function useAssessment(assessmentId: string) {
         error,
         testError,
         startAssessment,
-        submitAndContinue,
+        submitTaskAndContinue,
         updateCode,
         changeLanguage,
         runTests,

@@ -206,7 +206,7 @@ model AssessmentTemplateTask {
 }
 
 // A candidate's attempt at a TaskTemplate within an assessment. Created when the candidate
-// enters the question; updated with submission + test results when they submit.
+// enters the question. Updated with submission.
 model Task {
   id              String    @id @unique @default(cuid())
   assessmentId    String
