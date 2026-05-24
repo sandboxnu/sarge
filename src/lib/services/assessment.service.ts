@@ -318,6 +318,45 @@ async function getAssessmentForCandidate(assessmentId: string): Promise<Candidat
     };
 }
 
+// Called when the candidate clicks "Begin Assessment". Flips the application
+// status to IN_PROGRESS. Idempotent — re-calling when already IN_PROGRESS is a no-op.
+async function startForCandidate(assessmentId: string): Promise<void> {
+    const assessment = await prisma.assessment.findUnique({
+        where: { id: assessmentId },
+        select: {
+            id: true,
+            submittedAt: true,
+            application: { select: { id: true, assessmentStatus: true } },
+        },
+    });
+
+    if (!assessment) {
+        throw new NotFoundException('Assessment', assessmentId);
+    }
+
+    if (assessment.submittedAt) {
+        throw new BadRequestException('Assessment has already been submitted');
+    }
+
+    if (assessment.application.assessmentStatus === AssessmentStatus.IN_PROGRESS) {
+        return;
+    }
+
+    if (
+        assessment.application.assessmentStatus !== AssessmentStatus.NOT_STARTED &&
+        assessment.application.assessmentStatus !== AssessmentStatus.NOT_SENT
+    ) {
+        throw new BadRequestException(
+            `Assessment cannot be started from status ${assessment.application.assessmentStatus}`
+        );
+    }
+
+    await prisma.application.update({
+        where: { id: assessment.application.id },
+        data: { assessmentStatus: AssessmentStatus.IN_PROGRESS },
+    });
+}
+
 async function submitAssessmentForCandidate(assessmentId: string): Promise<void> {
     const assessment = await prisma.assessment.findFirst({
         where: { id: assessmentId },
@@ -414,6 +453,7 @@ async function sendAssessmentInvitationsToPosition(
 const AssessmentService = {
     getAssessmentWithRelations,
     getAssessmentForCandidate,
+    startForCandidate,
     submitAssessmentForCandidate,
     createAssessment,
     assignTemplateToPosition,
