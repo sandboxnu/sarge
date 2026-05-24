@@ -8,10 +8,7 @@ import { createCandidateSnapshot } from '@/lib/api/candidate-assessment';
 const TOAST_COOLDOWN_MS = 5000; // 5 seconds
 const HIGHLIGHT_MESSAGE = 'Highlighting is not allowed.';
 
-function usePreventHighlight<T extends HTMLElement>(
-    assessmentId: string,
-    taskId: string | null
-) {
+function usePreventHighlight<T extends HTMLElement>(assessmentId: string, taskId: string | null) {
     const containerRef = useRef<T | null>(null);
     const lastToastAtRef = useRef(0);
     const taskIdRef = useRef(taskId);

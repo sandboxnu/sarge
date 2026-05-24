@@ -1,8 +1,5 @@
 import { type SnapshotType } from '@/generated/prisma';
-import type {
-    SubmitTaskForCandidateDTO,
-    TaskDTO,
-} from '@/lib/schemas/task.schema';
+import type { SubmitTaskForCandidateDTO, TaskDTO } from '@/lib/schemas/task.schema';
 import type { CandidateAssessment } from '@/lib/types/candidate-assessment.types';
 
 export async function getCandidateAssessment(assessmentId: string): Promise<CandidateAssessment> {

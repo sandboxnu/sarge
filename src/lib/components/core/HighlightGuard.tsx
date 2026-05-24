@@ -9,12 +9,7 @@ type HighlightGuardProps = PropsWithChildren<{
     className?: string;
 }>;
 
-export function HighlightGuard({
-    children,
-    className,
-    assessmentId,
-    taskId,
-}: HighlightGuardProps) {
+export function HighlightGuard({ children, className, assessmentId, taskId }: HighlightGuardProps) {
     const containerRef = usePreventHighlight<HTMLDivElement>(assessmentId, taskId);
 
     return (
