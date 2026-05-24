@@ -229,6 +229,24 @@ export default function useAssessment(assessmentId: string) {
         return () => clearInterval(interval);
     }, [assessmentId, phase, currentSectionIndex, sections]);
 
+    // Copy/paste anywhere on the page during the assessment phase records a
+    // COPYPASTE snapshot against the current task.
+    useEffect(() => {
+        if (phase !== 'assessment') return;
+        const section = sections[currentSectionIndex];
+        if (!section?.taskId) return;
+        const taskId = section.taskId;
+        const handler = () => {
+            createCandidateSnapshot(assessmentId, taskId, SnapshotType.COPYPASTE).catch(() => {});
+        };
+        document.addEventListener('copy', handler);
+        document.addEventListener('paste', handler);
+        return () => {
+            document.removeEventListener('copy', handler);
+            document.removeEventListener('paste', handler);
+        };
+    }, [assessmentId, phase, currentSectionIndex, sections]);
+
     function buildSubmitPayload(section: SectionState, code: string) {
         const publicTestCases = section.taskTemplate.publicTestCases;
         const passedTestCases = publicTestCases.filter(

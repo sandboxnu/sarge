@@ -2,17 +2,36 @@
 
 import { useEffect, useRef } from 'react';
 import { toast } from 'sonner';
+import { SnapshotType } from '@/generated/prisma';
+import { createCandidateSnapshot } from '@/lib/api/candidate-assessment';
 
 const TOAST_COOLDOWN_MS = 5000; // 5 seconds
 const HIGHLIGHT_MESSAGE = 'Highlighting is not allowed.';
 
-function usePreventHighlight<T extends HTMLElement>() {
+function usePreventHighlight<T extends HTMLElement>(
+    assessmentId: string,
+    taskId: string | null
+) {
     const containerRef = useRef<T | null>(null);
     const lastToastAtRef = useRef(0);
+    const taskIdRef = useRef(taskId);
+    useEffect(() => {
+        taskIdRef.current = taskId;
+    }, [taskId]);
 
     useEffect(() => {
         const container = containerRef.current;
         if (!container) return;
+
+        const reportHighlight = () => {
+            const currentTaskId = taskIdRef.current;
+            if (!currentTaskId) return;
+            createCandidateSnapshot(assessmentId, currentTaskId, SnapshotType.HIGHLIGHT).catch(
+                () => {
+                    // Non-fatal — don't surface snapshot errors to the candidate.
+                }
+            );
+        };
 
         const showToast = () => {
             const now = Date.now();
@@ -34,6 +53,7 @@ function usePreventHighlight<T extends HTMLElement>() {
             event.preventDefault();
             clearSelection();
             showToast();
+            reportHighlight();
         };
 
         const handleSelectionChange = () => {
@@ -48,6 +68,7 @@ function usePreventHighlight<T extends HTMLElement>() {
 
             clearSelection();
             showToast();
+            reportHighlight();
         };
 
         container.addEventListener('selectstart', handleSelectStart);
@@ -57,7 +78,7 @@ function usePreventHighlight<T extends HTMLElement>() {
             container.removeEventListener('selectstart', handleSelectStart);
             document.removeEventListener('selectionchange', handleSelectionChange);
         };
-    }, []);
+    }, [assessmentId]);
 
     return containerRef;
 }

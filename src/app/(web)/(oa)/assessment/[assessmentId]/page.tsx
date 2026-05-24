@@ -94,6 +94,7 @@ export default function AssessmentPage({ params }: { params: Promise<{ assessmen
                         <AssessmentSkeleton />
                     ) : (
                         <AssessmentContent
+                            assessmentId={assessmentId}
                             currentSection={assessment.currentSection}
                             availableLanguages={assessment.availableLanguages}
                             publicTestCases={assessment.publicTestCases}

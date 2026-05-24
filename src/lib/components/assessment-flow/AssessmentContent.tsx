@@ -17,6 +17,7 @@ import { BlockNoteViewer } from '@/lib/components/core/BlockNoteViewer';
 import { HighlightGuard } from '@/lib/components/core/HighlightGuard';
 
 type AssessmentContentProps = {
+    assessmentId: string;
     currentSection: SectionState | null;
     availableLanguages: TaskLanguageOption[];
     publicTestCases: TestCaseDTO[];
@@ -29,6 +30,7 @@ type AssessmentContentProps = {
 };
 
 export default function AssessmentContent({
+    assessmentId,
     currentSection,
     availableLanguages,
     publicTestCases,
@@ -58,7 +60,11 @@ export default function AssessmentContent({
                         </h1>
                     </div>
                     <div className="flex-1 overflow-hidden">
-                        <HighlightGuard className="h-full overflow-y-auto px-5 pt-1 pb-4">
+                        <HighlightGuard
+                            assessmentId={assessmentId}
+                            taskId={currentSection.taskId}
+                            className="h-full overflow-y-auto px-5 pt-1 pb-4"
+                        >
                             <div data-oa-task-description className="min-h-0">
                                 <BlockNoteViewer
                                     content={currentSection.taskTemplate.description}
