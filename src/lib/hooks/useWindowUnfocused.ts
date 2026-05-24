@@ -7,6 +7,7 @@ import { createCandidateSnapshot } from '@/lib/api/candidate-assessment';
 export function useWindowUnfocused(assessmentId: string, taskId: string | null): boolean {
     const [isWindowUnfocused, setIsWindowUnfocused] = useState(false);
     const taskIdRef = useRef(taskId);
+    const wasUnfocusedRef = useRef(false);
     useEffect(() => {
         taskIdRef.current = taskId;
     }, [taskId]);
@@ -20,12 +21,12 @@ export function useWindowUnfocused(assessmentId: string, taskId: string | null):
             createCandidateSnapshot(assessmentId, currentTaskId, SnapshotType.UNFOCUS);
         };
 
-        let wasUnfocused = getIsUnfocused();
-        setIsWindowUnfocused(wasUnfocused);
+        wasUnfocusedRef.current = getIsUnfocused();
+        setIsWindowUnfocused(wasUnfocusedRef.current);
 
         const handleChange = (next: boolean) => {
-            if (next && !wasUnfocused) reportUnfocus();
-            wasUnfocused = next;
+            if (next && !wasUnfocusedRef.current) reportUnfocus();
+            wasUnfocusedRef.current = next;
             setIsWindowUnfocused(next);
         };
 
