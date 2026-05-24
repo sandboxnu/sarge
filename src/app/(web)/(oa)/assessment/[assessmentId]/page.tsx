@@ -17,7 +17,10 @@ export default function AssessmentPage({ params }: { params: Promise<{ assessmen
     const { assessmentId } = use(params);
     const assessment = useAssessment(assessmentId);
     const { isConnected } = useHeartbeat(assessment.token ?? null);
-    const isWindowUnfocused = useWindowUnfocused();
+    const isWindowUnfocused = useWindowUnfocused(
+        assessmentId,
+        assessment.currentSection?.taskId ?? null
+    );
     const [isUnfocusedModalOpen, setIsUnfocusedModalOpen] = useState(false);
     const isExamActive =
         !assessment.isLoading &&

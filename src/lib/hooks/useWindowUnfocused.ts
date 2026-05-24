@@ -1,28 +1,39 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { SnapshotType } from '@/generated/prisma';
+import { createCandidateSnapshot } from '@/lib/api/candidate-assessment';
 
-export function useWindowUnfocused(): boolean {
+export function useWindowUnfocused(assessmentId: string, taskId: string | null): boolean {
     const [isWindowUnfocused, setIsWindowUnfocused] = useState(false);
+    const taskIdRef = useRef(taskId);
+    useEffect(() => {
+        taskIdRef.current = taskId;
+    }, [taskId]);
 
     useEffect(() => {
-        const getIsUnfocused = () => {
-            return document.hidden || !document.hasFocus();
+        const getIsUnfocused = () => document.hidden || !document.hasFocus();
+
+        const reportUnfocus = () => {
+            const currentTaskId = taskIdRef.current;
+            if (!currentTaskId) return;
+            createCandidateSnapshot(assessmentId, currentTaskId, SnapshotType.UNFOCUS).catch(
+                () => {}
+            );
         };
 
-        const handleFocus = () => {
-            setIsWindowUnfocused(getIsUnfocused());
+        let wasUnfocused = getIsUnfocused();
+        setIsWindowUnfocused(wasUnfocused);
+
+        const handleChange = (next: boolean) => {
+            if (next && !wasUnfocused) reportUnfocus();
+            wasUnfocused = next;
+            setIsWindowUnfocused(next);
         };
 
-        const handleBlur = () => {
-            setIsWindowUnfocused(true);
-        };
-
-        const handleVisibilityChange = () => {
-            setIsWindowUnfocused(getIsUnfocused());
-        };
-
-        setIsWindowUnfocused(getIsUnfocused());
+        const handleFocus = () => handleChange(getIsUnfocused());
+        const handleBlur = () => handleChange(true);
+        const handleVisibilityChange = () => handleChange(getIsUnfocused());
 
         window.addEventListener('focus', handleFocus);
         window.addEventListener('blur', handleBlur);
@@ -33,7 +44,7 @@ export function useWindowUnfocused(): boolean {
             window.removeEventListener('blur', handleBlur);
             document.removeEventListener('visibilitychange', handleVisibilityChange);
         };
-    }, []);
+    }, [assessmentId]);
 
     return isWindowUnfocused;
 }

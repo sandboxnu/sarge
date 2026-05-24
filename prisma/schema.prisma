@@ -273,6 +273,7 @@ enum SnapshotType {
   DISCONNECT // candidate disconnects from the network
   COPYPASTE // candidate copies or pastes within the window
   HIGHLIGHT // candidate attempts to highlight description
+  UNFOCUS // candidate's window loses focus (alt-tab, minimize, window switch)
 }
 
 // A history snapshot of an ongoing assessment.
