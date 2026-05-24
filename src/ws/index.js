@@ -19,7 +19,7 @@ async function recordDisconnectSnapshot(candidateEmail) {
         return;
     }
     try {
-        const res = await fetch(`${INTERNAL_API_URL}/api/internal/disconnect-snapshot`, {
+        const res = await fetch(`${INTERNAL_API_URL}/api/internal/snapshot`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
