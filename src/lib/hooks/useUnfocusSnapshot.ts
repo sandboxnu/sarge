@@ -11,9 +11,9 @@ type UseUnfocusSnapshotArgs = {
     isModalOpen: boolean;
 };
 
-// Fires one UNFOCUS snapshot per focused→unfocused transition. Suppressed
-// while the modal is open so repeated alt-tabs don't pile up snapshots
-// until the candidate acknowledges.
+// NOTE(laith): Creates an UNFOCUS snapshot only once, and waits till the candidate acknowledges the modal before
+// sending another snapshot. This means that the candidate can unfocus their window multiple times and only get
+// detected once.
 export function useUnfocusSnapshot({
     assessmentId,
     taskId,
