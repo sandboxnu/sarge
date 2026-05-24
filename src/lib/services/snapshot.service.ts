@@ -1,19 +1,12 @@
 import { prisma } from '@/lib/prisma';
 import { SnapshotType, type Snapshot } from '@/generated/prisma';
-import { BadRequestException, NotFoundException } from '@/lib/utils/errors.utils';
+import { NotFoundException } from '@/lib/utils/errors.utils';
 
 async function createForCandidate(
     taskId: string,
     type: SnapshotType,
     content?: string
 ): Promise<Snapshot> {
-    if (type === SnapshotType.CONTENT && !content) {
-        throw new BadRequestException('CONTENT snapshots must include content');
-    }
-    if (type !== SnapshotType.CONTENT && content) {
-        throw new BadRequestException('Only CONTENT snapshots may include content');
-    }
-
     const task = await prisma.task.findUnique({
         where: { id: taskId },
         select: { id: true },
