@@ -23,7 +23,7 @@ import type {
     TestCaseResultStatus,
 } from '@/lib/types/candidate-assessment.types';
 import { createToken } from '@/lib/api/token';
-import { ProgrammingLanguage, SnapshotType } from '@/generated/prisma';
+import { type ProgrammingLanguage, SnapshotType } from '@/generated/prisma';
 
 const CONTENT_SNAPSHOT_INTERVAL_MS = 30_000;
 
