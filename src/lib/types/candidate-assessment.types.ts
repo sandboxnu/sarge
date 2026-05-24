@@ -68,6 +68,9 @@ export type TestCaseResult = {
 
 export type SectionState = {
     taskTemplateId: string;
+    // The Task row this section is bound to once the candidate enters it. Null
+    // until the server has created the Task; snapshots cannot fire until set.
+    taskId: string | null;
     order: number;
     taskTemplate: CandidateTaskView;
     status: SectionStatus;

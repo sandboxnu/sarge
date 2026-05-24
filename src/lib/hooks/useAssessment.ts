@@ -4,7 +4,14 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { type editor } from 'monaco-editor';
 import { type Monaco } from '@monaco-editor/react';
 import { toast } from 'sonner';
-import { getCandidateAssessment, submitCandidateAssessment } from '@/lib/api/candidate-assessment';
+import {
+    createCandidateSnapshot,
+    createCandidateTask,
+    getCandidateAssessment,
+    startCandidateAssessment,
+    submitCandidateAssessment,
+    submitCandidateTask,
+} from '@/lib/api/candidate-assessment';
 import { useAssessmentTimer } from '@/lib/hooks/useAssessmentTimer';
 import useTestRunner from '@/lib/hooks/useTestRunner';
 import type {
@@ -16,7 +23,9 @@ import type {
     TestCaseResultStatus,
 } from '@/lib/types/candidate-assessment.types';
 import { createToken } from '@/lib/api/token';
-import { type ProgrammingLanguage } from '@/generated/prisma';
+import { ProgrammingLanguage, SnapshotType } from '@/generated/prisma';
+
+const CONTENT_SNAPSHOT_INTERVAL_MS = 30_000;
 
 function buildInitialSections(questions: AssessmentQuestion[]): SectionState[] {
     return questions.map((q, i) => {
@@ -24,6 +33,7 @@ function buildInitialSections(questions: AssessmentQuestion[]): SectionState[] {
         const defaultStub = q.taskTemplate.languages[0]?.stub ?? '';
         return {
             taskTemplateId: q.taskTemplateId,
+            taskId: null,
             order: q.order,
             taskTemplate: q.taskTemplate,
             status: i === 0 ? 'current' : 'locked',
@@ -171,15 +181,72 @@ export default function useAssessment(assessmentId: string) {
         }
     }, [timer.isExpired, phase, handleSubmitAssessment]);
 
-    function startAssessment() {
-        setPhase('assessment');
+    async function startAssessment() {
+        try {
+            await startCandidateAssessment(assessmentId);
+            setPhase('assessment');
+        } catch (err) {
+            toast.error(`Failed to start assessment: ${(err as Error).message}`);
+        }
     }
 
-    function submitAndContinue() {
-        const isLastSection = currentSectionIndex === sections.length - 1;
+    // Create (or recover) the Task row for whichever section the candidate is
+    // looking at, so subsequent snapshots have a taskId to attach to. Idempotent
+    // server-side; safe under React strict-mode double-invocation.
+    useEffect(() => {
+        if (phase !== 'assessment') return;
+        const section = sections[currentSectionIndex];
+        if (!section || section.taskId) return;
+        let cancelled = false;
+        createCandidateTask(assessmentId, section.taskTemplateId)
+            .then((task) => {
+                if (cancelled) return;
+                setSections((prev) =>
+                    prev.map((s, i) => (i === currentSectionIndex ? { ...s, taskId: task.id } : s))
+                );
+            })
+            .catch((err) => {
+                toast.error(`Failed to start task: ${(err as Error).message}`);
+            });
+        return () => {
+            cancelled = true;
+        };
+    }, [assessmentId, phase, currentSectionIndex, sections]);
 
-        const currentCode =
-            editorRef.current?.getValue() ?? sections[currentSectionIndex]?.code ?? '';
+    // Periodic CONTENT snapshot while the candidate is actively in a task.
+    useEffect(() => {
+        if (phase !== 'assessment') return;
+        const section = sections[currentSectionIndex];
+        if (!section?.taskId) return;
+        const taskId = section.taskId;
+        const interval = setInterval(() => {
+            const code = editorRef.current?.getValue() ?? '';
+            if (!code) return;
+            createCandidateSnapshot(assessmentId, taskId, SnapshotType.CONTENT, code).catch(() => {
+                // Snapshot failures are non-fatal — don't disrupt the candidate.
+            });
+        }, CONTENT_SNAPSHOT_INTERVAL_MS);
+        return () => clearInterval(interval);
+    }, [assessmentId, phase, currentSectionIndex, sections]);
+
+    function buildSubmitPayload(section: SectionState, code: string) {
+        const publicTestCases = section.taskTemplate.publicTestCases;
+        const passedTestCases = publicTestCases.filter(
+            (_, i) => section.testCaseResults[i]?.status === 'passed'
+        );
+        const failedStatuses: TestCaseResultStatus[] = ['failed', 'runtime_error', 'error'];
+        const failedTestCases = publicTestCases.filter((_, i) =>
+            failedStatuses.includes(section.testCaseResults[i]?.status ?? 'default')
+        );
+        return { submission: code, passedTestCases, failedTestCases };
+    }
+
+    async function submitAndContinue() {
+        const isLastSection = currentSectionIndex === sections.length - 1;
+        const section = sections[currentSectionIndex];
+        if (!section) return;
+        const currentCode = editorRef.current?.getValue() ?? section.code ?? '';
+        const submitPayload = buildSubmitPayload(section, currentCode);
 
         if (isLastSection) {
             setSections((prev) =>
@@ -187,9 +254,24 @@ export default function useAssessment(assessmentId: string) {
                     i === currentSectionIndex ? { ...s, code: currentCode, status: 'completed' } : s
                 )
             );
+            // Await the final task submit so a network error doesn't lose the
+            // candidate's last submission before the assessment is marked done.
+            if (section.taskId) {
+                try {
+                    await submitCandidateTask(assessmentId, section.taskId, submitPayload);
+                } catch (err) {
+                    toast.error(`Failed to save your submission: ${(err as Error).message}`);
+                }
+            }
             handleSubmitAssessment('submitted');
         } else {
             setIsTransitioning(true);
+            // Fire-and-forget so the candidate isn't blocked moving forward.
+            if (section.taskId) {
+                submitCandidateTask(assessmentId, section.taskId, submitPayload).catch((err) => {
+                    toast.error(`Failed to save your submission: ${(err as Error).message}`);
+                });
+            }
             resetTests();
             setTimeout(() => {
                 setSections((prev) =>
