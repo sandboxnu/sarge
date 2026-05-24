@@ -25,10 +25,7 @@ async function createForCandidate(
     });
 }
 
-// Called by the WS server (via the internal endpoint) when a candidate's socket
-// closes. Resolves the candidate's most recently started, not-yet-submitted Task
-// and writes a DISCONNECT snapshot against it. No-op if the candidate has no
-// task in flight (e.g. they disconnected from the intro page).
+// Called by WS server
 async function createDisconnectSnapshot(candidateEmail: string): Promise<Snapshot | null> {
     const task = await prisma.task.findFirst({
         where: {

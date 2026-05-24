@@ -10,7 +10,7 @@ const BodySchema = z.object({
 export async function POST(request: NextRequest) {
     try {
         const expected = process.env.INTERNAL_API_SECRET;
-        const provided = request.headers.get('x-internal-secret');
+        const provided = request.headers.get('X-SARGE-INTERAL-SECRET');
         if (!expected || provided !== expected) {
             throw new UnauthorizedException('Invalid internal secret');
         }
