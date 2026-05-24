@@ -3,6 +3,8 @@ import { jwtVerify } from 'jose';
 
 const ws = new WebSocketServer({ port: 8080 });
 const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+const INTERNAL_API_URL = process.env.INTERNAL_API_URL ?? 'http://localhost:3000';
+const INTERNAL_API_SECRET = process.env.INTERNAL_API_SECRET;
 
 console.log('Sarge WS server listening on 8080');
 
@@ -10,6 +12,29 @@ console.log('Sarge WS server listening on 8080');
 const clients = new Map();
 
 const HEARTBEAT_INTERVAL = 5000;
+
+async function recordDisconnectSnapshot(candidateEmail) {
+    if (!INTERNAL_API_SECRET) {
+        console.warn('INTERNAL_API_SECRET not set; skipping disconnect snapshot');
+        return;
+    }
+    try {
+        const res = await fetch(`${INTERNAL_API_URL}/api/internal/disconnect-snapshot`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-internal-secret': INTERNAL_API_SECRET,
+            },
+            body: JSON.stringify({ candidateEmail }),
+        });
+        if (!res.ok) {
+            const text = await res.text();
+            console.error(`Disconnect snapshot failed (${res.status}): ${text}`);
+        }
+    } catch (err) {
+        console.error('Disconnect snapshot request error:', err.message);
+    }
+}
 
 function getTokenFromRequest(request) {
     return new URL(request.url ?? '/', 'ws://x').searchParams.get('token');
@@ -68,6 +93,9 @@ ws.on('connection', async (socket, request) => {
         console.log(
             `Client ${socket.candidateEmail} disconnected | code: ${code}, reason: ${reason.toString()}`
         );
+        // Fire-and-forget: server-side snapshot since the client can't write it
+        // from a closed socket.
+        recordDisconnectSnapshot(socket.candidateEmail);
     });
 
     socket.on('error', (err) => {
