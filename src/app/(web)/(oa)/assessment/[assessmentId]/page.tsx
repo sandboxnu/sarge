@@ -74,7 +74,7 @@ export default function AssessmentPage({ params }: { params: Promise<{ assessmen
     return (
         <div className="flex h-screen w-full flex-col overflow-hidden">
             {/* onOpenChange is returning nothing as we don't have recovery implemented just yet  */}
-            <LostConnectionModal open={!isConnected} onOpenChange={() => { }} />
+            <LostConnectionModal open={!isConnected} onOpenChange={() => {}} />
             <WindowUnfocusedModal
                 open={isUnfocusedModalOpen}
                 onAcknowledge={() => setIsUnfocusedModalOpen(false)}
