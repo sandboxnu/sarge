@@ -358,7 +358,11 @@ async function startForCandidate(assessmentId: string): Promise<void> {
 async function submitAssessmentForCandidate(assessmentId: string): Promise<void> {
     const assessment = await prisma.assessment.findFirst({
         where: { id: assessmentId },
-        select: { id: true, submittedAt: true, application: { select: { id: true } } },
+        select: {
+            id: true,
+            submittedAt: true,
+            application: { select: { id: true, assessmentStatus: true } },
+        },
     });
 
     if (!assessment) {
@@ -369,6 +373,12 @@ async function submitAssessmentForCandidate(assessmentId: string): Promise<void>
         throw new BadRequestException('Assessment has already been submitted');
     }
 
+    if (assessment.application.assessmentStatus !== AssessmentStatus.IN_PROGRESS) {
+        throw new BadRequestException(
+            `Assessment cannot be submitted from status ${assessment.application.assessmentStatus}`
+        );
+    }
+
     await prisma.$transaction([
         prisma.assessment.update({
             where: { id: assessmentId },
@@ -376,7 +386,7 @@ async function submitAssessmentForCandidate(assessmentId: string): Promise<void>
         }),
         prisma.application.update({
             where: { id: assessment.application.id },
-            data: { assessmentStatus: 'SUBMITTED' },
+            data: { assessmentStatus: AssessmentStatus.SUBMITTED },
         }),
     ]);
 }
