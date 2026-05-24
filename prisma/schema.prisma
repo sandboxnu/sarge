@@ -93,6 +93,7 @@ enum AssessmentStatus {
   NOT_ASSIGNED // Application created, no assessment assigned yet
   NOT_SENT // Assessment created, but link has not been sent to candidate yet
   NOT_STARTED // Assessment created and link sent to candidate, but candidate has not started yet
+  IN_PROGRESS // Candidate has started the assessment but not yet submitted
   SUBMITTED // Candidate completed and submitted assessment
   EXPIRED // Assessment deadline passed without submission
   GRADED // Assessment graded by reviewer
@@ -204,19 +205,20 @@ model AssessmentTemplateTask {
   @@index([assessmentTemplateId, order])
 }
 
-// A submitted TaskTemplate within an assessment, containing the candidate's submitted code and
-// reviewers' reviews
+// A candidate's attempt at a TaskTemplate within an assessment. Created when the candidate
+// enters the question; updated with submission + test results when they submit.
 model Task {
-  id              String   @id @unique @default(cuid())
+  id              String    @id @unique @default(cuid())
   assessmentId    String
   taskTemplateId  String
-  // Candidate's code submission
-  submission      String   @db.Text
+  // Candidate's code submission. Null until the candidate submits.
+  submission      String?   @db.Text
   // NOTE(laith): we may want to pivot our test cases to be their own tables eventually due to these
   // also being fields in TaskTemplate
   passedTestCases Json[]
   failedTestCases Json[]
-  submittedAt     DateTime @default(now())
+  startedAt       DateTime  @default(now())
+  submittedAt     DateTime?
 
   assessment   Assessment   @relation("combineToFormAssessment", fields: [assessmentId], references: [id], onDelete: Cascade)
   taskTemplate TaskTemplate @relation("derivedFromTaskTemplate", fields: [taskTemplateId], references: [id], onDelete: Restrict)
