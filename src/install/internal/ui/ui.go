@@ -83,11 +83,11 @@ func InitialModel() model {
 			{step: system, runningStr: "Checking system requirements", completedStr: "System requirements pass", run: func() error { return command.CheckSystemRequirements() }},
 			{step: permission, runningStr: "Checking root permissions", completedStr: "Verified root permissions", run: func() error { return command.CheckPermission() }},
 			{step: dependencies, runningStr: "Installing dependencies", completedStr: "Dependencies successfully installed", run: func() error { return command.InstallDependencies() }},
-			// NOTE(laith): hostname is a pure input step — no task.run, just collects the hostname before bootstrap.
+			// NOTE(laith): hostname is a pure input step, no task.run, just collects the hostname before bootstrap.
 			{step: hostname, runningStr: "Input your hostname:"},
-			// NOTE(laith): bootstrap's run is rebound once the hostname is submitted.
+			// bootstrap's run function is re-assigned once the hostname is submitted, thats why it is missing here
 			{step: bootstrap, runningStr: "Bootstrapping Sarge", completedStr: "Sarge successfully bootstrapped"},
-			// NOTE(laith): this has a different display entirely
+			// this has a different display entirely
 			{step: complete},
 		},
 		spinner:       s,
@@ -237,7 +237,8 @@ func (m model) View() tea.View {
 
 	var steps string
 	if m.setupComplete {
-		steps = fmt.Sprintf("Sarge installation complete!\nYou can start using Sarge now by visiting:\n\nhttps://%s\n\nSarge will automatically install updates at 2:00 AM each day.\nRun the `sarge` command to view your administrator options.", m.hostname)
+		// TODO(laith): eventually we'd want to support automatic updates via a cronjob that pulls the latest images from ghcr and reruns compose
+		steps = fmt.Sprintf("Sarge installation complete!\nYou can start using Sarge now by visiting:\n\nhttps://%s!\n", m.hostname)
 	} else {
 		steps = lipgloss.JoinVertical(lipgloss.Center, stepLines...)
 	}

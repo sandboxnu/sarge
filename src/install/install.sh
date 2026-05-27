@@ -1,9 +1,18 @@
 #!/bin/sh
+# install.sh is the entrypoint for the Sarge one command installation flow. This is the script that
+# first runs onto the user's machine
+
+# TO NOTE:
+#   - the install script only supports Linux machines
+#   - TODO(laith): support darwin and bsd kernels at some point
+
 set -eu
 
 INSTALL_DIR='/usr/local/bin'
+# NOTE(laith): our releases are powered by the .github/workflows/release.yml workflow
 DOWNLOAD_BASE='https://github.com/sandboxnu/sarge/releases/latest/download'
 BINARY_NAME='sarge'
+
 SARGE_BIN=''
 DOWNLOADER=''
 
@@ -72,6 +81,8 @@ download_sarge_installer() {
   os="$1"
   arch="$2"
 
+  # NOTE(laith): command -v is a command used to check whether a command exists
+  # silencing the output and simply just checking if the command ran successfully
   if command -v "$BINARY_NAME" >/dev/null 2>&1; then
     SARGE_BIN=$(command -v "$BINARY_NAME")
     echo "${BINARY_NAME} is already installed at ${SARGE_BIN}"
@@ -79,12 +90,15 @@ download_sarge_installer() {
   fi
 
   echo "Downloading ${BINARY_NAME} for ${os}/${arch}..."
-  asset="${BINARY_NAME}-${os}-${arch}"
-  tmpfile=$(mktemp)
-  download "${DOWNLOAD_BASE}/${asset}" "$tmpfile"
+  # NOTE(laith): this is the exact file name format our releases are titled: https://github.com/sandboxnu/sarge/releases
+  # See our release.yml workflow for more information
+  package_title="${BINARY_NAME}-${os}-${arch}"
+  tmp_output_file=$(mktemp)
+  download "${DOWNLOAD_BASE}/${package_title}" "$tmp_output_file"
 
-  install -m 755 "$tmpfile" "${INSTALL_DIR}/${BINARY_NAME}"
-  rm -f "$tmpfile"
+  # NOTE(laith): `install -m` is a UNIX utility that does both `mv` and `chmod` at the same time
+  install -m 755 "$tmp_output_file" "${INSTALL_DIR}/${BINARY_NAME}"
+  rm -f "$tmp_output_file"
 
   SARGE_BIN="${INSTALL_DIR}/${BINARY_NAME}"
   echo "Installed ${BINARY_NAME} to ${SARGE_BIN}"
