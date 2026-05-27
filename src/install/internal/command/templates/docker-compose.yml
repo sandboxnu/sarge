@@ -1,9 +1,21 @@
 services:
+    caddy:
+        image: caddy:2-alpine
+        restart: unless-stopped
+        ports:
+            - '80:80'
+            - '443:443'
+        volumes:
+            - ./Caddyfile:/etc/caddy/Caddyfile:ro
+            - caddy_data:/data
+            - caddy_config:/config
+        depends_on:
+            - web
+            - ws
+
     web:
         image: ghcr.io/sandboxnu/sarge-web:latest
         pull_policy: always
-        ports:
-            - '127.0.0.1:3000:3000'
         env_file:
             - .env
         environment:
@@ -29,9 +41,9 @@ services:
         pull_policy: always
         env_file:
             - .env
-        ports:
-            - '127.0.0.1:8080:8080'
         restart: unless-stopped
 
 volumes:
     postgres_data:
+    caddy_data:
+    caddy_config:

@@ -55,14 +55,13 @@ type taskDoneMsg struct {
 }
 
 type model struct {
-	step              step
-	tasks             []task
-	spinner           spinner.Model
-	hostnameInput     textinput.Model
-	hostnameSubmitted bool
-	hostname          string
-	setupComplete     bool
-	errMessage        string
+	step          step
+	tasks         []task
+	spinner       spinner.Model
+	hostnameInput textinput.Model
+	hostname      string
+	setupComplete bool
+	errMessage    string
 }
 
 func InitialModel() model {
@@ -84,9 +83,9 @@ func InitialModel() model {
 			{step: system, runningStr: "Checking system requirements", completedStr: "System requirements pass", run: func() error { return command.CheckSystemRequirements() }},
 			{step: permission, runningStr: "Checking root permissions", completedStr: "Verified root permissions", run: func() error { return command.CheckPermission() }},
 			{step: dependencies, runningStr: "Installing dependencies", completedStr: "Dependencies successfully installed", run: func() error { return command.InstallDependencies() }},
-			// NOTE(laith): these values are dynamic so we only define the step right now
+			// NOTE(laith): hostname is a pure input step — no task.run, just collects the hostname before bootstrap.
 			{step: hostname, runningStr: "Input your hostname:"},
-			// NOTE(laith): bootstrap's run is rebound once the hostname is submitted (same pattern as the hostname step).
+			// NOTE(laith): bootstrap's run is rebound once the hostname is submitted.
 			{step: bootstrap, runningStr: "Bootstrapping Sarge", completedStr: "Sarge successfully bootstrapped"},
 			// NOTE(laith): this has a different display entirely
 			{step: complete},
@@ -98,13 +97,6 @@ func InitialModel() model {
 	// NOTE(laith): stamp the first task's start time so the live timer is accurate from frame one.
 	m.tasks[0].startedAt = time.Now()
 	return m
-}
-
-func fakeWork(d time.Duration) func() error {
-	return func() error {
-		time.Sleep(d)
-		return nil
-	}
 }
 
 // Defining a function that can be used in tea.Batch
@@ -138,14 +130,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					return m, nil
 				}
 
-				m.tasks[m.step].run = func() error { return command.BootstrapCaddy(hostname) }
-				m.tasks[m.step].runningStr = fmt.Sprintf("Generating SSL certificates for %s", hostname)
-				m.tasks[m.step].completedStr = fmt.Sprintf("SSL certificates successfully generated for %s", hostname)
-				m.tasks[m.step].startedAt = time.Now()
 				m.tasks[bootstrap].run = func() error { return command.BootstrapSarge(hostname) }
+				m.tasks[bootstrap].startedAt = time.Now()
 				m.hostname = hostname
-				m.hostnameSubmitted = true
-				return m, runTask(m.tasks[m.step])
+				m.step = bootstrap
+				return m, runTask(m.tasks[bootstrap])
 			}
 			var cmd tea.Cmd
 			m.hostnameInput, cmd = m.hostnameInput.Update(msg)
@@ -212,7 +201,7 @@ func (m model) View() tea.View {
 				timeStyle.Render(fmt.Sprintf("(%s)", t.elapsed.Round(time.Second))),
 			))
 		case t.step == m.step:
-			if t.step == hostname && !m.hostnameSubmitted {
+			if t.step == hostname {
 				// NOTE(laith): unfortunately text input's API needs it to be styled within view
 				// and cannot be styled beforehand like spinner in initialModel()
 				inputBox := lipgloss.NewStyle().
