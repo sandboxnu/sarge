@@ -239,7 +239,6 @@ func (m model) View() tea.View {
 
 	var steps string
 	if m.setupComplete {
-		// TODO(laith): eventually we'd want to support automatic updates via a cronjob that pulls the latest images from ghcr and reruns compose
 		steps = fmt.Sprintf("Sarge installation complete!\nYou can start using Sarge now by visiting:\n\nhttps://%s!\n", m.hostname)
 	} else {
 		steps = lipgloss.JoinVertical(lipgloss.Center, stepLines...)
