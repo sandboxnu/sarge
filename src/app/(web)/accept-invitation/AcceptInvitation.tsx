@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { authClient } from '@/lib/auth/auth-client';
@@ -20,10 +20,8 @@ type InvitationData = {
     expiresAt: string;
 };
 
-export default function AcceptInvitation() {
-    const searchParams = useSearchParams();
+export default function AcceptInvitation({ id }: { id: string | null }) {
     const router = useRouter();
-    const id = searchParams?.get('id') ?? null;
 
     const { isAuthenticated, isPending: sessionPending } = useAuthSession();
 
