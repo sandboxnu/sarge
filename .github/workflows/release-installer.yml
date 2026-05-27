@@ -50,21 +50,38 @@ jobs:
                   echo "previous_tag=$LATEST" >> "$GITHUB_OUTPUT"
                   echo "Releasing $NEXT (previous: ${LATEST:-none})"
             - name: Generate changelog
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               run: |
                   PREV="${{ steps.version.outputs.previous_tag }}"
                   if [ -z "$PREV" ]; then
-                    LOG=$(git log --pretty=format:'- %s (%h)' -- src/install/)
+                    RANGE="HEAD"
                   else
-                    LOG=$(git log --pretty=format:'- %s (%h)' "$PREV"..HEAD -- src/install/)
+                    RANGE="$PREV..HEAD"
                   fi
-                  if [ -z "$LOG" ]; then
-                    LOG="_No installer changes since previous release._"
-                  fi
+
                   {
                     echo "## Installer Updates"
                     echo ""
-                    echo "$LOG"
                   } > changelog.md
+
+                  COMMITS=$(git log --pretty=format:'%H' $RANGE -- src/install/)
+
+                  if [ -z "$COMMITS" ]; then
+                    echo "_No installer changes since previous release._" >> changelog.md
+                  else
+                    while IFS= read -r SHA; do
+                      SUBJECT=$(git log -1 --pretty=format:'%s' "$SHA")
+                      SHORT=$(git log -1 --pretty=format:'%h' "$SHA")
+                      AUTHOR=$(gh api "repos/$GITHUB_REPOSITORY/commits/$SHA" --jq '.author.login // ""' 2>/dev/null || echo "")
+                      if [ -n "$AUTHOR" ] && [ "$AUTHOR" != "null" ]; then
+                        echo "- $SUBJECT ($SHORT) - @$AUTHOR" >> changelog.md
+                      else
+                        echo "- $SUBJECT ($SHORT)" >> changelog.md
+                      fi
+                    done <<< "$COMMITS"
+                  fi
+
                   cat changelog.md
             - name: Build binaries
               working-directory: src/install
