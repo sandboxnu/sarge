@@ -51,9 +51,20 @@ export const auth = betterAuth({
         maxPasswordLength: 128,
         autoSignIn: true,
 
-        // sendResetPassword: async ({ user, url, token }) => {
-        //     // TODO: Implement email sending when email service is configured
-        // },
+        sendResetPassword: async ({ user, url }) => {
+            try {
+                const emailSent = await sesConnector.sendEmail(
+                    user.email,
+                    'Reset your Sarge password',
+                    `Hello,\n\nWe received a request to reset your Sarge password. Click the link below to set a new password:\n\n${url}\n\nThis link will expire in 1 hour. If you didn't request a password reset, you can safely ignore this email.`
+                );
+                if (!emailSent) {
+                    console.error('SES reported failure to send reset password email');
+                }
+            } catch (error) {
+                console.error('Failed to send reset password email:', error);
+            }
+        },
         resetPasswordTokenExpiresIn: 60 * 60,
     },
     session: {
