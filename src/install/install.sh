@@ -2,14 +2,12 @@
 # install.sh is the entrypoint for the Sarge one command installation flow. This is the script that
 # first runs onto the user's machine
 
-# TO NOTE:
-#   - the install script only supports Linux machines
-#   - TODO(laith): support darwin and bsd kernels at some point
+# TODO(laith): support darwin and bsd kernels at some point
 
 set -eu
 
 INSTALL_DIR='/usr/local/bin'
-# NOTE(laith): our releases are powered by the .github/workflows/release.yml workflow
+# NOTE(laith): our releases are powered by the .github/workflows/release-installer.yml workflow
 DOWNLOAD_BASE='https://github.com/sandboxnu/sarge/releases/latest/download'
 BINARY_NAME='sarge'
 
