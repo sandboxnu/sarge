@@ -1,4 +1,4 @@
-name: release
+name: Release and Upload to GHCR
 
 on:
   push:
