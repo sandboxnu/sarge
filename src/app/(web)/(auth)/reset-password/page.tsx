@@ -51,13 +51,14 @@ export default function ResetPasswordPage() {
                             <div className="border-sarge-primary-200 bg-sarge-primary-100 mb-4 rounded-lg border p-4">
                                 <p className="text-body-s text-sarge-gray-800">
                                     Didn&apos;t get the email? Check your spam folder, or{' '}
-                                    <button
+                                    <Button
+                                        variant="link"
                                         type="button"
                                         onClick={handleTryAgain}
-                                        className="text-sarge-primary-500 font-semibold hover:underline"
+                                        className="h-auto p-0 font-semibold"
                                     >
                                         try again
-                                    </button>
+                                    </Button>
                                     .
                                 </p>
                             </div>
