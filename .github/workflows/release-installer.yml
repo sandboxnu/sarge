@@ -34,22 +34,38 @@ jobs:
             - name: Compute next version
               id: version
               run: |
+                  LATEST=$(git tag -l 'v*' --sort=-version:refname | head -n1)
                   if [ -n "${{ inputs.version }}" ]; then
                     NEXT="${{ inputs.version }}"
+                  elif [ -z "$LATEST" ]; then
+                    NEXT="v0.0.1"
                   else
-                    LATEST=$(git tag -l 'v*' --sort=-version:refname | head -n1)
-                    if [ -z "$LATEST" ]; then
-                      NEXT="v0.0.1"
-                    else
-                      VERSION=${LATEST#v}
-                      MAJOR=$(echo "$VERSION" | cut -d. -f1)
-                      MINOR=$(echo "$VERSION" | cut -d. -f2)
-                      PATCH=$(echo "$VERSION" | cut -d. -f3)
-                      NEXT="v${MAJOR}.${MINOR}.$((PATCH + 1))"
-                    fi
+                    VERSION=${LATEST#v}
+                    MAJOR=$(echo "$VERSION" | cut -d. -f1)
+                    MINOR=$(echo "$VERSION" | cut -d. -f2)
+                    PATCH=$(echo "$VERSION" | cut -d. -f3)
+                    NEXT="v${MAJOR}.${MINOR}.$((PATCH + 1))"
                   fi
                   echo "tag=$NEXT" >> "$GITHUB_OUTPUT"
-                  echo "Releasing $NEXT"
+                  echo "previous_tag=$LATEST" >> "$GITHUB_OUTPUT"
+                  echo "Releasing $NEXT (previous: ${LATEST:-none})"
+            - name: Generate changelog
+              run: |
+                  PREV="${{ steps.version.outputs.previous_tag }}"
+                  if [ -z "$PREV" ]; then
+                    LOG=$(git log --pretty=format:'- %s (%h)' -- src/install/)
+                  else
+                    LOG=$(git log --pretty=format:'- %s (%h)' "$PREV"..HEAD -- src/install/)
+                  fi
+                  if [ -z "$LOG" ]; then
+                    LOG="_No installer changes since previous release._"
+                  fi
+                  {
+                    echo "## Installer Updates"
+                    echo ""
+                    echo "$LOG"
+                  } > changelog.md
+                  cat changelog.md
             - name: Build binaries
               working-directory: src/install
               env:
@@ -68,4 +84,4 @@ jobs:
                   gh release create "${{ steps.version.outputs.tag }}" \
                     src/install/sarge-linux-amd64 \
                     src/install/sarge-linux-arm64 \
-                    --generate-notes
+                    --notes-file changelog.md
