@@ -3,7 +3,9 @@ import { ReadyState } from 'react-use-websocket';
 
 const WS_URL =
     process.env.NEXT_PUBLIC_WS_URL ??
-    (typeof window !== 'undefined' ? `wss://ws.${window.location.hostname}` : 'ws://localhost:8080');
+    (typeof window !== 'undefined'
+        ? `wss://ws.${window.location.hostname}`
+        : 'ws://localhost:8080');
 
 export function useHeartbeat(token: string | null) {
     const ws = useWebSocket(token ? `${WS_URL}?token=${token}` : null, {
