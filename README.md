@@ -20,7 +20,7 @@
 
 Sarge is self-hostable! The **minimum** system requirements are as follows:
 
-- **Operating System**: Linux
+- **OS**: Linux
 - **CPU**: 1 vCPU
 - **RAM**: 1 GB
 - **Storage**: 10 GB
@@ -28,7 +28,7 @@ Sarge is self-hostable! The **minimum** system requirements are as follows:
 Install using:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/sandboxnu/sarge/main/src/install/install.sh | sudo sh
+curl -fsSL https://raw.githubusercontent.com/sandboxnu/sarge/main/src/install/install.sh | sh
 ```
 
 Release versioning is attached to our installation script, TUI, and CLI. Sarge Web and WS images are rolling release. You can update your Sarge version by restarting Sarge as root:
