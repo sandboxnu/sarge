@@ -1,0 +1,87 @@
+name: Release Installer Binaries
+
+on:
+    push:
+        branches: [main]
+        paths:
+            - 'src/install/**'
+            - '.github/workflows/release-installer.yml'
+    workflow_dispatch:
+        inputs:
+            version:
+                description: 'Explicit version tag (e.g., v0.1.0). Leave blank to auto-bump patch.'
+                required: false
+                type: string
+
+permissions:
+    contents: write
+
+# need to run serialize so two concurrent main pushes don't race to compute the same next version
+concurrency:
+    group: release-installer
+    cancel-in-progress: false
+
+jobs:
+    release:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+            - uses: actions/setup-go@v5
+              with:
+                  go-version-file: src/install/go.mod
+            - name: Compute next version
+              id: version
+              run: |
+                  LATEST=$(git tag -l 'v*' --sort=-version:refname | head -n1)
+                  if [ -n "${{ inputs.version }}" ]; then
+                    NEXT="${{ inputs.version }}"
+                  elif [ -z "$LATEST" ]; then
+                    NEXT="v0.0.1"
+                  else
+                    VERSION=${LATEST#v}
+                    MAJOR=$(echo "$VERSION" | cut -d. -f1)
+                    MINOR=$(echo "$VERSION" | cut -d. -f2)
+                    PATCH=$(echo "$VERSION" | cut -d. -f3)
+                    NEXT="v${MAJOR}.${MINOR}.$((PATCH + 1))"
+                  fi
+                  echo "tag=$NEXT" >> "$GITHUB_OUTPUT"
+                  echo "previous_tag=$LATEST" >> "$GITHUB_OUTPUT"
+                  echo "Releasing $NEXT (previous: ${LATEST:-none})"
+            - name: Generate changelog
+              run: |
+                  PREV="${{ steps.version.outputs.previous_tag }}"
+                  if [ -z "$PREV" ]; then
+                    LOG=$(git log --pretty=format:'- %s (%h)' -- src/install/)
+                  else
+                    LOG=$(git log --pretty=format:'- %s (%h)' "$PREV"..HEAD -- src/install/)
+                  fi
+                  if [ -z "$LOG" ]; then
+                    LOG="_No installer changes since previous release._"
+                  fi
+                  {
+                    echo "## Installer Updates"
+                    echo ""
+                    echo "$LOG"
+                  } > changelog.md
+                  cat changelog.md
+            - name: Build binaries
+              working-directory: src/install
+              env:
+                  CGO_ENABLED: 0
+                  GOOS: linux
+              run: |
+                  for arch in amd64 arm64; do
+                    GOARCH=$arch go build -ldflags="-s -w" -o sarge-linux-$arch .
+                  done
+            - name: Tag and create release
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  git tag "${{ steps.version.outputs.tag }}"
+                  git push origin "${{ steps.version.outputs.tag }}"
+                  gh release create "${{ steps.version.outputs.tag }}" \
+                    src/install/sarge-linux-amd64 \
+                    src/install/sarge-linux-arm64 \
+                    --notes-file changelog.md

@@ -1,0 +1,49 @@
+services:
+    caddy:
+        image: caddy:2-alpine
+        restart: unless-stopped
+        ports:
+            - '80:80'
+            - '443:443'
+        volumes:
+            - ./Caddyfile:/etc/caddy/Caddyfile:ro
+            - caddy_data:/data
+            - caddy_config:/config
+        depends_on:
+            - web
+            - ws
+
+    web:
+        image: ghcr.io/sandboxnu/sarge-web:latest
+        pull_policy: always
+        env_file:
+            - .env
+        environment:
+            DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
+            DIRECT_URL: postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
+        depends_on:
+            - db
+            - ws
+        restart: unless-stopped
+
+    db:
+        image: postgres:17
+        restart: unless-stopped
+        environment:
+            POSTGRES_USER: ${DB_USER}
+            POSTGRES_PASSWORD: ${DB_PASSWORD}
+            POSTGRES_DB: ${DB_NAME}
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+
+    ws:
+        image: ghcr.io/sandboxnu/sarge-ws:latest
+        pull_policy: always
+        env_file:
+            - .env
+        restart: unless-stopped
+
+volumes:
+    postgres_data:
+    caddy_data:
+    caddy_config:
