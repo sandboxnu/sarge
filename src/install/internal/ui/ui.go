@@ -124,15 +124,17 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case "ctrl+c":
 				return m, tea.Quit
 			case "enter":
-				hostname := m.hostnameInput.Value()
-				if hostname == "" {
+				hostnameValue := m.hostnameInput.Value()
+				if hostnameValue == "" {
 					// NOTE(laith): this continues to show the same frame, so it is ignoring the input here
 					return m, nil
 				}
 
-				m.tasks[bootstrap].run = func() error { return command.BootstrapSarge(hostname) }
+				m.tasks[hostname].completedStr = "Received hostname " + hostnameValue
+
+				m.tasks[bootstrap].run = func() error { return command.BootstrapSarge(hostnameValue) }
 				m.tasks[bootstrap].startedAt = time.Now()
-				m.hostname = hostname
+				m.hostname = hostnameValue
 				m.step = bootstrap
 				return m, runTask(m.tasks[bootstrap])
 			}
