@@ -14,13 +14,7 @@ import {
 import { Input } from '@/lib/components/ui/Input';
 import useResetPasswordConfirmPage from '@/lib/hooks/useResetPasswordConfirmPage';
 
-export default function ResetPasswordConfirm({
-    token,
-    error,
-}: {
-    token?: string;
-    error?: string;
-}) {
+export default function ResetPasswordConfirm({ token, error }: { token?: string; error?: string }) {
     const { form, isResetting, linkIsInvalid, didResetPassword, handleResetPassword } =
         useResetPasswordConfirmPage({ token, error });
 
