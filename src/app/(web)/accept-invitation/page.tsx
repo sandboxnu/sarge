@@ -1,10 +1,10 @@
-import { Suspense } from 'react';
 import AcceptInvitation from './AcceptInvitation';
 
-export default function AcceptInvitationPage() {
-    return (
-        <Suspense fallback={<div>Loading...</div>}>
-            <AcceptInvitation />
-        </Suspense>
-    );
+export default async function AcceptInvitationPage({
+    searchParams,
+}: {
+    searchParams: Promise<{ id?: string }>;
+}) {
+    const { id } = await searchParams;
+    return <AcceptInvitation id={id ?? null} />;
 }

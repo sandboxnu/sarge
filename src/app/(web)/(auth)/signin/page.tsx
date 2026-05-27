@@ -36,8 +36,7 @@ export default function SignInPage() {
 
             if (lowerMessage.includes('email') && lowerMessage.includes('password')) {
                 form.setError('email', { type: 'manual' });
-                form.setError('password', { type: 'manual' });
-                form.setError('root', { message });
+                form.setError('password', { message });
             } else if (lowerMessage.includes('email') || lowerMessage.includes('not found')) {
                 form.setError('email', { message });
             } else if (lowerMessage.includes('password') || lowerMessage.includes('invalid')) {
@@ -54,8 +53,8 @@ export default function SignInPage() {
 
     return (
         <div className="flex min-h-screen w-full overflow-hidden">
-            <div className="relative hidden overflow-hidden bg-white lg:flex lg:w-1/2">
-                <div className="from-sarge-primary-100 absolute -top-[42px] left-0 h-[calc(100%+84px)] w-full rounded-r-2xl bg-linear-to-b to-white" />
+            <div className="bg-sarge-gray-0 relative hidden overflow-hidden lg:flex lg:w-1/2">
+                <div className="from-sarge-primary-100 to-sarge-gray-0 absolute -inset-y-10 left-0 w-full rounded-r-2xl bg-linear-to-b" />
 
                 <div className="absolute top-0 left-0 z-10 pt-6 pr-6">
                     <Image src="/HelmetLogoFull.png" alt="Sarge" width={200} height={61} priority />
@@ -67,15 +66,15 @@ export default function SignInPage() {
                             With Sarge you&apos;ll be able to manage tasks, assessments, and
                             candidates <span className="font-bold">all in one place.</span>
                         </p>
-                        <div className="w-full flex-1 rounded-md bg-linear-to-b from-white via-white to-white/0 shadow-[0_-4px_8px_0_rgba(0,0,0,0.03)]" />
+                        <div className="from-sarge-gray-0 via-sarge-gray-0 to-sarge-gray-0/0 w-full flex-1 rounded-md bg-linear-to-b shadow-[0_-4px_8px_0_rgba(0,0,0,0.03)]" />
                     </div>
                 </div>
             </div>
 
-            <div className="flex w-full items-center justify-center bg-white px-4 py-8 sm:px-8 lg:w-1/2 lg:px-16">
+            <div className="bg-sarge-gray-0 flex w-full items-center justify-center px-4 py-8 sm:px-8 lg:w-1/2 lg:px-16">
                 <div className="w-full max-w-sm">
                     <div className="mb-8 flex justify-center">
-                        <h1 className="text-display-xs text-sarge-gray-800">Sign in to Sarge</h1>
+                        <h1 className="text-display-xs">Sign in to Sarge</h1>
                     </div>
 
                     <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
@@ -85,10 +84,7 @@ export default function SignInPage() {
                                 control={form.control}
                                 render={({ field, fieldState }) => (
                                     <Field data-invalid={fieldState.invalid} className="gap-2">
-                                        <FieldLabel
-                                            htmlFor="email"
-                                            className="text-label-s text-sarge-gray-800"
-                                        >
+                                        <FieldLabel htmlFor="email" className="text-label-s">
                                             Email
                                         </FieldLabel>
                                         <Input
@@ -115,10 +111,7 @@ export default function SignInPage() {
                                 render={({ field, fieldState }) => (
                                     <Field data-invalid={fieldState.invalid} className="gap-2">
                                         <div className="flex items-center justify-between">
-                                            <FieldLabel
-                                                htmlFor="password"
-                                                className="text-label-s text-sarge-gray-800"
-                                            >
+                                            <FieldLabel htmlFor="password" className="text-label-s">
                                                 Password
                                             </FieldLabel>
                                             <Link
@@ -151,7 +144,7 @@ export default function SignInPage() {
                             type="submit"
                             variant="primary"
                             disabled={form.formState.isSubmitting}
-                            className="text-label-s bg-sarge-primary-500 text-sarge-gray-50 hover:bg-sarge-primary-600 h-11 w-full rounded-lg px-4 py-2 transition-colors disabled:opacity-50"
+                            className="text-label-s text-sarge-gray-50 h-11 w-full px-4"
                         >
                             {form.formState.isSubmitting ? 'Logging in...' : 'Continue'}
                         </Button>
