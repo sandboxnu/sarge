@@ -44,10 +44,8 @@ func runShellCommand(cmd string) error {
 }
 
 func CheckSystemRequirements() error {
-	switch runtime.GOOS {
-	case "linux", "darwin", "freebsd":
-	default:
-		return fmt.Errorf("unsupported OS: %s", runtime.GOOS)
+	if runtime.GOOS != "linux" {
+		return fmt.Errorf("unsupported OS: %s (sarge currently only supports linux)", runtime.GOOS)
 	}
 	switch runtime.GOARCH {
 	case "amd64", "arm64":
@@ -58,15 +56,8 @@ func CheckSystemRequirements() error {
 }
 
 func CheckPermission() error {
-	output, err := exec.Command("id", "-u").Output()
-	if err != nil {
-		return errors.New("Unable to run command: 'id -u'")
-	}
-
-	uid := strings.TrimSpace(string(output))
-
-	if uid != "0" {
-		return errors.New("User is not root: $(id -u)")
+	if uid := os.Getuid(); uid != 0 {
+		return fmt.Errorf("user is not root (current uid: %d)", uid)
 	}
 	return nil
 }
@@ -74,9 +65,6 @@ func CheckPermission() error {
 func InstallDependencies() error {
 	if err := ensureCurlOrWget(); err != nil {
 		return fmt.Errorf("%w", err)
-	}
-	if err := ensureGit(); err != nil {
-		return fmt.Errorf("installing git: %w", err)
 	}
 	if err := ensureDocker(); err != nil {
 		return fmt.Errorf("installing docker: %w", err)
@@ -110,29 +98,108 @@ func ensureDocker() error {
 		return errors.New("Docker is installed but not running, please start your Docker service")
 	}
 
-	return runShellCommand(installCli + " https://get.docker.com | sh")
-}
-
-func ensureGit() error {
-	if exec.Command("which", "git").Run() == nil {
-		return nil
+	var fetch string
+	switch installCli {
+	case "curl":
+		fetch = "curl -fsSL https://get.docker.com"
+	case "wget":
+		fetch = "wget -qO- https://get.docker.com"
+	default:
+		return fmt.Errorf("unknown downloader: %s", installCli)
 	}
-	return errors.New("git is required but not installed")
+	return runShellCommand(fetch + " | sh")
 }
 
 func ensureCaddy() error {
-	if exec.Command("which", "caddy").Run() == nil {
-		return nil
+	if exec.Command("which", "caddy").Run() != nil {
+		if err := downloadCaddy(); err != nil {
+			return err
+		}
 	}
 
+	if err := ensureCaddyUser(); err != nil {
+		return fmt.Errorf("creating caddy user: %w", err)
+	}
+	if err := installCaddySystemdUnit(); err != nil {
+		return fmt.Errorf("installing caddy systemd unit: %w", err)
+	}
+	return nil
+}
+
+func downloadCaddy() error {
 	installUrl := fmt.Sprintf(
-		"https://caddyserver.com/api/download?os=%s&arch=%s",
-		runtime.GOOS, runtime.GOARCH,
+		"https://caddyserver.com/api/download?os=linux&arch=%s",
+		runtime.GOARCH,
 	)
-	return runShellCommand(fmt.Sprintf(
-		"%s %s > /usr/local/bin/caddy && chmod +x /usr/local/bin/caddy",
-		installCli, installUrl,
+
+	tmp, err := os.CreateTemp("", "caddy-*")
+	if err != nil {
+		return fmt.Errorf("creating temp file: %w", err)
+	}
+	tmpPath := tmp.Name()
+	tmp.Close()
+	defer os.Remove(tmpPath)
+
+	var downloadCmd string
+	switch installCli {
+	case "curl":
+		downloadCmd = fmt.Sprintf("curl -fsSL -o %s %q", tmpPath, installUrl)
+	case "wget":
+		downloadCmd = fmt.Sprintf("wget -q -O %s %q", tmpPath, installUrl)
+	default:
+		return fmt.Errorf("unknown downloader: %s", installCli)
+	}
+
+	if err := runShellCommand(downloadCmd); err != nil {
+		return fmt.Errorf("downloading caddy: %w", err)
+	}
+	return runCmd(exec.Command("install", "-m", "755", tmpPath, "/usr/local/bin/caddy"))
+}
+
+const caddyUnitPath = "/etc/systemd/system/caddy.service"
+
+const caddySystemdUnit = `[Unit]
+Description=Caddy
+Documentation=https://caddyserver.com/docs/
+After=network.target network-online.target
+Requires=network-online.target
+
+[Service]
+Type=notify
+User=caddy
+Group=caddy
+ExecStart=/usr/local/bin/caddy run --environ --config /etc/caddy/Caddyfile
+ExecReload=/usr/local/bin/caddy reload --config /etc/caddy/Caddyfile --force
+TimeoutStopSec=5s
+LimitNOFILE=1048576
+PrivateTmp=true
+ProtectSystem=full
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+
+[Install]
+WantedBy=multi-user.target
+`
+
+func ensureCaddyUser() error {
+	if exec.Command("id", "caddy").Run() == nil {
+		return nil
+	}
+	return runCmd(exec.Command(
+		"useradd", "--system",
+		"--home", "/var/lib/caddy", "--create-home",
+		"--shell", "/usr/sbin/nologin",
+		"caddy",
 	))
+}
+
+func installCaddySystemdUnit() error {
+	if err := os.WriteFile(caddyUnitPath, []byte(caddySystemdUnit), 0644); err != nil {
+		return err
+	}
+	if err := runCmd(exec.Command("systemctl", "daemon-reload")); err != nil {
+		return err
+	}
+	return runCmd(exec.Command("systemctl", "enable", "caddy"))
 }
 
 func BootstrapCaddy(hostname string) error {
@@ -145,33 +212,31 @@ func BootstrapCaddy(hostname string) error {
 		return fmt.Errorf("creating /etc/caddy: %w", err)
 	}
 
-	f, err := os.Create("/etc/caddy/Caddyfile")
-	if err != nil {
+	var buf bytes.Buffer
+	if err := t.Execute(&buf, CaddyConfig{Hostname: hostname}); err != nil {
+		return err
+	}
+	if err := os.WriteFile("/etc/caddy/Caddyfile", buf.Bytes(), 0644); err != nil {
 		return err
 	}
 
-	defer f.Close()
-
-	return t.Execute(f, CaddyConfig{
-		Hostname: hostname,
-	})
+	return runCmd(exec.Command("systemctl", "reload-or-restart", "caddy"))
 }
 
 const (
-	sargeRepoURL    = "https://github.com/sandboxnu/sarge"
-	sargeRepoPath   = "/opt/sarge"
+	sargeRoot       = "/opt/sarge"
 	composeFileName = "docker-compose.yaml"
 	envFileName     = ".env"
 )
 
-func BootstrapSarge() error {
-	if err := cloneSarge(); err != nil {
-		return fmt.Errorf("cloning sarge: %w", err)
+func BootstrapSarge(hostname string) error {
+	if err := os.MkdirAll(sargeRoot, 0755); err != nil {
+		return fmt.Errorf("creating %s: %w", sargeRoot, err)
 	}
 	if err := writeComposeFile(); err != nil {
 		return fmt.Errorf("writing %s: %w", composeFileName, err)
 	}
-	if err := writeEnvFile(); err != nil {
+	if err := writeEnvFile(hostname); err != nil {
 		return fmt.Errorf("writing %s: %w", envFileName, err)
 	}
 	if err := startSarge(); err != nil {
@@ -180,34 +245,61 @@ func BootstrapSarge() error {
 	return nil
 }
 
-func cloneSarge() error {
-	if _, err := os.Stat(sargeRepoPath); err == nil {
-		return nil
-	}
-	return runCmd(exec.Command("git", "clone", sargeRepoURL, sargeRepoPath))
-}
-
 func writeComposeFile() error {
-	return os.WriteFile(sargeRepoPath+"/"+composeFileName, compose, 0644)
+	return os.WriteFile(sargeRoot+"/"+composeFileName, compose, 0644)
 }
 
-func writeEnvFile() error {
-	envPath := sargeRepoPath + "/" + envFileName
+func writeEnvFile(hostname string) error {
+	envPath := sargeRoot + "/" + envFileName
 	if _, err := os.Stat(envPath); err == nil {
 		return nil
 	}
 
-	pw := make([]byte, 24)
-	if _, err := rand.Read(pw); err != nil {
-		return err
+	dbPassword, err := randomHex(24)
+	if err != nil {
+		return fmt.Errorf("generating DB_PASSWORD: %w", err)
+	}
+	betterAuthSecret, err := randomHex(32)
+	if err != nil {
+		return fmt.Errorf("generating BETTER_AUTH_SECRET: %w", err)
+	}
+	jwtSecret, err := randomHex(32)
+	if err != nil {
+		return fmt.Errorf("generating JWT_SECRET: %w", err)
 	}
 
-	contents := fmt.Sprintf("DB_USER=sarge\nDB_PASSWORD=%s\nDB_NAME=sarge\n", hex.EncodeToString(pw))
+	contents := fmt.Sprintf(`DB_USER=sarge
+DB_PASSWORD=%s
+DB_NAME=sarge
+
+BETTER_AUTH_SECRET=%s
+BETTER_AUTH_URL=https://%s
+JWT_SECRET=%s
+
+# Fill these in to enable file uploads, email, and code execution.
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+AWS_SECRET_NAME=
+AWS_BUCKET_NAME=
+EMAIL_DOMAIN=
+JUDGE_API_KEY=
+JUDGE_URL=
+NEXT_PUBLIC_CDN_BASE=
+`, dbPassword, betterAuthSecret, hostname, jwtSecret)
+
 	return os.WriteFile(envPath, []byte(contents), 0600)
+}
+
+func randomHex(n int) (string, error) {
+	b := make([]byte, n)
+	if _, err := rand.Read(b); err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(b), nil
 }
 
 func startSarge() error {
 	cmd := exec.Command("docker", "compose", "up", "-d")
-	cmd.Dir = sargeRepoPath
+	cmd.Dir = sargeRoot
 	return runCmd(cmd)
 }

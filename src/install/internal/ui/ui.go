@@ -86,7 +86,8 @@ func InitialModel() model {
 			{step: dependencies, runningStr: "Installing dependencies", completedStr: "Dependencies successfully installed", run: func() error { return command.InstallDependencies() }},
 			// NOTE(laith): these values are dynamic so we only define the step right now
 			{step: hostname, runningStr: "Input your hostname:"},
-			{step: bootstrap, runningStr: "Bootstrapping Sarge", completedStr: "Sarge successfully bootstrapped", run: func() error { return command.BootstrapSarge() }},
+			// NOTE(laith): bootstrap's run is rebound once the hostname is submitted (same pattern as the hostname step).
+			{step: bootstrap, runningStr: "Bootstrapping Sarge", completedStr: "Sarge successfully bootstrapped"},
 			// NOTE(laith): this has a different display entirely
 			{step: complete},
 		},
@@ -141,6 +142,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.tasks[m.step].runningStr = fmt.Sprintf("Generating SSL certificates for %s", hostname)
 				m.tasks[m.step].completedStr = fmt.Sprintf("SSL certificates successfully generated for %s", hostname)
 				m.tasks[m.step].startedAt = time.Now()
+				m.tasks[bootstrap].run = func() error { return command.BootstrapSarge(hostname) }
 				m.hostname = hostname
 				m.hostnameSubmitted = true
 				return m, runTask(m.tasks[m.step])

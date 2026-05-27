@@ -1,10 +1,11 @@
 services:
     web:
-        build:
-            context: .
-            dockerfile: Dockerfile
+        image: ghcr.io/sandboxnu/sarge-web:latest
+        pull_policy: always
         ports:
             - '127.0.0.1:3000:3000'
+        env_file:
+            - .env
         environment:
             DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
         depends_on:
@@ -23,9 +24,8 @@ services:
             - postgres_data:/var/lib/postgresql/data
 
     ws:
-        build:
-            context: ./src/ws/
-            dockerfile: Dockerfile
+        image: ghcr.io/sandboxnu/sarge-ws:latest
+        pull_policy: always
         env_file:
             - .env
         ports:

@@ -19,9 +19,8 @@ main() {
 detect_os() {
   case "$(uname -s)" in
   Linux*) echo "linux" ;;
-  Darwin*) echo "darwin" ;;
   *)
-    echo "Unsupported OS: $(uname -s)" >&2
+    echo "Unsupported OS: $(uname -s). Sarge currently only supports Linux." >&2
     exit 1
     ;;
   esac
