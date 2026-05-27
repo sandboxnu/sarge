@@ -8,6 +8,7 @@ services:
             - .env
         environment:
             DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
+            DIRECT_URL: postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
         depends_on:
             - db
             - ws
