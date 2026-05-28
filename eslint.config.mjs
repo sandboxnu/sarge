@@ -72,6 +72,14 @@ const eslintConfig = [
                 },
             ],
 
+            // Allow apostrophes in JSX text "you're" instead of having to do "you&apos;re"
+            'react/no-unescaped-entities': [
+                'error',
+                {
+                    forbid: ['>', '"', '}'],
+                },
+            ],
+
             // General rules
             'no-console': ['warn', { allow: ['warn', 'error'] }],
             'prefer-const': 'error',
