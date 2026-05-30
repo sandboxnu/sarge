@@ -1,5 +1,4 @@
-import { type Application } from '@/generated/prisma';
-import { type AssessmentStatus } from '@/generated/prisma';
+import { type Application, type AssessmentStatus } from '@/generated/prisma';
 import { type Assessment, type UpdateAssessmentDTO } from '@/lib/schemas/assessment.schema';
 import {
     type AssessmentWithRelations,

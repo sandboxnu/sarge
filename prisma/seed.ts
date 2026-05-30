@@ -505,6 +505,7 @@ async function seedTasks() {
                 submission: taskData.submission,
                 passedTestCases: taskData.passedTestCases,
                 failedTestCases: taskData.failedTestCases,
+                startedAt: taskData.startedAt,
                 submittedAt: taskData.submittedAt,
             },
             create: {
@@ -514,6 +515,7 @@ async function seedTasks() {
                 submission: taskData.submission,
                 passedTestCases: taskData.passedTestCases,
                 failedTestCases: taskData.failedTestCases,
+                startedAt: taskData.startedAt,
                 submittedAt: taskData.submittedAt,
             },
         });

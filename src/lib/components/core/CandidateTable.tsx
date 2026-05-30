@@ -18,6 +18,7 @@ const getAssessmentLabel = (status?: string) => {
     const s = (status ?? '').toUpperCase();
     if (s === 'GRADED') return 'Graded';
     if (s === 'SUBMITTED') return 'Submitted';
+    if (s === 'IN_PROGRESS') return 'In progress';
     if (s === 'NOT_SENT') return 'Not sent';
     if (s === 'NOT_STARTED') return 'Not started';
     if (s === 'NOT_ASSIGNED') return 'Not assigned';

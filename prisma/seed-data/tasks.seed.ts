@@ -59,6 +59,7 @@ export const tasksData = [
             { input: '1 5 3 7 9\\n10', output: '2 3', actualOutput: '2 3' },
         ],
         failedTestCases: [],
+        startedAt: new Date('2026-04-12T15:00:00Z'),
         submittedAt: new Date('2026-04-12T15:45:00Z'),
     },
     {
@@ -72,6 +73,7 @@ export const tasksData = [
             { input: 'A', output: 'A', actualOutput: 'A' },
         ],
         failedTestCases: [],
+        startedAt: new Date('2026-04-12T15:45:30Z'),
         submittedAt: new Date('2026-04-12T16:10:00Z'),
     },
     {
@@ -93,6 +95,7 @@ export const tasksData = [
             },
         ],
         failedTestCases: [{ input: ' ', output: 'true', actualOutput: 'false' }],
+        startedAt: new Date('2026-04-12T16:10:30Z'),
         submittedAt: new Date('2026-04-12T17:28:00Z'),
     },
 ];

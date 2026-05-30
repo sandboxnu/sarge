@@ -11,14 +11,21 @@ import { useHeartbeat } from '@/lib/hooks/useHeartbeat';
 import { LostConnectionModal } from '@/lib/components/modal/LostConnectionModal';
 import AssessmentSkeleton from '@/lib/components/assessment-flow/AssessmentSkeleton';
 import { useWindowUnfocused } from '@/lib/hooks/useWindowUnfocused';
+import { useUnfocusSnapshot } from '@/lib/hooks/useUnfocusSnapshot';
 import { WindowUnfocusedModal } from '@/lib/components/modal/WindowUnfocusedModal';
 
 export default function AssessmentPage({ params }: { params: Promise<{ assessmentId: string }> }) {
     const { assessmentId } = use(params);
     const assessment = useAssessment(assessmentId);
     const { isConnected } = useHeartbeat(assessment.token ?? null);
-    const isWindowUnfocused = useWindowUnfocused();
     const [isUnfocusedModalOpen, setIsUnfocusedModalOpen] = useState(false);
+    const isWindowUnfocused = useWindowUnfocused();
+    useUnfocusSnapshot({
+        assessmentId,
+        taskId: assessment.currentSection?.taskId ?? null,
+        isWindowUnfocused,
+        isModalOpen: isUnfocusedModalOpen,
+    });
     const isExamActive =
         !assessment.isLoading &&
         !assessment.error &&
@@ -94,6 +101,7 @@ export default function AssessmentPage({ params }: { params: Promise<{ assessmen
                         <AssessmentSkeleton />
                     ) : (
                         <AssessmentContent
+                            assessmentId={assessmentId}
                             currentSection={assessment.currentSection}
                             availableLanguages={assessment.availableLanguages}
                             publicTestCases={assessment.publicTestCases}
@@ -102,7 +110,7 @@ export default function AssessmentPage({ params }: { params: Promise<{ assessmen
                             onLanguageChange={assessment.changeLanguage}
                             onEditorMount={assessment.handleEditorMount}
                             onRunTests={assessment.runTests}
-                            onSubmit={assessment.submitAndContinue}
+                            onSubmit={assessment.submitTaskAndContinue}
                         />
                     )}
                 </main>
