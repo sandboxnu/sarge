@@ -21,6 +21,29 @@ export function formatDeadline(date: Date | null): string {
     });
 }
 
+function ordinalSuffix(day: number): string {
+    const ones = day % 10;
+    const tens = day % 100;
+    if (ones === 1 && tens !== 11) return 'st';
+    if (ones === 2 && tens !== 12) return 'nd';
+    if (ones === 3 && tens !== 13) return 'rd';
+    return 'th';
+}
+
+// Formats a due date like "May 11th 2026 at 9pm" (drops minutes when on the hour).
+export function formatDueDate(date: Date | null): string {
+    if (!date) return 'No due date';
+    const d = new Date(date);
+    const month = d.toLocaleString('en-US', { month: 'long' });
+    const day = d.getDate();
+    const year = d.getFullYear();
+    const minutes = d.getMinutes();
+    const ampm = d.getHours() >= 12 ? 'pm' : 'am';
+    const hour12 = d.getHours() % 12 || 12;
+    const time = minutes === 0 ? `${hour12}${ampm}` : `${hour12}:${String(minutes).padStart(2, '0')}${ampm}`;
+    return `${month} ${day}${ordinalSuffix(day)} ${year} at ${time}`;
+}
+
 export function formatDuration(totalSeconds: number): string {
     const minutes = Math.round(totalSeconds / 60);
     if (minutes < 60) return `${minutes} minutes`;
