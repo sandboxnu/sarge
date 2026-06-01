@@ -6,7 +6,7 @@ import { addApplicationWithCandidateDataSchema } from '@/lib/schemas/application
 import { assertRecruiterOrAbove } from '@/lib/utils/permissions.utils';
 
 /**
- * POST /api/positions/[id]/candidates
+ * POST /api/positions/[id]/applications
  * Add a single candidate to a position (create candidate if not exists)
  */
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 }
 
 /**
- * GET /api/positions/[id]/candidates
+ * GET /api/positions/[id]/applications
  * Get all a position's applications' candidates
  */
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -48,7 +48,7 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
 }
 
 /**
- * DELETE /api/positions/[id]/candidates
+ * DELETE /api/positions/[id]/applications
  * Remove ALL candidates from a position
  */
 export async function DELETE(
