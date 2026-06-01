@@ -80,6 +80,7 @@ async function addApplicationToPosition(
         return tx.application.findUniqueOrThrow({
             where: { id: createdApplication.id },
             select: {
+                id: true,
                 assessmentStatus: true,
                 decisionStatus: true,
                 candidate: {
@@ -201,6 +202,7 @@ async function batchAddApplicationsToPosition(
             candidateId: { in: candidateRecords.map((candidate) => candidate.id) },
         },
         select: {
+            id: true,
             assessmentStatus: true,
             decisionStatus: true,
             candidate: {
@@ -247,6 +249,7 @@ async function getPositionApplications(
     const applications = await prisma.application.findMany({
         where: { positionId },
         select: {
+            id: true,
             assessmentStatus: true,
             decisionStatus: true,
             candidate: {

@@ -23,6 +23,7 @@ export type PositionWithCounts = {
 };
 
 export interface ApplicationDisplayInfo {
+    id: string;
     assessmentStatus: AssessmentStatus;
     decisionStatus: DecisionStatus;
     candidate: {
