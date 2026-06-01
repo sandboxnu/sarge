@@ -558,7 +558,7 @@ export function SidebarMenuAction({
                 'peer-data-[size=lg]/menu-button:top-2.5',
                 'group-data-[collapsible=icon]:hidden',
                 showOnHover &&
-                'peer-data-[active=true]/menu-button:text-sidebar-accent-foreground group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 md:opacity-0',
+                    'peer-data-[active=true]/menu-button:text-sidebar-accent-foreground group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 md:opacity-0',
                 className
             )}
             {...props}
@@ -698,7 +698,7 @@ const sidebarMenuItems = [
         title: 'Reviewing',
         url: '/crm/reviewing',
         icon: BookOpen,
-    }
+    },
 ];
 
 export function Sidebar() {
@@ -735,8 +735,9 @@ export function Sidebar() {
                 <div className="flex items-center justify-between gap-3 group-data-[collapsible=icon]:w-full group-data-[collapsible=icon]:justify-center">
                     <div className="flex flex-1 items-center gap-2">
                         <div
-                            className={`h-7 w-7 overflow-hidden rounded group-data-[collapsible=icon]:mx-auto ${!auth.activeOrganization?.logo ? 'bg-sarge-gray-500' : ''
-                                }`}
+                            className={`h-7 w-7 overflow-hidden rounded group-data-[collapsible=icon]:mx-auto ${
+                                !auth.activeOrganization?.logo ? 'bg-sarge-gray-500' : ''
+                            }`}
                         >
                             {auth.activeOrganization?.logo ? (
                                 <Image
