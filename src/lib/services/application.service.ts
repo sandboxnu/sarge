@@ -1,7 +1,11 @@
 import { prisma } from '@/lib/prisma';
 import { NotFoundException, ForbiddenException } from '@/lib/utils/errors.utils';
 import { type AddApplicationWithCandidateDataDTO } from '@/lib/schemas/application.schema';
-import type { BatchAddResult, ApplicationDisplayInfo } from '@/lib/types/position.types';
+import type {
+    BatchAddResult,
+    ApplicationDisplayInfo,
+    ApplicationWithReviewData,
+} from '@/lib/types/position.types';
 import { AssessmentStatus, type Application } from '@/generated/prisma';
 
 async function validatePositionAccess(positionId: string, orgId: string) {
@@ -311,6 +315,36 @@ async function getApplication(id: string): Promise<Application> {
     return application;
 }
 
+/**
+ * Get a single application along with its full assessment review tree: the assessment, all
+ * tasks (incl. submitted code), each task's reviews (with comments), and each task's
+ * proctoring snapshots. Used by the reviewing page.
+ */
+async function getApplicationForReview(
+    applicationId: string,
+    orgId: string
+): Promise<ApplicationWithReviewData> {
+    await validateApplicationAccess(applicationId, orgId);
+
+    return prisma.application.findUniqueOrThrow({
+        where: { id: applicationId },
+        include: {
+            assessment: {
+                include: {
+                    tasks: {
+                        include: {
+                            reviews: {
+                                include: { comments: true },
+                            },
+                            snapshots: true,
+                        },
+                    },
+                },
+            },
+        },
+    });
+}
+
 async function validateApplicationAccess(
     applicationId: string,
     orgId: string
@@ -381,6 +415,7 @@ const ApplicationService = {
     removeApplicationFromPosition,
     removeAllApplicationsFromPosition,
     getApplication,
+    getApplicationForReview,
     getAssessmentStatus,
     updateAssessmentStatus,
     getApplicationsByName,
