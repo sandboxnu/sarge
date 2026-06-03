@@ -55,8 +55,8 @@ export default function TaskReviewMain({ task }: TaskReviewMainProps) {
                         className={cn(
                             'text-xs font-medium transition-colors',
                             activeTab === tab
-                                ? 'bg-sarge-gray-100 text-sarge-gray-900 rounded-md px-2 py-1'
-                                : 'text-sarge-gray-500 hover:text-sarge-gray-700 px-2 py-1'
+                                ? 'bg-sarge-gray-100 text-sarge-gray-600 rounded-md px-2 py-1'
+                                : 'text-sarge-gray-500 hover:text-sarge-gray-600 px-2 py-1'
                         )}
                     >
                         {tab}
