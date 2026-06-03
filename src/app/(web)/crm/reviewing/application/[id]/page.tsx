@@ -3,6 +3,8 @@ import { use, useState } from 'react';
 import Image from 'next/image';
 import useApplicationReview from '@/lib/hooks/useApplicationReview';
 import ReviewNavbar from '@/lib/components/reviewing/ReviewNavbar';
+import TaskReviewMain from '@/lib/components/reviewing/TaskReviewMain';
+import TaskReviewSidebar from '@/lib/components/reviewing/TaskReviewSidebar';
 
 export default function ReviewApplication({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
@@ -31,12 +33,12 @@ export default function ReviewApplication({ params }: { params: Promise<{ id: st
 
     const tasks = application?.assessment?.tasks ?? [];
     const totalTasks = tasks.length;
+    const currentTaskData = tasks[currentTask] ?? null;
     const goPrev = () => setCurrentTask((i) => Math.max(0, i - 1));
     const goNext = () => setCurrentTask((i) => Math.min(Math.max(totalTasks - 1, 0), i + 1));
 
     return (
-        <div className="flex h-full flex-col gap-3 px-8 pt-4 pb-6">
-            {/* top divider: navbar header, no tabs below */}
+        <div className="flex h-full flex-col">
             <ReviewNavbar
                 // TODO: real assessment template title once the review query includes it
                 assessmentName="Software Engineering Assessment"
@@ -48,17 +50,10 @@ export default function ReviewApplication({ params }: { params: Promise<{ id: st
                 onPrev={goPrev}
                 onNext={goNext}
             />
-            <hr />
 
-            {/* main split: 2/3 left, vertical divider, 1/3 right */}
-            <div className="flex min-h-0 flex-1">
-                <section className="flex-[2] overflow-y-auto pr-6">
-                    {/* TODO: left panel (2/3) */}
-                </section>
-                <div className="bg-sarge-gray-200 w-px" />
-                <section className="flex-[1] overflow-y-auto pl-6">
-                    {/* TODO: right panel (1/3) */}
-                </section>
+            <div className="flex min-h-0 flex-1 px-4 py-4">
+                <TaskReviewMain task={currentTaskData} />
+                <TaskReviewSidebar />
             </div>
         </div>
     );
