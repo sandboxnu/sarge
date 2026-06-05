@@ -1,4 +1,4 @@
-import { ProgrammingLanguage } from '@/generated/prisma';
+import { ProgrammingLanguage, TestVisibility } from '@/generated/prisma';
 
 const carterTwoSumSubmission = `def two_sum(nums, target):
     seen = {}
@@ -55,15 +55,19 @@ export const tasksData = [
         taskTemplateId: 'task_template_two_sum_001',
         submission: carterTwoSumSubmission,
         language: ProgrammingLanguage.python,
-        passedTestCases: [
-            { input: '2 7 11 15\\n9', output: '0 1', actualOutput: '0 1' },
-            { input: '3 2 4\\n6', output: '1 2', actualOutput: '1 2' },
-            { input: '3 3\\n6', output: '0 1', actualOutput: '0 1' },
-            { input: '1 5 3 7 9\\n10', output: '2 3', actualOutput: '2 3' },
-        ],
-        failedTestCases: [],
         startedAt: new Date('2026-04-12T15:00:00Z'),
         submittedAt: new Date('2026-04-12T15:45:00Z'),
+        testResults: [
+            // public
+            { visibility: TestVisibility.PUBLIC, passed: true, input: '2 7 11 15\\n9', expectedOutput: '0 1', actualOutput: '0 1', order: 0 },
+            { visibility: TestVisibility.PUBLIC, passed: true, input: '3 2 4\\n6', expectedOutput: '1 2', actualOutput: '1 2', order: 1 },
+            { visibility: TestVisibility.PUBLIC, passed: true, input: '3 3\\n6', expectedOutput: '0 1', actualOutput: '0 1', order: 2 },
+            { visibility: TestVisibility.PUBLIC, passed: true, input: '1 5 3 7 9\\n10', expectedOutput: '2 3', actualOutput: '2 3', order: 3 },
+            // private (correct solution -> all pass)
+            { visibility: TestVisibility.PRIVATE, passed: true, input: '0 4 3 0\\n0', expectedOutput: '0 3', actualOutput: '0 3', order: 0 },
+            { visibility: TestVisibility.PRIVATE, passed: true, input: '-1 -2 -3 -4\\n-6', expectedOutput: '1 3', actualOutput: '1 3', order: 1 },
+            { visibility: TestVisibility.PRIVATE, passed: true, input: '5 75 25\\n100', expectedOutput: '1 2', actualOutput: '1 2', order: 2 },
+        ],
     },
     {
         id: 'task_carter_reverse_string_001',
@@ -71,14 +75,17 @@ export const tasksData = [
         taskTemplateId: 'task_template_reverse_string_001',
         submission: carterReverseStringSubmission,
         language: ProgrammingLanguage.python,
-        passedTestCases: [
-            { input: 'h e l l o', output: 'o l l e h', actualOutput: 'o l l e h' },
-            { input: 'H a n n a h', output: 'h a n n a H', actualOutput: 'h a n n a H' },
-            { input: 'A', output: 'A', actualOutput: 'A' },
-        ],
-        failedTestCases: [],
         startedAt: new Date('2026-04-12T15:45:30Z'),
         submittedAt: new Date('2026-04-12T16:10:00Z'),
+        testResults: [
+            // public
+            { visibility: TestVisibility.PUBLIC, passed: true, input: 'h e l l o', expectedOutput: 'o l l e h', actualOutput: 'o l l e h', order: 0 },
+            { visibility: TestVisibility.PUBLIC, passed: true, input: 'H a n n a h', expectedOutput: 'h a n n a H', actualOutput: 'h a n n a H', order: 1 },
+            { visibility: TestVisibility.PUBLIC, passed: true, input: 'A', expectedOutput: 'A', actualOutput: 'A', order: 2 },
+            // private (correct solution -> all pass)
+            { visibility: TestVisibility.PRIVATE, passed: true, input: 'a b', expectedOutput: 'b a', actualOutput: 'b a', order: 0 },
+            { visibility: TestVisibility.PRIVATE, passed: true, input: '1 2 3', expectedOutput: '3 2 1', actualOutput: '3 2 1', order: 1 },
+        ],
     },
     {
         id: 'task_carter_palindrome_001',
@@ -86,21 +93,21 @@ export const tasksData = [
         taskTemplateId: 'task_template_palindrome_001',
         submission: carterPalindromeSubmission,
         language: ProgrammingLanguage.python,
-        passedTestCases: [
-            {
-                input: 'A man, a plan, a canal: Panama',
-                output: 'true',
-                actualOutput: 'true',
-            },
-            { input: 'race a car', output: 'false', actualOutput: 'false' },
-            {
-                input: 'Was it a car or a cat I saw?',
-                output: 'true',
-                actualOutput: 'true',
-            },
-        ],
-        failedTestCases: [{ input: ' ', output: 'true', actualOutput: 'false' }],
         startedAt: new Date('2026-04-12T16:10:30Z'),
         submittedAt: new Date('2026-04-12T17:28:00Z'),
+        testResults: [
+            // public
+            { visibility: TestVisibility.PUBLIC, passed: true, input: 'A man, a plan, a canal: Panama', expectedOutput: 'true', actualOutput: 'true', order: 0 },
+            { visibility: TestVisibility.PUBLIC, passed: true, input: 'race a car', expectedOutput: 'false', actualOutput: 'false', order: 1 },
+            { visibility: TestVisibility.PUBLIC, passed: true, input: 'Was it a car or a cat I saw?', expectedOutput: 'true', actualOutput: 'true', order: 2 },
+            { visibility: TestVisibility.PUBLIC, passed: false, input: ' ', expectedOutput: 'true', actualOutput: 'false', order: 3 },
+            // private (empty / punctuation-only input bug -> 3/6 pass)
+            { visibility: TestVisibility.PRIVATE, passed: true, input: 'racecar', expectedOutput: 'true', actualOutput: 'true', order: 0 },
+            { visibility: TestVisibility.PRIVATE, passed: true, input: 'hello', expectedOutput: 'false', actualOutput: 'false', order: 1 },
+            { visibility: TestVisibility.PRIVATE, passed: true, input: 'Able was I ere I saw Elba', expectedOutput: 'true', actualOutput: 'true', order: 2 },
+            { visibility: TestVisibility.PRIVATE, passed: false, input: '', expectedOutput: 'true', actualOutput: 'false', order: 3 },
+            { visibility: TestVisibility.PRIVATE, passed: false, input: '.', expectedOutput: 'true', actualOutput: 'false', order: 4 },
+            { visibility: TestVisibility.PRIVATE, passed: false, input: ',,', expectedOutput: 'true', actualOutput: 'false', order: 5 },
+        ],
     },
 ];

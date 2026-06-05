@@ -23,7 +23,7 @@ import type {
     TestCaseResultStatus,
 } from '@/lib/types/candidate-assessment.types';
 import { createToken } from '@/lib/api/token';
-import { type ProgrammingLanguage, SnapshotType } from '@/generated/prisma';
+import { type ProgrammingLanguage, SnapshotType, TestVisibility } from '@/generated/prisma';
 
 // TODO(laith): this should become configurable in the org settings eventually
 const CONTENT_SNAPSHOT_INTERVAL_MS = 30_000;
@@ -241,19 +241,18 @@ export default function useAssessment(assessmentId: string) {
     }, [assessmentId, phase, currentSectionIndex, sections]);
 
     function createTaskSubmissionPayload(section: SectionState, code: string) {
-        const publicTestCases = section.taskTemplate.publicTestCases;
-        const passedTestCases = publicTestCases.filter(
-            (_, i) => section.testCaseResults[i]?.status === 'passed'
-        );
-        const failedStatuses: TestCaseResultStatus[] = ['failed', 'runtime_error', 'error'];
-        const failedTestCases = publicTestCases.filter((_, i) =>
-            failedStatuses.includes(section.testCaseResults[i]?.status ?? 'default')
-        );
+        const testResults = section.taskTemplate.publicTestCases.map((testCase, i) => ({
+            visibility: TestVisibility.PUBLIC,
+            passed: section.testCaseResults[i]?.status === 'passed',
+            input: testCase.input,
+            expectedOutput: testCase.output,
+            actualOutput: section.testCaseResults[i]?.actualOutput ?? null,
+            order: i,
+        }));
         return {
             submission: code,
             language: section.language as ProgrammingLanguage,
-            passedTestCases,
-            failedTestCases,
+            testResults,
         };
     }
 

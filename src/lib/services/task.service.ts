@@ -192,9 +192,17 @@ async function submitForCandidate(taskId: string, data: SubmitTaskForCandidateDT
             data: {
                 submission: data.submission,
                 language: data.language,
-                passedTestCases: data.passedTestCases,
-                failedTestCases: data.failedTestCases,
                 submittedAt: new Date(),
+                testResults: {
+                    create: data.testResults.map((result) => ({
+                        visibility: result.visibility,
+                        passed: result.passed,
+                        input: result.input,
+                        expectedOutput: result.expectedOutput,
+                        actualOutput: result.actualOutput ?? null,
+                        order: result.order,
+                    })),
+                },
             },
         });
 

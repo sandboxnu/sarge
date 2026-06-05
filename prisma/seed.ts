@@ -504,10 +504,12 @@ async function seedTasks() {
             update: {
                 submission: taskData.submission,
                 language: taskData.language,
-                passedTestCases: taskData.passedTestCases,
-                failedTestCases: taskData.failedTestCases,
                 startedAt: taskData.startedAt,
                 submittedAt: taskData.submittedAt,
+                testResults: {
+                    deleteMany: {},
+                    create: taskData.testResults,
+                },
             },
             create: {
                 id: taskData.id,
@@ -515,10 +517,11 @@ async function seedTasks() {
                 taskTemplateId: taskData.taskTemplateId,
                 submission: taskData.submission,
                 language: taskData.language,
-                passedTestCases: taskData.passedTestCases,
-                failedTestCases: taskData.failedTestCases,
                 startedAt: taskData.startedAt,
                 submittedAt: taskData.submittedAt,
+                testResults: {
+                    create: taskData.testResults,
+                },
             },
         });
 

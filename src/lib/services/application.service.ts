@@ -342,6 +342,7 @@ async function getApplicationForReview(
                                 include: { comments: true },
                             },
                             snapshots: true,
+                            testResults: true,
                         },
                     },
                 },

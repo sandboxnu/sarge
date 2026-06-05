@@ -14,13 +14,11 @@ import { Chip } from '@/lib/components/ui/Chip';
 import { RemovableChip } from '@/lib/components/ui/RemovableChip';
 import { Button } from '@/lib/components/ui/Button';
 import { cn } from '@/lib/utils/cn.utils';
+import { TestVisibility } from '@/generated/prisma';
 import type { TaskWithReviewData } from '@/lib/types/position.types';
 
 const TABS = ['Review Tasks', 'Decision'] as const;
 type Tab = (typeof TABS)[number];
-
-// TODO: private test results aren't stored on Task yet — mocked until that backend exists.
-const PRIVATE_TEST_MOCK = { passed: 3, total: 6 };
 
 type TaskReviewSidebarProps = {
     task: TaskWithReviewData | null;
@@ -45,8 +43,13 @@ export default function TaskReviewSidebar({
 }: TaskReviewSidebarProps) {
     const [activeTab, setActiveTab] = useState<Tab>('Review Tasks');
 
-    const publicPassed = task?.passedTestCases.length ?? 0;
-    const publicTotal = publicPassed + (task?.failedTestCases.length ?? 0);
+    const testResults = task?.testResults ?? [];
+    const publicResults = testResults.filter((r) => r.visibility === TestVisibility.PUBLIC);
+    const privateResults = testResults.filter((r) => r.visibility === TestVisibility.PRIVATE);
+    const publicPassed = publicResults.filter((r) => r.passed).length;
+    const publicTotal = publicResults.length;
+    const privatePassed = privateResults.filter((r) => r.passed).length;
+    const privateTotal = privateResults.length;
     const comments = task?.reviews.flatMap((review) => review.comments) ?? [];
     const score = task?.reviews[0]?.score;
 
@@ -130,7 +133,7 @@ export default function TaskReviewSidebar({
                         <div className="border-sarge-gray-200 bg-sarge-gray-50 flex flex-col gap-2 rounded-lg border p-3">
                             <Label>Private Test Cases</Label>
                             <Chip variant="warning" className="w-fit">
-                                {PRIVATE_TEST_MOCK.passed}/{PRIVATE_TEST_MOCK.total} passed
+                                {privatePassed}/{privateTotal} passed
                             </Chip>
                         </div>
                     </div>

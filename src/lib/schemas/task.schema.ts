@@ -1,6 +1,5 @@
 import { z } from 'zod';
-import { ProgrammingLanguage } from '@/generated/prisma';
-import { testCaseSchema } from '@/lib/schemas/task-template.schema';
+import { ProgrammingLanguage, TestVisibility } from '@/generated/prisma';
 
 export const TaskSchema = z.object({
     id: z.string(),
@@ -28,12 +27,21 @@ export const CreateTaskForCandidateSchema = z.object({
     taskTemplateId: z.string(),
 });
 
+// A single test-case result, snapshotted at submit time.
+export const taskTestResultSchema = z.object({
+    visibility: z.enum(TestVisibility),
+    passed: z.boolean(),
+    input: z.string(),
+    expectedOutput: z.string(),
+    actualOutput: z.string().nullable().optional(),
+    order: z.number().int(),
+});
+
 // Candidate submits a task, their code and test results are retrieved from the client side
 export const SubmitTaskForCandidateSchema = z.object({
     submission: z.string(),
     language: z.enum(ProgrammingLanguage),
-    passedTestCases: z.array(testCaseSchema),
-    failedTestCases: z.array(testCaseSchema),
+    testResults: z.array(taskTestResultSchema),
 });
 
 export type TaskDTO = z.infer<typeof TaskSchema>;

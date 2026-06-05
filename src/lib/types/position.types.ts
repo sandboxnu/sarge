@@ -8,6 +8,7 @@ import type {
     Review,
     Comment,
     Snapshot,
+    TaskTestResult,
 } from '@/generated/prisma';
 
 export type PositionWithCounts = {
@@ -54,6 +55,7 @@ export type ReviewWithComments = Review & {
 export type TaskWithReviewData = Task & {
     reviews: ReviewWithComments[];
     snapshots: Snapshot[];
+    testResults: TaskTestResult[];
 };
 
 // An application with its full assessment review tree. Returned when fetching a single
