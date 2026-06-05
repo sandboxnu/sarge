@@ -35,8 +35,10 @@ export default function ReviewApplication({ params }: { params: Promise<{ id: st
     const tasks = (application?.assessment?.tasks ?? []).filter((t) => t.submittedAt !== null);
     const totalTasks = tasks.length;
     const currentTaskData = tasks[currentTask] ?? null;
-    const goPrev = () => setCurrentTask((i) => Math.max(0, i - 1));
-    const goNext = () => setCurrentTask((i) => Math.min(Math.max(totalTasks - 1, 0), i + 1));
+    // wrap around like a ring buffer (guard against 0 tasks to avoid modulo NaN)
+    const goPrev = () =>
+        setCurrentTask((i) => (totalTasks === 0 ? 0 : (i - 1 + totalTasks) % totalTasks));
+    const goNext = () => setCurrentTask((i) => (totalTasks === 0 ? 0 : (i + 1) % totalTasks));
 
     return (
         <div className="flex h-full flex-col">
