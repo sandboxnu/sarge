@@ -94,7 +94,7 @@ export default function TaskReviewMain({ task }: TaskReviewMainProps) {
             ) : (
                 <div className="text-sarge-gray-500 flex flex-1 items-center justify-center text-sm">
                     {/* TODO: {activeTab} panel */}
-                    {activeTab}
+                    TODO
                 </div>
             )}
         </section>

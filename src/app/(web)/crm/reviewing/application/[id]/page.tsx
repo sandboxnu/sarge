@@ -54,7 +54,14 @@ export default function ReviewApplication({ params }: { params: Promise<{ id: st
 
             <div className="flex min-h-0 flex-1 px-4 py-4">
                 <TaskReviewMain task={currentTaskData} />
-                <TaskReviewSidebar />
+                <TaskReviewSidebar
+                    task={currentTaskData}
+                    currentTask={currentTask}
+                    totalTasks={totalTasks}
+                    onPrev={goPrev}
+                    onNext={goNext}
+                    onSelectTask={setCurrentTask}
+                />
             </div>
         </div>
     );
