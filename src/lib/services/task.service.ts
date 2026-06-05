@@ -191,6 +191,7 @@ async function submitForCandidate(taskId: string, data: SubmitTaskForCandidateDT
             where: { id: taskId },
             data: {
                 submission: data.submission,
+                language: data.language,
                 passedTestCases: data.passedTestCases,
                 failedTestCases: data.failedTestCases,
                 submittedAt: new Date(),

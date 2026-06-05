@@ -16,11 +16,7 @@ const Editor = dynamic(() => import('@monaco-editor/react').then((mod) => mod.Ed
 const TABS = ['Submission', 'Instructions', 'Test Cases', 'Activity Log'] as const;
 type Tab = (typeof TABS)[number];
 
-// TODO: the candidate's submission language isn't persisted on Task yet — mocked until then.
-const PLACEHOLDER_LANGUAGE = 'java';
-
 const LANGUAGE_FILE_EXTENSIONS: Record<string, string> = {
-    java: 'java',
     python: 'py',
     javascript: 'js',
     typescript: 'ts',
@@ -36,8 +32,8 @@ type TaskReviewMainProps = {
 export default function TaskReviewMain({ task }: TaskReviewMainProps) {
     const [activeTab, setActiveTab] = useState<Tab>('Submission');
 
-    const language = PLACEHOLDER_LANGUAGE;
-    const fileName = `main.${LANGUAGE_FILE_EXTENSIONS[language] ?? 'txt'}`;
+    const language = task?.language ?? null;
+    const fileName = `main.${(language && LANGUAGE_FILE_EXTENSIONS[language]) ?? 'txt'}`;
     const submission = task?.submission ?? '';
 
     function handleEditorMount(editorInstance: editor.IStandaloneCodeEditor, monaco: Monaco) {
@@ -74,14 +70,14 @@ export default function TaskReviewMain({ task }: TaskReviewMainProps) {
                         <div className="border-sarge-gray-600 flex flex-1 items-center justify-end gap-1.5 border-b px-2.5">
                             <span className="tracking-design text-xs font-medium">Language</span>
                             <span className="bg-sarge-primary-500 tracking-design text-primary-foreground rounded-sm px-2.5 py-0.5 text-xs font-medium">
-                                {getLanguageLabel(language)}
+                                {language ? getLanguageLabel(language) : 'txt'}
                             </span>
                         </div>
                     </div>
                     <div className="min-h-0 flex-1">
                         <Editor
                             height="100%"
-                            language={language}
+                            language={language ?? 'plaintext'}
                             value={submission}
                             onMount={handleEditorMount}
                             theme="sargeDark"

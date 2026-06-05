@@ -249,7 +249,12 @@ export default function useAssessment(assessmentId: string) {
         const failedTestCases = publicTestCases.filter((_, i) =>
             failedStatuses.includes(section.testCaseResults[i]?.status ?? 'default')
         );
-        return { submission: code, passedTestCases, failedTestCases };
+        return {
+            submission: code,
+            language: section.language as ProgrammingLanguage,
+            passedTestCases,
+            failedTestCases,
+        };
     }
 
     async function submitTaskAndContinue() {

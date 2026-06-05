@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { ProgrammingLanguage } from '@/generated/prisma';
 import { testCaseSchema } from '@/lib/schemas/task-template.schema';
 
 export const TaskSchema = z.object({
@@ -30,6 +31,7 @@ export const CreateTaskForCandidateSchema = z.object({
 // Candidate submits a task, their code and test results are retrieved from the client side
 export const SubmitTaskForCandidateSchema = z.object({
     submission: z.string(),
+    language: z.enum(ProgrammingLanguage),
     passedTestCases: z.array(testCaseSchema),
     failedTestCases: z.array(testCaseSchema),
 });

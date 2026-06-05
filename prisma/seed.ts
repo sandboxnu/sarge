@@ -503,6 +503,7 @@ async function seedTasks() {
             where: { id: taskData.id },
             update: {
                 submission: taskData.submission,
+                language: taskData.language,
                 passedTestCases: taskData.passedTestCases,
                 failedTestCases: taskData.failedTestCases,
                 startedAt: taskData.startedAt,
@@ -513,6 +514,7 @@ async function seedTasks() {
                 assessmentId: taskData.assessmentId,
                 taskTemplateId: taskData.taskTemplateId,
                 submission: taskData.submission,
+                language: taskData.language,
                 passedTestCases: taskData.passedTestCases,
                 failedTestCases: taskData.failedTestCases,
                 startedAt: taskData.startedAt,

@@ -1,3 +1,5 @@
+import { ProgrammingLanguage } from '@/generated/prisma';
+
 const carterTwoSumSubmission = `def two_sum(nums, target):
     seen = {}
     for i, num in enumerate(nums):
@@ -52,6 +54,7 @@ export const tasksData = [
         assessmentId: 'assessment_carter_001',
         taskTemplateId: 'task_template_two_sum_001',
         submission: carterTwoSumSubmission,
+        language: ProgrammingLanguage.python,
         passedTestCases: [
             { input: '2 7 11 15\\n9', output: '0 1', actualOutput: '0 1' },
             { input: '3 2 4\\n6', output: '1 2', actualOutput: '1 2' },
@@ -67,6 +70,7 @@ export const tasksData = [
         assessmentId: 'assessment_carter_001',
         taskTemplateId: 'task_template_reverse_string_001',
         submission: carterReverseStringSubmission,
+        language: ProgrammingLanguage.python,
         passedTestCases: [
             { input: 'h e l l o', output: 'o l l e h', actualOutput: 'o l l e h' },
             { input: 'H a n n a h', output: 'h a n n a H', actualOutput: 'h a n n a H' },
@@ -81,6 +85,7 @@ export const tasksData = [
         assessmentId: 'assessment_carter_001',
         taskTemplateId: 'task_template_palindrome_001',
         submission: carterPalindromeSubmission,
+        language: ProgrammingLanguage.python,
         passedTestCases: [
             {
                 input: 'A man, a plan, a canal: Panama',

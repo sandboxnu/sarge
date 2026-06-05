@@ -213,6 +213,8 @@ model Task {
   taskTemplateId  String
   // Candidate's code submission. Null until the candidate submits.
   submission      String?   @db.Text
+  // Language the candidate submitted in. Null until the candidate submits.
+  language        ProgrammingLanguage?
   // NOTE(laith): we may want to pivot our test cases to be their own tables eventually due to these
   // also being fields in TaskTemplate
   passedTestCases Json[]
