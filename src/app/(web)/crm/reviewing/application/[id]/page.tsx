@@ -31,7 +31,8 @@ export default function ReviewApplication({ params }: { params: Promise<{ id: st
         return <p className="text-sarge-error-700 px-8 py-7">Error: {error}</p>;
     }
 
-    const tasks = application?.assessment?.tasks ?? [];
+    // only completed (submitted) tasks are reviewable / rotated through
+    const tasks = (application?.assessment?.tasks ?? []).filter((t) => t.submittedAt !== null);
     const totalTasks = tasks.length;
     const currentTaskData = tasks[currentTask] ?? null;
     const goPrev = () => setCurrentTask((i) => Math.max(0, i - 1));
@@ -40,11 +41,9 @@ export default function ReviewApplication({ params }: { params: Promise<{ id: st
     return (
         <div className="flex h-full flex-col">
             <ReviewNavbar
-                // TODO: real assessment template title once the review query includes it
-                assessmentName="Software Engineering Assessment"
+                assessmentName={application?.assessment?.assessmentTemplate.title ?? 'Assessment'}
                 dueDate={application?.assessment?.deadline ?? null}
-                // TODO: real candidate name once the review query includes the candidate
-                candidateName="Candidate"
+                candidateName={application?.candidate.name ?? 'Candidate'}
                 currentTask={totalTasks === 0 ? 0 : currentTask + 1}
                 totalTasks={totalTasks}
                 onPrev={goPrev}

@@ -46,7 +46,7 @@ export default function ReviewNavbar({
                                 <ChevronDown className="text-sarge-gray-400 size-4 shrink-0" />
                             </div>
                             <span className="text-sarge-gray-500 text-xs">
-                                {currentTask} of {totalTasks} tasks graded
+                                {currentTask} of {totalTasks} tasks
                             </span>
                         </div>
                     </div>

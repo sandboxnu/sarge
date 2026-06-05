@@ -332,8 +332,10 @@ async function getApplicationForReview(
     return prisma.application.findUniqueOrThrow({
         where: { id: applicationId },
         include: {
+            candidate: true,
             assessment: {
                 include: {
+                    assessmentTemplate: { select: { title: true } },
                     tasks: {
                         include: {
                             reviews: {

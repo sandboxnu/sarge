@@ -3,6 +3,7 @@ import type {
     AssessmentStatus,
     Application,
     Assessment,
+    Candidate,
     Task,
     Review,
     Comment,
@@ -58,8 +59,10 @@ export type TaskWithReviewData = Task & {
 // An application with its full assessment review tree. Returned when fetching a single
 // application by id for the reviewing page.
 export type ApplicationWithReviewData = Application & {
+    candidate: Candidate;
     assessment:
         | (Assessment & {
+              assessmentTemplate: { title: string };
               tasks: TaskWithReviewData[];
           })
         | null;
