@@ -559,7 +559,8 @@ async function seedComments() {
         await prisma.comment.upsert({
             where: { id: commentData.id },
             update: {
-                line: commentData.line,
+                startLine: commentData.startLine,
+                endLine: commentData.endLine,
                 content: commentData.content,
             },
             create: commentData,

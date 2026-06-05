@@ -282,7 +282,10 @@ model Review {
 model Comment {
   id         String   @id @unique @default(cuid())
   reviewId   String
-  line       Int
+  // Inclusive line range (in the candidate's submission) the comment anchors to.
+  // A single-line comment has startLine == endLine.
+  startLine  Int
+  endLine    Int
   content    String   @db.Text
   reviewedAt DateTime @default(now())
 

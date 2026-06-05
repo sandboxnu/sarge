@@ -166,7 +166,11 @@ export default function TaskReviewSidebar({
                                         <p className="text-sarge-gray-800 text-sm">
                                             {comment.content}
                                         </p>
-                                        <Chip className="w-fit">Line {comment.line}</Chip>
+                                        <Chip className="w-fit">
+                                            {comment.startLine === comment.endLine
+                                                ? `Line ${comment.startLine}`
+                                                : `Lines ${comment.startLine}-${comment.endLine}`}
+                                        </Chip>
                                     </div>
                                 ))
                             )}
