@@ -1,102 +1,48 @@
 'use client';
 
 import { useState } from 'react';
-import dynamic from 'next/dynamic';
-import type { editor } from 'monaco-editor';
-import type { Monaco } from '@monaco-editor/react';
-import { applySargeDarkTheme } from '@/lib/utils/monaco.utils';
-import { getLanguageLabel } from '@/lib/utils/language.utils';
 import { cn } from '@/lib/utils/cn.utils';
+import { Button } from '@/lib/components/ui/Button';
+import ReviewTaskSubmission from '@/lib/components/reviewing/ReviewTaskSubmission';
+import InstructionsTaskSubmission from '@/lib/components/reviewing/InstructionsTaskSubmission';
+import TestCasesTaskSubmission from '@/lib/components/reviewing/TestCasesTaskSubmission';
+import ActivityLogTaskSubmission from '@/lib/components/reviewing/ActivityLogTaskSubmission';
 import type { TaskWithReviewData } from '@/lib/types/position.types';
 
-const Editor = dynamic(() => import('@monaco-editor/react').then((mod) => mod.Editor), {
-    ssr: false,
-});
-
-const TABS = ['Submission', 'Instructions', 'Test Cases', 'Activity Log'] as const;
-type Tab = (typeof TABS)[number];
-
-const LANGUAGE_FILE_EXTENSIONS: Record<string, string> = {
-    python: 'py',
-    javascript: 'js',
-    typescript: 'ts',
-    c: 'c',
-    cpp: 'cpp',
-    ruby: 'rb',
-};
+const TABS = ['Submission', 'Instructions', 'Test Cases', 'Activity Log'];
 
 type TaskReviewMainProps = {
     task: TaskWithReviewData | null;
 };
 
 export default function TaskReviewMain({ task }: TaskReviewMainProps) {
-    const [activeTab, setActiveTab] = useState<Tab>('Submission');
-
-    const language = task?.language ?? null;
-    const fileName = `main.${(language && LANGUAGE_FILE_EXTENSIONS[language]) ?? 'txt'}`;
-    const submission = task?.submission ?? '';
-
-    function handleEditorMount(editorInstance: editor.IStandaloneCodeEditor, monaco: Monaco) {
-        applySargeDarkTheme(editorInstance, monaco);
-    }
+    const [activeTab, setActiveTab] = useState('Submission');
 
     return (
         <section className="flex min-w-0 flex-[7] flex-col gap-4 overflow-hidden pr-4">
             <div className="flex items-center gap-2">
                 {TABS.map((tab) => (
-                    <button
+                    <Button
                         key={tab}
                         type="button"
+                        variant="icon"
                         onClick={() => setActiveTab(tab)}
                         className={cn(
-                            'text-xs font-medium transition-colors',
+                            'rounded-md px-2 py-1 text-xs font-medium',
                             activeTab === tab
-                                ? 'bg-sarge-gray-100 text-sarge-gray-600 rounded-md px-2 py-1'
-                                : 'text-sarge-gray-500 hover:text-sarge-gray-600 px-2 py-1'
+                                ? 'bg-sarge-gray-100 text-sarge-gray-600'
+                                : 'bg-transparent text-sarge-gray-500 hover:text-sarge-gray-600'
                         )}
                     >
                         {tab}
-                    </button>
+                    </Button>
                 ))}
             </div>
 
-            {activeTab === 'Submission' ? (
-                <div className="bg-sarge-gray-700 flex min-h-0 flex-1 flex-col">
-                    {/* editor header: filename + language */}
-                    <div className="text-sarge-gray-0 flex flex-shrink-0 items-stretch text-xs">
-                        <div className="border-sarge-gray-600 flex flex-shrink-0 items-center border-r px-2.5 py-2">
-                            <span className="tracking-design font-medium">{fileName}</span>
-                        </div>
-                        <div className="border-sarge-gray-600 flex flex-1 items-center justify-end gap-1.5 border-b px-2.5">
-                            <span className="tracking-design text-xs font-medium">Language</span>
-                            <span className="bg-sarge-primary-500 tracking-design text-primary-foreground rounded-sm px-2.5 py-0.5 text-xs font-medium">
-                                {language ? getLanguageLabel(language) : 'txt'}
-                            </span>
-                        </div>
-                    </div>
-                    <div className="min-h-0 flex-1">
-                        <Editor
-                            height="100%"
-                            language={language ?? 'plaintext'}
-                            value={submission}
-                            onMount={handleEditorMount}
-                            theme="sargeDark"
-                            options={{
-                                readOnly: true,
-                                fontSize: 14,
-                                minimap: { enabled: false },
-                                scrollBeyondLastLine: false,
-                                wordWrap: 'on',
-                            }}
-                        />
-                    </div>
-                </div>
-            ) : (
-                <div className="text-sarge-gray-500 flex flex-1 items-center justify-center text-sm">
-                    {/* TODO: {activeTab} panel */}
-                    TODO
-                </div>
-            )}
+            {activeTab === 'Submission' && <ReviewTaskSubmission task={task} />}
+            {activeTab === 'Instructions' && <InstructionsTaskSubmission task={task} />}
+            {activeTab === 'Test Cases' && <TestCasesTaskSubmission task={task} />}
+            {activeTab === 'Activity Log' && <ActivityLogTaskSubmission task={task} />}
         </section>
     );
 }
