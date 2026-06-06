@@ -208,15 +208,15 @@ model AssessmentTemplateTask {
 // A candidate's attempt at a TaskTemplate within an assessment. Created when the candidate
 // enters the question. Updated with submission.
 model Task {
-  id              String    @id @unique @default(cuid())
-  assessmentId    String
-  taskTemplateId  String
+  id             String               @id @unique @default(cuid())
+  assessmentId   String
+  taskTemplateId String
   // Candidate's code submission. Null until the candidate submits.
-  submission      String?   @db.Text
+  submission     String?              @db.Text
   // Language the candidate submitted in. Null until the candidate submits.
-  language        ProgrammingLanguage?
-  startedAt       DateTime  @default(now())
-  submittedAt     DateTime?
+  language       ProgrammingLanguage?
+  startedAt      DateTime             @default(now())
+  submittedAt    DateTime?
 
   assessment   Assessment       @relation("combineToFormAssessment", fields: [assessmentId], references: [id], onDelete: Cascade)
   taskTemplate TaskTemplate     @relation("derivedFromTaskTemplate", fields: [taskTemplateId], references: [id], onDelete: Restrict)
