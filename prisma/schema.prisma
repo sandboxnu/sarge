@@ -230,7 +230,7 @@ enum TestVisibility {
   PRIVATE
 }
 
-// The result of running a candidate's submission against a single test case
+// The result of running a candidate's submission against a single test case.
 model TaskTestResult {
   id             String         @id @default(cuid())
   taskId         String
