@@ -1,5 +1,5 @@
 'use client';
-import { use, useState } from 'react';
+import { use } from 'react';
 import Image from 'next/image';
 import useApplicationReview from '@/lib/hooks/useApplicationReview';
 import ReviewNavbar from '@/lib/components/reviewing/ReviewNavbar';
