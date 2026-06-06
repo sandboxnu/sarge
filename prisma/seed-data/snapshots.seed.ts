@@ -43,7 +43,6 @@ const twoSumStage3 = `def two_sum(nums, target):
 ${twoSumBoilerplate}`;
 
 const twoSumStage4 = `def two_sum(nums, target):
-    # O(n^2) — works but should optimize with a hash map
     for i in range(len(nums)):
         for j in range(i + 1, len(nums)):
             if nums[i] + nums[j] == target:
@@ -100,7 +99,6 @@ const reverseStage1 = `def reverse_string(s):
 ${reverseBoilerplate}`;
 
 const reverseStage2 = `def reverse_string(s):
-    # Slicing isn't in-place — need to actually mutate s
     s = s[::-1]
     return s
 
@@ -172,7 +170,6 @@ const palindromeStage6 = `def is_palindrome(s):
     for c in s:
         if c.isalnum():
             cleaned += c.lower()
-    # Off-by-one: candidate forgot to handle empty input as a valid palindrome
     if len(cleaned) == 0:
         return False
     return cleaned == cleaned[::-1]
