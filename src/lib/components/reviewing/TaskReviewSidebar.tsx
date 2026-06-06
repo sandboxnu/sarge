@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import { Button } from '@/lib/components/ui/Button';
 import { cn } from '@/lib/utils/cn.utils';
-import ReviewTasks from '@/lib/components/reviewing/ReviewTasks';
-import ReviewDecision from '@/lib/components/reviewing/ReviewDecision';
+import ReviewTasksOnSidebar from '@/lib/components/reviewing/ReviewTasksOnSidebar';
+import ReviewDecisionOnSidebar from '@/lib/components/reviewing/ReviewDecisionOnSidebar';
 import type { TaskWithReviewData } from '@/lib/types/position.types';
 
 const TABS = ['Review Tasks', 'Decision'];
@@ -49,7 +49,7 @@ export default function TaskReviewSidebar({
             </div>
 
             {activeTab === 'Review Tasks' && (
-                <ReviewTasks
+                <ReviewTasksOnSidebar
                     task={task}
                     currentTask={currentTask}
                     totalTasks={totalTasks}
@@ -58,7 +58,7 @@ export default function TaskReviewSidebar({
                     onSelectTask={onSelectTask}
                 />
             )}
-            {activeTab === 'Decision' && <ReviewDecision task={task} />}
+            {activeTab === 'Decision' && <ReviewDecisionOnSidebar task={task} />}
         </div>
     );
 }

@@ -318,11 +318,6 @@ async function getApplication(id: string): Promise<Application> {
     return application;
 }
 
-/**
- * Get a single application along with its full assessment review tree: the assessment, all
- * tasks (incl. submitted code), each task's reviews (with comments), and each task's
- * proctoring snapshots. Used by the reviewing page.
- */
 async function getApplicationForReview(
     applicationId: string,
     orgId: string

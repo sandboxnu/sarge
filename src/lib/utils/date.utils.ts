@@ -10,28 +10,6 @@ export function formatShortMonthDayYear(value: Date | number | string): string {
 }
 
 export function formatDeadline(date: Date | null): string {
-    // TODO(laith): update when deadlines are a thing
-    if (!date) return 'April 12, 2026 11:59PM EST';
-    return new Date(date).toLocaleString('en-US', {
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric',
-        hour: 'numeric',
-        minute: '2-digit',
-    });
-}
-
-function ordinalSuffix(day: number): string {
-    const ones = day % 10;
-    const tens = day % 100;
-    if (ones === 1 && tens !== 11) return 'st';
-    if (ones === 2 && tens !== 12) return 'nd';
-    if (ones === 3 && tens !== 13) return 'rd';
-    return 'th';
-}
-
-// Formats a due date like "May 11th 2026 at 9pm" (drops minutes when on the hour).
-export function formatDueDate(date: Date | null): string {
     if (!date) return 'No due date';
     const d = new Date(date);
     const month = d.toLocaleString('en-US', { month: 'long' });
@@ -43,6 +21,15 @@ export function formatDueDate(date: Date | null): string {
     const time =
         minutes === 0 ? `${hour12}${ampm}` : `${hour12}:${String(minutes).padStart(2, '0')}${ampm}`;
     return `${month} ${day}${ordinalSuffix(day)} ${year} at ${time}`;
+}
+
+function ordinalSuffix(day: number): string {
+    const ones = day % 10;
+    const tens = day % 100;
+    if (ones === 1 && tens !== 11) return 'st';
+    if (ones === 2 && tens !== 12) return 'nd';
+    if (ones === 3 && tens !== 13) return 'rd';
+    return 'th';
 }
 
 export function formatDuration(totalSeconds: number): string {

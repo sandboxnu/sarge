@@ -15,7 +15,7 @@ import { Button } from '@/lib/components/ui/Button';
 import { TestVisibility } from '@/generated/prisma';
 import type { TaskWithReviewData } from '@/lib/types/position.types';
 
-type ReviewTasksProps = {
+type ReviewTasksOnSidebarProps = {
     task: TaskWithReviewData | null;
     currentTask: number;
     totalTasks: number;
@@ -28,14 +28,14 @@ function Label({ children }: { children: React.ReactNode }) {
     return <span className="text-sarge-gray-500 text-xs font-medium">{children}</span>;
 }
 
-export default function ReviewTasks({
+export default function ReviewTasksOnSidebar({
     task,
     currentTask,
     totalTasks,
     onPrev,
     onNext,
     onSelectTask,
-}: ReviewTasksProps) {
+}: ReviewTasksOnSidebarProps) {
     const testResults = task?.testResults ?? [];
     const publicResults = testResults.filter((r) => r.visibility === TestVisibility.PUBLIC);
     const privateResults = testResults.filter((r) => r.visibility === TestVisibility.PRIVATE);

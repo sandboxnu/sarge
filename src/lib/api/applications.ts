@@ -18,7 +18,6 @@ export async function searchApplications(name: string): Promise<Application[]> {
 
 /**
  * GET /api/applications/:applicationId
- * Fetches a single application's full review tree (assessment + tasks + reviews + snapshots).
  */
 export async function getApplicationForReview(
     applicationId: string

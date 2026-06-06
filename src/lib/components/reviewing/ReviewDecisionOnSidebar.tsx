@@ -2,11 +2,11 @@
 
 import type { TaskWithReviewData } from '@/lib/types/position.types';
 
-type ReviewDecisionProps = {
+type ReviewDecisionOnSidebarProps = {
     task: TaskWithReviewData | null;
 };
 
 // TODO (laith): wait for designs
-export default function ReviewDecision(_props: ReviewDecisionProps) {
+export default function ReviewDecisionOnSidebar(_props: ReviewDecisionOnSidebarProps) {
     return <div>TODO</div>;
 }

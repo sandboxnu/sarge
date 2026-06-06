@@ -4,10 +4,6 @@ import { type NextRequest } from 'next/server';
 import { getSession } from '@/lib/utils/auth.utils';
 import { assertRecruiterOrAbove } from '@/lib/utils/permissions.utils';
 
-/**
- * GET /api/applications/[applicationId]
- * Get a single application's full review tree (assessment + tasks + reviews + snapshots).
- */
 export async function GET(
     request: NextRequest,
     { params }: { params: Promise<{ applicationId: string }> }

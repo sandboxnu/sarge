@@ -2,7 +2,7 @@
 
 import { User, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/lib/components/ui/Button';
-import { formatDueDate } from '@/lib/utils/date.utils';
+import { formatDeadline } from '@/lib/utils/date.utils';
 
 type ReviewNavbarProps = {
     assessmentName: string;
@@ -29,7 +29,7 @@ export default function ReviewNavbar({
                 <h1 className="text-sarge-gray-900 truncate text-lg font-bold tracking-tight">
                     {assessmentName}
                 </h1>
-                <p className="text-sarge-gray-500 text-xs">Due: {formatDueDate(dueDate)}</p>
+                <p className="text-sarge-gray-500 text-xs">Due: {formatDeadline(dueDate)}</p>
             </div>
 
             <div className="ml-4 flex basis-[30%]">

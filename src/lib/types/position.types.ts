@@ -45,21 +45,16 @@ export interface ApplicationDisplayInfo {
     } | null;
 }
 
-// A review along with its inline (line-anchored) comments.
 export type ReviewWithComments = Review & {
     comments: Comment[];
 };
 
-// A candidate's task attempt with everything a reviewer needs: the submitted code (on Task),
-// all reviews (with comments), and the full proctoring snapshot history.
 export type TaskWithReviewData = Task & {
     reviews: ReviewWithComments[];
     snapshots: Snapshot[];
     testResults: TaskTestResult[];
 };
 
-// An application with its full assessment review tree. Returned when fetching a single
-// application by id for the reviewing page.
 export type ApplicationWithReviewData = Application & {
     candidate: Candidate;
     assessment:
