@@ -8,18 +8,22 @@ import TaskReviewSidebar from '@/lib/components/reviewing/TaskReviewSidebar';
 
 export default function ReviewApplication({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
-    const { application, loading, error } = useApplicationReview(id);
-    const [currentTask, setCurrentTask] = useState(0);
+    const {
+        application,
+        loading,
+        error,
+        totalTasks,
+        currentTask,
+        setCurrentTask,
+        currentTaskData,
+        goPrev,
+        goNext,
+    } = useApplicationReview(id);
 
     if (loading) {
         return (
             <div className="flex h-full w-full flex-col items-center justify-center gap-4">
-                <Image
-                    src="/CreateOrgLoading.gif"
-                    alt="Loading"
-                    width={66}
-                    height={66}
-                />
+                <Image src="/CreateOrgLoading.gif" alt="Loading" width={66} height={66} />
                 <p className="text-sarge-gray-800 text-base leading-tight font-medium tracking-wide">
                     Opening application review page...
                 </p>
@@ -30,15 +34,6 @@ export default function ReviewApplication({ params }: { params: Promise<{ id: st
     if (error) {
         return <p className="text-sarge-error-700 px-8 py-7">Error: {error}</p>;
     }
-
-    // only completed (submitted) tasks are reviewable / rotated through
-    const tasks = (application?.assessment?.tasks ?? []).filter((t) => t.submittedAt !== null);
-    const totalTasks = tasks.length;
-    const currentTaskData = tasks[currentTask] ?? null;
-    // wrap around like a ring buffer (guard against 0 tasks to avoid modulo NaN)
-    const goPrev = () =>
-        setCurrentTask((i) => (totalTasks === 0 ? 0 : (i - 1 + totalTasks) % totalTasks));
-    const goNext = () => setCurrentTask((i) => (totalTasks === 0 ? 0 : (i + 1) % totalTasks));
 
     return (
         <div className="flex h-full flex-col">

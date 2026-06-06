@@ -14,7 +14,6 @@ CREATE TABLE "public"."TaskTestResult" (
     "input" TEXT NOT NULL,
     "expectedOutput" TEXT NOT NULL,
     "actualOutput" TEXT,
-    "order" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "TaskTestResult_pkey" PRIMARY KEY ("id")

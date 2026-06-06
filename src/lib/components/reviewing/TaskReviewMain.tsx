@@ -19,19 +19,18 @@ export default function TaskReviewMain({ task }: TaskReviewMainProps) {
     const [activeTab, setActiveTab] = useState('Submission');
 
     return (
-        <section className="flex min-w-0 flex-[7] flex-col gap-4 overflow-hidden pr-4">
+        <div className="flex min-w-0 basis-[70%] flex-col gap-4 overflow-hidden pr-4">
             <div className="flex items-center gap-2">
                 {TABS.map((tab) => (
                     <Button
                         key={tab}
-                        type="button"
                         variant="icon"
                         onClick={() => setActiveTab(tab)}
                         className={cn(
                             'rounded-md px-2 py-1 text-xs font-medium',
                             activeTab === tab
                                 ? 'bg-sarge-gray-100 text-sarge-gray-600'
-                                : 'bg-transparent text-sarge-gray-500 hover:text-sarge-gray-600'
+                                : 'text-sarge-gray-500 hover:text-sarge-gray-600 bg-transparent'
                         )}
                     >
                         {tab}
@@ -43,6 +42,6 @@ export default function TaskReviewMain({ task }: TaskReviewMainProps) {
             {activeTab === 'Instructions' && <InstructionsTaskSubmission task={task} />}
             {activeTab === 'Test Cases' && <TestCasesTaskSubmission task={task} />}
             {activeTab === 'Activity Log' && <ActivityLogTaskSubmission task={task} />}
-        </section>
+        </div>
     );
 }

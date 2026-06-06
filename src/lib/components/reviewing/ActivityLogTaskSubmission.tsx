@@ -6,7 +6,7 @@ type ActivityLogTaskSubmissionProps = {
     task: TaskWithReviewData | null;
 };
 
-// TODO: render the proctoring snapshot timeline from task.snapshots
+// TODO(laith): waiting for designs
 export default function ActivityLogTaskSubmission(_props: ActivityLogTaskSubmissionProps) {
     return <div>TODO</div>;
 }

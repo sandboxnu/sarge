@@ -29,19 +29,18 @@ export default function TaskReviewSidebar({
     const [activeTab, setActiveTab] = useState('Review Tasks');
 
     return (
-        <section className="flex min-h-0 flex-[3] flex-col ml-4">
+        <div className="ml-4 flex min-h-0 basis-[30%] flex-col">
             <div className="flex items-center gap-2">
                 {TABS.map((tab) => (
                     <Button
                         key={tab}
-                        type="button"
                         variant="icon"
                         onClick={() => setActiveTab(tab)}
                         className={cn(
                             'rounded-md px-2 py-1 text-xs font-medium',
                             activeTab === tab
                                 ? 'bg-sarge-gray-100 text-sarge-gray-600'
-                                : 'bg-transparent text-sarge-gray-500 hover:text-sarge-gray-600'
+                                : 'text-sarge-gray-500 hover:text-sarge-gray-600 bg-transparent'
                         )}
                     >
                         {tab}
@@ -60,6 +59,6 @@ export default function TaskReviewSidebar({
                 />
             )}
             {activeTab === 'Decision' && <ReviewDecision task={task} />}
-        </section>
+        </div>
     );
 }

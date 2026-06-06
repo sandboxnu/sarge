@@ -6,7 +6,7 @@ type InstructionsTaskSubmissionProps = {
     task: TaskWithReviewData | null;
 };
 
-// TODO: render the task's instructions (needs the TaskTemplate description in the review query)
+// TODO(laith): waiting for designs
 export default function InstructionsTaskSubmission(_props: InstructionsTaskSubmissionProps) {
     return <div>TODO</div>;
 }

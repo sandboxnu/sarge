@@ -46,7 +46,6 @@ export default function ReviewTasks({
 
     return (
         <div className="mt-5 flex min-h-0 flex-1 flex-col gap-5">
-            {/* task selector + prev/next */}
             <div className="flex flex-col gap-1.5">
                 <Label>Task</Label>
                 <div className="flex items-stretch gap-2">
@@ -87,7 +86,6 @@ export default function ReviewTasks({
                 </div>
             </div>
 
-            {/* public / private test cases */}
             <div className="grid grid-cols-2 gap-3">
                 <div className="border-sarge-gray-200 bg-sarge-gray-50 flex flex-col gap-2 rounded-lg border p-3">
                     <Label>Public Test Cases</Label>
@@ -103,7 +101,7 @@ export default function ReviewTasks({
                 </div>
             </div>
 
-            {/* score (UI only for now) */}
+            {/* NOTE(laith): ask fontenot about the review score again, per grader, per applicant? */}
             <div className="flex flex-col gap-1.5">
                 <Label>Score</Label>
                 <div className="flex items-stretch gap-2">
@@ -119,7 +117,6 @@ export default function ReviewTasks({
                 </div>
             </div>
 
-            {/* existing comments */}
             <div className="flex min-h-0 flex-1 flex-col gap-1.5">
                 <Label>Comments</Label>
                 <div className="border-sarge-gray-200 flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto rounded-lg border p-4">
@@ -143,7 +140,6 @@ export default function ReviewTasks({
                 </div>
             </div>
 
-            {/* add a comment (UI only for now) */}
             <div className="border-sarge-gray-200 flex flex-col gap-3 rounded-lg border p-3">
                 <textarea
                     placeholder="Add a comment or note"

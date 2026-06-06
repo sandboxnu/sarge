@@ -24,17 +24,15 @@ export default function ReviewNavbar({
     onNext,
 }: ReviewNavbarProps) {
     return (
-        <div className="flex items-center border-b py-2 px-4">
-            <div className="flex flex-[7] min-w-0 flex-col gap-0.5 pr-4">
+        <div className="flex items-center border-b px-4 py-2">
+            <div className="flex min-w-0 basis-[70%] flex-col gap-0.5 pr-4">
                 <h1 className="text-sarge-gray-900 truncate text-lg font-bold tracking-tight">
                     {assessmentName}
                 </h1>
                 <p className="text-sarge-gray-500 text-xs">Due: {formatDueDate(dueDate)}</p>
             </div>
 
-            <div className="w-px" />
-
-            <div className="flex flex-[3] ml-4">
+            <div className="ml-4 flex basis-[30%]">
                 <div className="border-sarge-gray-200 flex w-full items-center justify-between rounded-md border bg-white px-3 py-2">
                     <div className="flex items-center">
                         <div className="border-sarge-gray-200 text-sarge-gray-800 mr-2 flex size-7 items-center justify-center rounded-md border">
@@ -55,14 +53,14 @@ export default function ReviewNavbar({
                         <Button
                             variant="icon"
                             onClick={onPrev}
-                            className="border-sarge-gray-200 border border-solid [&_svg]:text-sarge-gray-800"
+                            className="border-sarge-gray-200 [&_svg]:text-sarge-gray-800 border border-solid"
                         >
                             <ChevronDown className="size-4" />
                         </Button>
                         <Button
                             variant="icon"
                             onClick={onNext}
-                            className="border-sarge-gray-200 border border-solid [&_svg]:text-sarge-gray-800"
+                            className="border-sarge-gray-200 [&_svg]:text-sarge-gray-800 border border-solid"
                         >
                             <ChevronUp className="size-4" />
                         </Button>

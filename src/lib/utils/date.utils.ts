@@ -40,7 +40,8 @@ export function formatDueDate(date: Date | null): string {
     const minutes = d.getMinutes();
     const ampm = d.getHours() >= 12 ? 'pm' : 'am';
     const hour12 = d.getHours() % 12 || 12;
-    const time = minutes === 0 ? `${hour12}${ampm}` : `${hour12}:${String(minutes).padStart(2, '0')}${ampm}`;
+    const time =
+        minutes === 0 ? `${hour12}${ampm}` : `${hour12}:${String(minutes).padStart(2, '0')}${ampm}`;
     return `${month} ${day}${ordinalSuffix(day)} ${year} at ${time}`;
 }
 

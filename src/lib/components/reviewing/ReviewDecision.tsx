@@ -6,7 +6,7 @@ type ReviewDecisionProps = {
     task: TaskWithReviewData | null;
 };
 
-// TODO: accept/reject decision panel
+// TODO (laith): wait for designs
 export default function ReviewDecision(_props: ReviewDecisionProps) {
     return <div>TODO</div>;
 }

@@ -200,7 +200,6 @@ async function submitForCandidate(taskId: string, data: SubmitTaskForCandidateDT
                         input: result.input,
                         expectedOutput: result.expectedOutput,
                         actualOutput: result.actualOutput ?? null,
-                        order: result.order,
                     })),
                 },
             },

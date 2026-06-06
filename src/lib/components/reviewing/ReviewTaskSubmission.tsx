@@ -35,7 +35,6 @@ export default function ReviewTaskSubmission({ task }: ReviewTaskSubmissionProps
 
     return (
         <div className="bg-sarge-gray-700 flex min-h-0 flex-1 flex-col">
-            {/* editor header: filename + language */}
             <div className="text-sarge-gray-0 flex flex-shrink-0 items-stretch text-xs">
                 <div className="border-sarge-gray-600 flex flex-shrink-0 items-center border-r px-2.5 py-2">
                     <span className="tracking-design font-medium">{fileName}</span>

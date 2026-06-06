@@ -247,7 +247,6 @@ export default function useAssessment(assessmentId: string) {
             input: testCase.input,
             expectedOutput: testCase.output,
             actualOutput: section.testCaseResults[i]?.actualOutput ?? null,
-            order: i,
         }));
         return {
             submission: code,

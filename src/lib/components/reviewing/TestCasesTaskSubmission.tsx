@@ -6,7 +6,7 @@ type TestCasesTaskSubmissionProps = {
     task: TaskWithReviewData | null;
 };
 
-// TODO: render per-test-case detail from task.testResults
+// TODO(laith): waiting for designs
 export default function TestCasesTaskSubmission(_props: TestCasesTaskSubmissionProps) {
     return <div>TODO</div>;
 }

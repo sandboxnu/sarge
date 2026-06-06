@@ -230,9 +230,7 @@ enum TestVisibility {
   PRIVATE
 }
 
-// The result of running a candidate's submission against a single test case, captured at submit
-// time. input/expectedOutput are snapshotted from the task template so later template edits don't
-// rewrite grading history.
+// The result of running a candidate's submission against a single test case
 model TaskTestResult {
   id             String         @id @default(cuid())
   taskId         String
@@ -241,7 +239,6 @@ model TaskTestResult {
   input          String         @db.Text
   expectedOutput String         @db.Text
   actualOutput   String?        @db.Text
-  order          Int
   createdAt      DateTime       @default(now())
 
   task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
@@ -282,8 +279,6 @@ model Review {
 model Comment {
   id         String   @id @unique @default(cuid())
   reviewId   String
-  // Inclusive line range (in the candidate's submission) the comment anchors to.
-  // A single-line comment has startLine == endLine.
   startLine  Int
   endLine    Int
   content    String   @db.Text

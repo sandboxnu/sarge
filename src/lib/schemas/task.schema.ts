@@ -34,7 +34,6 @@ export const taskTestResultSchema = z.object({
     input: z.string(),
     expectedOutput: z.string(),
     actualOutput: z.string().nullable().optional(),
-    order: z.number().int(),
 });
 
 // Candidate submits a task, their code and test results are retrieved from the client side
