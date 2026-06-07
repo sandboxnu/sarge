@@ -16,7 +16,6 @@ type ReviewNavbarProps = {
     assessmentName: string;
     dueDate: Date | null;
     candidateName: string;
-    // reviewable applications in the position that the navbar rotates through
     applications: ReviewableApplication[];
     currentApplicationId: string;
     onPrev: () => void;
@@ -71,7 +70,7 @@ export default function ReviewNavbar({
                                             onClick={() => onSelectApplication(application.id)}
                                             className={cn(
                                                 application.id === currentApplicationId &&
-                                                    'bg-sarge-gray-50'
+                                                'bg-sarge-gray-50'
                                             )}
                                         >
                                             {application.candidateName}
