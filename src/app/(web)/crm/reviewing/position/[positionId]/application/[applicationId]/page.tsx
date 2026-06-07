@@ -16,7 +16,6 @@ export default function ReviewApplication({
     const { positionId, applicationId } = use(params);
     const router = useRouter();
 
-    // tasks within this application are rotated by the sidebar
     const {
         application,
         loading,
@@ -29,7 +28,6 @@ export default function ReviewApplication({
         goNext,
     } = useApplicationReview(applicationId);
 
-    // applications within the position are rotated by the navbar
     const { applications } = usePositionApplications(positionId);
 
     const goToApplication = (id: string) =>
@@ -37,6 +35,9 @@ export default function ReviewApplication({
 
     const currentAppIndex = applications.findIndex((a) => a.id === applicationId);
     const totalApps = applications.length;
+
+    // NOTE(laith): currently doing a basic ring buffer implementation, could be a world where we
+    // disable the buttons instead
     const goPrevApplication = () => {
         if (totalApps === 0 || currentAppIndex < 0) return;
         goToApplication(applications[(currentAppIndex - 1 + totalApps) % totalApps].id);
