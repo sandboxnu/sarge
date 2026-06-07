@@ -1,13 +1,22 @@
 'use client';
 import { use } from 'react';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import useApplicationReview from '@/lib/hooks/useApplicationReview';
+import usePositionApplications from '@/lib/hooks/usePositionApplications';
 import ReviewNavbar from '@/lib/components/reviewing/ReviewNavbar';
 import TaskReviewMain from '@/lib/components/reviewing/TaskReviewMain';
 import TaskReviewSidebar from '@/lib/components/reviewing/TaskReviewSidebar';
 
-export default function ReviewApplication({ params }: { params: Promise<{ id: string }> }) {
-    const { id } = use(params);
+export default function ReviewApplication({
+    params,
+}: {
+    params: Promise<{ positionId: string; applicationId: string }>;
+}) {
+    const { positionId, applicationId } = use(params);
+    const router = useRouter();
+
+    // tasks within this application are rotated by the sidebar
     const {
         application,
         loading,
@@ -18,7 +27,24 @@ export default function ReviewApplication({ params }: { params: Promise<{ id: st
         currentTaskData,
         goPrev,
         goNext,
-    } = useApplicationReview(id);
+    } = useApplicationReview(applicationId);
+
+    // applications within the position are rotated by the navbar
+    const { applications } = usePositionApplications(positionId);
+
+    const goToApplication = (id: string) =>
+        router.push(`/crm/reviewing/position/${positionId}/application/${id}`);
+
+    const currentAppIndex = applications.findIndex((a) => a.id === applicationId);
+    const totalApps = applications.length;
+    const goPrevApplication = () => {
+        if (totalApps === 0 || currentAppIndex < 0) return;
+        goToApplication(applications[(currentAppIndex - 1 + totalApps) % totalApps].id);
+    };
+    const goNextApplication = () => {
+        if (totalApps === 0 || currentAppIndex < 0) return;
+        goToApplication(applications[(currentAppIndex + 1) % totalApps].id);
+    };
 
     if (loading) {
         return (
@@ -41,10 +67,11 @@ export default function ReviewApplication({ params }: { params: Promise<{ id: st
                 assessmentName={application?.assessment?.assessmentTemplate.title ?? 'Assessment'}
                 dueDate={application?.assessment?.deadline ?? null}
                 candidateName={application?.candidate.name ?? 'Candidate'}
-                currentTask={totalTasks === 0 ? 0 : currentTask + 1}
-                totalTasks={totalTasks}
-                onPrev={goPrev}
-                onNext={goNext}
+                applications={applications}
+                currentApplicationId={applicationId}
+                onPrev={goPrevApplication}
+                onNext={goNextApplication}
+                onSelectApplication={goToApplication}
             />
 
             <div className="flex min-h-0 flex-1 px-4 py-4">

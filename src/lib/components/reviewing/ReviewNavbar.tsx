@@ -2,27 +2,42 @@
 
 import { User, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/lib/components/ui/Button';
+import {
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuItem,
+} from '@/lib/components/ui/Dropdown';
+import { cn } from '@/lib/utils/cn.utils';
 import { formatDeadline } from '@/lib/utils/date.utils';
+import type { ReviewableApplication } from '@/lib/hooks/usePositionApplications';
 
 type ReviewNavbarProps = {
     assessmentName: string;
     dueDate: Date | null;
     candidateName: string;
-    currentTask: number;
-    totalTasks: number;
+    // reviewable applications in the position that the navbar rotates through
+    applications: ReviewableApplication[];
+    currentApplicationId: string;
     onPrev: () => void;
     onNext: () => void;
+    onSelectApplication: (applicationId: string) => void;
 };
 
 export default function ReviewNavbar({
     assessmentName,
     dueDate,
     candidateName,
-    currentTask,
-    totalTasks,
+    applications,
+    currentApplicationId,
     onPrev,
     onNext,
+    onSelectApplication,
 }: ReviewNavbarProps) {
+    const currentIndex = applications.findIndex((a) => a.id === currentApplicationId);
+    const total = applications.length;
+    const position = currentIndex >= 0 ? currentIndex + 1 : 0;
+
     return (
         <div className="flex items-center border-b px-4 py-2">
             <div className="flex min-w-0 basis-[70%] flex-col gap-0.5 pr-4">
@@ -34,17 +49,38 @@ export default function ReviewNavbar({
 
             <div className="ml-4 flex basis-[30%]">
                 <div className="border-sarge-gray-200 flex w-full items-center justify-between rounded-md border bg-white px-3 py-2">
-                    <div className="flex items-center">
-                        <div className="border-sarge-gray-200 text-sarge-gray-800 mr-2 flex size-7 items-center justify-center rounded-md border">
+                    <div className="flex min-w-0 items-center">
+                        <div className="border-sarge-gray-200 text-sarge-gray-800 mr-2 flex size-7 shrink-0 items-center justify-center rounded-md border">
                             <User className="size-4" />
                         </div>
                         <div className="flex min-w-0 flex-col">
-                            <div className="text-sarge-gray-900 flex items-center gap-1 font-semibold">
-                                <span className="truncate">{candidateName}</span>
-                                <ChevronDown className="text-sarge-gray-400 size-4 shrink-0" />
-                            </div>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <button
+                                        type="button"
+                                        className="text-sarge-gray-900 flex min-w-0 items-center gap-1 font-semibold"
+                                    >
+                                        <span className="truncate">{candidateName}</span>
+                                        <ChevronDown className="text-sarge-gray-400 size-4 shrink-0" />
+                                    </button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="start" className="max-h-64">
+                                    {applications.map((application) => (
+                                        <DropdownMenuItem
+                                            key={application.id}
+                                            onClick={() => onSelectApplication(application.id)}
+                                            className={cn(
+                                                application.id === currentApplicationId &&
+                                                    'bg-sarge-gray-50'
+                                            )}
+                                        >
+                                            {application.candidateName}
+                                        </DropdownMenuItem>
+                                    ))}
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                             <span className="text-sarge-gray-500 text-xs">
-                                {currentTask} of {totalTasks} tasks
+                                {position} of {total} submissions
                             </span>
                         </div>
                     </div>
@@ -52,6 +88,7 @@ export default function ReviewNavbar({
                     <div className="ml-2 flex items-center gap-1">
                         <Button
                             variant="icon"
+                            aria-label="Previous submission"
                             onClick={onPrev}
                             className="border-sarge-gray-200 [&_svg]:text-sarge-gray-800 border border-solid"
                         >
@@ -59,6 +96,7 @@ export default function ReviewNavbar({
                         </Button>
                         <Button
                             variant="icon"
+                            aria-label="Next submission"
                             onClick={onNext}
                             className="border-sarge-gray-200 [&_svg]:text-sarge-gray-800 border border-solid"
                         >
