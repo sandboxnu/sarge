@@ -70,7 +70,7 @@ export default function ReviewNavbar({
                                             onClick={() => onSelectApplication(application.id)}
                                             className={cn(
                                                 application.id === currentApplicationId &&
-                                                'bg-sarge-gray-50'
+                                                    'bg-sarge-gray-50'
                                             )}
                                         >
                                             {application.candidateName}
