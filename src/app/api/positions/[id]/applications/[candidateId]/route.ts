@@ -5,7 +5,7 @@ import { getSession } from '@/lib/utils/auth.utils';
 import { assertRecruiterOrAbove } from '@/lib/utils/permissions.utils';
 
 /**
- * DELETE /api/positions/[id]/candidates/[candidateId]
+ * DELETE /api/positions/[id]/applications/[candidateId]
  * Remove a single application from a position
  * This will cascade delete their assessment if one exists
  */

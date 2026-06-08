@@ -503,20 +503,25 @@ async function seedTasks() {
             where: { id: taskData.id },
             update: {
                 submission: taskData.submission,
-                passedTestCases: taskData.passedTestCases,
-                failedTestCases: taskData.failedTestCases,
+                language: taskData.language,
                 startedAt: taskData.startedAt,
                 submittedAt: taskData.submittedAt,
+                testResults: {
+                    deleteMany: {},
+                    create: taskData.testResults,
+                },
             },
             create: {
                 id: taskData.id,
                 assessmentId: taskData.assessmentId,
                 taskTemplateId: taskData.taskTemplateId,
                 submission: taskData.submission,
-                passedTestCases: taskData.passedTestCases,
-                failedTestCases: taskData.failedTestCases,
+                language: taskData.language,
                 startedAt: taskData.startedAt,
                 submittedAt: taskData.submittedAt,
+                testResults: {
+                    create: taskData.testResults,
+                },
             },
         });
 
@@ -554,7 +559,8 @@ async function seedComments() {
         await prisma.comment.upsert({
             where: { id: commentData.id },
             update: {
-                line: commentData.line,
+                startLine: commentData.startLine,
+                endLine: commentData.endLine,
                 content: commentData.content,
             },
             create: commentData,

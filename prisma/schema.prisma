@@ -208,22 +208,42 @@ model AssessmentTemplateTask {
 // A candidate's attempt at a TaskTemplate within an assessment. Created when the candidate
 // enters the question. Updated with submission.
 model Task {
-  id              String    @id @unique @default(cuid())
-  assessmentId    String
-  taskTemplateId  String
+  id             String               @id @unique @default(cuid())
+  assessmentId   String
+  taskTemplateId String
   // Candidate's code submission. Null until the candidate submits.
-  submission      String?   @db.Text
-  // NOTE(laith): we may want to pivot our test cases to be their own tables eventually due to these
-  // also being fields in TaskTemplate
-  passedTestCases Json[]
-  failedTestCases Json[]
-  startedAt       DateTime  @default(now())
-  submittedAt     DateTime?
+  submission     String?              @db.Text
+  // Language the candidate submitted in. Null until the candidate submits.
+  language       ProgrammingLanguage?
+  startedAt      DateTime             @default(now())
+  submittedAt    DateTime?
 
-  assessment   Assessment   @relation("combineToFormAssessment", fields: [assessmentId], references: [id], onDelete: Cascade)
-  taskTemplate TaskTemplate @relation("derivedFromTaskTemplate", fields: [taskTemplateId], references: [id], onDelete: Restrict)
+  assessment   Assessment       @relation("combineToFormAssessment", fields: [assessmentId], references: [id], onDelete: Cascade)
+  taskTemplate TaskTemplate     @relation("derivedFromTaskTemplate", fields: [taskTemplateId], references: [id], onDelete: Restrict)
   reviews      Review[]
   snapshots    Snapshot[]
+  testResults  TaskTestResult[]
+}
+
+enum TestVisibility {
+  PUBLIC
+  PRIVATE
+}
+
+// The result of running a candidate's submission against a single test case.
+model TaskTestResult {
+  id             String         @id @default(cuid())
+  taskId         String
+  visibility     TestVisibility
+  passed         Boolean
+  input          String         @db.Text
+  expectedOutput String         @db.Text
+  actualOutput   String?        @db.Text
+  createdAt      DateTime       @default(now())
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([taskId, visibility])
 }
 
 // An assessment instance assigned to an application. Generated from an assessment template and composed of multiple tasks.
@@ -259,7 +279,8 @@ model Review {
 model Comment {
   id         String   @id @unique @default(cuid())
   reviewId   String
-  line       Int
+  startLine  Int
+  endLine    Int
   content    String   @db.Text
   reviewedAt DateTime @default(now())
 

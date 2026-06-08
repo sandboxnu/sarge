@@ -1,7 +1,11 @@
 import { prisma } from '@/lib/prisma';
 import { NotFoundException, ForbiddenException } from '@/lib/utils/errors.utils';
 import { type AddApplicationWithCandidateDataDTO } from '@/lib/schemas/application.schema';
-import type { BatchAddResult, ApplicationDisplayInfo } from '@/lib/types/position.types';
+import type {
+    BatchAddResult,
+    ApplicationDisplayInfo,
+    ApplicationWithReviewData,
+} from '@/lib/types/position.types';
 import { AssessmentStatus, type Application } from '@/generated/prisma';
 
 async function validatePositionAccess(positionId: string, orgId: string) {
@@ -76,6 +80,7 @@ async function addApplicationToPosition(
         return tx.application.findUniqueOrThrow({
             where: { id: createdApplication.id },
             select: {
+                id: true,
                 assessmentStatus: true,
                 decisionStatus: true,
                 candidate: {
@@ -197,6 +202,7 @@ async function batchAddApplicationsToPosition(
             candidateId: { in: candidateRecords.map((candidate) => candidate.id) },
         },
         select: {
+            id: true,
             assessmentStatus: true,
             decisionStatus: true,
             candidate: {
@@ -243,6 +249,7 @@ async function getPositionApplications(
     const applications = await prisma.application.findMany({
         where: { positionId },
         select: {
+            id: true,
             assessmentStatus: true,
             decisionStatus: true,
             candidate: {
@@ -309,6 +316,34 @@ async function getApplication(id: string): Promise<Application> {
     }
 
     return application;
+}
+
+async function getApplicationForReview(
+    applicationId: string,
+    orgId: string
+): Promise<ApplicationWithReviewData> {
+    await validateApplicationAccess(applicationId, orgId);
+
+    return prisma.application.findUniqueOrThrow({
+        where: { id: applicationId },
+        include: {
+            candidate: true,
+            assessment: {
+                include: {
+                    assessmentTemplate: { select: { title: true } },
+                    tasks: {
+                        include: {
+                            reviews: {
+                                include: { comments: true },
+                            },
+                            snapshots: true,
+                            testResults: true,
+                        },
+                    },
+                },
+            },
+        },
+    });
 }
 
 async function validateApplicationAccess(
@@ -381,6 +416,7 @@ const ApplicationService = {
     removeApplicationFromPosition,
     removeAllApplicationsFromPosition,
     getApplication,
+    getApplicationForReview,
     getAssessmentStatus,
     updateAssessmentStatus,
     getApplicationsByName,

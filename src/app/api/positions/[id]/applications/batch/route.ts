@@ -6,7 +6,7 @@ import { batchAddApplicationsSchema } from '@/lib/schemas/application.schema';
 import { assertRecruiterOrAbove } from '@/lib/utils/permissions.utils';
 
 /**
- * POST /api/positions/[id]/candidates/batch
+ * POST /api/positions/[id]/applications/batch
  * Batch add candidate applications to a position (CSV upload flow)
  */
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {

@@ -1,4 +1,15 @@
-import type { DecisionStatus, AssessmentStatus } from '@/generated/prisma';
+import type {
+    DecisionStatus,
+    AssessmentStatus,
+    Application,
+    Assessment,
+    Candidate,
+    Task,
+    Review,
+    Comment,
+    Snapshot,
+    TaskTestResult,
+} from '@/generated/prisma';
 
 export type PositionWithCounts = {
     title: string;
@@ -14,6 +25,7 @@ export type PositionWithCounts = {
 };
 
 export interface ApplicationDisplayInfo {
+    id: string;
     assessmentStatus: AssessmentStatus;
     decisionStatus: DecisionStatus;
     candidate: {
@@ -32,6 +44,26 @@ export interface ApplicationDisplayInfo {
         }[];
     } | null;
 }
+
+export type ReviewWithComments = Review & {
+    comments: Comment[];
+};
+
+export type TaskWithReviewData = Task & {
+    reviews: ReviewWithComments[];
+    snapshots: Snapshot[];
+    testResults: TaskTestResult[];
+};
+
+export type ApplicationWithReviewData = Application & {
+    candidate: Candidate;
+    assessment:
+        | (Assessment & {
+              assessmentTemplate: { title: string };
+              tasks: TaskWithReviewData[];
+          })
+        | null;
+};
 
 export interface BatchAddResult {
     candidatesCreated: number;
