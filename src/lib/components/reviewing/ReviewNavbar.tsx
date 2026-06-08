@@ -2,13 +2,7 @@
 
 import { User, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/lib/components/ui/Button';
-import {
-    DropdownMenu,
-    DropdownMenuTrigger,
-    DropdownMenuContent,
-    DropdownMenuItem,
-} from '@/lib/components/ui/Dropdown';
-import { cn } from '@/lib/utils/cn.utils';
+import { Combobox } from '@/lib/components/ui/Combobox';
 import { formatDeadline } from '@/lib/utils/date.utils';
 import type { ReviewableApplication } from '@/lib/hooks/usePositionApplications';
 
@@ -53,8 +47,18 @@ export default function ReviewNavbar({
                             <User className="size-4" />
                         </div>
                         <div className="flex min-w-0 flex-col">
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
+                            <Combobox
+                                options={applications.map((application) => ({
+                                    value: application.id,
+                                    label: application.candidateName,
+                                }))}
+                                value={currentApplicationId}
+                                onChange={(value) => onSelectApplication(value as string)}
+                                searchPlaceholder="Search candidates..."
+                                emptyText="No candidates found."
+                                showSearchIcon
+                                contentClassName="min-w-60"
+                                trigger={
                                     <Button
                                         type="button"
                                         variant="icon"
@@ -63,22 +67,8 @@ export default function ReviewNavbar({
                                         <span className="truncate">{candidateName}</span>
                                         <ChevronDown className="size-4 shrink-0" />
                                     </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="start" className="max-h-64">
-                                    {applications.map((application) => (
-                                        <DropdownMenuItem
-                                            key={application.id}
-                                            onClick={() => onSelectApplication(application.id)}
-                                            className={cn(
-                                                application.id === currentApplicationId &&
-                                                    'bg-sarge-gray-50'
-                                            )}
-                                        >
-                                            {application.candidateName}
-                                        </DropdownMenuItem>
-                                    ))}
-                                </DropdownMenuContent>
-                            </DropdownMenu>
+                                }
+                            />
                             <span className="text-sarge-gray-500 text-xs">
                                 {position} of {total} submissions
                             </span>
