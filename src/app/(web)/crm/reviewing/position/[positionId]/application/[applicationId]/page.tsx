@@ -1,6 +1,5 @@
 'use client';
 import { use } from 'react';
-import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import useApplicationReview from '@/lib/hooks/useApplicationReview';
 import usePositionApplications from '@/lib/hooks/usePositionApplications';
@@ -14,8 +13,9 @@ export default function ReviewApplication({
     params: Promise<{ positionId: string; applicationId: string }>;
 }) {
     const { positionId, applicationId } = use(params);
-    const router = useRouter();
 
+    // NOTE(laith): tasks within this application are rotated by the sidebar and applications within
+    // the position are rotated by the navbar
     const {
         application,
         loading,
@@ -24,28 +24,12 @@ export default function ReviewApplication({
         currentTask,
         setCurrentTask,
         currentTaskData,
-        goPrev,
-        goNext,
+        goPrevTask,
+        goNextTask,
     } = useApplicationReview(applicationId);
 
-    const { applications } = usePositionApplications(positionId);
-
-    const goToApplication = (id: string) =>
-        router.push(`/crm/reviewing/position/${positionId}/application/${id}`);
-
-    const currentAppIndex = applications.findIndex((a) => a.id === applicationId);
-    const totalApps = applications.length;
-
-    // NOTE(laith): currently doing a basic ring buffer implementation, could be a world where we
-    // disable the buttons instead
-    const goPrevApplication = () => {
-        if (totalApps === 0 || currentAppIndex < 0) return;
-        goToApplication(applications[(currentAppIndex - 1 + totalApps) % totalApps].id);
-    };
-    const goNextApplication = () => {
-        if (totalApps === 0 || currentAppIndex < 0) return;
-        goToApplication(applications[(currentAppIndex + 1) % totalApps].id);
-    };
+    const { applications, goToApplication, goPrevApplication, goNextApplication } =
+        usePositionApplications(positionId, applicationId);
 
     if (loading) {
         return (
@@ -81,8 +65,8 @@ export default function ReviewApplication({
                     task={currentTaskData}
                     currentTask={currentTask}
                     totalTasks={totalTasks}
-                    onPrev={goPrev}
-                    onNext={goNext}
+                    onPrev={goPrevTask}
+                    onNext={goNextTask}
                     onSelectTask={setCurrentTask}
                 />
             </div>

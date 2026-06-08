@@ -55,13 +55,14 @@ export default function ReviewNavbar({
                         <div className="flex min-w-0 flex-col">
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <button
+                                    <Button
                                         type="button"
-                                        className="text-sarge-gray-900 flex min-w-0 items-center gap-1 font-semibold"
+                                        variant="icon"
+                                        className="text-sarge-gray-900 hover:text-sarge-gray-900 [&_svg]:text-sarge-gray-400 hover:[&_svg]:text-sarge-gray-400 flex min-w-0 items-center gap-1 bg-transparent p-0 font-semibold hover:bg-transparent"
                                     >
                                         <span className="truncate">{candidateName}</span>
-                                        <ChevronDown className="text-sarge-gray-400 size-4 shrink-0" />
-                                    </button>
+                                        <ChevronDown className="size-4 shrink-0" />
+                                    </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="start" className="max-h-64">
                                     {applications.map((application) => (

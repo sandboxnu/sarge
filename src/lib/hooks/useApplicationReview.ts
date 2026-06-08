@@ -36,9 +36,9 @@ export default function useApplicationReview(applicationId: string | null) {
     const totalTasks = tasks.length;
     const currentTaskData = tasks[currentTask] ?? null;
     // NOTE(laith): probably temporary, but basic ring buffer implementation
-    const goPrev = () =>
+    const goPrevTask = () =>
         setCurrentTask((i) => (totalTasks === 0 ? 0 : (i - 1 + totalTasks) % totalTasks));
-    const goNext = () => setCurrentTask((i) => (totalTasks === 0 ? 0 : (i + 1) % totalTasks));
+    const goNextTask = () => setCurrentTask((i) => (totalTasks === 0 ? 0 : (i + 1) % totalTasks));
 
     return {
         application,
@@ -49,7 +49,7 @@ export default function useApplicationReview(applicationId: string | null) {
         currentTaskData,
         currentTask,
         setCurrentTask,
-        goPrev,
-        goNext,
+        goPrevTask,
+        goNextTask,
     };
 }

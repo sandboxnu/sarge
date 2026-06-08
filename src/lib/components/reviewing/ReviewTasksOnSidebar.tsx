@@ -24,10 +24,6 @@ type ReviewTasksOnSidebarProps = {
     onSelectTask: (index: number) => void;
 };
 
-function Label({ children }: { children: React.ReactNode }) {
-    return <span className="text-sarge-gray-500 text-xs font-medium">{children}</span>;
-}
-
 export default function ReviewTasksOnSidebar({
     task,
     currentTask,
@@ -47,7 +43,7 @@ export default function ReviewTasksOnSidebar({
     return (
         <div className="mt-5 flex min-h-0 flex-1 flex-col gap-5">
             <div className="flex flex-col gap-1.5">
-                <Label>Task</Label>
+                <span className="text-sarge-gray-500 text-xs font-medium">Task</span>
                 <div className="flex items-stretch gap-2">
                     <Select
                         value={String(currentTask)}
@@ -88,13 +84,17 @@ export default function ReviewTasksOnSidebar({
 
             <div className="grid grid-cols-2 gap-3">
                 <div className="border-sarge-gray-200 bg-sarge-gray-50 flex flex-col gap-2 rounded-lg border p-3">
-                    <Label>Public Test Cases</Label>
+                    <span className="text-sarge-gray-500 text-xs font-medium">
+                        Public Test Cases
+                    </span>
                     <Chip variant="success" className="w-fit">
                         {publicPassed}/{publicResults.length} passed
                     </Chip>
                 </div>
                 <div className="border-sarge-gray-200 bg-sarge-gray-50 flex flex-col gap-2 rounded-lg border p-3">
-                    <Label>Private Test Cases</Label>
+                    <span className="text-sarge-gray-500 text-xs font-medium">
+                        Private Test Cases
+                    </span>
                     <Chip variant="warning" className="w-fit">
                         {privatePassed}/{privateResults.length} passed
                     </Chip>
@@ -103,7 +103,7 @@ export default function ReviewTasksOnSidebar({
 
             {/* NOTE(laith): ask fontenot about the review score again, per grader, per applicant? */}
             <div className="flex flex-col gap-1.5">
-                <Label>Score</Label>
+                <span className="text-sarge-gray-500 text-xs font-medium">Score</span>
                 <div className="flex items-stretch gap-2">
                     <Input
                         key={task?.id}
@@ -118,7 +118,7 @@ export default function ReviewTasksOnSidebar({
             </div>
 
             <div className="flex min-h-0 flex-1 flex-col gap-1.5">
-                <Label>Comments</Label>
+                <span className="text-sarge-gray-500 text-xs font-medium">Comments</span>
                 <div className="border-sarge-gray-200 flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto rounded-lg border p-4">
                     {comments.length === 0 ? (
                         <span className="text-sarge-gray-400 text-sm">No comments yet</span>

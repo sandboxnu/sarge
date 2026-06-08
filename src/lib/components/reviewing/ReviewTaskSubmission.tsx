@@ -4,21 +4,12 @@ import dynamic from 'next/dynamic';
 import type { editor } from 'monaco-editor';
 import type { Monaco } from '@monaco-editor/react';
 import { applySargeDarkTheme } from '@/lib/utils/monaco.utils';
-import { getLanguageLabel } from '@/lib/utils/language.utils';
+import { getLanguageLabel, getLanguageFileExtension } from '@/lib/utils/language.utils';
 import type { TaskWithReviewData } from '@/lib/types/position.types';
 
 const Editor = dynamic(() => import('@monaco-editor/react').then((mod) => mod.Editor), {
     ssr: false,
 });
-
-const LANGUAGE_FILE_EXTENSIONS: Record<string, string> = {
-    python: 'py',
-    javascript: 'js',
-    typescript: 'ts',
-    c: 'c',
-    cpp: 'cpp',
-    ruby: 'rb',
-};
 
 type ReviewTaskSubmissionProps = {
     task: TaskWithReviewData | null;
@@ -26,7 +17,7 @@ type ReviewTaskSubmissionProps = {
 
 export default function ReviewTaskSubmission({ task }: ReviewTaskSubmissionProps) {
     const language = task?.language ?? null;
-    const fileName = `main.${(language && LANGUAGE_FILE_EXTENSIONS[language]) ?? 'txt'}`;
+    const fileName = `main.${getLanguageFileExtension(language ?? '')}`;
     const submission = task?.submission ?? '';
 
     function handleEditorMount(editorInstance: editor.IStandaloneCodeEditor, monaco: Monaco) {
