@@ -36,7 +36,6 @@ const carterPalindromeSubmission = `def is_palindrome(s):
     for c in s:
         if c.isalnum():
             cleaned += c.lower()
-    # Off-by-one: candidate forgot to handle empty input as a valid palindrome
     if len(cleaned) == 0:
         return False
     return cleaned == cleaned[::-1]
