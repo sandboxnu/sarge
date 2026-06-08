@@ -101,7 +101,6 @@ export default function ReviewTasksOnSidebar({
                 </div>
             </div>
 
-            {/* NOTE(laith): ask fontenot about the review score again, per grader, per applicant? */}
             <div className="flex flex-col gap-1.5">
                 <span className="text-sarge-gray-500 text-xs font-medium">Score</span>
                 <div className="flex items-stretch gap-2">
