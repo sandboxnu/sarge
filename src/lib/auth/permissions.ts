@@ -17,6 +17,8 @@ const statement = {
     comment: ['create', 'read', 'update', 'delete'],
 } as const;
 
+export const SUPER_USER_ROLE = 'superuser';
+
 export const ac = createAccessControl(statement);
 
 export const owner = ac.newRole({
