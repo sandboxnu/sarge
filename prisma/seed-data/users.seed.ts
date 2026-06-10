@@ -1,3 +1,10 @@
+export const superUserData = {
+    id: 'user_super_user_001',
+    name: 'Super User',
+    email: 'superuser@sargenu.com',
+    password: 'password123',
+};
+
 export const usersData = [
     {
         id: 'user_prof_fontenot_001',
