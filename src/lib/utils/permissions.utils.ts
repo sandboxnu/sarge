@@ -1,5 +1,6 @@
 import { auth } from '@/lib/auth/auth';
 import { ForbiddenException } from '@/lib/utils/errors.utils';
+import { SUPER_USER_ROLE } from '@/lib/auth/permissions';
 import type { ac } from '@/lib/auth/permissions';
 
 type PermissionMap = Partial<{
@@ -50,4 +51,14 @@ export async function assertOwner(
     message = 'Owner role required'
 ): Promise<void> {
     await assertPermission(headers, { organization: ['delete'] }, message);
+}
+
+export async function assertSuperUser(
+    headers: Headers,
+    message = 'Superuser role required'
+): Promise<void> {
+    const session = await auth.api.getSession({ headers });
+    if (session?.user.role !== SUPER_USER_ROLE) {
+        throw new ForbiddenException(message);
+    }
 }

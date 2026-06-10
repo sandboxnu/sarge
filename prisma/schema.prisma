@@ -28,7 +28,8 @@ model Organization {
   taskTemplateTags    TaskTemplateTag[]
 }
 
-// An internal user of the Sarge platform (e.g. recruiter, reviewer, admin). Users authenticate and may belong to one or more organizations.
+// An internal user of the Sarge platform (e.g. recruiter, reviewer, admin). 
+// See the Member table for the specific role they hold. Users authenticate and may belong to one or more organizations.
 model User {
   id            String   @id @unique @default(cuid())
   name          String
@@ -37,6 +38,14 @@ model User {
   image         String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+
+  // NOTE(laith): the fields below are required for better-auth's "admin" plugin.
+  // This is being used to handle superuser account creation. All fields should be null besides 'role' for the self-hosted superuser.
+  // The rest of the rows will be null/default until moderation is built into sarge.
+  role       String?
+  banned     Boolean?  @default(false)
+  banReason  String?
+  banExpires DateTime?
 
   reviews                     Review[]
   sessions                    Session[]
@@ -318,6 +327,9 @@ model Session {
   userAgent String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // NOTE(laith): required for a better-auth plugin. Until we start using moderation features, leave null
+  impersonatedBy String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 

@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server';
 
-const protectedRoutes = ['/crm'];
+const protectedRoutes = ['/crm', '/admin'];
 
 function hasAuthCookie(request: NextRequest): boolean {
     return request.cookies

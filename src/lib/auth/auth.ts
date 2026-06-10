@@ -1,9 +1,19 @@
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
-import { organization } from 'better-auth/plugins';
+import { admin as adminPlugin, organization } from 'better-auth/plugins';
 import { prisma } from '@/lib/prisma';
-import { ac, owner, admin, recruiter, reviewer, member } from '@/lib/auth/permissions';
+import {
+    ac,
+    owner,
+    admin,
+    recruiter,
+    reviewer,
+    member,
+    SUPER_USER_ROLE,
+} from '@/lib/auth/permissions';
 import sesConnector from '@/lib/connectors/ses.connector';
+
+let hasExistingUsers = false;
 
 const baseUrl =
     process.env.BETTER_AUTH_URL ??
@@ -21,6 +31,21 @@ export const auth = betterAuth({
         provider: 'postgresql',
     }),
     databaseHooks: {
+        user: {
+            create: {
+                before: async (user) => {
+                    if (hasExistingUsers) return { data: user };
+
+                    const userCount = await prisma.user.count();
+                    if (userCount > 0) {
+                        hasExistingUsers = true;
+                        return { data: user };
+                    }
+
+                    return { data: { ...user, role: SUPER_USER_ROLE } };
+                },
+            },
+        },
         session: {
             create: {
                 before: async (session) => {
@@ -97,6 +122,9 @@ export const auth = betterAuth({
                     console.error('Failed to send invitation email:', error);
                 }
             },
+        }),
+        adminPlugin({
+            adminRoles: [SUPER_USER_ROLE],
         }),
     ],
 });
