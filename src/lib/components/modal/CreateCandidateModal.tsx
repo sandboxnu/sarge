@@ -203,7 +203,7 @@ export default function CreateCandidateModal({
                         <Button
                             variant="link"
                             onClick={handleCancel}
-                            className="text-label-s text-sarge-primary-600 hover:text-sarge-primary-700 hover:no-underline px-0"
+                            className="text-label-s text-sarge-primary-600 hover:text-sarge-primary-700 px-0 hover:no-underline"
                         >
                             Cancel
                         </Button>

@@ -1,4 +1,4 @@
-import ResetPasswordConfirm from './ResetPasswordConfirm';
+import ResetPasswordConfirm from '@/lib/components/auth/ResetPasswordConfirm';
 
 export default async function ResetPasswordConfirmPage({
     searchParams,

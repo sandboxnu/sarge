@@ -101,8 +101,8 @@ export default function AcceptInvitation({ id }: { id: string | null }) {
                 <StatusIcon variant="info" />
                 <h1 className="text-display-xs text-sarge-gray-800">Sign in required</h1>
                 <p className="text-body-s text-sarge-gray-600 text-center">
-                    You need to sign in to accept this invitation. If you don't have an
-                    account, you can create one first.
+                    You need to sign in to accept this invitation. If you don't have an account, you
+                    can create one first.
                 </p>
                 <div className="flex gap-3">
                     <Button variant="primary" asChild>
@@ -179,10 +179,7 @@ export default function AcceptInvitation({ id }: { id: string | null }) {
             <h1 className="text-display-xs text-sarge-gray-800">You've been invited</h1>
 
             <div className="bg-sarge-gray-50 border-sarge-gray-200 flex w-full flex-col gap-3 rounded-lg border p-4">
-                <DetailRow
-                    label="Organization"
-                    value={invitation.organizationName}
-                />
+                <DetailRow label="Organization" value={invitation.organizationName} />
                 <DetailRow label="Role" value={getRoleLabel(invitation.role)} />
                 <DetailRow label="Email" value={invitation.email} />
             </div>

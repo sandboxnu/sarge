@@ -223,7 +223,7 @@ export default function UploadCSVModal({
                         <Button
                             variant="link"
                             onClick={onCancelClick}
-                            className="text-label-s text-sarge-primary-600 hover:text-sarge-primary-700 hover:no-underline px-0 pr-4"
+                            className="text-label-s text-sarge-primary-600 hover:text-sarge-primary-700 px-0 pr-4 hover:no-underline"
                         >
                             Cancel
                         </Button>
@@ -384,7 +384,7 @@ function ErrorFileCallout({
             <Button
                 variant="icon"
                 onClick={onDismiss}
-                className="p-0 bg-transparent hover:bg-transparent [&_svg]:text-sarge-error-700 hover:[&_svg]:text-sarge-error-700 hover:opacity-80"
+                className="[&_svg]:text-sarge-error-700 hover:[&_svg]:text-sarge-error-700 bg-transparent p-0 hover:bg-transparent hover:opacity-80"
                 aria-label="Dismiss error"
             >
                 <X className="size-5" />
@@ -424,7 +424,7 @@ function UploadedFileCallout({
             <Button
                 variant="icon"
                 onClick={onAction}
-                className="p-0 bg-transparent hover:bg-transparent"
+                className="bg-transparent p-0 hover:bg-transparent"
                 aria-label={actionLabel}
             >
                 {actionIcon}

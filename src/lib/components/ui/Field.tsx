@@ -18,9 +18,7 @@ const Field = React.forwardRef<
 Field.displayName = 'Field';
 
 const FieldLabel = React.forwardRef<HTMLLabelElement, React.LabelHTMLAttributes<HTMLLabelElement>>(
-    ({ className, ...props }, ref) => (
-        <label ref={ref} className={cn(className)} {...props} />
-    )
+    ({ className, ...props }, ref) => <label ref={ref} className={cn(className)} {...props} />
 );
 FieldLabel.displayName = 'FieldLabel';
 
