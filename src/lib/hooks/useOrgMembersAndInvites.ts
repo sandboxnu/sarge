@@ -5,18 +5,7 @@ import type { MemberWithUser } from '@/lib/types/member.types';
 import type { OrgInvitation } from '@/lib/types/invitation.types';
 import { getOrganizationMembers } from '@/lib/api/organizations';
 
-type UseOrgMembersAndInvitesResult = {
-    members: MemberWithUser[];
-    invitations: OrgInvitation[];
-    memberCount: number;
-    isLoading: boolean;
-    error: Error | null;
-    refresh: () => void;
-};
-
-export function useOrgMembersAndInvites(
-    organizationId: string | undefined
-): UseOrgMembersAndInvitesResult {
+export function useOrgMembersAndInvites(organizationId: string | undefined) {
     const [members, setMembers] = useState<MemberWithUser[]>([]);
     const [invitations, setInvitations] = useState<OrgInvitation[]>([]);
     const [isLoading, setIsLoading] = useState(true);
