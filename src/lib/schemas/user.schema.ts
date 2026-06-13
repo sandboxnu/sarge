@@ -29,8 +29,6 @@ export const loginUserSchema = z.object({
         .max(255, 'Email must be less than 255 characters'),
     password: z
         .string()
-        .min(1, 'Password is required')
-        .min(8, 'Password must be at least 8 characters'),
 });
 
 export const UserSchema = z.object({
@@ -64,6 +62,20 @@ export const resetPasswordSchema = z
         path: ['confirmPassword'],
     });
 
+export const changePasswordSchema = z
+    .object({
+        currentPassword: z.string().min(1, 'Current password is required'),
+        newPassword: z
+            .string()
+            .min(8, 'Password must be at least 8 characters')
+            .max(128, 'Password must be less than 128 characters'),
+        confirmPassword: z.string().min(1, 'Please confirm your new password'),
+    })
+    .refine((data) => data.newPassword === data.confirmPassword, {
+        message: 'Passwords do not match',
+        path: ['confirmPassword'],
+    });
+
 export type UserDTO = z.infer<typeof UserSchema>;
 
 export type CreateUserDTO = z.infer<typeof createUserSchema>;
@@ -75,3 +87,5 @@ export type UpdateProfileDTO = z.infer<typeof updateProfileSchema>;
 export type RequestPasswordResetDTO = z.infer<typeof requestPasswordResetSchema>;
 
 export type ResetPasswordDTO = z.infer<typeof resetPasswordSchema>;
+
+export type ChangePasswordDTO = z.infer<typeof changePasswordSchema>;
