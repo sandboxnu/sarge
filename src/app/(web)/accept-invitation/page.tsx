@@ -1,4 +1,4 @@
-import AcceptInvitation from './AcceptInvitation';
+import AcceptInvitation from '@/lib/components/core/AcceptInvitation';
 
 export default async function AcceptInvitationPage({
     searchParams,

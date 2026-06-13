@@ -7,25 +7,16 @@ import Link from 'next/link';
 import { authClient } from '@/lib/auth/auth-client';
 import { useAuthSession } from '@/lib/auth/auth-context';
 import { Button } from '@/lib/components/ui/Button';
+import type { AcceptInvitation as AcceptInvitationData } from '@/lib/types/invitation.types';
 import { getRoleLabel } from '@/lib/utils/roles.utils';
 import { Mail, CheckCircle, XCircle, Clock, Loader2 } from 'lucide-react';
-
-type InvitationData = {
-    id: string;
-    organizationId: string;
-    organizationName?: string;
-    email: string;
-    role: string;
-    status: string;
-    expiresAt: string;
-};
 
 export default function AcceptInvitation({ id }: { id: string | null }) {
     const router = useRouter();
 
     const { isAuthenticated, isPending: sessionPending } = useAuthSession();
 
-    const [invitation, setInvitation] = useState<InvitationData | null>(null);
+    const [invitation, setInvitation] = useState<AcceptInvitationData | null>(null);
     const [loading, setLoading] = useState(true);
     const [accepting, setAccepting] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -44,7 +35,17 @@ export default function AcceptInvitation({ id }: { id: string | null }) {
                 });
 
                 if (result.data) {
-                    setInvitation(result.data as unknown as InvitationData);
+                    const data = result.data;
+                    setInvitation({
+                        id: data.id,
+                        email: data.email,
+                        organizationId: data.organizationId,
+                        organizationName: data.organizationName,
+                        role: data.role,
+                        status: data.status,
+                        inviterId: data.inviterId,
+                        expiresAt: new Date(data.expiresAt),
+                    });
                 }
             } catch {
                 setError('Could not load invitation');
@@ -77,7 +78,7 @@ export default function AcceptInvitation({ id }: { id: string | null }) {
         }
     }
 
-    const isExpired = invitation?.expiresAt ? new Date(invitation.expiresAt) < new Date() : false;
+    const isExpired = invitation ? invitation.expiresAt.getTime() < Date.now() : false;
 
     // Loading
     if (sessionPending || loading) {
@@ -100,7 +101,7 @@ export default function AcceptInvitation({ id }: { id: string | null }) {
                 <StatusIcon variant="info" />
                 <h1 className="text-display-xs text-sarge-gray-800">Sign in required</h1>
                 <p className="text-body-s text-sarge-gray-600 text-center">
-                    You need to sign in to accept this invitation. If you don&apos;t have an
+                    You need to sign in to accept this invitation. If you don't have an
                     account, you can create one first.
                 </p>
                 <div className="flex gap-3">
@@ -157,7 +158,7 @@ export default function AcceptInvitation({ id }: { id: string | null }) {
                 <StatusIcon variant="success" />
                 <h1 className="text-display-xs text-sarge-gray-800">Invitation accepted</h1>
                 <p className="text-body-s text-sarge-gray-600 text-center">
-                    You&apos;ve successfully joined the organization. Head to the dashboard to get
+                    You've successfully joined the organization. Head to the dashboard to get
                     started.
                 </p>
                 <Button
@@ -175,12 +176,12 @@ export default function AcceptInvitation({ id }: { id: string | null }) {
     return (
         <CenteredCard>
             <StatusIcon variant="info" />
-            <h1 className="text-display-xs text-sarge-gray-800">You&apos;ve been invited</h1>
+            <h1 className="text-display-xs text-sarge-gray-800">You've been invited</h1>
 
             <div className="bg-sarge-gray-50 border-sarge-gray-200 flex w-full flex-col gap-3 rounded-lg border p-4">
                 <DetailRow
                     label="Organization"
-                    value={invitation.organizationName ?? invitation.organizationId}
+                    value={invitation.organizationName}
                 />
                 <DetailRow label="Role" value={getRoleLabel(invitation.role)} />
                 <DetailRow label="Email" value={invitation.email} />

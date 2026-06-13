@@ -4,7 +4,7 @@ import {
 } from '@/lib/schemas/organization.schema';
 import type { UpdateInvitationRolePayload } from '@/lib/schemas/role.schema';
 import { type Organization } from '@/generated/prisma';
-import type { OrgInvitation, OrgMembersAndInvitations } from '@/lib/types/invitation.types';
+import type { OrgMembersAndInvitations } from '@/lib/types/invitation.types';
 
 /**
  * POST /api/organizations
@@ -72,20 +72,19 @@ export async function updateInvitationRole(
     organizationId: string,
     invitationId: string,
     payload: UpdateInvitationRolePayload
-): Promise<OrgInvitation> {
+): Promise<void> {
     const res = await fetch(`/api/organizations/${organizationId}/invitations/${invitationId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
     });
 
-    const json = await res.json();
-
-    if (!res.ok) {
-        throw new Error(json.message ?? `Failed to update invitation (${res.status})`);
+    if (res.ok) {
+        return;
     }
 
-    return json.data as OrgInvitation;
+    const json = await res.json();
+    throw new Error(json.message ?? `Failed to update invitation (${res.status})`);
 }
 
 /**
