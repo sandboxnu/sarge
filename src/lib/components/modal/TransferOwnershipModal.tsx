@@ -37,7 +37,7 @@ export default function TransferOwnershipModal({
             <DialogContent className="px-7 py-6" showCloseButton={false}>
                 <div className="flex flex-col gap-4">
                     <div className="flex items-center justify-between">
-                        <DialogTitle className="text-display-xs">Transfer ownership</DialogTitle>
+                        <DialogTitle>Transfer ownership</DialogTitle>
                         <Button
                             type="button"
                             variant="icon"
