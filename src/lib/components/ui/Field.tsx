@@ -19,7 +19,7 @@ Field.displayName = 'Field';
 
 const FieldLabel = React.forwardRef<HTMLLabelElement, React.LabelHTMLAttributes<HTMLLabelElement>>(
     ({ className, ...props }, ref) => (
-        <label ref={ref} className={cn('font-semibold', className)} {...props} />
+        <label ref={ref} className={cn(className)} {...props} />
     )
 );
 FieldLabel.displayName = 'FieldLabel';
@@ -40,7 +40,7 @@ FieldError.displayName = 'FieldError';
 
 const FieldDescription = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
     ({ className, ...props }, ref) => (
-        <div ref={ref} className={cn('text-sarge-gray-600 text-xs', className)} {...props} />
+        <div ref={ref} className={cn('text-body-xs text-sarge-gray-500', className)} {...props} />
     )
 );
 FieldDescription.displayName = 'FieldDescription';
