@@ -9,14 +9,8 @@ import ChangePasswordModal from '@/lib/components/modal/ChangePasswordModal';
 import useProfilePage from '@/lib/hooks/useProfilePage';
 
 export default function ProfilePage() {
-    const {
-        form,
-        hasUnsavedChanges,
-        fieldsLocked,
-        authReady,
-        handleSaveProfile,
-        handleSignOut,
-    } = useProfilePage();
+    const { form, hasUnsavedChanges, fieldsLocked, authReady, handleSaveProfile, handleSignOut } =
+        useProfilePage();
 
     const [changePasswordOpen, setChangePasswordOpen] = useState(false);
 
@@ -82,7 +76,10 @@ export default function ProfilePage() {
                                 control={form.control}
                                 render={({ field, fieldState }) => (
                                     <Field className="gap-2">
-                                        <FieldLabel htmlFor="profile-email" className="text-label-s">
+                                        <FieldLabel
+                                            htmlFor="profile-email"
+                                            className="text-label-s"
+                                        >
                                             Email
                                         </FieldLabel>
                                         <Input

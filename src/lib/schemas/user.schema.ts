@@ -27,8 +27,7 @@ export const loginUserSchema = z.object({
         .toLowerCase()
         .trim()
         .max(255, 'Email must be less than 255 characters'),
-    password: z
-        .string()
+    password: z.string(),
 });
 
 export const UserSchema = z.object({

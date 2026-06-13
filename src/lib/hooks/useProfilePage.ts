@@ -74,7 +74,8 @@ export default function useProfilePage() {
                         default:
                             form.setError('email', {
                                 message:
-                                    message ?? 'Could not send verification email. Please try again.',
+                                    message ??
+                                    'Could not send verification email. Please try again.',
                             });
                     }
                     return;
