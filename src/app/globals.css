@@ -45,6 +45,10 @@
     --sarge-success-500: #0f9453;
     --sarge-success-100: #d8f4d4;
 
+    /* Shadows */
+    /* TODO(brad): coordinate with Olivia to add shadow design tokens. Currently using inline literal
+       `0 -4px 8px 0 rgba(0,0,0,0.03)` in auth pages — should be replaced with a token once defined. */
+
     /* Shadcn style variables */
     --background: var(--sarge-gray-0);
     --foreground: var(--sarge-gray-800);

@@ -75,9 +75,7 @@ export default function UploadCSVModal({
                 <div className="flex h-full w-full flex-col gap-4">
                     <div className="flex w-full items-start justify-between">
                         <div className="flex flex-col gap-1">
-                            <DialogTitle className="text-label-m text-sarge-gray-800 font-bold">
-                                Import candidates
-                            </DialogTitle>
+                            <DialogTitle>Import candidates</DialogTitle>
                             <div className="text-label-xs text-sarge-gray-800 flex items-center gap-2">
                                 <span>Upload a CSV to import candidates.</span>
                                 <a
@@ -91,12 +89,14 @@ export default function UploadCSVModal({
                             </div>
                         </div>
                         <div className="flex items-center gap-2">
-                            <button
+                            <Button
+                                variant="icon"
                                 onClick={() => onOpenChange(false)}
-                                className="hover:bg-sarge-gray-200 rounded p-0.5 transition-colors"
+                                className="p-0.5"
+                                aria-label="Close"
                             >
                                 <X className="size-5" />
-                            </button>
+                            </Button>
                         </div>
                     </div>
 
@@ -220,17 +220,18 @@ export default function UploadCSVModal({
                     )}
 
                     <div className="flex w-full items-center justify-between">
-                        <button
+                        <Button
+                            variant="link"
                             onClick={onCancelClick}
-                            className="text-label-s text-sarge-primary-600 hover:text-sarge-primary-700 px-0 py-2 pr-4 text-left font-medium transition-colors hover:cursor-pointer"
+                            className="text-label-s text-sarge-primary-600 hover:text-sarge-primary-700 px-0 pr-4 hover:no-underline"
                         >
                             Cancel
-                        </button>
+                        </Button>
                         <Button
                             variant="primary"
                             onClick={onCreateClick}
                             disabled={!selectedFile || isUploading || Boolean(error)}
-                            className="h-9 w-[125px] px-4 py-2 disabled:opacity-50"
+                            className="h-9 px-4"
                         >
                             {isUploading ? 'Uploading...' : 'Import'}
                         </Button>
@@ -380,14 +381,14 @@ function ErrorFileCallout({
                     <span className="text-label-xs text-sarge-error-700">{message}</span>
                 </div>
             </div>
-            <button
-                type="button"
+            <Button
+                variant="icon"
                 onClick={onDismiss}
-                className="text-sarge-error-700 transition-opacity hover:cursor-pointer hover:opacity-80"
+                className="[&_svg]:text-sarge-error-700 hover:[&_svg]:text-sarge-error-700 bg-transparent p-0 hover:bg-transparent hover:opacity-80"
                 aria-label="Dismiss error"
             >
                 <X className="size-5" />
-            </button>
+            </Button>
         </div>
     );
 }
@@ -420,14 +421,14 @@ function UploadedFileCallout({
                     </span>
                 </div>
             </div>
-            <button
-                type="button"
+            <Button
+                variant="icon"
                 onClick={onAction}
-                className="text-sarge-gray-600 hover:text-sarge-gray-800 transition-colors hover:cursor-pointer"
+                className="bg-transparent p-0 hover:bg-transparent"
                 aria-label={actionLabel}
             >
                 {actionIcon}
-            </button>
+            </Button>
         </div>
     );
 }

@@ -109,9 +109,7 @@ export default function InviteUsersModal({
             <DialogContent className="w-[512px] !max-w-[90vw] px-7 py-6" showCloseButton={false}>
                 <div className="flex flex-col gap-4">
                     <div className="flex items-center justify-between">
-                        <DialogTitle className="text-display-xs">
-                            Invite users to {organizationName}
-                        </DialogTitle>
+                        <DialogTitle>Invite users to {organizationName}</DialogTitle>
                         <div className="flex items-center gap-2">
                             <Button
                                 type="button"
