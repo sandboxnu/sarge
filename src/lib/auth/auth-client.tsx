@@ -28,4 +28,8 @@ export const {
     useActiveMember,
     requestPasswordReset,
     resetPassword,
+    changePassword,
+    changeEmail,
+    sendVerificationEmail,
+    verifyEmail,
 } = authClient;
