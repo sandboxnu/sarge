@@ -37,8 +37,8 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
 
     const displayedCandidates = searchValue.trim().length
         ? candidates.filter((c) =>
-            c.candidate.name.toLowerCase().includes(searchValue.trim().toLowerCase())
-        )
+              c.candidate.name.toLowerCase().includes(searchValue.trim().toLowerCase())
+          )
         : candidates;
 
     return (
