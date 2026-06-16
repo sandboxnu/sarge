@@ -23,8 +23,14 @@ export const deleteAssessmentSchema = z.object({
     id: z.string(),
 });
 
+export const sendAssessmentInvitationSchema = z.object({
+    positionId: z.string(),
+    deadline: z.coerce.date(),
+});
+
 export type GetAssessmentDTO = z.infer<typeof getAssessmentSchema>;
 export type UpdateAssessmentDTO = z.infer<typeof updateAssessmentSchema>;
 export type DeleteAssessmentDTO = z.infer<typeof deleteAssessmentSchema>;
 export type Assessment = z.infer<typeof assessmentSchema>;
 export type CreateAssessmentDTO = z.infer<typeof createAssessmentSchema>;
+export type SendAssessmentInvitationDTO = z.infer<typeof sendAssessmentInvitationSchema>;

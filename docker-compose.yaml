@@ -37,6 +37,18 @@ services:
         volumes:
             - ./src/ws:/src/ws
             - /src/ws/node_modules
+    cron:
+        container_name: sarge_dev_cron
+        build:
+            context: ./src/cron/
+            dockerfile: Dockerfile
+        env_file:
+            - .env
+        depends_on:
+            - web
+        volumes:
+            - ./src/cron:/src/cron
+            - /src/cron/node_modules
 
 volumes:
     postgres_data:

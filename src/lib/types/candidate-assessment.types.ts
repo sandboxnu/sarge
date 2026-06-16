@@ -39,7 +39,7 @@ export type CandidateAssessment = {
     };
 };
 
-export type AssessmentPhase = 'intro' | 'assessment' | 'outro';
+export type AssessmentPhase = 'intro' | 'assessment' | 'outro' | 'expired';
 export type OutroReason = 'submitted' | 'expired';
 export type SectionStatus = 'locked' | 'current' | 'completed';
 export type TestCaseResultStatus =

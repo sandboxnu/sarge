@@ -69,17 +69,17 @@ export async function updateAssessmentStatus(
 
 /**
  * POST /api/assessments/send-invitation
- * Sends assessment invitation emails to all NOT_SENT candidates of a position
  */
 export async function sendAssessmentInvitation(
-    positionId: string
+    positionId: string,
+    deadline: string
 ): Promise<AssessmentInvitationResult> {
     const res = await fetch('/api/assessments/send-invitation', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ positionId }),
+        body: JSON.stringify({ positionId, deadline }),
     });
 
     const json = await res.json();

@@ -28,10 +28,11 @@ type CaddyConfig struct {
 }
 
 type envConfig struct {
-	DBPassword       string
-	BetterAuthSecret string
-	Hostname         string
-	JWTSecret        string
+	DBPassword        string
+	BetterAuthSecret  string
+	Hostname          string
+	JWTSecret         string
+	InternalAPISecret string
 }
 
 var installCli string
@@ -177,6 +178,10 @@ func writeEnvFile(hostname string) error {
 	if err != nil {
 		return fmt.Errorf("generating JWT_SECRET: %w", err)
 	}
+	internalAPISecret, err := randomHex(32)
+	if err != nil {
+		return fmt.Errorf("generating INTERNAL_API_SECRET: %w", err)
+	}
 
 	t, err := template.New("env").Parse(envTmpl)
 	if err != nil {
@@ -184,10 +189,11 @@ func writeEnvFile(hostname string) error {
 	}
 	var buf bytes.Buffer
 	if err := t.Execute(&buf, envConfig{
-		DBPassword:       dbPassword,
-		BetterAuthSecret: betterAuthSecret,
-		Hostname:         hostname,
-		JWTSecret:        jwtSecret,
+		DBPassword:        dbPassword,
+		BetterAuthSecret:  betterAuthSecret,
+		Hostname:          hostname,
+		JWTSecret:         jwtSecret,
+		InternalAPISecret: internalAPISecret,
 	}); err != nil {
 		return err
 	}

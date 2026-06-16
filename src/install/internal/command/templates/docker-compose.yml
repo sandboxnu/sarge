@@ -43,6 +43,15 @@ services:
             - .env
         restart: unless-stopped
 
+    cron:
+        image: ghcr.io/sandboxnu/sarge-cron:latest
+        pull_policy: always
+        env_file:
+            - .env
+        depends_on:
+            - web
+        restart: unless-stopped
+
 volumes:
     postgres_data:
     caddy_data:

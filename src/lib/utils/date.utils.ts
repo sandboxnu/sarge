@@ -32,6 +32,19 @@ function ordinalSuffix(day: number): string {
     return 'th';
 }
 
+export function todayLocalISODate(): string {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+export function endOfDayISO(value: string): string {
+    const [year, month, day] = value.split('-').map(Number);
+    return new Date(year, month - 1, day, 23, 59, 59, 999).toISOString();
+}
+
 export function formatDuration(totalSeconds: number): string {
     const minutes = Math.round(totalSeconds / 60);
     if (minutes < 60) return `${minutes} minutes`;
