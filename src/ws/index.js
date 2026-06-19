@@ -2,7 +2,7 @@ import { WebSocketServer } from 'ws';
 import { jwtVerify } from 'jose';
 
 const HEARTBEAT_INTERVAL = 5000;
-const INTERNAL_API_URL = process.env.INTERNAL_API_URL ?? 'http://localhost:3000';
+const INTERNAL_API_URL = process.env.INTERNAL_API_URL;
 const INTERNAL_API_SECRET = process.env.INTERNAL_API_SECRET;
 
 const ws = new WebSocketServer({ port: 8080 });
@@ -11,14 +11,15 @@ const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 // <candidateEmail, socket>
 const clients = new Map();
 
-if (!INTERNAL_API_SECRET) {
-    console.warn('INTERNAL_API_SECRET is missing, this means disconnect snapshots will be skipped');
-}
-
 console.log('Sarge WS server listening on 8080');
 
 async function postDisconnectSnapshot(candidateEmail) {
-    if (!INTERNAL_API_SECRET) return;
+    if (!INTERNAL_API_SECRET || !INTERNAL_API_URL) {
+        console.warn(
+            'INTERNAL_API_SECRET or INTERNAL_API_URL is missing, skipping disconnect snapshot'
+        );
+        return;
+    }
     try {
         const res = await fetch(`${INTERNAL_API_URL}/api/internal/snapshot`, {
             method: 'POST',

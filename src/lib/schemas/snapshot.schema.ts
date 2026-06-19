@@ -14,5 +14,10 @@ export const CreateSnapshotForCandidateSchema = z.object({
     content: z.string().optional(),
 });
 
+export const CreateDisconnectSnapshotSchema = z.object({
+    candidateEmail: z.email(),
+});
+
 export type SnapshotDTO = z.infer<typeof SnapshotSchema>;
 export type CreateSnapshotForCandidateDTO = z.infer<typeof CreateSnapshotForCandidateSchema>;
+export type CreateDisconnectSnapshotDTO = z.infer<typeof CreateDisconnectSnapshotSchema>;

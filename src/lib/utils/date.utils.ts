@@ -1,26 +1,29 @@
-const SHORT_MONTH_DAY_YEAR = new Intl.DateTimeFormat('en-US', {
-    month: 'short',
-    day: '2-digit',
-    year: 'numeric',
-});
+import { DateTime } from 'luxon';
+
+const OA_TIMEZONE = 'America/New_York';
 
 export function formatShortMonthDayYear(value: Date | number | string): string {
-    const date = typeof value === 'string' || typeof value === 'number' ? new Date(value) : value;
-    return SHORT_MONTH_DAY_YEAR.format(date);
+    return DateTime.fromJSDate(new Date(value)).setZone(OA_TIMEZONE).toFormat('MMM dd, yyyy');
 }
 
-export function formatDeadline(date: Date | null): string {
+export function formatDeadline(date: Date | string | null): string {
     if (!date) return 'No due date';
-    const d = new Date(date);
-    const month = d.toLocaleString('en-US', { month: 'long' });
-    const day = d.getDate();
-    const year = d.getFullYear();
-    const minutes = d.getMinutes();
-    const ampm = d.getHours() >= 12 ? 'pm' : 'am';
-    const hour12 = d.getHours() % 12 || 12;
+
+    let dt: DateTime;
+    if (typeof date === 'string') {
+        dt = DateTime.fromISO(date, { zone: OA_TIMEZONE });
+    } else {
+        dt = DateTime.fromJSDate(date).setZone(OA_TIMEZONE);
+    }
+
+    if (!dt.isValid) return 'Invalid due date';
+
+    const day = dt.day;
     const time =
-        minutes === 0 ? `${hour12}${ampm}` : `${hour12}:${String(minutes).padStart(2, '0')}${ampm}`;
-    return `${month} ${day}${ordinalSuffix(day)} ${year} at ${time}`;
+        dt.minute === 0 ? dt.toFormat('ha').toLowerCase() : dt.toFormat('h:mma').toLowerCase();
+    const tz = dt.offsetNameShort;
+
+    return `${dt.toFormat('MMM')} ${day}${ordinalSuffix(day)} ${dt.year} at ${time} (${tz})`;
 }
 
 function ordinalSuffix(day: number): string {
@@ -32,10 +35,23 @@ function ordinalSuffix(day: number): string {
     return 'th';
 }
 
+export function getMinPickableDate(): string {
+    return DateTime.now().setZone(OA_TIMEZONE).toISODate() ?? '';
+}
+
+export function getDateToEOD(value: string): string {
+    return DateTime.fromISO(value, { zone: OA_TIMEZONE }).endOf('day').toUTC().toISO() ?? '';
+}
+
 export function formatDuration(totalSeconds: number): string {
     const minutes = Math.round(totalSeconds / 60);
-    if (minutes < 60) return `${minutes} minutes`;
+
+    if (minutes < 60) {
+        return `${minutes} minutes`;
+    }
+
     const hours = Math.floor(minutes / 60);
     const remaining = minutes % 60;
+
     return remaining > 0 ? `${hours}h ${remaining}m` : `${hours} hour${hours > 1 ? 's' : ''}`;
 }

@@ -4,6 +4,7 @@ import { use, useEffect, useState } from 'react';
 import useAssessment from '@/lib/hooks/useAssessment';
 import AssessmentIntro from '@/lib/components/assessment-flow/AssessmentIntro';
 import AssessmentOutro from '@/lib/components/assessment-flow/AssessmentOutro';
+import AssessmentExpired from '@/lib/components/assessment-flow/AssessmentExpired';
 import AssessmentSidebar from '@/lib/components/assessment-flow/AssessmentSidebar';
 import AssessmentNavbar from '@/lib/components/assessment-flow/AssessmentNavbar';
 import AssessmentContent from '@/lib/components/assessment-flow/AssessmentContent';
@@ -30,8 +31,7 @@ export default function AssessmentPage({ params }: { params: Promise<{ assessmen
         !assessment.isLoading &&
         !assessment.error &&
         isConnected &&
-        assessment.phase !== 'intro' &&
-        assessment.phase !== 'outro';
+        assessment.phase === 'assessment';
 
     useEffect(() => {
         if (isExamActive && isWindowUnfocused) {
@@ -51,6 +51,17 @@ export default function AssessmentPage({ params }: { params: Promise<{ assessmen
                 {assessment.error.message}
             </div>
         );
+
+    if (assessment.phase === 'expired' && assessment.assessment) {
+        return (
+            <div className="flex h-screen w-full flex-col overflow-hidden">
+                <AssessmentNavbar candidateName={assessment.candidateName} />
+                <div className="flex-1 overflow-y-auto">
+                    <AssessmentExpired assessment={assessment.assessment} />
+                </div>
+            </div>
+        );
+    }
 
     if (assessment.phase === 'intro' && assessment.assessment) {
         return (

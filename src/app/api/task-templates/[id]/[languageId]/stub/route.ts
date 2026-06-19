@@ -2,19 +2,7 @@ import { handleError } from '@/lib/utils/errors.utils';
 import { generateCodeStub } from '@/lib/utils/language.utils';
 import { assertRecruiterOrAbove } from '@/lib/utils/permissions.utils';
 import { type NextRequest } from 'next/server';
-import { z } from 'zod';
-
-const generateStubSchema = z.object({
-    functionName: z.string().trim().min(1),
-    returnType: z.string().trim().min(1),
-    parameters: z.array(
-        z.object({
-            name: z.string().trim().min(1),
-            type: z.string().trim().min(1),
-        })
-    ),
-    language: z.string().trim().min(1),
-});
+import { generateStubSchema } from '@/lib/schemas/task-template-language.schema';
 
 export async function POST(
     request: NextRequest,

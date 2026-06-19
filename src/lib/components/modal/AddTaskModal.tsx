@@ -200,11 +200,10 @@ export default function AddTaskModal({
                 </div>
 
                 <div className="flex items-center justify-between px-7 pt-3 pb-6">
-                    <Button type="button" variant="link" onClick={() => handleOpenChange(false)}>
+                    <Button variant="link" onClick={() => handleOpenChange(false)}>
                         Cancel
                     </Button>
                     <Button
-                        type="button"
                         variant="primary"
                         className="px-8 py-2"
                         onClick={handleAdd}

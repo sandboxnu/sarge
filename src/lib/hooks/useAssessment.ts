@@ -149,6 +149,25 @@ export default function useAssessment(assessmentId: string) {
                 setAssessment(data);
                 setToken(token);
                 setSections(buildInitialSections(data.assessmentTemplate.tasks));
+
+                const alreadyFinished =
+                    data.assessmentStatus === 'SUBMITTED' || data.assessmentStatus === 'GRADED';
+                const deadlinePassed =
+                    data.deadline !== null && new Date(data.deadline).getTime() < Date.now();
+                if (alreadyFinished) {
+                    setOutroReason('submitted');
+                    setPhase('outro');
+                } else if (data.assessmentStatus === 'EXPIRED' || deadlinePassed) {
+                    setPhase('expired');
+                } else if (data.assessmentStatus === 'IN_PROGRESS') {
+                    try {
+                        await submitCandidateAssessment(assessmentId);
+                    } catch {
+                        // best effort submission, we should not allow progress to continue on a restart
+                    }
+                    setOutroReason('submitted');
+                    setPhase('outro');
+                }
             } catch (err) {
                 setError(err as Error);
             } finally {

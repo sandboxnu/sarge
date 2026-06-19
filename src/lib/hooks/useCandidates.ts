@@ -10,23 +10,20 @@ import {
 } from '@/lib/api/positions';
 import { sendAssessmentInvitation } from '@/lib/api/assessments';
 
-interface UseCandidatesReturn {
-    candidates: ApplicationDisplayInfo[];
-    loading: boolean;
-    error: string | null;
-    positionTitle: string | null;
-    createCandidate: (candidate: AddApplicationWithCandidateDataDTO) => Promise<void>;
-    batchCreateCandidates: (candidates: AddApplicationWithCandidateDataDTO[]) => Promise<void>;
-    isSendingAssessments: boolean;
-    handleSendAssessments: () => Promise<void>;
-}
-
-export default function useCandidates(positionId: string): UseCandidatesReturn {
+export default function useCandidates(positionId: string) {
     const [candidates, setCandidates] = useState<ApplicationDisplayInfo[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [positionTitle, setPositionTitle] = useState<string | null>(null);
     const [isSendingAssessments, setIsSendingAssessments] = useState(false);
+    const [isManualModalOpen, setIsManualModalOpen] = useState(false);
+    const [isCSVModalOpen, setIsCSVModalOpen] = useState(false);
+    const [isSendModalOpen, setIsSendModalOpen] = useState(false);
+
+    const switchToCSVModal = () => {
+        setIsManualModalOpen(false);
+        setIsCSVModalOpen(true);
+    };
 
     useEffect(() => {
         if (!positionId) return;
@@ -93,10 +90,10 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
         }
     };
 
-    const handleSendAssessments = async () => {
+    const handleSendAssessments = async (deadlineIso: string) => {
         try {
             setIsSendingAssessments(true);
-            const result = await sendAssessmentInvitation(positionId);
+            const result = await sendAssessmentInvitation(positionId, deadlineIso);
 
             if (result.totalSent > 0) {
                 toast.success(
@@ -122,6 +119,7 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
             }
         } finally {
             setIsSendingAssessments(false);
+            setIsSendModalOpen(false);
         }
     };
 
@@ -134,5 +132,12 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
         batchCreateCandidates,
         isSendingAssessments,
         handleSendAssessments,
+        isManualModalOpen,
+        setIsManualModalOpen,
+        isCSVModalOpen,
+        setIsCSVModalOpen,
+        isSendModalOpen,
+        setIsSendModalOpen,
+        switchToCSVModal,
     };
 }

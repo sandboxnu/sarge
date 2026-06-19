@@ -113,20 +113,11 @@ export default function InviteUsersModal({
                             Invite users to {organizationName}
                         </DialogTitle>
                         <div className="flex items-center gap-2">
-                            <Button
-                                type="button"
-                                variant="tertiary"
-                                disabled
-                                className="gap-1 px-1 text-xs"
-                            >
+                            <Button variant="tertiary" disabled className="gap-1 px-1 text-xs">
                                 <Link2 className="size-5" />
                                 Copy link
                             </Button>
-                            <Button
-                                type="button"
-                                variant="icon"
-                                onClick={() => handleOpenChange(false)}
-                            >
+                            <Button variant="icon" onClick={() => handleOpenChange(false)}>
                                 <X className="size-5" />
                             </Button>
                         </div>
@@ -167,15 +158,10 @@ export default function InviteUsersModal({
                     </Field>
 
                     <div className="flex items-center justify-between">
-                        <Button
-                            type="button"
-                            variant="link"
-                            onClick={() => handleOpenChange(false)}
-                        >
+                        <Button variant="link" onClick={() => handleOpenChange(false)}>
                             Cancel
                         </Button>
                         <Button
-                            type="button"
                             variant="primary"
                             onClick={handleInvite}
                             className="h-9 w-[125px] px-4 py-2"

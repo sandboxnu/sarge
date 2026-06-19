@@ -37,6 +37,16 @@ services:
         volumes:
             - ./src/ws:/src/ws
             - /src/ws/node_modules
+    scheduler:
+        container_name: sarge_dev_scheduler
+        build:
+            context: ./src/scheduler/
+            dockerfile: Dockerfile
+        env_file:
+            - .env
+        volumes:
+            - ./src/scheduler:/src/scheduler
+            - /src/scheduler/node_modules
 
 volumes:
     postgres_data:

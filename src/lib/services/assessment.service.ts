@@ -324,6 +324,7 @@ async function startForCandidate(assessmentId: string): Promise<void> {
         select: {
             id: true,
             submittedAt: true,
+            deadline: true,
             application: { select: { id: true, assessmentStatus: true } },
         },
     });
@@ -334,6 +335,17 @@ async function startForCandidate(assessmentId: string): Promise<void> {
 
     if (assessment.submittedAt) {
         throw new BadRequestException('Assessment has already been submitted');
+    }
+
+    // NOTE(laith): the scheduler should catch this, but still a good sanity check
+    if (assessment.deadline && assessment.deadline.getTime() < Date.now()) {
+        if (assessment.application.assessmentStatus !== AssessmentStatus.EXPIRED) {
+            await prisma.application.update({
+                where: { id: assessment.application.id },
+                data: { assessmentStatus: AssessmentStatus.EXPIRED },
+            });
+        }
+        throw new BadRequestException('This assessment has expired');
     }
 
     if (assessment.application.assessmentStatus === AssessmentStatus.IN_PROGRESS) {
@@ -393,8 +405,17 @@ async function submitAssessmentForCandidate(assessmentId: string): Promise<void>
 
 async function sendAssessmentInvitationsToPosition(
     positionId: string,
-    orgId: string
+    orgId: string,
+    deadline: Date
 ): Promise<AssessmentInvitationResult> {
+    if (Number.isNaN(deadline.getTime())) {
+        throw new BadRequestException('A valid due date is required to send assessments');
+    }
+
+    if (deadline.getTime() <= Date.now()) {
+        throw new BadRequestException('Due date must be in the future');
+    }
+
     const position = await prisma.position.findUnique({
         where: { id: positionId },
         select: { assessmentId: true, orgId: true },
@@ -419,12 +440,20 @@ async function sendAssessmentInvitationsToPosition(
         },
         include: {
             candidate: true,
+            assessment: { select: { id: true } },
         },
     });
 
     const results = [];
     for (const application of applications) {
         try {
+            if (application.assessment) {
+                await prisma.assessment.update({
+                    where: { id: application.assessment.id },
+                    data: { deadline },
+                });
+            }
+
             const result = await emailService.sendAssessmentInvitationEmail(
                 application.candidate.id,
                 orgId
@@ -458,6 +487,22 @@ async function sendAssessmentInvitationsToPosition(
     };
 }
 
+async function expireOverdueAssessments(): Promise<number> {
+    const result = await prisma.application.updateMany({
+        where: {
+            assessmentStatus: {
+                in: [AssessmentStatus.NOT_STARTED, AssessmentStatus.IN_PROGRESS],
+            },
+            assessment: {
+                deadline: { lt: new Date() },
+            },
+        },
+        data: { assessmentStatus: AssessmentStatus.EXPIRED },
+    });
+
+    return result.count;
+}
+
 const AssessmentService = {
     getAssessmentWithRelations,
     getAssessmentForCandidate,
@@ -468,6 +513,7 @@ const AssessmentService = {
     deleteAssessment,
     updateAssessment,
     sendAssessmentInvitationsToPosition,
+    expireOverdueAssessments,
 };
 
 export default AssessmentService;

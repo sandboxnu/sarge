@@ -152,7 +152,6 @@ export default function UploadCSVModal({
                                 </div>
                                 {!selectedFile && (
                                     <Button
-                                        type="button"
                                         variant="secondary"
                                         onClick={(event) => {
                                             event.stopPropagation();
@@ -187,7 +186,6 @@ export default function UploadCSVModal({
                                     Uploading file...
                                 </p>
                                 <Button
-                                    type="button"
                                     variant="secondary"
                                     onClick={handleCancel}
                                     className="h-9 w-[125px] gap-2 rounded-md px-4 py-2"
@@ -220,12 +218,9 @@ export default function UploadCSVModal({
                     )}
 
                     <div className="flex w-full items-center justify-between">
-                        <button
-                            onClick={onCancelClick}
-                            className="text-label-s text-sarge-primary-600 hover:text-sarge-primary-700 px-0 py-2 pr-4 text-left font-medium transition-colors hover:cursor-pointer"
-                        >
+                        <Button variant="link" onClick={onCancelClick}>
                             Cancel
-                        </button>
+                        </Button>
                         <Button
                             variant="primary"
                             onClick={onCreateClick}
@@ -381,7 +376,6 @@ function ErrorFileCallout({
                 </div>
             </div>
             <button
-                type="button"
                 onClick={onDismiss}
                 className="text-sarge-error-700 transition-opacity hover:cursor-pointer hover:opacity-80"
                 aria-label="Dismiss error"
@@ -421,7 +415,6 @@ function UploadedFileCallout({
                 </div>
             </div>
             <button
-                type="button"
                 onClick={onAction}
                 className="text-sarge-gray-600 hover:text-sarge-gray-800 transition-colors hover:cursor-pointer"
                 aria-label={actionLabel}

@@ -24,6 +24,11 @@ export const updateOrganizationSchema = z
     })
     .partial();
 
+export const transferOwnershipSchema = z.object({
+    targetMemberId: z.string().min(1),
+});
+
 export type CreateOrganizationDTO = z.infer<typeof createOrganizationSchema>;
 export type UpdateOrganizationDTO = z.infer<typeof updateOrganizationSchema>;
 export type GetOrganizationDTO = z.infer<typeof getOrganizationSchema>;
+export type TransferOwnershipDTO = z.infer<typeof transferOwnershipSchema>;

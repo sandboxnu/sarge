@@ -4,18 +4,17 @@ import { Button } from '@/lib/components/ui/Button';
 import { CandidateTable } from '@/lib/components/core/CandidateTable';
 import CreateCandidateModal from '@/lib/components/modal/CreateCandidateModal';
 import UploadCSVModal from '@/lib/components/modal/UploadCSVModal';
+import SendAssessmentModal from '@/lib/components/modal/SendAssessmentModal';
 import useCandidates from '@/lib/hooks/useCandidates';
 import { Search } from '@/lib/components/core/Search';
 import { Tabs, TabsContent, TabsList, UnderlineTabsTrigger } from '@/lib/components/ui/Tabs';
 import { Plus, ArrowUpDown, SlidersHorizontal, Mail } from 'lucide-react';
-import { use, useState } from 'react';
+import { use } from 'react';
 import useSearch from '@/lib/hooks/useSearch';
 import Breadcrumbs from '@/lib/components/core/Breadcrumbs';
 
 export default function CandidatesPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
-    const [isModalManualOpen, setIsModalManualOpen] = useState(false);
-    const [isCSVModalOpen, setIsCSVModalOpen] = useState(false);
     const {
         candidates,
         loading,
@@ -25,7 +24,15 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
         batchCreateCandidates,
         isSendingAssessments,
         handleSendAssessments,
+        isManualModalOpen,
+        setIsManualModalOpen,
+        isCSVModalOpen,
+        setIsCSVModalOpen,
+        isSendModalOpen,
+        setIsSendModalOpen,
+        switchToCSVModal,
     } = useCandidates(id);
+
     const { value: searchValue, onChange: onSearchChange } = useSearch('applications');
 
     const displayedCandidates = searchValue.trim().length
@@ -69,7 +76,7 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                         <Button
                             variant="secondary"
                             className="px-4 py-2"
-                            onClick={() => setIsModalManualOpen(true)}
+                            onClick={() => setIsManualModalOpen(true)}
                         >
                             <Plus className="size-5" />
                             Manual Add
@@ -103,7 +110,7 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                             <div className="flex w-full justify-end">
                                 <Button
                                     className="px-4 py-3"
-                                    onClick={handleSendAssessments}
+                                    onClick={() => setIsSendModalOpen(true)}
                                     disabled={isSendingAssessments}
                                 >
                                     <Mail className="size-5" />
@@ -116,19 +123,22 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
             </div>
 
             <CreateCandidateModal
-                open={isModalManualOpen}
-                onOpenChange={setIsModalManualOpen}
+                open={isManualModalOpen}
+                onOpenChange={setIsManualModalOpen}
                 onCreate={createCandidate}
-                onSwitchModal={() => {
-                    setIsModalManualOpen(false);
-                    setIsCSVModalOpen(true);
-                }}
+                onSwitchModal={switchToCSVModal}
             />
             <UploadCSVModal
                 open={isCSVModalOpen}
                 positionId={id}
                 onOpenChange={setIsCSVModalOpen}
                 onCreate={batchCreateCandidates}
+            />
+            <SendAssessmentModal
+                open={isSendModalOpen}
+                onOpenChange={setIsSendModalOpen}
+                isSending={isSendingAssessments}
+                onConfirm={handleSendAssessments}
             />
         </>
     );

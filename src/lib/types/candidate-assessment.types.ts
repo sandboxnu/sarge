@@ -26,9 +26,9 @@ export type AssessmentQuestion = {
 
 export type CandidateAssessment = {
     id: string;
-    deadline: Date | null;
-    assignedAt: Date;
-    submittedAt: Date | null;
+    deadline: Date | string | null;
+    assignedAt: Date | string;
+    submittedAt: Date | string | null;
     assessmentStatus: AssessmentStatus;
     candidateName: string;
     organizationName: string;
@@ -39,7 +39,7 @@ export type CandidateAssessment = {
     };
 };
 
-export type AssessmentPhase = 'intro' | 'assessment' | 'outro';
+export type AssessmentPhase = 'intro' | 'assessment' | 'outro' | 'expired';
 export type OutroReason = 'submitted' | 'expired';
 export type SectionStatus = 'locked' | 'current' | 'completed';
 export type TestCaseResultStatus =

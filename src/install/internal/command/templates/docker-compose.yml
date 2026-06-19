@@ -41,6 +41,17 @@ services:
         pull_policy: always
         env_file:
             - .env
+        depends_on:
+            - web
+        restart: unless-stopped
+
+    scheduler:
+        image: ghcr.io/sandboxnu/sarge-scheduler:latest
+        pull_policy: always
+        env_file:
+            - .env
+        depends_on:
+            - web
         restart: unless-stopped
 
 volumes:

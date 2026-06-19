@@ -1,14 +1,10 @@
 import { type NextRequest } from 'next/server';
-import { z } from 'zod';
 import { auth } from '@/lib/auth/auth';
 import { prisma } from '@/lib/prisma';
 import OrganizationService from '@/lib/services/organization.service';
 import { ForbiddenException, handleError } from '@/lib/utils/errors.utils';
 import { assertOwner } from '@/lib/utils/permissions.utils';
-
-const transferOwnershipSchema = z.object({
-    targetMemberId: z.string().min(1),
-});
+import { transferOwnershipSchema } from '@/lib/schemas/organization.schema';
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     try {
