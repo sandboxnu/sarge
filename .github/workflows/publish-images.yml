@@ -37,12 +37,12 @@ jobs:
                   tags: |
                       ghcr.io/${{ github.repository_owner }}/sarge-ws:latest
                       ghcr.io/${{ github.repository_owner }}/sarge-ws:${{ github.sha }}
-            - name: Build and push cron image
+            - name: Build and push scheduler image
               uses: docker/build-push-action@v5
               with:
-                  context: src/cron
-                  file: src/cron/Dockerfile
+                  context: src/scheduler
+                  file: src/scheduler/Dockerfile
                   push: true
                   tags: |
-                      ghcr.io/${{ github.repository_owner }}/sarge-cron:latest
-                      ghcr.io/${{ github.repository_owner }}/sarge-cron:${{ github.sha }}
+                      ghcr.io/${{ github.repository_owner }}/sarge-scheduler:latest
+                      ghcr.io/${{ github.repository_owner }}/sarge-scheduler:${{ github.sha }}

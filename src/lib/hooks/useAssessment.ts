@@ -150,9 +150,6 @@ export default function useAssessment(assessmentId: string) {
                 setToken(token);
                 setSections(buildInitialSections(data.assessmentTemplate.tasks));
 
-                // Gate expired assessments at load: if the due date has passed (or the server
-                // already marked it EXPIRED) and the candidate hasn't already finished, show the
-                // expired screen instead of the intro.
                 const alreadyFinished =
                     data.assessmentStatus === 'SUBMITTED' || data.assessmentStatus === 'GRADED';
                 const deadlinePassed =

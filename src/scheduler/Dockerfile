@@ -1,6 +1,6 @@
 FROM node:22-slim
 
-WORKDIR /src/cron
+WORKDIR /src/scheduler
 
 RUN corepack enable && corepack prepare pnpm@9.12.2 --activate
 

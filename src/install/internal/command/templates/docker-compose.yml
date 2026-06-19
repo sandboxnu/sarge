@@ -43,8 +43,8 @@ services:
             - .env
         restart: unless-stopped
 
-    cron:
-        image: ghcr.io/sandboxnu/sarge-cron:latest
+    scheduler:
+        image: ghcr.io/sandboxnu/sarge-scheduler:latest
         pull_policy: always
         env_file:
             - .env
