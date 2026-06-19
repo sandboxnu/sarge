@@ -3,9 +3,7 @@ const INTERNAL_API_SECRET = process.env.INTERNAL_API_SECRET;
 
 async function runExpire() {
     if (!INTERNAL_API_SECRET || !INTERNAL_API_URL) {
-        console.warn(
-            'INTERNAL_API_SECRET or INTERNAL_API_URL is missing, skipping expiry check'
-        );
+        console.warn('INTERNAL_API_SECRET or INTERNAL_API_URL is missing, skipping expiry check');
         return;
     }
     try {
