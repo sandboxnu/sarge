@@ -22,9 +22,9 @@ export default function AssessmentExpired({ assessment }: AssessmentExpiredProps
                     </h1>
                     <div>
                         <p className="text-md mt-2">
-                            This assessment has expired. The due date
+                            This assessment has expired. The due date,
                             {assessment.deadline
-                                ? ` (${formatDeadline(assessment.deadline)})`
+                                ? ` ${formatDeadline(assessment.deadline)},`
                                 : ''}{' '}
                             has passed, so it can no longer be started or submitted.
                         </p>
