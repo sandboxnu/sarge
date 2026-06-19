@@ -38,7 +38,7 @@ export default function SendAssessmentModal({
                     </div>
 
                     <p className="text-sarge-gray-600 mb-6 text-sm">
-                        OAs not completed by the end of this day (11:59 PM) will expire.
+                        OAs not completed by 11:59 PM Eastern on this day will expire.
                     </p>
 
                     <div className="mb-8 flex flex-col gap-2">

@@ -23,7 +23,7 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
         createCandidate,
         batchCreateCandidates,
         isSendingAssessments,
-        confirmSendAssessments,
+        handleSendAssessments,
         isManualModalOpen,
         setIsManualModalOpen,
         isCSVModalOpen,
@@ -138,7 +138,7 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                 open={isSendModalOpen}
                 onOpenChange={setIsSendModalOpen}
                 isSending={isSendingAssessments}
-                onConfirm={confirmSendAssessments}
+                onConfirm={handleSendAssessments}
             />
         </>
     );

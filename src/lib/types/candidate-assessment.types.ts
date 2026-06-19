@@ -26,9 +26,9 @@ export type AssessmentQuestion = {
 
 export type CandidateAssessment = {
     id: string;
-    deadline: Date | null;
-    assignedAt: Date;
-    submittedAt: Date | null;
+    deadline: Date | string | null;
+    assignedAt: Date | string;
+    submittedAt: Date | string | null;
     assessmentStatus: AssessmentStatus;
     candidateName: string;
     organizationName: string;

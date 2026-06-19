@@ -119,12 +119,8 @@ export default function useCandidates(positionId: string) {
             }
         } finally {
             setIsSendingAssessments(false);
+            setIsSendModalOpen(false);
         }
-    };
-
-    const confirmSendAssessments = async (deadlineIso: string) => {
-        await handleSendAssessments(deadlineIso);
-        setIsSendModalOpen(false);
     };
 
     return {
@@ -135,7 +131,7 @@ export default function useCandidates(positionId: string) {
         createCandidate,
         batchCreateCandidates,
         isSendingAssessments,
-        confirmSendAssessments,
+        handleSendAssessments,
         isManualModalOpen,
         setIsManualModalOpen,
         isCSVModalOpen,

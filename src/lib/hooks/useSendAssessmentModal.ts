@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { type SendAssessmentModalProps } from '@/lib/components/modal/SendAssessmentModal';
-import { endOfDayISO, todayLocalISODate } from '@/lib/utils/date.utils';
+import { getDateToEOD, getMinPickableDate } from '@/lib/utils/date.utils';
 
 function useSendAssessmentModal({ onOpenChange, onConfirm }: SendAssessmentModalProps) {
     const [dueDate, setDueDate] = useState('');
 
     const handleConfirm = async () => {
         if (!dueDate) return;
-        await onConfirm(endOfDayISO(dueDate));
+        await onConfirm(getDateToEOD(dueDate));
         setDueDate('');
     };
 
@@ -21,7 +21,7 @@ function useSendAssessmentModal({ onOpenChange, onConfirm }: SendAssessmentModal
     return {
         dueDate,
         setDueDate,
-        minDate: todayLocalISODate(),
+        minDate: getMinPickableDate(),
         handleConfirm,
         handleOpenChange,
         handleCancel,

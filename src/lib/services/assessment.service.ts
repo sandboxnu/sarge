@@ -448,8 +448,6 @@ async function sendAssessmentInvitationsToPosition(
     const results = [];
     for (const application of applications) {
         try {
-            // Persist the deadline before emailing so the invitation email reflects the real
-            // due date (email.service reads assessment.deadline).
             if (application.assessment) {
                 await prisma.assessment.update({
                     where: { id: application.assessment.id },
