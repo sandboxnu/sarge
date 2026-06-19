@@ -159,6 +159,14 @@ export default function useAssessment(assessmentId: string) {
                     setPhase('outro');
                 } else if (data.assessmentStatus === 'EXPIRED' || deadlinePassed) {
                     setPhase('expired');
+                } else if (data.assessmentStatus === 'IN_PROGRESS') {
+                    try {
+                        await submitCandidateAssessment(assessmentId);
+                    } catch {
+                        // best effort submission, we should not allow progress to continue on a restart
+                    }
+                    setOutroReason('submitted');
+                    setPhase('outro');
                 }
             } catch (err) {
                 setError(err as Error);
