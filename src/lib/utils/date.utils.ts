@@ -36,11 +36,11 @@ function ordinalSuffix(day: number): string {
 }
 
 export function getMinPickableDate(): string {
-    return DateTime.now().setZone(OA_TIMEZONE).toISODate()!;
+    return DateTime.now().setZone(OA_TIMEZONE).toISODate() ?? '';
 }
 
 export function getDateToEOD(value: string): string {
-    return DateTime.fromISO(value, { zone: OA_TIMEZONE }).endOf('day').toUTC().toISO()!;
+    return DateTime.fromISO(value, { zone: OA_TIMEZONE }).endOf('day').toUTC().toISO() ?? '';
 }
 
 export function formatDuration(totalSeconds: number): string {
