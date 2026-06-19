@@ -337,8 +337,7 @@ async function startForCandidate(assessmentId: string): Promise<void> {
         throw new BadRequestException('Assessment has already been submitted');
     }
 
-    // Refuse to start an assessment whose due date has passed (e.g. from a stale tab),
-    // and mark it expired so the CRM reflects it without waiting for the background sweep.
+    // NOTE(laith): the scheduler should catch this, but still a good sanity check
     if (assessment.deadline && assessment.deadline.getTime() < Date.now()) {
         if (assessment.application.assessmentStatus !== AssessmentStatus.EXPIRED) {
             await prisma.application.update({

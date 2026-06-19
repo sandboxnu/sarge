@@ -20,7 +20,7 @@ async function runExpire() {
             return;
         }
     } catch (err) {
-        console.error('Expiry sweep error:', err.message);
+        console.error('Expiry check error:', err.message);
     }
 }
 
