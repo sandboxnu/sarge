@@ -154,7 +154,10 @@ export default function useAssessment(assessmentId: string) {
                     data.assessmentStatus === 'SUBMITTED' || data.assessmentStatus === 'GRADED';
                 const deadlinePassed =
                     data.deadline !== null && new Date(data.deadline).getTime() < Date.now();
-                if (!alreadyFinished && (data.assessmentStatus === 'EXPIRED' || deadlinePassed)) {
+                if (alreadyFinished) {
+                    setOutroReason('submitted');
+                    setPhase('outro');
+                } else if (data.assessmentStatus === 'EXPIRED' || deadlinePassed) {
                     setPhase('expired');
                 }
             } catch (err) {
