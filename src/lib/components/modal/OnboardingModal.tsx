@@ -180,12 +180,9 @@ function CreateOrganizationContent({
             )}
 
             <div className="mt-4 flex items-center justify-between">
-                <p
-                    className="text-sarge-primary-500 hover:text-sarge-primary-600 hover:cursor-pointer"
-                    onClick={onBack}
-                >
+                <Button variant="link" onClick={onBack}>
                     Back
-                </p>
+                </Button>
                 <Button
                     variant="primary"
                     className="w-[125px]"

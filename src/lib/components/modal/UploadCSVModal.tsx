@@ -220,12 +220,9 @@ export default function UploadCSVModal({
                     )}
 
                     <div className="flex w-full items-center justify-between">
-                        <button
-                            onClick={onCancelClick}
-                            className="text-label-s text-sarge-primary-600 hover:text-sarge-primary-700 px-0 py-2 pr-4 text-left font-medium transition-colors hover:cursor-pointer"
-                        >
+                        <Button variant="link" onClick={onCancelClick}>
                             Cancel
-                        </button>
+                        </Button>
                         <Button
                             variant="primary"
                             onClick={onCreateClick}

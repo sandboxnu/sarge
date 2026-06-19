@@ -199,13 +199,9 @@ export default function CreateCandidateModal({
                     </div>
 
                     <div className="flex w-full items-center justify-between">
-                        <button
-                            type="button"
-                            onClick={handleCancel}
-                            className="text-label-s text-sarge-primary-600 hover:text-sarge-primary-700 px-0 py-2 font-medium transition-colors hover:cursor-pointer"
-                        >
+                        <Button variant="link" onClick={handleCancel}>
                             Cancel
-                        </button>
+                        </Button>
                         <Button
                             type="button"
                             variant="primary"

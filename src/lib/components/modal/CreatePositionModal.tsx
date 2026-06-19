@@ -46,12 +46,9 @@ export default function CreatePositionModal({
                     </Field>
 
                     <div className="flex items-center justify-between">
-                        <p
-                            className="text-sarge-primary-500 hover:text-sarge-primary-600 hover:cursor-pointer"
-                            onClick={handleCancel}
-                        >
+                        <Button variant="link" onClick={handleCancel}>
                             Back
-                        </p>
+                        </Button>
                         <Button
                             type="button"
                             variant="primary"

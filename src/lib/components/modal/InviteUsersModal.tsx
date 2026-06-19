@@ -167,11 +167,7 @@ export default function InviteUsersModal({
                     </Field>
 
                     <div className="flex items-center justify-between">
-                        <Button
-                            type="button"
-                            variant="link"
-                            onClick={() => handleOpenChange(false)}
-                        >
+                        <Button variant="link" onClick={() => handleOpenChange(false)}>
                             Cancel
                         </Button>
                         <Button
