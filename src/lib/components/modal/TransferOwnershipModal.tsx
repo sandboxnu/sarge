@@ -38,11 +38,7 @@ export default function TransferOwnershipModal({
                 <div className="flex flex-col gap-4">
                     <div className="flex items-center justify-between">
                         <DialogTitle className="text-display-xs">Transfer ownership</DialogTitle>
-                        <Button
-                            type="button"
-                            variant="icon"
-                            onClick={() => handleOpenChange(false)}
-                        >
+                        <Button variant="icon" onClick={() => handleOpenChange(false)}>
                             <X />
                         </Button>
                     </div>
@@ -71,7 +67,6 @@ export default function TransferOwnershipModal({
                             Cancel
                         </Button>
                         <Button
-                            type="button"
                             variant="destructive"
                             onClick={handleTransfer}
                             disabled={!selectedMemberId || submitting}

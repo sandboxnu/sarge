@@ -204,7 +204,6 @@ export default function AddTaskModal({
                         Cancel
                     </Button>
                     <Button
-                        type="button"
                         variant="primary"
                         className="px-8 py-2"
                         onClick={handleAdd}

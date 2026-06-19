@@ -50,7 +50,6 @@ export default function CreatePositionModal({
                             Back
                         </Button>
                         <Button
-                            type="button"
                             variant="primary"
                             onClick={handleCreate}
                             disabled={isCreating}

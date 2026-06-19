@@ -36,11 +36,7 @@ export default function DeleteOrganizationModal({
                 <div className="flex flex-col gap-4">
                     <div className="flex items-center justify-between">
                         <DialogTitle className="text-display-xs">Delete organization</DialogTitle>
-                        <Button
-                            type="button"
-                            variant="icon"
-                            onClick={() => handleOpenChange(false)}
-                        >
+                        <Button variant="icon" onClick={() => handleOpenChange(false)}>
                             <X />
                         </Button>
                     </div>
@@ -68,7 +64,6 @@ export default function DeleteOrganizationModal({
                             Cancel
                         </Button>
                         <Button
-                            type="button"
                             variant="destructive"
                             onClick={handleDelete}
                             disabled={!confirmMatch || submitting}

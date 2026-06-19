@@ -203,7 +203,6 @@ export default function CreateCandidateModal({
                             Cancel
                         </Button>
                         <Button
-                            type="button"
                             variant="primary"
                             onClick={handleCreate}
                             disabled={isCreating}
