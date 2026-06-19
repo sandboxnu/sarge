@@ -25,9 +25,10 @@ export default function SignupPage() {
 
     if (verificationPendingEmail) {
         return (
-            <>
+            <div>
                 <div className="mb-6 flex flex-col items-center gap-2 text-center">
                     <h1 className="text-display-xs">Check your email</h1>
+                    {/* TODO(brad) - this email eventually will be customizable in the admin panel */}
                     <p className="text-body-s text-sarge-gray-600">
                         We've sent a verification link to{' '}
                         <span className="text-sarge-gray-800 font-medium">
@@ -63,12 +64,12 @@ export default function SignupPage() {
                         Back to sign in
                     </Link>
                 </div>
-            </>
+            </div>
         );
     }
 
     return (
-        <>
+        <div>
             <div className="mb-8 flex justify-center">
                 <h1 className="text-display-xs">Create an account</h1>
             </div>
@@ -178,6 +179,6 @@ export default function SignupPage() {
                     </Link>
                 </div>
             </form>
-        </>
+        </div>
     );
 }

@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { Controller } from 'react-hook-form';
 import { Button } from '@/lib/components/ui/Button';
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/lib/components/ui/Field';
@@ -9,10 +8,16 @@ import ChangePasswordModal from '@/lib/components/modal/ChangePasswordModal';
 import useProfilePage from '@/lib/hooks/useProfilePage';
 
 export default function ProfilePage() {
-    const { form, hasUnsavedChanges, fieldsLocked, authReady, handleSaveProfile, handleSignOut } =
-        useProfilePage();
-
-    const [changePasswordOpen, setChangePasswordOpen] = useState(false);
+    const {
+        form,
+        hasUnsavedChanges,
+        fieldsLocked,
+        authReady,
+        changePasswordOpen,
+        setChangePasswordOpen,
+        handleSaveProfile,
+        handleSignOut,
+    } = useProfilePage();
 
     return (
         <>

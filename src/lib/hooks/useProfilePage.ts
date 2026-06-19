@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -11,6 +12,7 @@ import { updateProfileSchema, type UpdateProfileDTO } from '@/lib/schemas/user.s
 export default function useProfilePage() {
     const router = useRouter();
     const { user, isPending } = useAuth();
+    const [changePasswordOpen, setChangePasswordOpen] = useState(false);
 
     const form = useForm<UpdateProfileDTO>({
         resolver: zodResolver(updateProfileSchema),
@@ -81,9 +83,7 @@ export default function useProfilePage() {
                     return;
                 }
 
-                toast.success(
-                    `We sent a verification link to ${values.email}. Click it to finish updating your email.`
-                );
+                toast.success(`We sent a verification link to ${values.email}.`);
             } else {
                 toast.success('Profile updated');
             }
@@ -118,6 +118,8 @@ export default function useProfilePage() {
         hasUnsavedChanges,
         fieldsLocked,
         authReady,
+        changePasswordOpen,
+        setChangePasswordOpen,
         handleSaveProfile,
         handleSignOut,
     };

@@ -13,7 +13,7 @@ export default function ResetPasswordPage() {
 
     if (didSendLink) {
         return (
-            <>
+            <div>
                 <div className="mb-6 flex flex-col items-center gap-2 text-center">
                     <h1 className="text-display-xs">Check your email</h1>
                     <p className="text-body-s text-sarge-gray-600">
@@ -46,12 +46,12 @@ export default function ResetPasswordPage() {
                         Back to sign in
                     </Link>
                 </div>
-            </>
+            </div>
         );
     }
 
     return (
-        <>
+        <div>
             <div className="mb-8 flex flex-col items-center gap-2 text-center">
                 <h1 className="text-display-xs">Reset your password</h1>
                 <p className="text-body-s text-sarge-gray-600">
@@ -112,6 +112,6 @@ export default function ResetPasswordPage() {
                     </Link>
                 </div>
             </form>
-        </>
+        </div>
     );
 }

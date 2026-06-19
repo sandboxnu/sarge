@@ -20,7 +20,7 @@ export default function SignInPage() {
 
     if (unverifiedEmail) {
         return (
-            <>
+            <div>
                 <div className="mb-6 flex flex-col items-center gap-2 text-center">
                     <h1 className="text-display-xs">Verify your email</h1>
                     <p className="text-body-s text-sarge-gray-600">
@@ -59,12 +59,12 @@ export default function SignInPage() {
                         Back to sign in
                     </Button>
                 </div>
-            </>
+            </div>
         );
     }
 
     return (
-        <>
+        <div>
             <div className="mb-8 flex justify-center">
                 <h1 className="text-display-xs">Sign in to Sarge</h1>
             </div>
@@ -153,6 +153,6 @@ export default function SignInPage() {
                     </Link>
                 </div>
             </form>
-        </>
+        </div>
     );
 }
