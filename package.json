@@ -78,6 +78,7 @@
     "devDependencies": {
         "@eslint/eslintrc": "^3",
         "@tailwindcss/postcss": "^4",
+        "@types/luxon": "^3.7.1",
         "@types/node": "^22",
         "@types/react": "^19",
         "@types/react-dom": "^19",
