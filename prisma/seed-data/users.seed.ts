@@ -1,5 +1,5 @@
 export const superUserData = {
-    id: 'user_super_user_001',
+    id: 'user_superuser_001',
     name: 'Super User',
     email: 'superuser@sargenu.com',
     password: 'password123',

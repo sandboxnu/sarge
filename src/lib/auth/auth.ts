@@ -9,6 +9,8 @@ import {
     recruiter,
     reviewer,
     member,
+    adminAccessControl,
+    superuser,
     SUPER_USER_ROLE,
 } from '@/lib/auth/permissions';
 import sesConnector from '@/lib/connectors/ses.connector';
@@ -182,6 +184,8 @@ export const auth = betterAuth({
             },
         }),
         adminPlugin({
+            ac: adminAccessControl,
+            roles: { superuser },
             adminRoles: [SUPER_USER_ROLE],
         }),
     ],

@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth/auth';
+import { SUPER_USER_ROLE } from '@/lib/auth/permissions';
 import { organizationsData } from './seed-data/organizations.seed';
 import { superUserData, usersData } from './seed-data/users.seed';
 import { invitationsSeedData } from './seed-data/invitations.seed';
@@ -68,7 +69,7 @@ async function seedSuperUser() {
     console.log('Seeding superuser...');
 
     const existingUser = await prisma.user.findUnique({
-        where: { id: superUserData.id },
+        where: { email: superUserData.email },
     });
 
     if (existingUser) {
@@ -87,9 +88,8 @@ async function seedSuperUser() {
     await prisma.user.update({
         where: { email: superUserData.email },
         data: {
-            id: superUserData.id,
             emailVerified: true,
-            role: 'superuser',
+            role: SUPER_USER_ROLE,
         },
     });
 
