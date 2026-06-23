@@ -35,7 +35,7 @@ export default function DeleteOrganizationModal({
             <DialogContent className="px-7 py-6" showCloseButton={false}>
                 <div className="flex flex-col gap-4">
                     <div className="flex items-center justify-between">
-                        <DialogTitle className="text-display-xs">Delete organization</DialogTitle>
+                        <DialogTitle>Delete organization</DialogTitle>
                         <Button
                             type="button"
                             variant="icon"

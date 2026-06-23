@@ -62,22 +62,23 @@ export default function CreateCandidateModal({
             >
                 <div className="flex h-full flex-col items-center justify-between">
                     <div className="mb-6 flex w-full items-start justify-between">
-                        <DialogTitle className="text-display-xs text-sarge-gray-800 font-bold">
-                            Add new candidate
-                        </DialogTitle>
+                        <DialogTitle>Add new candidate</DialogTitle>
                         <div className="flex items-center gap-2">
-                            <button
+                            <Button
+                                variant="link"
                                 onClick={onSwitchModal}
-                                className="text-label-xs text-sarge-primary-600 px-1 font-medium transition-colors hover:cursor-pointer"
+                                className="text-label-xs text-sarge-primary-600 hover:text-sarge-primary-700 hover:no-underline"
                             >
                                 Import CSV
-                            </button>
-                            <button
+                            </Button>
+                            <Button
+                                variant="icon"
                                 onClick={() => onOpenChange(false)}
-                                className="hover:bg-sarge-gray-100 hover:bg-sarge-gray-200 rounded p-0.5 transition-colors"
+                                className="p-0.5"
+                                aria-label="Close"
                             >
                                 <X className="size-5" />
-                            </button>
+                            </Button>
                         </div>
                     </div>
 
@@ -199,19 +200,18 @@ export default function CreateCandidateModal({
                     </div>
 
                     <div className="flex w-full items-center justify-between">
-                        <button
-                            type="button"
+                        <Button
+                            variant="link"
                             onClick={handleCancel}
-                            className="text-label-s text-sarge-primary-600 hover:text-sarge-primary-700 px-0 py-2 font-medium transition-colors hover:cursor-pointer"
+                            className="text-label-s text-sarge-primary-600 hover:text-sarge-primary-700 px-0 hover:no-underline"
                         >
                             Cancel
-                        </button>
+                        </Button>
                         <Button
-                            type="button"
                             variant="primary"
                             onClick={handleCreate}
                             disabled={isCreating}
-                            className="h-9 w-[125px] px-4 py-2"
+                            className="h-9 px-4"
                         >
                             {isCreating ? 'Creating...' : 'Create'}
                         </Button>

@@ -1,181 +1,158 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Controller, useForm } from 'react-hook-form';
-import { signIn } from '@/lib/auth/auth-client';
+import { Controller } from 'react-hook-form';
 import { Button } from '@/lib/components/ui/Button';
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/lib/components/ui/Field';
 import { Input } from '@/lib/components/ui/Input';
-import { loginUserSchema } from '@/lib/schemas/user.schema';
-import type { z } from 'zod';
-
-type FormData = z.infer<typeof loginUserSchema>;
+import useSignInPage from '@/lib/hooks/useSignInPage';
 
 export default function SignInPage() {
-    const router = useRouter();
-    const form = useForm<FormData>({
-        resolver: zodResolver(loginUserSchema),
-        defaultValues: {
-            email: '',
-            password: '',
-        },
-    });
+    const {
+        form,
+        unverifiedEmail,
+        resending,
+        didResend,
+        onSubmit,
+        handleResendVerification,
+        handleBackToSignIn,
+    } = useSignInPage();
 
-    const onSubmit = async (data: FormData) => {
-        const result = await signIn.email({
-            email: data.email.trim().toLowerCase(),
-            password: data.password,
-        });
+    if (unverifiedEmail) {
+        return (
+            <div>
+                <div className="mb-6 flex flex-col items-center gap-2 text-center">
+                    <h1 className="text-display-xs">Verify your email</h1>
+                    <p className="text-body-s text-sarge-gray-600">
+                        You haven't verified{' '}
+                        <span className="text-sarge-gray-800 font-medium">{unverifiedEmail}</span>{' '}
+                        yet. Check your inbox for the link we sent when you signed up, or resend it
+                        below.
+                    </p>
+                </div>
 
-        if (result.error) {
-            const message = result.error.message ?? 'Invalid email or password';
-            const lowerMessage = message.toLowerCase();
+                {didResend ? (
+                    <div className="border-sarge-primary-200 bg-sarge-primary-100 mb-4 rounded-lg border p-4">
+                        <p className="text-body-s text-sarge-gray-800">
+                            New verification link sent.
+                        </p>
+                    </div>
+                ) : (
+                    <Button
+                        type="button"
+                        variant="primary"
+                        onClick={handleResendVerification}
+                        disabled={resending}
+                        className="text-label-s text-sarge-gray-50 h-11 w-full px-4"
+                    >
+                        {resending ? 'Sending...' : 'Resend verification link'}
+                    </Button>
+                )}
 
-            if (lowerMessage.includes('email') && lowerMessage.includes('password')) {
-                form.setError('email', { type: 'manual' });
-                form.setError('password', { type: 'manual' });
-                form.setError('root', { message });
-            } else if (lowerMessage.includes('email') || lowerMessage.includes('not found')) {
-                form.setError('email', { message });
-            } else if (lowerMessage.includes('password') || lowerMessage.includes('invalid')) {
-                form.setError('password', { message });
-            } else {
-                form.setError('root', { message });
-            }
-            return;
-        }
-
-        router.push('/crm/dashboard');
-        router.refresh();
-    };
+                <div className="mt-4 flex items-center justify-center gap-1 py-1">
+                    <Button
+                        type="button"
+                        variant="link"
+                        onClick={handleBackToSignIn}
+                        className="text-label-xs text-sarge-primary-500 h-auto p-0"
+                    >
+                        Back to sign in
+                    </Button>
+                </div>
+            </div>
+        );
+    }
 
     return (
-        <div className="flex min-h-screen w-full overflow-hidden">
-            <div className="relative hidden overflow-hidden bg-white lg:flex lg:w-1/2">
-                <div className="from-sarge-primary-100 absolute -top-[42px] left-0 h-[calc(100%+84px)] w-full rounded-r-2xl bg-linear-to-b to-white" />
-
-                <div className="absolute top-0 left-0 z-10 pt-6 pr-6">
-                    <Image src="/HelmetLogoFull.png" alt="Sarge" width={200} height={61} priority />
-                </div>
-
-                <div className="relative flex flex-1 items-center justify-center px-8 pt-24 pb-10 lg:px-12">
-                    <div className="flex h-full max-w-md flex-col">
-                        <p className="text-body-m text-sarge-gray-800 mb-10">
-                            With Sarge you&apos;ll be able to manage tasks, assessments, and
-                            candidates <span className="font-bold">all in one place.</span>
-                        </p>
-                        <div className="w-full flex-1 rounded-md bg-linear-to-b from-white via-white to-white/0 shadow-[0_-4px_8px_0_rgba(0,0,0,0.03)]" />
-                    </div>
-                </div>
+        <div>
+            <div className="mb-8 flex justify-center">
+                <h1 className="text-display-xs">Sign in to Sarge</h1>
             </div>
 
-            <div className="flex w-full items-center justify-center bg-white px-4 py-8 sm:px-8 lg:w-1/2 lg:px-16">
-                <div className="w-full max-w-sm">
-                    <div className="mb-8 flex justify-center">
-                        <h1 className="text-display-xs text-sarge-gray-800">Sign in to Sarge</h1>
-                    </div>
-
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
-                        <FieldGroup className="gap-4">
-                            <Controller
-                                name="email"
-                                control={form.control}
-                                render={({ field, fieldState }) => (
-                                    <Field data-invalid={fieldState.invalid} className="gap-2">
-                                        <FieldLabel
-                                            htmlFor="email"
-                                            className="text-label-s text-sarge-gray-800"
-                                        >
-                                            Email
-                                        </FieldLabel>
-                                        <Input
-                                            {...field}
-                                            id="email"
-                                            type="email"
-                                            placeholder="Enter Your Email Address"
-                                            aria-invalid={fieldState.invalid}
-                                            disabled={form.formState.isSubmitting}
-                                            className="text-body-s h-11"
-                                        />
-                                        <FieldError
-                                            errors={
-                                                fieldState.error ? [fieldState.error] : undefined
-                                            }
-                                        />
-                                    </Field>
-                                )}
-                            />
-
-                            <Controller
-                                name="password"
-                                control={form.control}
-                                render={({ field, fieldState }) => (
-                                    <Field data-invalid={fieldState.invalid} className="gap-2">
-                                        <div className="flex items-center justify-between">
-                                            <FieldLabel
-                                                htmlFor="password"
-                                                className="text-label-s text-sarge-gray-800"
-                                            >
-                                                Password
-                                            </FieldLabel>
-                                            <Link
-                                                href="/reset-password"
-                                                className="text-label-xs text-sarge-primary-500 hover:underline"
-                                            >
-                                                Forgot password?
-                                            </Link>
-                                        </div>
-                                        <Input
-                                            {...field}
-                                            id="password"
-                                            type="password"
-                                            placeholder="Your Password"
-                                            aria-invalid={fieldState.invalid}
-                                            disabled={form.formState.isSubmitting}
-                                            className="text-body-s h-11"
-                                        />
-                                        <FieldError
-                                            errors={
-                                                fieldState.error ? [fieldState.error] : undefined
-                                            }
-                                        />
-                                    </Field>
-                                )}
-                            />
-                        </FieldGroup>
-
-                        <Button
-                            type="submit"
-                            variant="primary"
-                            disabled={form.formState.isSubmitting}
-                            className="text-label-s bg-sarge-primary-500 text-sarge-gray-50 hover:bg-sarge-primary-600 h-11 w-full rounded-lg px-4 py-2 transition-colors disabled:opacity-50"
-                        >
-                            {form.formState.isSubmitting ? 'Logging in...' : 'Continue'}
-                        </Button>
-
-                        {form.formState.errors.root && (
-                            <p className="text-sarge-error-700 text-body-xs">
-                                {form.formState.errors.root.message}
-                            </p>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
+                <FieldGroup className="gap-4">
+                    <Controller
+                        name="email"
+                        control={form.control}
+                        render={({ field, fieldState }) => (
+                            <Field className="gap-2">
+                                <FieldLabel htmlFor="email" className="text-label-s">
+                                    Email
+                                </FieldLabel>
+                                <Input
+                                    {...field}
+                                    id="email"
+                                    type="email"
+                                    placeholder="Enter Your Email Address"
+                                    aria-invalid={fieldState.invalid}
+                                    disabled={form.formState.isSubmitting}
+                                    className="text-body-s h-11"
+                                />
+                                <FieldError
+                                    errors={fieldState.error ? [fieldState.error] : undefined}
+                                />
+                            </Field>
                         )}
+                    />
 
-                        <div className="flex items-center gap-1 py-1">
-                            <p className="text-label-xs text-sarge-gray-600">
-                                Don&apos;t have an account?
-                            </p>
-                            <Link
-                                href="/signup"
-                                className="text-label-xs text-sarge-primary-500 hover:underline"
-                            >
-                                Sign up
-                            </Link>
-                        </div>
-                    </form>
+                    <Controller
+                        name="password"
+                        control={form.control}
+                        render={({ field, fieldState }) => (
+                            <Field className="gap-2">
+                                <div className="flex items-center justify-between">
+                                    <FieldLabel htmlFor="password" className="text-label-s">
+                                        Password
+                                    </FieldLabel>
+                                    <Link
+                                        href="/reset-password"
+                                        className="text-label-xs text-sarge-primary-500 hover:underline"
+                                    >
+                                        Forgot password?
+                                    </Link>
+                                </div>
+                                <Input
+                                    {...field}
+                                    id="password"
+                                    type="password"
+                                    placeholder="Your Password"
+                                    aria-invalid={fieldState.invalid}
+                                    disabled={form.formState.isSubmitting}
+                                    className="text-body-s h-11"
+                                />
+                                <FieldError
+                                    errors={fieldState.error ? [fieldState.error] : undefined}
+                                />
+                            </Field>
+                        )}
+                    />
+                </FieldGroup>
+
+                <Button
+                    type="submit"
+                    variant="primary"
+                    disabled={form.formState.isSubmitting}
+                    className="text-label-s text-sarge-gray-50 h-11 w-full px-4"
+                >
+                    {form.formState.isSubmitting ? 'Logging in...' : 'Continue'}
+                </Button>
+
+                {form.formState.errors.root && (
+                    <p className="text-sarge-error-700 text-body-xs">
+                        {form.formState.errors.root.message}
+                    </p>
+                )}
+
+                <div className="flex items-center gap-1 py-1">
+                    <p className="text-label-xs text-sarge-gray-600">Don't have an account?</p>
+                    <Link
+                        href="/signup"
+                        className="text-label-xs text-sarge-primary-500 hover:underline"
+                    >
+                        Sign up
+                    </Link>
                 </div>
-            </div>
+            </form>
         </div>
     );
 }
