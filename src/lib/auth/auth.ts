@@ -85,12 +85,12 @@ export const auth = betterAuth({
                 before: async (user) => {
                     if (hasExistingUsers) return { data: user };
 
-                    const userCount = await prisma.user.count();
-                    if (userCount > 0) {
+                    if ((await prisma.user.count()) > 0) {
                         hasExistingUsers = true;
                         return { data: user };
                     }
 
+                    // first account to sign in becomes the superuser
                     return { data: { ...user, role: SUPER_USER_ROLE } };
                 },
             },
