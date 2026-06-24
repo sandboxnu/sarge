@@ -2,7 +2,7 @@ import type { Member, MemberWithUser } from '@/lib/types/member.types';
 import { prisma } from '@/lib/prisma';
 import { ConflictException, NotFoundException } from '@/lib/utils/errors.utils';
 import { auth } from '@/lib/auth/auth';
-import { assertPermission } from '@/lib/utils/permissions.utils';
+import { assertOrgPermission } from '@/lib/utils/permissions.utils';
 
 async function updateMemberRole(
     memberIdToUpdate: string,
@@ -10,7 +10,7 @@ async function updateMemberRole(
     organizationId: string,
     headers: Headers
 ): Promise<Member> {
-    await assertPermission(
+    await assertOrgPermission(
         headers,
         { member: ['update'] },
         'You are not an admin of this organization'

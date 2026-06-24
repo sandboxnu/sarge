@@ -239,7 +239,7 @@ func (m model) View() tea.View {
 
 	var steps string
 	if m.setupComplete {
-		steps = fmt.Sprintf("Sarge installation complete!\nYou can start using Sarge now by visiting:\n\nhttps://%s!\n", m.hostname)
+		steps = fmt.Sprintf("Sarge installation complete!\nYou can start using Sarge now by visiting:\n\n\"https://%s\"\n\nThe first account created will become the super user.", m.hostname)
 	} else {
 		steps = lipgloss.JoinVertical(lipgloss.Center, stepLines...)
 	}
