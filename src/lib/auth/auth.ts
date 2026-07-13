@@ -56,6 +56,9 @@ export const auth = betterAuth({
         autoSignInAfterVerification: true,
         expiresIn: 60 * 60,
         sendVerificationEmail: async ({ user, url }) => {
+            // this check is required since the self-hosted superuser is pre-verified
+            if (user.emailVerified) return;
+
             try {
                 const emailSent = await sesConnector.sendEmail(
                     user.email,
@@ -90,8 +93,8 @@ export const auth = betterAuth({
                         return { data: user };
                     }
 
-                    // first account to sign in becomes the superuser
-                    return { data: { ...user, role: SUPER_USER_ROLE } };
+                    // first account to sign up becomes the superuser, and is pre-verified since we don't require superuser email validation
+                    return { data: { ...user, role: SUPER_USER_ROLE, emailVerified: true } };
                 },
             },
         },
