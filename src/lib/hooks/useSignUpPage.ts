@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { sendVerificationEmail, signUp } from '@/lib/auth/auth-client';
+import { sendVerificationEmail, signIn, signUp } from '@/lib/auth/auth-client';
 import { createUserSchema, type CreateUserDTO } from '@/lib/schemas/user.schema';
 
 export default function useSignUpPage() {
@@ -56,8 +56,17 @@ export default function useSignUpPage() {
         }
 
         // When email verification is required, better-auth returns the user but no session token.
-        // In that case, show the "check your email" state instead of redirecting.
         if (!result.data?.token) {
+            // If the account is already verified (superuser), auto redirect them
+            if (result.data?.user?.emailVerified) {
+                const signInResult = await signIn.email({ email, password: data.password });
+                if (!signInResult.error) {
+                    router.push('/crm/dashboard');
+                    router.refresh();
+                    return;
+                }
+            }
+
             setVerificationPendingEmail(email);
             return;
         }
