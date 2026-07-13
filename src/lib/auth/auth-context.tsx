@@ -10,7 +10,6 @@ type SessionData = {
         email: string;
         name: string;
         image?: string | null | undefined;
-        // NOTE(laith): User.role (superuser, user), NOT Memer.role (admin, reviewer, member, etc)
         role?: string | null | undefined;
     };
     session: {
