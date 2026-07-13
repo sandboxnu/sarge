@@ -202,6 +202,10 @@ export default function useAssessment(assessmentId: string) {
     }, [timer.isExpired, phase, handleSubmitAssessment]);
 
     async function startAssessment() {
+        if (assessment?.deadline && new Date(assessment.deadline).getTime() < Date.now()) {
+            setPhase('expired');
+            return;
+        }
         try {
             await startCandidateAssessment(assessmentId);
             setPhase('assessment');

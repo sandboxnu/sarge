@@ -1,3 +1,7 @@
+import { DateTime } from 'luxon';
+
+const OA_TIMEZONE = 'America/New_York';
+
 const INTERNAL_API_URL = process.env.INTERNAL_API_URL;
 const INTERNAL_API_SECRET = process.env.INTERNAL_API_SECRET;
 
@@ -25,16 +29,15 @@ async function runExpire() {
 }
 
 function msUntilNextMidnight() {
-    const now = new Date();
-    const nextMidnight = new Date(now);
-    nextMidnight.setHours(24, 0, 0, 0);
-    return nextMidnight.getTime() - now.getTime();
+    const now = DateTime.now().setZone(OA_TIMEZONE);
+    const nextMidnight = now.plus({ days: 1 }).startOf('day');
+    return nextMidnight.diff(now).as('milliseconds');
 }
 
 function scheduleNextExpire() {
     const delay = msUntilNextMidnight();
     console.log(
-        `Sarge scheduler: next expiry check in ${Math.round(delay / 1000)} seconds (midnight)`
+        `Sarge scheduler: next expiry check in ${Math.round(delay / 1000)} seconds (midnight ${OA_TIMEZONE})`
     );
     setTimeout(() => {
         runExpire();

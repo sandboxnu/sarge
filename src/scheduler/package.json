@@ -11,7 +11,9 @@
     "keywords": [],
     "author": "",
     "license": "ISC",
-    "dependencies": {},
+    "dependencies": {
+        "luxon": "^3.7.2"
+    },
     "devDependencies": {
         "nodemon": "^3.1.14"
     }

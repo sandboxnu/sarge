@@ -444,16 +444,20 @@ async function sendAssessmentInvitationsToPosition(
         },
     });
 
+    const assessmentIds = applications
+        .map((application) => application.assessment?.id)
+        .filter((id): id is string => Boolean(id));
+
+    if (assessmentIds.length > 0) {
+        await prisma.assessment.updateMany({
+            where: { id: { in: assessmentIds } },
+            data: { deadline },
+        });
+    }
+
     const results = [];
     for (const application of applications) {
         try {
-            if (application.assessment) {
-                await prisma.assessment.update({
-                    where: { id: application.assessment.id },
-                    data: { deadline },
-                });
-            }
-
             const result = await emailService.sendAssessmentInvitationEmail(
                 application.candidate.id,
                 orgId
