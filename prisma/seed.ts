@@ -1,7 +1,8 @@
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth/auth';
+import { SUPER_USER_ROLE } from '@/lib/auth/permissions';
 import { organizationsData } from './seed-data/organizations.seed';
-import { usersData } from './seed-data/users.seed';
+import { superUserData, usersData } from './seed-data/users.seed';
 import { invitationsSeedData } from './seed-data/invitations.seed';
 import { positionsData } from './seed-data/positions.seed';
 import { candidatesData } from './seed-data/candidates.seed';
@@ -59,6 +60,40 @@ async function seedOrganizations() {
 
         console.log(`  Created organization: ${orgData.name}`);
     }
+}
+
+/*
+ * Seed Super User
+ */
+async function seedSuperUser() {
+    console.log('Seeding superuser...');
+
+    const existingUser = await prisma.user.findUnique({
+        where: { email: superUserData.email },
+    });
+
+    if (existingUser) {
+        console.log(`  User "${superUserData.name}" already exists`);
+        return;
+    }
+
+    await auth.api.signUpEmail({
+        body: {
+            name: superUserData.name,
+            email: superUserData.email,
+            password: superUserData.password,
+        },
+    });
+
+    await prisma.user.update({
+        where: { email: superUserData.email },
+        data: {
+            emailVerified: true,
+            role: SUPER_USER_ROLE,
+        },
+    });
+
+    console.log(`  Created superuser: ${superUserData.name}`);
 }
 
 /**
@@ -598,6 +633,7 @@ async function seedSnapshots() {
 async function main() {
     console.log('Starting database seeding...\n');
 
+    await seedSuperUser();
     await seedUsers();
     await seedOrganizations();
     await seedOrganizationMemberships();

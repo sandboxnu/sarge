@@ -1,6 +1,6 @@
 'use client';
 
-import { Home, File, Users, Settings, ChevronDown, BookOpen } from 'lucide-react';
+import { Home, File, Users, Settings, ChevronDown, BookOpen, ShieldUser } from 'lucide-react';
 import { useAuth } from '@/lib/auth/auth-context';
 import Image from 'next/image';
 import useOnboardingState from '@/lib/hooks/useOnboardingState';
@@ -791,6 +791,22 @@ export function Sidebar() {
                 </SidebarGroup>
             </SidebarContent>
             <SidebarFooter>
+                {auth.isSuperUser && (
+                    <SidebarMenu>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton
+                                tooltip="Admin"
+                                className="hover:!bg-sarge-primary-100 focus:!bg-sarge-primary-200 p-2.5 transition-colors duration-600 ease-out group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8 group-data-[collapsible=icon]:p-0 hover:cursor-pointer"
+                                onClick={() => router.push('/admin')}
+                            >
+                                <ShieldUser className="text-sarge-gray-600 !h-4 !w-4" />
+                                <span className="text-sarge-gray-800 text-xs font-medium group-data-[collapsible=icon]:hidden">
+                                    Admin
+                                </span>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                    </SidebarMenu>
+                )}
                 {canSeeSettings && (
                     <SidebarMenu>
                         <SidebarMenuItem>

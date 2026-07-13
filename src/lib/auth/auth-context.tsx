@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useMemo } from 'react';
 import { useSession, useActiveOrganization, useActiveMember } from '@/lib/auth/auth-client';
+import { SUPER_USER_ROLE } from '@/lib/auth/permissions';
 
 type SessionData = {
     user: {
@@ -9,6 +10,7 @@ type SessionData = {
         email: string;
         name: string;
         image?: string | null | undefined;
+        role?: string | null | undefined;
     };
     session: {
         id: string;
@@ -33,6 +35,7 @@ type UserData = {
     email: string;
     name: string;
     image?: string | null | undefined;
+    role?: string | null | undefined;
 };
 
 type MemberData = {
@@ -58,6 +61,7 @@ interface AuthContextValue {
 
     isAuthenticated: boolean;
     hasActiveOrganization: boolean;
+    isSuperUser: boolean;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -95,6 +99,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
             isAuthenticated: !!session?.user,
             hasActiveOrganization: !!session?.session?.activeOrganizationId,
+            isSuperUser: session?.user?.role === SUPER_USER_ROLE,
         };
     }, [session, activeOrganization, activeMember, sessionPending, orgPending, memberPending]);
 
