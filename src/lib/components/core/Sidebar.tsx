@@ -707,8 +707,7 @@ export function Sidebar() {
 
     const { isOnboarding } = useOnboardingState();
     const memberRole = auth.activeMember?.role;
-    const canSeeSettings =
-        auth.isSuperUser || memberRole === 'owner' || memberRole === 'admin';
+    const canSeeSettings = auth.isSuperUser || memberRole === 'owner' || memberRole === 'admin';
 
     return (
         <ShadSidebar
