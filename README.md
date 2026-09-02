@@ -56,14 +56,19 @@ git clone https://github.com/sandboxnu/sarge.git
 cd sarge/
 ```
 
-2. Install project dependencies
+2. Install PNPM
+```sh
+curl -fsSL https://get.pnpm.io/install.sh | sh -
+```
+
+3. Install project dependencies
 
 ```sh
 pnpm install
 cd src/ws && pnpm install
 ```
 
-3. Setup the .env file
+4. Setup the .env file
 
 ```
 # in the project's root directory
@@ -73,7 +78,7 @@ mv .env.example .env
 > [!NOTE]
 > You must contact Sarge project leadership to retrieve project environment variables
 
-4. Run the application
+5. Run the application
 
 ```sh
 # with docker desktop open
