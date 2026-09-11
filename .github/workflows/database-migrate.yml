@@ -1,0 +1,13 @@
+name: Database Migration
+on:
+    push:
+        branches: [main]
+
+concurrency:
+    group: database-migrate
+    cancel-in-progress: false
+
+jobs:
+    migrate:
+        name: Migrate Database
+        runs-on: ubuntu-latest

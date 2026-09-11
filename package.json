@@ -1,7 +1,7 @@
 {
     "name": "sarge",
     "version": "0.1.0",
-    "packageManager": "pnpm@9.12.2",
+    "packageManager": "pnpm@11.25.0",
     "private": true,
     "scripts": {
         "dev:migrate": "npx prisma migrate dev",
