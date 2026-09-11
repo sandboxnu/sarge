@@ -1,0 +1,7 @@
+{{ .Hostname }} {
+    reverse_proxy web:3000
+}
+
+ws.{{ .Hostname }} {
+    reverse_proxy ws:8080
+}

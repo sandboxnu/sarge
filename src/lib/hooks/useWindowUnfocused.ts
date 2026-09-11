@@ -6,21 +6,11 @@ export function useWindowUnfocused(): boolean {
     const [isWindowUnfocused, setIsWindowUnfocused] = useState(false);
 
     useEffect(() => {
-        const getIsUnfocused = () => {
-            return document.hidden || !document.hasFocus();
-        };
+        const getIsUnfocused = () => document.hidden || !document.hasFocus();
 
-        const handleFocus = () => {
-            setIsWindowUnfocused(getIsUnfocused());
-        };
-
-        const handleBlur = () => {
-            setIsWindowUnfocused(true);
-        };
-
-        const handleVisibilityChange = () => {
-            setIsWindowUnfocused(getIsUnfocused());
-        };
+        const handleFocus = () => setIsWindowUnfocused(getIsUnfocused());
+        const handleBlur = () => setIsWindowUnfocused(true);
+        const handleVisibilityChange = () => setIsWindowUnfocused(getIsUnfocused());
 
         setIsWindowUnfocused(getIsUnfocused());
 

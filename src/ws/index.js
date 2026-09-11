@@ -1,15 +1,40 @@
 import { WebSocketServer } from 'ws';
 import { jwtVerify } from 'jose';
 
+const HEARTBEAT_INTERVAL = 5000;
+const INTERNAL_API_URL = process.env.INTERNAL_API_URL ?? 'http://localhost:3000';
+const INTERNAL_API_SECRET = process.env.INTERNAL_API_SECRET;
+
 const ws = new WebSocketServer({ port: 8080 });
 const secret = new TextEncoder().encode(process.env.JWT_SECRET);
-
-console.log('Sarge WS server listening on 8080');
 
 // <candidateEmail, socket>
 const clients = new Map();
 
-const HEARTBEAT_INTERVAL = 5000;
+if (!INTERNAL_API_SECRET) {
+    console.warn('INTERNAL_API_SECRET is missing, this means disconnect snapshots will be skipped');
+}
+
+console.log('Sarge WS server listening on 8080');
+
+async function postDisconnectSnapshot(candidateEmail) {
+    if (!INTERNAL_API_SECRET) return;
+    try {
+        const res = await fetch(`${INTERNAL_API_URL}/api/internal/snapshot`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-SARGE-INTERNAL-SECRET': INTERNAL_API_SECRET,
+            },
+            body: JSON.stringify({ candidateEmail }),
+        });
+        if (!res.ok) {
+            console.error(`Disconnect snapshot failed (${res.status})`);
+        }
+    } catch (err) {
+        console.error('Disconnect snapshot error:', err.message);
+    }
+}
 
 function getTokenFromRequest(request) {
     return new URL(request.url ?? '/', 'ws://x').searchParams.get('token');
@@ -23,7 +48,7 @@ async function verifyToken(token) {
 function startHeartbeat(socket) {
     return setInterval(() => {
         if (!socket.isAlive) {
-            // TODO: add an offline timer before the socket gets terminated unique to each user
+            // TODO(laith): add an offline timer before the socket gets terminated unique to each user
             // Once done, send an API request back to server to end the OA
 
             // terminate() jumps to socket.on('close')
@@ -68,6 +93,8 @@ ws.on('connection', async (socket, request) => {
         console.log(
             `Client ${socket.candidateEmail} disconnected | code: ${code}, reason: ${reason.toString()}`
         );
+        // NOTE(laith): not awaiting this call since we don't want to block the server
+        postDisconnectSnapshot(socket.candidateEmail);
     });
 
     socket.on('error', (err) => {

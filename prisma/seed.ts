@@ -1,7 +1,9 @@
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth/auth';
+import { SUPER_USER_ROLE } from '@/lib/auth/permissions';
 import { organizationsData } from './seed-data/organizations.seed';
-import { usersData } from './seed-data/users.seed';
+import { superUserData, usersData } from './seed-data/users.seed';
+import { invitationsSeedData } from './seed-data/invitations.seed';
 import { positionsData } from './seed-data/positions.seed';
 import { candidatesData } from './seed-data/candidates.seed';
 import { taskTemplatesData } from './seed-data/task-template.seed';
@@ -10,6 +12,10 @@ import { assessmentsData } from './seed-data/assessment.seed';
 import { positionTagsData } from './seed-data/position-tags.seed';
 import { taskTemplateTagsData } from './seed-data/task-template-tags.seed';
 import { languageData } from './seed-data/languages.seed';
+import { tasksData } from './seed-data/tasks.seed';
+import { reviewsData } from './seed-data/reviews.seed';
+import { commentsData } from './seed-data/comments.seed';
+import { snapshotsData } from './seed-data/snapshots.seed';
 
 /**
  * Seed Organizations
@@ -54,6 +60,40 @@ async function seedOrganizations() {
 
         console.log(`  Created organization: ${orgData.name}`);
     }
+}
+
+/*
+ * Seed Super User
+ */
+async function seedSuperUser() {
+    console.log('Seeding superuser...');
+
+    const existingUser = await prisma.user.findUnique({
+        where: { email: superUserData.email },
+    });
+
+    if (existingUser) {
+        console.log(`  User "${superUserData.name}" already exists`);
+        return;
+    }
+
+    await auth.api.signUpEmail({
+        body: {
+            name: superUserData.name,
+            email: superUserData.email,
+            password: superUserData.password,
+        },
+    });
+
+    await prisma.user.update({
+        where: { email: superUserData.email },
+        data: {
+            emailVerified: true,
+            role: SUPER_USER_ROLE,
+        },
+    });
+
+    console.log(`  Created superuser: ${superUserData.name}`);
 }
 
 /**
@@ -124,6 +164,26 @@ async function seedOrganizationMemberships() {
         });
 
         console.log(`  Added ${userData.name} to organization`);
+    }
+}
+
+async function seedInvitations() {
+    console.log('Seeding invitations...');
+
+    for (const row of invitationsSeedData) {
+        await prisma.invitation.upsert({
+            where: { id: row.id },
+            update: {
+                email: row.email,
+                role: row.role,
+                status: row.status,
+                expiresAt: row.expiresAt,
+                createdAt: row.createdAt,
+                inviterId: row.inviterId,
+            },
+            create: row,
+        });
+        console.log(`  Upserted invitation for ${row.email}`);
     }
 }
 
@@ -405,32 +465,166 @@ async function seedAssessmentTemplates() {
 
 /**
  * Seed Assessments
+ *
+ * Each row in `assessmentsData` targets a specific candidate's Application
+ * and carries the reviewers + the resulting Application.assessmentStatus.
  */
 async function seedAssessments() {
     console.log('Seeding assessments...');
 
-    const applications = await prisma.application.findMany();
+    const positionId = positionsData[0].id;
 
-    for (let i = 0; i < assessmentsData.length; i++) {
-        const assessmentData = assessmentsData[i];
-        const application = applications[i];
+    for (const assessmentData of assessmentsData) {
+        const application = await prisma.application.findUnique({
+            where: {
+                candidateId_positionId: {
+                    candidateId: assessmentData.candidateId,
+                    positionId,
+                },
+            },
+        });
+
+        if (!application) {
+            throw new Error(
+                `No application found for candidate ${assessmentData.candidateId} on position ${positionId}`
+            );
+        }
+
+        const reviewersConnect = assessmentData.reviewerIds.map((id) => ({ id }));
 
         await prisma.assessment.upsert({
             where: { applicationId: application.id },
             update: {
                 assessmentTemplateId: assessmentData.assessmentTemplateId,
+                assignedAt: assessmentData.assignedAt,
+                submittedAt: assessmentData.submittedAt,
                 deadline: assessmentData.deadline,
+                reviewers: {
+                    set: reviewersConnect,
+                },
             },
             create: {
                 id: assessmentData.id,
                 applicationId: application.id,
                 assessmentTemplateId: assessmentData.assessmentTemplateId,
+                assignedAt: assessmentData.assignedAt,
+                submittedAt: assessmentData.submittedAt,
                 deadline: assessmentData.deadline,
+                reviewers: {
+                    connect: reviewersConnect,
+                },
             },
         });
 
-        console.log(`  Created assessment for application: ${application.id}`);
+        await prisma.application.update({
+            where: { id: application.id },
+            data: { assessmentStatus: assessmentData.applicationStatus },
+        });
+
+        console.log(
+            `  Seeded assessment ${assessmentData.id} (status: ${assessmentData.applicationStatus}, ${reviewersConnect.length} reviewer(s))`
+        );
     }
+}
+
+/**
+ * Seed Tasks (candidate submissions)
+ */
+async function seedTasks() {
+    console.log('Seeding task submissions...');
+
+    for (const taskData of tasksData) {
+        await prisma.task.upsert({
+            where: { id: taskData.id },
+            update: {
+                submission: taskData.submission,
+                language: taskData.language,
+                startedAt: taskData.startedAt,
+                submittedAt: taskData.submittedAt,
+                testResults: {
+                    deleteMany: {},
+                    create: taskData.testResults,
+                },
+            },
+            create: {
+                id: taskData.id,
+                assessmentId: taskData.assessmentId,
+                taskTemplateId: taskData.taskTemplateId,
+                submission: taskData.submission,
+                language: taskData.language,
+                startedAt: taskData.startedAt,
+                submittedAt: taskData.submittedAt,
+                testResults: {
+                    create: taskData.testResults,
+                },
+            },
+        });
+
+        console.log(`  Upserted task submission: ${taskData.id}`);
+    }
+}
+
+/**
+ * Seed Reviews
+ */
+async function seedReviews() {
+    console.log('Seeding reviews...');
+
+    for (const reviewData of reviewsData) {
+        await prisma.review.upsert({
+            where: { id: reviewData.id },
+            update: {
+                score: reviewData.score,
+                updatedAt: reviewData.updatedAt,
+            },
+            create: reviewData,
+        });
+
+        console.log(`  Upserted review: ${reviewData.id}`);
+    }
+}
+
+/**
+ * Seed Comments
+ */
+async function seedComments() {
+    console.log('Seeding review comments...');
+
+    for (const commentData of commentsData) {
+        await prisma.comment.upsert({
+            where: { id: commentData.id },
+            update: {
+                startLine: commentData.startLine,
+                endLine: commentData.endLine,
+                content: commentData.content,
+            },
+            create: commentData,
+        });
+
+        console.log(`  Upserted comment: ${commentData.id}`);
+    }
+}
+
+/**
+ * Seed Snapshots (assessment activity history)
+ */
+async function seedSnapshots() {
+    console.log('Seeding task snapshots...');
+
+    for (const snapshotData of snapshotsData) {
+        await prisma.snapshot.upsert({
+            where: { id: snapshotData.id },
+            update: {
+                type: snapshotData.type,
+                // null out content on non-CONTENT rows so the CHECK constraint holds.
+                content: snapshotData.content ?? null,
+                createdAt: snapshotData.createdAt,
+            },
+            create: snapshotData,
+        });
+    }
+
+    console.log(`  Upserted ${snapshotsData.length} snapshots`);
 }
 
 /**
@@ -439,9 +633,11 @@ async function seedAssessments() {
 async function main() {
     console.log('Starting database seeding...\n');
 
+    await seedSuperUser();
     await seedUsers();
     await seedOrganizations();
     await seedOrganizationMemberships();
+    await seedInvitations();
     await seedPositions();
     await seedCandidates();
     await seedApplications();
@@ -450,6 +646,10 @@ async function main() {
     await seedTags();
     await seedAssessmentTemplates();
     await seedAssessments();
+    await seedTasks();
+    await seedReviews();
+    await seedComments();
+    await seedSnapshots();
 
     console.log('\nDatabase seeding completed successfully!');
 }

@@ -59,7 +59,7 @@ export default function TaskDetailsTab({
             setAvailableTags((prev) => [...prev, newTag]);
             setTags((prev: TagDTO[]) => [...prev, newTag]);
         } catch (err) {
-            toast.error(`Failed to create tag: ${err}`);
+            toast.error(`Tag failed to create: ${err}`);
         }
     };
 

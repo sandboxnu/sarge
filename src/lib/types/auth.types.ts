@@ -9,3 +9,5 @@ export type AuthSession = Pick<Session, 'id' | 'userId'> & {
 export type GetSessionOptions = {
     requireActiveOrg?: boolean;
 };
+
+export type VerifyEmailStatus = 'verified' | 'unverified' | 'invalid';

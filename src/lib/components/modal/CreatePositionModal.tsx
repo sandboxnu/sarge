@@ -27,7 +27,7 @@ export default function CreatePositionModal({
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="max-w-2xl gap-4 p-6" showCloseButton={true}>
                 <div className="flex flex-col gap-4">
-                    <DialogTitle className="text-display-xs">Create new position</DialogTitle>
+                    <DialogTitle>Create new position</DialogTitle>
 
                     <Field className="gap-1">
                         <FieldLabel className="text-label-s">Position name</FieldLabel>

@@ -1,3 +1,10 @@
+export const superUserData = {
+    id: 'user_superuser_001',
+    name: 'Super User',
+    email: 'superuser@sargenu.com',
+    password: 'password123',
+};
+
 export const usersData = [
     {
         id: 'user_prof_fontenot_001',
@@ -5,5 +12,47 @@ export const usersData = [
         email: 'p.fontenot@northeastern.edu',
         password: 'password123',
         role: 'owner' as const,
+    },
+    {
+        id: 'user_lea_lang_001',
+        name: 'Lea Lang',
+        email: 'lealang@gmail.com',
+        password: 'password123',
+        role: 'admin' as const,
+    },
+    {
+        id: 'user_bea_luna_001',
+        name: 'Bea Luna',
+        email: 'bealuna@gmail.com',
+        password: 'password123',
+        role: 'admin' as const,
+    },
+    {
+        id: 'user_brad_derby_001',
+        name: 'Brad Derby',
+        email: 'brad.derby@gmail.com',
+        password: 'password123',
+        role: 'recruiter' as const,
+    },
+    {
+        id: 'user_olivia_li_001',
+        name: 'Olivia Li',
+        email: 'olivia.li@gmail.com',
+        password: 'password123',
+        role: 'recruiter' as const,
+    },
+    {
+        id: 'user_laith_taher_001',
+        name: 'Laith Taher',
+        email: 'laith.taher@gmail.com',
+        password: 'password123',
+        role: 'reviewer' as const,
+    },
+    {
+        id: 'user_carter_herman_001',
+        name: 'Carter Herman',
+        email: 'carter.herman@gmail.com',
+        password: 'password123',
+        role: 'member' as const,
     },
 ];

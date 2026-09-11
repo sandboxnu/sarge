@@ -18,6 +18,7 @@ const getAssessmentLabel = (status?: string) => {
     const s = (status ?? '').toUpperCase();
     if (s === 'GRADED') return 'Graded';
     if (s === 'SUBMITTED') return 'Submitted';
+    if (s === 'IN_PROGRESS') return 'In progress';
     if (s === 'NOT_SENT') return 'Not sent';
     if (s === 'NOT_STARTED') return 'Not started';
     if (s === 'NOT_ASSIGNED') return 'Not assigned';
@@ -131,13 +132,22 @@ export function CandidateTable({ candidates }: CandidateTableProps) {
                     ),
             },
             {
-                accessorKey: 'graderName',
-                header: () => <HeaderLabel>GRADER</HeaderLabel>,
-                cell: ({ row }) => (
-                    <span className="text-sarge-gray-800 inline-flex items-center gap-1.5 text-sm">
-                        {row.original.graderName ?? '-'}
-                    </span>
-                ),
+                id: 'reviewers',
+                header: () => <HeaderLabel>REVIEWER(S)</HeaderLabel>,
+                cell: ({ row }) => {
+                    const reviewers = row.original.assessment?.reviewers ?? [];
+                    if (reviewers.length === 0) {
+                        return <span className="text-body-s text-sarge-gray-600">—</span>;
+                    }
+                    const shown = reviewers.slice(0, 2).map((r) => r.name);
+                    const label =
+                        reviewers.length > 2 ? `${shown.join(', ')}, ...` : shown.join(', ');
+                    return (
+                        <span className="text-sarge-gray-800 inline-flex items-center gap-1.5 text-sm">
+                            {label}
+                        </span>
+                    );
+                },
             },
             {
                 accessorKey: 'decisionStatus',
