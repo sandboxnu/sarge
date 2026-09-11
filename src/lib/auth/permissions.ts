@@ -5,6 +5,10 @@ import {
     adminAc,
     memberAc,
 } from 'better-auth/plugins/organization/access';
+import {
+    defaultStatements as adminDefaultStatements,
+    adminAc as baseAdminAc,
+} from 'better-auth/plugins/admin/access';
 
 const statement = {
     ...defaultStatements,
@@ -17,7 +21,16 @@ const statement = {
     comment: ['create', 'read', 'update', 'delete'],
 } as const;
 
+export const SUPER_USER_ROLE = 'superuser';
+
 export const ac = createAccessControl(statement);
+
+// Admin plugin access control is different from the org `ac` above, since the
+// admin plugin operates on its own statement set (user, session) and resolves
+// against User.role rather than Member.role.
+export const adminAccessControl = createAccessControl(adminDefaultStatements);
+
+export const superuser = adminAccessControl.newRole({ ...baseAdminAc.statements });
 
 export const owner = ac.newRole({
     ...ownerAc.statements,

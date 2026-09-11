@@ -1,4 +1,15 @@
-import type { DecisionStatus, AssessmentStatus } from '@/generated/prisma';
+import type {
+    DecisionStatus,
+    AssessmentStatus,
+    Application,
+    Assessment,
+    Candidate,
+    Task,
+    Review,
+    Comment,
+    Snapshot,
+    TaskTestResult,
+} from '@/generated/prisma';
 
 export type PositionWithCounts = {
     title: string;
@@ -14,9 +25,9 @@ export type PositionWithCounts = {
 };
 
 export interface ApplicationDisplayInfo {
+    id: string;
     assessmentStatus: AssessmentStatus;
     decisionStatus: DecisionStatus;
-    decidedAt: Date | null;
     candidate: {
         name: string;
         major: string | null;
@@ -27,13 +38,32 @@ export interface ApplicationDisplayInfo {
     assessment: {
         id: string;
         submittedAt: Date | null;
+        reviewers: {
+            id: string;
+            name: string;
+        }[];
     } | null;
-    grader: {
-        name: string;
-        email: string;
-    } | null;
-    graderName?: string;
 }
+
+export type ReviewWithComments = Review & {
+    comments: Comment[];
+};
+
+export type TaskWithReviewData = Task & {
+    reviews: ReviewWithComments[];
+    snapshots: Snapshot[];
+    testResults: TaskTestResult[];
+};
+
+export type ApplicationWithReviewData = Application & {
+    candidate: Candidate;
+    assessment:
+        | (Assessment & {
+              assessmentTemplate: { title: string };
+              tasks: TaskWithReviewData[];
+          })
+        | null;
+};
 
 export interface BatchAddResult {
     candidatesCreated: number;
@@ -55,13 +85,11 @@ export interface PositionPreviewCandidate {
     assessment: {
         id: string;
         submittedAt: Date | null;
-        reviews: {
-            reviewer: {
-                id: string;
-                name: string;
-                email: string;
-                image: string | null;
-            };
+        reviewers: {
+            id: string;
+            name: string;
+            email: string;
+            image: string | null;
         }[];
     } | null;
 }
@@ -105,13 +133,11 @@ export interface PositionPreviewResponse {
         assessment: {
             id: string;
             submittedAt: string | null;
-            reviews: {
-                reviewer: {
-                    id: string;
-                    name: string;
-                    email: string;
-                    image: string | null;
-                };
+            reviewers: {
+                id: string;
+                name: string;
+                email: string;
+                image: string | null;
             }[];
         } | null;
     }[];

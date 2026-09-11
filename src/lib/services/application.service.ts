@@ -1,7 +1,11 @@
 import { prisma } from '@/lib/prisma';
 import { NotFoundException, ForbiddenException } from '@/lib/utils/errors.utils';
 import { type AddApplicationWithCandidateDataDTO } from '@/lib/schemas/application.schema';
-import type { BatchAddResult, ApplicationDisplayInfo } from '@/lib/types/position.types';
+import type {
+    BatchAddResult,
+    ApplicationDisplayInfo,
+    ApplicationWithReviewData,
+} from '@/lib/types/position.types';
 import { AssessmentStatus, type Application } from '@/generated/prisma';
 
 async function validatePositionAccess(positionId: string, orgId: string) {
@@ -76,9 +80,9 @@ async function addApplicationToPosition(
         return tx.application.findUniqueOrThrow({
             where: { id: createdApplication.id },
             select: {
+                id: true,
                 assessmentStatus: true,
                 decisionStatus: true,
-                decidedAt: true,
                 candidate: {
                     select: {
                         name: true,
@@ -92,13 +96,12 @@ async function addApplicationToPosition(
                     select: {
                         id: true,
                         submittedAt: true,
-                    },
-                },
-                grader: {
-                    select: {
-                        id: true,
-                        name: true,
-                        email: true,
+                        reviewers: {
+                            select: {
+                                id: true,
+                                name: true,
+                            },
+                        },
                     },
                 },
             },
@@ -199,9 +202,9 @@ async function batchAddApplicationsToPosition(
             candidateId: { in: candidateRecords.map((candidate) => candidate.id) },
         },
         select: {
+            id: true,
             assessmentStatus: true,
             decisionStatus: true,
-            decidedAt: true,
             candidate: {
                 select: {
                     name: true,
@@ -215,13 +218,12 @@ async function batchAddApplicationsToPosition(
                 select: {
                     id: true,
                     submittedAt: true,
-                },
-            },
-            grader: {
-                select: {
-                    id: true,
-                    name: true,
-                    email: true,
+                    reviewers: {
+                        select: {
+                            id: true,
+                            name: true,
+                        },
+                    },
                 },
             },
         },
@@ -231,10 +233,7 @@ async function batchAddApplicationsToPosition(
         candidatesCreated: candidatesCreated.count,
         entriesCreated: applicationsCreated.count,
         totalProcessed: candidates.length,
-        candidates: applications.map((app) => ({
-            ...app,
-            graderName: app.grader?.name ?? '-',
-        })),
+        candidates: applications,
     };
 }
 
@@ -250,9 +249,9 @@ async function getPositionApplications(
     const applications = await prisma.application.findMany({
         where: { positionId },
         select: {
+            id: true,
             assessmentStatus: true,
             decisionStatus: true,
-            decidedAt: true,
             candidate: {
                 select: {
                     name: true,
@@ -266,23 +265,19 @@ async function getPositionApplications(
                 select: {
                     id: true,
                     submittedAt: true,
-                },
-            },
-            grader: {
-                select: {
-                    id: true,
-                    name: true,
-                    email: true,
+                    reviewers: {
+                        select: {
+                            id: true,
+                            name: true,
+                        },
+                    },
                 },
             },
         },
         orderBy: { assessmentStatus: 'desc' },
     });
 
-    return applications.map((app) => ({
-        ...app,
-        graderName: app.grader?.name ?? '-',
-    }));
+    return applications;
 }
 
 /**
@@ -321,6 +316,34 @@ async function getApplication(id: string): Promise<Application> {
     }
 
     return application;
+}
+
+async function getApplicationForReview(
+    applicationId: string,
+    orgId: string
+): Promise<ApplicationWithReviewData> {
+    await validateApplicationAccess(applicationId, orgId);
+
+    return prisma.application.findUniqueOrThrow({
+        where: { id: applicationId },
+        include: {
+            candidate: true,
+            assessment: {
+                include: {
+                    assessmentTemplate: { select: { title: true } },
+                    tasks: {
+                        include: {
+                            reviews: {
+                                include: { comments: true },
+                            },
+                            snapshots: true,
+                            testResults: true,
+                        },
+                    },
+                },
+            },
+        },
+    });
 }
 
 async function validateApplicationAccess(
@@ -393,6 +416,7 @@ const ApplicationService = {
     removeApplicationFromPosition,
     removeAllApplicationsFromPosition,
     getApplication,
+    getApplicationForReview,
     getAssessmentStatus,
     updateAssessmentStatus,
     getApplicationsByName,

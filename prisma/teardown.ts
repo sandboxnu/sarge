@@ -29,7 +29,7 @@ async function main() {
                 "Account",
                 "Verification",
                 "User",
-                "Organization",
+                "Organization"
             RESTART IDENTITY CASCADE;
         `;
 

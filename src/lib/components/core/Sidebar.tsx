@@ -1,6 +1,6 @@
 'use client';
 
-import { Home, File, Users, Settings, ChevronDown } from 'lucide-react';
+import { Home, File, Users, Settings, ChevronDown, BookOpen, ShieldUser } from 'lucide-react';
 import { useAuth } from '@/lib/auth/auth-context';
 import Image from 'next/image';
 import useOnboardingState from '@/lib/hooks/useOnboardingState';
@@ -694,6 +694,11 @@ const sidebarMenuItems = [
         url: '/crm/positions',
         icon: Users,
     },
+    {
+        title: 'Reviewing',
+        url: '/crm/reviewing',
+        icon: BookOpen,
+    },
 ];
 
 export function Sidebar() {
@@ -701,6 +706,8 @@ export function Sidebar() {
     const router = useRouter();
 
     const { isOnboarding } = useOnboardingState();
+    const memberRole = auth.activeMember?.role;
+    const canSeeSettings = auth.isSuperUser || memberRole === 'owner' || memberRole === 'admin';
 
     return (
         <ShadSidebar
@@ -784,25 +791,44 @@ export function Sidebar() {
                 </SidebarGroup>
             </SidebarContent>
             <SidebarFooter>
-                <SidebarMenu>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton
-                            tooltip="Organization Settings"
-                            className="hover:!bg-sarge-primary-100 focus:!bg-sarge-primary-200 p-2.5 transition-colors duration-600 ease-out group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8 group-data-[collapsible=icon]:p-0 hover:cursor-pointer"
-                            onClick={() => router.push('/crm/settings')}
-                        >
-                            <Settings className="text-sarge-gray-600 !h-4 !w-4" />
-                            <span className="text-sarge-gray-800 text-xs font-medium group-data-[collapsible=icon]:hidden">
-                                Organization Settings
-                            </span>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                </SidebarMenu>
+                {auth.isSuperUser && (
+                    <SidebarMenu>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton
+                                tooltip="Admin"
+                                className="hover:!bg-sarge-primary-100 focus:!bg-sarge-primary-200 p-2.5 transition-colors duration-600 ease-out group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8 group-data-[collapsible=icon]:p-0 hover:cursor-pointer"
+                                onClick={() => router.push('/admin')}
+                            >
+                                <ShieldUser className="text-sarge-gray-600 !h-4 !w-4" />
+                                <span className="text-sarge-gray-800 text-xs font-medium group-data-[collapsible=icon]:hidden">
+                                    Admin
+                                </span>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                    </SidebarMenu>
+                )}
+                {canSeeSettings && (
+                    <SidebarMenu>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton
+                                tooltip="Settings"
+                                className="hover:!bg-sarge-primary-100 focus:!bg-sarge-primary-200 p-2.5 transition-colors duration-600 ease-out group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8 group-data-[collapsible=icon]:p-0 hover:cursor-pointer"
+                                onClick={() => router.push('/crm/settings')}
+                            >
+                                <Settings className="text-sarge-gray-600 !h-4 !w-4" />
+                                <span className="text-sarge-gray-800 text-xs font-medium group-data-[collapsible=icon]:hidden">
+                                    Settings
+                                </span>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                    </SidebarMenu>
+                )}
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton
                             tooltip="Profile"
                             className="hover:!bg-sarge-primary-100 focus:!bg-sarge-primary-200 p-2.5 transition-colors duration-600 ease-out group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8 group-data-[collapsible=icon]:p-0 hover:cursor-pointer"
+                            onClick={() => router.push('/crm/profile')}
                         >
                             {auth.user?.image ? (
                                 <Image

@@ -128,7 +128,7 @@ async function assignTemplateToPosition(params: {
 
     if (position.assessmentId && position.assessmentId !== assessmentTemplateId) {
         throw new BadRequestException(
-            'This position is already assigned to a different assessment template.'
+            `${position.title} is already assigned to a different assessment template.`
         );
     }
 
@@ -143,7 +143,7 @@ async function assignTemplateToPosition(params: {
 
     if (assessmentsWithDifferentTemplate.length > 0) {
         throw new BadRequestException(
-            'This position already has assessments. Reassignment is not supported.'
+            `${position.title} already has assessments. Reassignment is not supported.`
         );
     }
 
@@ -245,6 +245,13 @@ async function getAssessmentForCandidate(assessmentId: string): Promise<Candidat
                     candidate: {
                         select: { name: true, email: true },
                     },
+                    position: {
+                        select: {
+                            organization: {
+                                select: { name: true },
+                            },
+                        },
+                    },
                 },
             },
             assessmentTemplate: {
@@ -290,6 +297,7 @@ async function getAssessmentForCandidate(assessmentId: string): Promise<Candidat
         submittedAt: assessment.submittedAt,
         assessmentStatus: assessment.application.assessmentStatus,
         candidateName: assessment.application.candidate.name,
+        organizationName: assessment.application.position.organization.name,
         candidateEmail: assessment.application.candidate.email,
         assessmentTemplate: {
             title: assessment.assessmentTemplate.title,
@@ -310,10 +318,51 @@ async function getAssessmentForCandidate(assessmentId: string): Promise<Candidat
     };
 }
 
+async function startForCandidate(assessmentId: string): Promise<void> {
+    const assessment = await prisma.assessment.findUnique({
+        where: { id: assessmentId },
+        select: {
+            id: true,
+            submittedAt: true,
+            application: { select: { id: true, assessmentStatus: true } },
+        },
+    });
+
+    if (!assessment) {
+        throw new NotFoundException('Assessment', assessmentId);
+    }
+
+    if (assessment.submittedAt) {
+        throw new BadRequestException('Assessment has already been submitted');
+    }
+
+    if (assessment.application.assessmentStatus === AssessmentStatus.IN_PROGRESS) {
+        return;
+    }
+
+    if (
+        assessment.application.assessmentStatus !== AssessmentStatus.NOT_STARTED &&
+        assessment.application.assessmentStatus !== AssessmentStatus.NOT_SENT
+    ) {
+        throw new BadRequestException(
+            `Assessment cannot be started from status ${assessment.application.assessmentStatus}`
+        );
+    }
+
+    await prisma.application.update({
+        where: { id: assessment.application.id },
+        data: { assessmentStatus: AssessmentStatus.IN_PROGRESS },
+    });
+}
+
 async function submitAssessmentForCandidate(assessmentId: string): Promise<void> {
     const assessment = await prisma.assessment.findFirst({
         where: { id: assessmentId },
-        select: { id: true, submittedAt: true, application: { select: { id: true } } },
+        select: {
+            id: true,
+            submittedAt: true,
+            application: { select: { id: true, assessmentStatus: true } },
+        },
     });
 
     if (!assessment) {
@@ -324,6 +373,12 @@ async function submitAssessmentForCandidate(assessmentId: string): Promise<void>
         throw new BadRequestException('Assessment has already been submitted');
     }
 
+    if (assessment.application.assessmentStatus !== AssessmentStatus.IN_PROGRESS) {
+        throw new BadRequestException(
+            `Assessment cannot be submitted from status ${assessment.application.assessmentStatus}`
+        );
+    }
+
     await prisma.$transaction([
         prisma.assessment.update({
             where: { id: assessmentId },
@@ -331,7 +386,7 @@ async function submitAssessmentForCandidate(assessmentId: string): Promise<void>
         }),
         prisma.application.update({
             where: { id: assessment.application.id },
-            data: { assessmentStatus: 'SUBMITTED' },
+            data: { assessmentStatus: AssessmentStatus.SUBMITTED },
         }),
     ]);
 }
@@ -406,6 +461,7 @@ async function sendAssessmentInvitationsToPosition(
 const AssessmentService = {
     getAssessmentWithRelations,
     getAssessmentForCandidate,
+    startForCandidate,
     submitAssessmentForCandidate,
     createAssessment,
     assignTemplateToPosition,

@@ -139,10 +139,11 @@ export function TaskTemplatePreview({
                 </section>
                 <section className="mb-2">
                     <p className="text-body-s text-muted-foreground">
-                        Authored by{' '}
+                        Created on {new Date(taskTemplatePreview.createdAt).toDateString()} by{' '}
                         <span className="text-label-xs text-muted-foreground font-bold">
                             {taskTemplatePreview.author?.name ?? '-'}
                         </span>
+                        . Last updated on {new Date(taskTemplatePreview.updatedAt).toDateString()}.
                     </p>
                     <Link
                         href="#"

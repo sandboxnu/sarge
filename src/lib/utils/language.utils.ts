@@ -19,6 +19,19 @@ export function getLanguageLabel(lang: string): string {
     return LANGUAGE_DISPLAY_NAMES[lang] ?? lang.charAt(0).toUpperCase() + lang.slice(1);
 }
 
+const LANGUAGE_FILE_EXTENSIONS: Partial<Record<string, string>> = {
+    python: 'py',
+    javascript: 'js',
+    typescript: 'ts',
+    c: 'c',
+    cpp: 'cpp',
+    ruby: 'rb',
+};
+
+export function getLanguageFileExtension(lang: string): string {
+    return LANGUAGE_FILE_EXTENSIONS[lang] ?? 'txt';
+}
+
 export function getLanguageOptions(): { value: string; label: string }[] {
     return Object.values(ProgrammingLanguage).map((lang) => ({
         value: lang,

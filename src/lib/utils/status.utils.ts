@@ -10,6 +10,8 @@ export function getAssessmentStatusVariant(status: AssessmentStatus): ChipVarian
             return 'success'; // Green chip per Figma Position Preview Modal
         case 'SUBMITTED':
             return 'primary'; // Purple chip per Figma Position Preview Modal
+        case 'IN_PROGRESS':
+            return 'warning';
         case 'NOT_SENT':
         case 'NOT_STARTED':
             return 'neutral'; // Gray chip per Figma design
@@ -30,6 +32,8 @@ export function getAssessmentStatusLabel(status: AssessmentStatus): string {
             return 'Graded';
         case 'SUBMITTED':
             return 'Submitted';
+        case 'IN_PROGRESS':
+            return 'In progress';
         case 'NOT_SENT':
             return 'Not sent';
         case 'NOT_STARTED':
@@ -99,6 +103,9 @@ export function getStatusBadgeColor(status: AssessmentStatus | DecisionStatus | 
     }
     if (status === 'SUBMITTED') {
         return 'bg-sarge-primary-200 text-sarge-primary-600';
+    }
+    if (status === 'IN_PROGRESS') {
+        return 'bg-sarge-warning-100 text-sarge-warning-500';
     }
     return 'bg-sarge-gray-200 text-sarge-gray-600';
 }

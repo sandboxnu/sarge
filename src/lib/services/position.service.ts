@@ -41,6 +41,60 @@ async function deletePosition(positionId: string, orgId: string): Promise<Positi
     return prisma.position.delete({ where: { id: positionId } });
 }
 
+async function archivePosition(positionId: string, orgId: string): Promise<Position> {
+    const existingPosition = await prisma.position.findFirst({
+        where: { id: positionId, orgId },
+        select: {
+            archived: true,
+        },
+    });
+
+    if (!existingPosition) {
+        throw new NotFoundException('Position', positionId);
+    }
+
+    if (existingPosition.archived) {
+        throw new ConflictException('Position', 'archived');
+    }
+
+    return prisma.position.update({
+        where: {
+            orgId,
+            id: positionId,
+        },
+        data: {
+            archived: true,
+        },
+    });
+}
+
+async function unarchivePosition(positionId: string, orgId: string): Promise<Position> {
+    const existingPosition = await prisma.position.findFirst({
+        where: { id: positionId, orgId },
+        select: {
+            archived: true,
+        },
+    });
+
+    if (!existingPosition) {
+        throw new NotFoundException('Position', positionId);
+    }
+
+    if (!existingPosition.archived) {
+        throw new ConflictException('Position', 'unarchived');
+    }
+
+    return prisma.position.update({
+        where: {
+            orgId,
+            id: positionId,
+        },
+        data: {
+            archived: false,
+        },
+    });
+}
+
 async function getPosition(positionId: string, orgId: string): Promise<Position> {
     const position = await prisma.position.findFirst({
         where: { id: positionId, orgId },
@@ -145,16 +199,12 @@ async function getPositionPreview(positionId: string, orgId: string): Promise<Po
                                     title: true,
                                 },
                             },
-                            reviews: {
+                            reviewers: {
                                 select: {
-                                    reviewer: {
-                                        select: {
-                                            id: true,
-                                            name: true,
-                                            email: true,
-                                            image: true,
-                                        },
-                                    },
+                                    id: true,
+                                    name: true,
+                                    email: true,
+                                    image: true,
                                 },
                             },
                         },
@@ -206,9 +256,7 @@ async function getPositionPreview(positionId: string, orgId: string): Promise<Po
                 ? {
                       id: app.assessment.id,
                       submittedAt: app.assessment.submittedAt,
-                      reviews: app.assessment.reviews.map((review) => ({
-                          reviewer: review.reviewer,
-                      })),
+                      reviewers: app.assessment.reviewers,
                   }
                 : null,
         })),
@@ -268,6 +316,8 @@ async function getPositionsByTitle(title: string, orgId: string): Promise<Positi
 const PositionService = {
     createPosition,
     deletePosition,
+    archivePosition,
+    unarchivePosition,
     getPosition,
     getPositionsByOrgId,
     getPositionPreview,

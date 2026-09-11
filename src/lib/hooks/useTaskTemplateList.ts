@@ -2,14 +2,44 @@ import { useEffect, useState } from 'react';
 import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
 import { getTaskTemplateList } from '@/lib/api/task-templates';
 
+export type TaskTemplateSortBy = 'title-asc' | 'title-desc' | 'estimated-asc' | 'estimated-desc';
+
 export function useTaskTemplateList() {
     const [allTaskTemplates, setAllTaskTemplates] = useState<TaskTemplateListItemDTO[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [selected, setSelected] = useState<number[] | null>(null);
+    const [selected, setSelected] = useState<string[] | null>(null);
     const [error, setError] = useState<Error | null>(null);
     const [limit, setLimit] = useState<number>(10);
     const [page, setPage] = useState<number>(0);
     const [total, setTotal] = useState<number>(0);
+    const [sortBy, setSortBy] = useState<TaskTemplateSortBy | null>(null);
+
+    function applySort(items: TaskTemplateListItemDTO[]): TaskTemplateListItemDTO[] {
+        let sorted: TaskTemplateListItemDTO[] = items;
+        if (sortBy) {
+            sorted = [...items];
+            switch (sortBy) {
+                case 'title-asc':
+                    sorted.sort((a, b) => a.title.localeCompare(b.title));
+                    break;
+                case 'title-desc':
+                    sorted.sort((a, b) => b.title.localeCompare(a.title));
+                    break;
+                case 'estimated-asc':
+                    sorted.sort((a, b) => a.estimatedTime - b.estimatedTime);
+                    break;
+                case 'estimated-desc':
+                    sorted.sort((a, b) => b.estimatedTime - a.estimatedTime);
+                    break;
+            }
+        }
+
+        if (!selected || selected.length === 0) return sorted;
+        const selectedSet = new Set(selected);
+        const selectedItems = sorted.filter((item) => selectedSet.has(item.id));
+        const unselectedItems = sorted.filter((item) => !selectedSet.has(item.id));
+        return [...selectedItems, ...unselectedItems];
+    }
 
     useEffect(() => {
         async function fetchTaskList() {
@@ -70,12 +100,11 @@ export function useTaskTemplateList() {
         setTotal((prev) => prev + 1);
     };
 
-    const handleSelectTask = (index: number) => {
-        const absoluteIndex = page * limit + index;
-        if (selected?.includes(absoluteIndex)) {
-            setSelected(selected.filter((idx) => idx !== absoluteIndex));
+    const handleSelectTask = (id: string) => {
+        if (selected?.includes(id)) {
+            setSelected(selected.filter((s) => s !== id));
         } else {
-            setSelected([...(selected ?? []), absoluteIndex]);
+            setSelected([...(selected ?? []), id]);
         }
     };
 
@@ -92,5 +121,8 @@ export function useTaskTemplateList() {
         total,
         updatePageTemplates,
         insertTaskTemplateAtTopOfPage,
+        sortBy,
+        setSortBy,
+        applySort,
     };
 }

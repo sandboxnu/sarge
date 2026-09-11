@@ -1,20 +1,103 @@
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
-import { organization } from 'better-auth/plugins';
+import { admin as adminPlugin, organization } from 'better-auth/plugins';
 import { prisma } from '@/lib/prisma';
-import { ac, owner, admin, recruiter, reviewer, member } from '@/lib/auth/permissions';
+import {
+    ac,
+    owner,
+    admin,
+    recruiter,
+    reviewer,
+    member,
+    adminAccessControl,
+    superuser,
+    SUPER_USER_ROLE,
+} from '@/lib/auth/permissions';
 import sesConnector from '@/lib/connectors/ses.connector';
+import { generateEmailVerificationHTML } from '@/lib/templates/emailVerification';
+
+let hasExistingUsers = false;
 
 const baseUrl =
     process.env.BETTER_AUTH_URL ??
     (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
 
+const requireSignupEmailVerification = process.env.REQUIRE_EMAIL_VERIFICATION === 'true';
+
 export const auth = betterAuth({
     secret: process.env.BETTER_AUTH_SECRET,
+    user: {
+        changeEmail: {
+            enabled: true,
+            sendChangeEmailVerification: async ({ newEmail, url }) => {
+                try {
+                    const emailSent = await sesConnector.sendEmail(
+                        newEmail,
+                        'Verify your new email for Sarge',
+                        `Hello,\n\nClick the link below to confirm ${newEmail} as your new Sarge email:\n\n${url}\n\nThis link expires in 1 hour. If you didn't request this, you can ignore this email.`,
+                        {
+                            html: generateEmailVerificationHTML({
+                                verifyUrl: url,
+                                email: newEmail,
+                            }),
+                        }
+                    );
+                    if (!emailSent) {
+                        console.error('SES reported failure to send change-email verification');
+                    }
+                } catch (error) {
+                    console.error('Failed to send change-email verification:', error);
+                }
+            },
+        },
+    },
+    emailVerification: {
+        sendOnSignUp: requireSignupEmailVerification,
+        autoSignInAfterVerification: true,
+        expiresIn: 60 * 60,
+        sendVerificationEmail: async ({ user, url }) => {
+            // this check is required since the self-hosted superuser is pre-verified
+            if (user.emailVerified) return;
+
+            try {
+                const emailSent = await sesConnector.sendEmail(
+                    user.email,
+                    'Verify your email for Sarge',
+                    `Hello,\n\nClick the link below to verify your email address (${user.email}) on Sarge:\n\n${url}\n\nThis link expires in 1 hour.`,
+                    {
+                        html: generateEmailVerificationHTML({
+                            verifyUrl: url,
+                            email: user.email,
+                        }),
+                    }
+                );
+                if (!emailSent) {
+                    console.error('SES reported failure to send verification email');
+                }
+            } catch (error) {
+                console.error('Failed to send verification email:', error);
+            }
+        },
+    },
     database: prismaAdapter(prisma, {
         provider: 'postgresql',
     }),
     databaseHooks: {
+        user: {
+            create: {
+                before: async (user) => {
+                    if (hasExistingUsers) return { data: user };
+
+                    if ((await prisma.user.count()) > 0) {
+                        hasExistingUsers = true;
+                        return { data: user };
+                    }
+
+                    // first account to sign up becomes the superuser, and is pre-verified since we don't require superuser email validation
+                    return { data: { ...user, role: SUPER_USER_ROLE, emailVerified: true } };
+                },
+            },
+        },
         session: {
             create: {
                 before: async (session) => {
@@ -40,14 +123,25 @@ export const auth = betterAuth({
     },
     emailAndPassword: {
         enabled: true,
-        requireEmailVerification: false,
+        requireEmailVerification: requireSignupEmailVerification,
         minPasswordLength: 8,
         maxPasswordLength: 128,
         autoSignIn: true,
 
-        // sendResetPassword: async ({ user, url, token }) => {
-        //     // TODO: Implement email sending when email service is configured
-        // },
+        sendResetPassword: async ({ user, url }) => {
+            try {
+                const emailSent = await sesConnector.sendEmail(
+                    user.email,
+                    'Reset your Sarge password',
+                    `Hello,\n\nWe received a request to reset your Sarge password. Click the link below to set a new password:\n\n${url}\n\nThis link will expire in 1 hour. If you didn't request a password reset, you can safely ignore this email.`
+                );
+                if (!emailSent) {
+                    console.error('SES reported failure to send reset password email');
+                }
+            } catch (error) {
+                console.error('Failed to send reset password email:', error);
+            }
+        },
         resetPasswordTokenExpiresIn: 60 * 60,
     },
     session: {
@@ -91,6 +185,11 @@ export const auth = betterAuth({
                     console.error('Failed to send invitation email:', error);
                 }
             },
+        }),
+        adminPlugin({
+            ac: adminAccessControl,
+            roles: { superuser },
+            adminRoles: [SUPER_USER_ROLE],
         }),
     ],
 });

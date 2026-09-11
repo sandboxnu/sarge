@@ -19,7 +19,7 @@ const SelectTrigger = React.forwardRef<
     <SelectPrimitive.Trigger
         ref={ref}
         className={cn(
-            'border-sarge-gray-200 bg-sarge-gray-0 placeholder:text-sarge-gray-500 focus:ring-sarge-primary-500 flex h-9 w-full items-center justify-between rounded-lg border px-3 py-2 text-sm focus:ring-2 focus:outline-none focus:ring-inset disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1',
+            'border-sarge-gray-200 bg-sarge-gray-0 placeholder:text-sarge-gray-500 hover:bg-sarge-gray-50 focus:ring-sarge-primary-500 data-[state=open]:bg-sarge-gray-50 disabled:hover:bg-sarge-gray-0 flex h-9 w-full items-center justify-between rounded-lg border px-3 py-2 text-sm transition-colors focus:ring-2 focus:outline-none focus:ring-inset disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1',
             className
         )}
         {...props}
@@ -38,7 +38,10 @@ const SelectScrollUpButton = React.forwardRef<
 >(({ className, ...props }, ref) => (
     <SelectPrimitive.ScrollUpButton
         ref={ref}
-        className={cn('flex cursor-default items-center justify-center py-1', className)}
+        className={cn(
+            'hover:bg-sarge-gray-50 flex cursor-default items-center justify-center py-1 transition-colors',
+            className
+        )}
         {...props}
     >
         <ChevronUp className="size-4" />
@@ -52,7 +55,10 @@ const SelectScrollDownButton = React.forwardRef<
 >(({ className, ...props }, ref) => (
     <SelectPrimitive.ScrollDownButton
         ref={ref}
-        className={cn('flex cursor-default items-center justify-center py-1', className)}
+        className={cn(
+            'hover:bg-sarge-gray-50 flex cursor-default items-center justify-center py-1 transition-colors',
+            className
+        )}
         {...props}
     >
         <ChevronDown className="size-4" />
@@ -111,7 +117,7 @@ const SelectItem = React.forwardRef<
     <SelectPrimitive.Item
         ref={ref}
         className={cn(
-            'focus:bg-sarge-gray-50 focus:text-sarge-gray-800 relative flex w-full cursor-default items-center rounded-md py-1.5 pr-8 pl-2 text-sm outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+            'focus:bg-sarge-gray-50 focus:text-sarge-gray-800 data-[highlighted]:bg-sarge-gray-50 data-[highlighted]:text-sarge-gray-800 relative flex w-full cursor-default items-center rounded-md py-1.5 pr-8 pl-2 text-sm outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
             className
         )}
         {...props}

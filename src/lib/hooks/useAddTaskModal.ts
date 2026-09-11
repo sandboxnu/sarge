@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { getTaskTemplateList } from '@/lib/api/task-templates';
 import type { TaskTemplateListItemDTO } from '@/lib/schemas/task-template.schema';
 import useSearch from '@/lib/hooks/useSearch';
+import type { TaskTemplateSortBy } from '@/lib/hooks/useTaskTemplateList';
 
 const PAGE_SIZE = 9;
 
@@ -11,6 +12,7 @@ export function useAddTaskModal(open: boolean) {
     const [taskTemplates, setTaskTemplates] = useState<TaskTemplateListItemDTO[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [sortBy, setSortBy] = useState<TaskTemplateSortBy | null>(null);
     const search = useSearch('task-templates');
     const { reset: resetSearch } = search; // we need to pull out reset so we only run the effect when the modal opens, not when the user types
     const isSearching = search.value.trim().length >= 1;
@@ -20,6 +22,7 @@ export function useAddTaskModal(open: boolean) {
             setPage(0);
             resetSearch();
             setError(null);
+            setSortBy(null);
         }
     }, [open, resetSearch]);
 
@@ -63,11 +66,37 @@ export function useAddTaskModal(open: boolean) {
         setPage(0);
     }, [search.value]);
 
-    const displayList = isSearching
-        ? search.data.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
-        : taskTemplates;
+    function applySort(
+        items: TaskTemplateListItemDTO[],
+        sortBy: TaskTemplateSortBy | null
+    ): TaskTemplateListItemDTO[] {
+        if (!sortBy) return items;
+        const sortedTaskTemplates = [...items];
+        switch (sortBy) {
+            case 'title-asc':
+                sortedTaskTemplates.sort((a, b) => a.title.localeCompare(b.title));
+                break;
+            case 'title-desc':
+                sortedTaskTemplates.sort((a, b) => b.title.localeCompare(a.title));
+                break;
+            case 'estimated-asc':
+                sortedTaskTemplates.sort((a, b) => a.estimatedTime - b.estimatedTime);
+                break;
+            case 'estimated-desc':
+                sortedTaskTemplates.sort((a, b) => b.estimatedTime - a.estimatedTime);
+                break;
+        }
+        return sortedTaskTemplates;
+    }
 
-    const displayTotal = isSearching ? search.data.length : total;
+    const sortedSearchData = applySort(search.data, sortBy);
+    const sortedPage = applySort(taskTemplates, sortBy);
+
+    const displayList = isSearching
+        ? sortedSearchData.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
+        : sortedPage;
+
+    const displayTotal = isSearching ? sortedSearchData.length : total;
 
     const hookError = error ?? search.error;
 
@@ -82,5 +111,7 @@ export function useAddTaskModal(open: boolean) {
         searchQuery: search.value,
         handleSearchChange: search.onChange,
         isSearching,
+        sortBy,
+        setSortBy,
     };
 }

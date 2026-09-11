@@ -176,17 +176,17 @@ export function useTask(taskTemplateId: string, assessmentId: string) {
         }
     }
 
-    async function updateOrCreateTask(candidateCode: string) {
+    async function updateOrCreateTask(submission: string) {
         try {
             if (task) {
-                const updatedTask = await updateTask(task.id, candidateCode);
+                const updatedTask = await updateTask(task.id, submission);
 
                 setTask(updatedTask);
             } else {
                 const createTaskPayload: CreateTaskDTO = {
                     assessmentId,
                     taskTemplateId,
-                    candidateCode,
+                    submission,
                 };
 
                 const task = await createTask(createTaskPayload);

@@ -28,10 +28,61 @@ export async function createPosition(title: string): Promise<Position> {
 }
 
 /**
- * GET /api/positions/:positionId/candidates
+ * DELETE /api/positions/:positionId
+ */
+export async function deletePosition(positionId: string): Promise<Position> {
+    const res = await fetch(`/api/positions/${positionId}`, {
+        method: 'DELETE',
+    });
+
+    const json = await res.json();
+
+    if (!res.ok) {
+        throw new Error(json.message);
+    }
+
+    return json.data;
+}
+
+/**
+ * PATCH /api/positions/:positionId/archive
+ */
+export async function archivePosition(positionId: string): Promise<Position> {
+    const res = await fetch(`/api/positions/${positionId}/archive`, {
+        method: 'PATCH',
+    });
+
+    const json = await res.json();
+
+    if (!res.ok) {
+        throw new Error(json.message);
+    }
+
+    return json.data;
+}
+
+/**
+ * PATCH /api/positions/:positionId/unarchive
+ */
+export async function unarchivePosition(positionId: string): Promise<Position> {
+    const res = await fetch(`/api/positions/${positionId}/unarchive`, {
+        method: 'PATCH',
+    });
+
+    const json = await res.json();
+
+    if (!res.ok) {
+        throw new Error(json.message);
+    }
+
+    return json.data;
+}
+
+/**
+ * GET /api/positions/:positionId/applications
  */
 export async function getCandidates(positionId: string): Promise<ApplicationDisplayInfo[]> {
-    const res = await fetch(`/api/positions/${positionId}/candidates`);
+    const res = await fetch(`/api/positions/${positionId}/applications`);
 
     const json = await res.json();
 
@@ -73,13 +124,13 @@ export async function getPositions(): Promise<PositionWithCounts[]> {
 }
 
 /**
- * POST /api/positions/:positionId/candidates
+ * POST /api/positions/:positionId/applications
  */
 export async function createCandidate(
     positionId: string,
     payload: AddApplicationWithCandidateDataDTO
 ): Promise<ApplicationDisplayInfo> {
-    const res = await fetch(`/api/positions/${positionId}/candidates`, {
+    const res = await fetch(`/api/positions/${positionId}/applications`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -97,13 +148,13 @@ export async function createCandidate(
 }
 
 /**
- * POST /api/positions/:positionId/candidates/batch
+ * POST /api/positions/:positionId/applications/batch
  */
 export async function batchCreateCandidates(
     positionId: string,
     candidates: AddApplicationWithCandidateDataDTO[]
 ): Promise<BatchAddResult> {
-    const res = await fetch(`/api/positions/${positionId}/candidates/batch`, {
+    const res = await fetch(`/api/positions/${positionId}/applications/batch`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -121,13 +172,13 @@ export async function batchCreateCandidates(
 }
 
 /**
- * POST /api/positions/:positionId/candidates/csv
+ * POST /api/positions/:positionId/applications/csv
  */
 export async function csvCreateCandidates(
     positionId: string,
     formData: FormData
 ): Promise<AddApplicationWithCandidateDataDTO[]> {
-    const res = await fetch(`/api/positions/${positionId}/candidates/csv`, {
+    const res = await fetch(`/api/positions/${positionId}/applications/csv`, {
         method: 'POST',
         body: formData,
     });
