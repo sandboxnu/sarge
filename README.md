@@ -57,6 +57,7 @@ cd sarge/
 ```
 
 2. Install PNPM
+
 ```sh
 curl -fsSL https://get.pnpm.io/install.sh | sh -
 ```
