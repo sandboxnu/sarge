@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { type PositionWithCounts } from '@/lib/types/position.types';
 import { useSession } from '@/lib/auth/auth-client';
@@ -14,6 +15,7 @@ import {
 export type PositionSortBy = 'title-asc' | 'title-desc' | 'created-desc' | 'created-asc';
 
 function usePositionContent() {
+    const router = useRouter();
     const { data: session } = useSession();
     const activeOrganizationId = session?.session.activeOrganizationId;
 
@@ -76,11 +78,7 @@ function usePositionContent() {
     }, [activeOrganizationId]);
 
     function handlePositionClick(positionId: string) {
-        if (typeof window === 'undefined') {
-            return;
-        }
-
-        window.open(`/crm/positions/${positionId}`, '_blank', 'noopener,noreferrer');
+        router.push(`/crm/positions/${positionId}`);
     }
 
     async function onArchive(positionId: string) {
