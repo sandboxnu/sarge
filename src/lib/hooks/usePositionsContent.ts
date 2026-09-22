@@ -1,16 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
-import { type PositionWithCounts } from '@/lib/types/position.types';
-import { useSession } from '@/lib/auth/auth-client';
 import {
     archivePosition,
     deletePosition,
     getPositions,
     unarchivePosition,
 } from '@/lib/api/positions';
+import { useSession } from '@/lib/auth/auth-client';
+import { type PositionWithCounts } from '@/lib/types/position.types';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 export type PositionSortBy = 'title-asc' | 'title-desc' | 'created-desc' | 'created-asc';
 
@@ -112,11 +112,8 @@ function usePositionContent() {
     async function onDelete(positionId: string) {
         try {
             await deletePosition(positionId);
-            const target = active.find((p) => p.id === positionId);
-            if (target) {
-                setActive((prev) => prev.filter((p) => p.id !== positionId));
-                setArchived((prev) => prev.filter((p) => p.id !== positionId));
-            }
+            setActive((prev) => prev.filter((p) => p.id !== positionId));
+            setArchived((prev) => prev.filter((p) => p.id !== positionId));
             toast.success('Position deleted successfully');
         } catch (err) {
             toast.error(`Position failed to delete: ${(err as Error).message}`);
