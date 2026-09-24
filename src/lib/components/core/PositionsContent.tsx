@@ -12,6 +12,7 @@ import usePositionContent, { type PositionSortBy } from '@/lib/hooks/usePosition
 import useSearch from '@/lib/hooks/useSearch';
 import {
     DropdownMenu,
+    DropdownMenuCheckboxItem,
     DropdownMenuContent,
     DropdownMenuRadioGroup,
     DropdownMenuRadioItem,
@@ -32,6 +33,9 @@ export default function PositionsContent() {
         sortBy,
         setSortBy,
         applySort,
+        filterBy,
+        toggleFilter,
+        applyFilter,
     } = usePositionContent();
 
     const { value, onChange, data, loading } = useSearch('positions');
@@ -39,11 +43,11 @@ export default function PositionsContent() {
     const isSearching = value.trim().length >= 1;
 
     const displayedActivePositions = applySort(
-        isSearching ? data.filter((p) => !p.archived) : active
+        applyFilter(isSearching ? data.filter((p) => !p.archived) : active)
     );
 
     const displayedArchivedPositions = applySort(
-        isSearching ? data.filter((p) => p.archived) : archived
+        applyFilter(isSearching ? data.filter((p) => p.archived) : archived)
     );
 
     return (
@@ -89,10 +93,22 @@ export default function PositionsContent() {
                                 </DropdownMenuRadioGroup>
                             </DropdownMenuContent>
                         </DropdownMenu>
-                        <Button variant="dropdown">
-                            <SlidersHorizontal className="size-5" />
-                            <span className="text-label-s hidden sm:inline">Filter</span>
-                        </Button>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="dropdown">
+                                    <SlidersHorizontal className="size-5" />
+                                    <span className="text-label-s hidden sm:inline">Filter</span>
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="bg-white">
+                                <DropdownMenuCheckboxItem
+                                    checked={filterBy.includes('has-assessment')}
+                                    onCheckedChange={() => toggleFilter('has-assessment')}
+                                >
+                                    Has assessment
+                                </DropdownMenuCheckboxItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
 
                     <div className="w-25" />
