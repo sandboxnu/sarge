@@ -12,7 +12,7 @@ import {
 } from '@/lib/api/positions';
 
 export type PositionSortBy = 'title-asc' | 'title-desc' | 'created-desc' | 'created-asc';
-export type PositionFilterBy = 'has-assessment'
+export type PositionFilterBy = 'has-assessment';
 
 function usePositionContent() {
     const { data: session } = useSession();
@@ -50,17 +50,19 @@ function usePositionContent() {
         return sortedPositions;
     }
 
-    function toggleFilter(target: PositionFilterBy){
-        setFilterBy(prev => prev.includes(target) ? prev.filter(f => f !== target) : [...prev, target])
+    function toggleFilter(target: PositionFilterBy) {
+        setFilterBy((prev) =>
+            prev.includes(target) ? prev.filter((f) => f !== target) : [...prev, target]
+        );
     }
 
     function applyFilter(items: PositionWithCounts[]): PositionWithCounts[] {
         return items.filter((p) => {
-            if(filterBy.includes('has-assessment') && p.assessmentTemplateId === null){
+            if (filterBy.includes('has-assessment') && p.assessmentTemplateId === null) {
                 return false;
             }
             return true;
-        })
+        });
     }
 
     useEffect(() => {
