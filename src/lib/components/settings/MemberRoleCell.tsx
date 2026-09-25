@@ -23,8 +23,15 @@ type MemberRoleCellProps = {
 };
 
 export default function MemberRoleCell({ member, organizationId, onChanged }: MemberRoleCellProps) {
-    const { updating, currentRole, isOwner, removeOpen, setRemoveOpen, handleRoleChange, handleRemoveMember } =
-        useMemberRoleCell({ member, organizationId, onChanged });
+    const {
+        updating,
+        currentRole,
+        isOwner,
+        removeOpen,
+        setRemoveOpen,
+        handleRoleChange,
+        handleRemoveMember,
+    } = useMemberRoleCell({ member, organizationId, onChanged });
 
     if (isOwner) {
         return (
