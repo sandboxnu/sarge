@@ -17,6 +17,7 @@ export interface TaskTemplatePreviewProps {
     taskTemplatePreview: TaskTemplateListItemDTO;
     onDuplicate?: (taskTemplateId: string) => void;
     onDelete?: (taskTemplateId: string) => void;
+    onViewAssessments?: (taskTemplateId: string) => void;
     removeHeader?: boolean;
 }
 
@@ -24,6 +25,7 @@ export function TaskTemplatePreview({
     taskTemplatePreview,
     onDuplicate,
     onDelete,
+    onViewAssessments,
     removeHeader,
 }: TaskTemplatePreviewProps) {
     const tags = taskTemplatePreview.tags ?? [];
@@ -145,13 +147,14 @@ export function TaskTemplatePreview({
                         </span>
                         . Last updated on {new Date(taskTemplatePreview.updatedAt).toDateString()}.
                     </p>
-                    <Link
-                        href="#"
+                    <button
+                        type="button"
+                        onClick={() => onViewAssessments?.(taskTemplatePreview.id)}
                         className="text-body-s text-sarge-primary-500 hover:text-sarge-primary-600 mt-1 inline-block underline underline-offset-4"
                     >
                         Used in {taskTemplatePreview.assessmentTemplatesCount} assessment
                         {taskTemplatePreview.assessmentTemplatesCount !== 1 ? 's' : ''}
-                    </Link>
+                    </button>
                 </section>
             </div>
         </div>
