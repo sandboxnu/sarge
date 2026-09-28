@@ -116,6 +116,21 @@ export default function TemplatesPage() {
         setPendingDeleteId(taskTemplateId);
         setDeleteDialogOpen(true);
     };
+    const onViewAssessments = () => {
+        if (assessmentTemplateList.error) {
+            toast.error(`Could not load assessments: ${assessmentTemplateList.error.message}`);
+            return;
+        }
+
+        const topAssessment = displayedAssessmentTemplates[0];
+        if (!topAssessment) {
+            toast.error('No assessments found.');
+            return;
+        }
+        setSelectedTaskTemplate(null);
+        setSelectedAssessmentTemplate(topAssessment);
+        setActiveTab('assessments');
+    };
 
     const confirmDelete = async () => {
         if (!pendingDeleteId) {
@@ -159,7 +174,7 @@ export default function TemplatesPage() {
 
     return (
         <Tabs
-            defaultValue="tasks"
+            value={activeTab}
             className="flex h-full flex-col"
             onValueChange={(v) => setActiveTab(v as 'tasks' | 'assessments')}
         >
@@ -443,6 +458,7 @@ export default function TemplatesPage() {
                             taskTemplatePreview={selectedTaskTemplate}
                             onDuplicate={isMutating ? undefined : onDuplicate}
                             onDelete={isMutating ? undefined : onDelete}
+                            onViewAssessments={onViewAssessments}
                         />
                     ) : selectedAssessmentTemplate ? (
                         <AssessmentTemplatePreview
