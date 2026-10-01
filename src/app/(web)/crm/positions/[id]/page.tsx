@@ -8,7 +8,7 @@ import { PositionAssessmentEmpty } from '@/lib/components/core/PositionAssessmen
 import useCandidates from '@/lib/hooks/useCandidates';
 import { Search } from '@/lib/components/core/Search';
 import { Tabs, TabsContent, TabsList, UnderlineTabsTrigger } from '@/lib/components/ui/Tabs';
-import { Plus, ArrowUpDown, SlidersHorizontal, Mail } from 'lucide-react';
+import { Plus, ArrowUpDown, SlidersHorizontal } from 'lucide-react';
 import { use, useState } from 'react';
 import useSearch from '@/lib/hooks/useSearch';
 import Breadcrumbs from '@/lib/components/core/Breadcrumbs';

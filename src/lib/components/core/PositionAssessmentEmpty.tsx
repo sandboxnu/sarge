@@ -18,13 +18,15 @@ export function PositionAssessmentEmpty({
     className,
 }: PositionAssessmentEmptyProps) {
     return (
-        <div className={cn(
-            'border-sarge-gray-200 bg-sarge-gray-0',
-            'flex w-full items-center justify-between rounded-lg border px-4 py-3',
-            className
-        )}>
+        <div
+            className={cn(
+                'border-sarge-gray-200 bg-sarge-gray-0',
+                'flex w-full items-center justify-between rounded-lg border px-4 py-3',
+                className
+            )}
+        >
             <div className="flex items-center gap-2">
-                <FileText className="text-sarge-gray-600 size-5 shrink-0"/>
+                <FileText className="text-sarge-gray-600 size-5 shrink-0" />
                 <span className="text-body-m">No assessment assigned</span>
             </div>
             <div className="flex items-center gap-3">
