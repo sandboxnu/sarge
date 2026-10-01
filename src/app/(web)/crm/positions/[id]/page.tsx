@@ -4,6 +4,7 @@ import { Button } from '@/lib/components/ui/Button';
 import { CandidateTable } from '@/lib/components/core/CandidateTable';
 import CreateCandidateModal from '@/lib/components/modal/CreateCandidateModal';
 import UploadCSVModal from '@/lib/components/modal/UploadCSVModal';
+import { PositionAssessmentEmpty } from '@/lib/components/core/PositionAssessmentEmpty';
 import useCandidates from '@/lib/hooks/useCandidates';
 import { Search } from '@/lib/components/core/Search';
 import { Tabs, TabsContent, TabsList, UnderlineTabsTrigger } from '@/lib/components/ui/Tabs';
@@ -100,16 +101,10 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                         </TabsContent>
 
                         <TabsContent value="assessment">
-                            <div className="flex w-full justify-end">
-                                <Button
-                                    className="px-4 py-3"
-                                    onClick={handleSendAssessments}
-                                    disabled={isSendingAssessments}
-                                >
-                                    <Mail className="size-5" />
-                                    {isSendingAssessments ? 'Sending...' : 'Send to all candidates'}
-                                </Button>
-                            </div>
+                            <PositionAssessmentEmpty
+                                onSendAssessments={handleSendAssessments}
+                                isSending={isSendingAssessments}
+                            />
                         </TabsContent>
                     </Tabs>
                 )}
