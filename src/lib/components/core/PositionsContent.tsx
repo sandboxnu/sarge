@@ -110,17 +110,15 @@ export default function PositionsContent() {
                                 >
                                     Has assessment
                                 </DropdownMenuCheckboxItem>
-                                {
-                                    tags.map(tag => (
-                                        <DropdownMenuCheckboxItem
-                                            key={tag.id}
-                                            checked={selectedTagIds.includes(tag.id)}
-                                            onCheckedChange={() => toggleTagFilter(tag.id)}
-                                        >
-                                            {tag.name}
-                                        </DropdownMenuCheckboxItem>
-                                    ))
-                                }
+                                {tags.map((tag) => (
+                                    <DropdownMenuCheckboxItem
+                                        key={tag.id}
+                                        checked={selectedTagIds.includes(tag.id)}
+                                        onCheckedChange={() => toggleTagFilter(tag.id)}
+                                    >
+                                        {tag.name}
+                                    </DropdownMenuCheckboxItem>
+                                ))}
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>

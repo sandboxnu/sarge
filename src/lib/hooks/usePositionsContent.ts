@@ -62,19 +62,21 @@ function usePositionContent() {
         );
     }
 
-    function toggleTagFilter(tagId: string){
+    function toggleTagFilter(tagId: string) {
         setSelectedTagIds((a) =>
             a.includes(tagId) ? a.filter((id) => id !== tagId) : [...a, tagId]
-        )
+        );
     }
 
     function applyFilter(items: PositionWithCounts[]): PositionWithCounts[] {
-        console.log(selectedTagIds)
         return items.filter((p) => {
             if (filterBy.includes('has-assessment') && p.assessmentTemplateId === null) {
                 return false;
             }
-            if(selectedTagIds.length > 0 && !p.tags.some((tag) => selectedTagIds.includes(tag.id))){
+            if (
+                selectedTagIds.length > 0 &&
+                !p.tags.some((tag) => selectedTagIds.includes(tag.id))
+            ) {
                 return false;
             }
             return true;
@@ -177,7 +179,7 @@ function usePositionContent() {
         applyFilter,
         tags,
         selectedTagIds,
-        toggleTagFilter
+        toggleTagFilter,
     };
 }
 
