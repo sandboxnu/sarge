@@ -70,13 +70,17 @@ function usePositionContent() {
 
     function applyFilter(items: PositionWithCounts[]): PositionWithCounts[] {
         return items.filter((p) => {
-            if (filterBy.includes('has-assessment') && p.assessmentTemplateId === null) {
+            const matchesTag = p.tags.some((tag) => selectedTagIds.includes(tag.id));
+            const matchesAssessment =
+                filterBy.includes('has-assessment') && p.assessmentTemplateId !== null;
+            if (
+                filterBy.includes('has-assessment') &&
+                p.assessmentTemplateId === null &&
+                !matchesTag
+            ) {
                 return false;
             }
-            if (
-                selectedTagIds.length > 0 &&
-                !p.tags.some((tag) => selectedTagIds.includes(tag.id))
-            ) {
+            if (selectedTagIds.length > 0 && !matchesTag && !matchesAssessment) {
                 return false;
             }
             return true;
