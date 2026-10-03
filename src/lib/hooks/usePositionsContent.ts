@@ -15,7 +15,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 export type PositionSortBy = 'title-asc' | 'title-desc' | 'created-desc' | 'created-asc';
-export type PositionFilterBy = 'has-assessment' | 'backend' | 'fullstack' | 'internship';
+export type PositionFilterBy = 'has-assessment';
 
 function usePositionContent() {
     const router = useRouter();
