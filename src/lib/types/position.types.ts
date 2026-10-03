@@ -9,11 +9,13 @@ import type {
     Comment,
     Snapshot,
     TaskTestResult,
+    PositionTag
 } from '@/generated/prisma';
 
 export type PositionWithCounts = {
     title: string;
     id: string;
+    tags: PositionTag[],
     archived: boolean;
     numCandidates: number;
     numAssigned: number;
