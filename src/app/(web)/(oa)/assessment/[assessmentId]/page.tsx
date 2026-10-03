@@ -7,6 +7,7 @@ import AssessmentOutro from '@/lib/components/assessment-flow/AssessmentOutro';
 import AssessmentSidebar from '@/lib/components/assessment-flow/AssessmentSidebar';
 import AssessmentNavbar from '@/lib/components/assessment-flow/AssessmentNavbar';
 import AssessmentContent from '@/lib/components/assessment-flow/AssessmentContent';
+import AssessmentExpiration from '@/lib/components/assessment-flow/AssessmentExpiration'
 import { useHeartbeat } from '@/lib/hooks/useHeartbeat';
 import { LostConnectionModal } from '@/lib/components/modal/LostConnectionModal';
 import AssessmentSkeleton from '@/lib/components/assessment-flow/AssessmentSkeleton';
@@ -52,6 +53,18 @@ export default function AssessmentPage({ params }: { params: Promise<{ assessmen
             </div>
         );
 
+    
+    if (assessment.phase === 'intro' && assessment.assessment && assessment.isExpired) {
+        return (
+            <div className="flex h-screen w-full flex-col overflow-hidden">
+                <AssessmentNavbar candidateName={assessment.candidateName} />
+                <div className="flex-1 overflow-y-auto">
+                    <AssessmentExpiration assessment={assessment.assessment} />
+                </div>
+            </div>
+        ); 
+    }
+    
     if (assessment.phase === 'intro' && assessment.assessment) {
         return (
             <div className="flex h-screen w-full flex-col overflow-hidden">
