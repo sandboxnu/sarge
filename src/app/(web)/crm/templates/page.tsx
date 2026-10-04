@@ -47,6 +47,10 @@ import {
 import { useAuth } from '@/lib/auth/auth-context';
 import { AssessmentTemplatePreview } from '@/lib/components/templates/AssessmentTemplatePreview';
 import { toast } from 'sonner';
+import {
+    createAssessmentTemplate,
+    updateAssessmentTemplateTasks,
+} from '@/lib/api/assessment-templates';
 
 export default function TemplatesPage() {
     const [selectedTaskTemplate, setSelectedTaskTemplate] =
@@ -98,7 +102,7 @@ export default function TemplatesPage() {
             : assessmentTemplateList.assessmentTemplateList
     );
 
-    const { activeOrganizationId } = useAuth();
+    const { activeOrganizationId, userId } = useAuth();
 
     const onDuplicate = async (taskTemplateId: string) => {
         try {
@@ -148,6 +152,34 @@ export default function TemplatesPage() {
         } catch {
         } finally {
             setIsMutating(false);
+        }
+    };
+
+    const handleCreateAssessmentTemplate = async () => {
+        if (!selected || selected.length === 0) {
+            toast.error('No Tasks Selected');
+            return;
+        }
+        if (!userId) {
+            toast.error('You need to be logged in to create an assessment');
+            return;
+        }
+        setIsCreating(true);
+        try {
+            const created = await createAssessmentTemplate({
+                title: 'New Assessment Template',
+                authorId: userId,
+                notes: [],
+            });
+            await updateAssessmentTemplateTasks(
+                created.id,
+                selected.map((taskTemplateId) => ({ taskTemplateId }))
+            );
+            router.push(`/crm/assessment-templates/${created.id}/edit`);
+        } catch (err) {
+            toast.error(`Failed to create assessment: ${(err as Error).message}`);
+        } finally {
+            setIsCreating(false);
         }
     };
 
@@ -348,7 +380,12 @@ export default function TemplatesPage() {
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                             </div>
-                            <Button className="flex-1 px-4 py-2" variant="secondary">
+                            <Button
+                                className="flex-1 px-4 py-2"
+                                variant="secondary"
+                                onClick={handleCreateAssessmentTemplate}
+                                disabled={isCreating}
+                            >
                                 <Plus className="lg:hidden" />
                                 <span className="hidden lg:inline">Create Assessment</span>
                             </Button>
