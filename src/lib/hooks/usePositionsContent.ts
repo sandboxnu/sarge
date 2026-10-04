@@ -7,6 +7,8 @@ import {
     unarchivePosition,
 } from '@/lib/api/positions';
 import { useSession } from '@/lib/auth/auth-client';
+import { getOrgPositionTags } from '@/lib/api/position-tags';
+import { type TagDTO } from '@/lib/schemas/tag.schema';
 import { type PositionWithCounts } from '@/lib/types/position.types';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -27,6 +29,8 @@ function usePositionContent() {
     const [error, setError] = useState<Error | null>(null);
     const [sortBy, setSortBy] = useState<PositionSortBy | null>(null);
     const [filterBy, setFilterBy] = useState<PositionFilterBy[]>([]);
+    const [tags, setTags] = useState<TagDTO[]>([]);
+    const [selectedTagIds, setSelectedTagIds] = useState<string[]>([]);
 
     function applySort(items: PositionWithCounts[]): PositionWithCounts[] {
         if (!sortBy) return items;
@@ -58,9 +62,25 @@ function usePositionContent() {
         );
     }
 
+    function toggleTagFilter(tagId: string) {
+        setSelectedTagIds((a) =>
+            a.includes(tagId) ? a.filter((id) => id !== tagId) : [...a, tagId]
+        );
+    }
+
     function applyFilter(items: PositionWithCounts[]): PositionWithCounts[] {
         return items.filter((p) => {
-            if (filterBy.includes('has-assessment') && p.assessmentTemplateId === null) {
+            const matchesTag = p.tags.some((tag) => selectedTagIds.includes(tag.id));
+            const matchesAssessment =
+                filterBy.includes('has-assessment') && p.assessmentTemplateId !== null;
+            if (
+                filterBy.includes('has-assessment') &&
+                p.assessmentTemplateId === null &&
+                !matchesTag
+            ) {
+                return false;
+            }
+            if (selectedTagIds.length > 0 && !matchesTag && !matchesAssessment) {
                 return false;
             }
             return true;
@@ -76,7 +96,11 @@ function usePositionContent() {
 
                 setLoading(true);
 
-                const positions = await getPositions();
+                const [positions, orgTags] = await Promise.all([
+                    getPositions(),
+                    getOrgPositionTags(),
+                ]);
+                setTags(orgTags);
 
                 const activePositions = positions.filter((pos) => !pos.archived);
                 const archivedPositions = positions.filter((pos) => pos.archived);
@@ -157,6 +181,9 @@ function usePositionContent() {
         setFilterBy,
         toggleFilter,
         applyFilter,
+        tags,
+        selectedTagIds,
+        toggleTagFilter,
     };
 }
 
