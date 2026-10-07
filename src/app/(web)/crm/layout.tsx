@@ -1,3 +1,4 @@
+import { PageHeader } from '@/lib/components/core/PageHeader';
 import { Sidebar, SidebarInset, SidebarProvider } from '@/lib/components/core/Sidebar';
 
 export default function CRMLayout({
@@ -10,7 +11,10 @@ export default function CRMLayout({
             <div className="flex flex-1 overflow-hidden">
                 <SidebarProvider>
                     <Sidebar />
-                    <SidebarInset className="overflow-y-auto">{children}</SidebarInset>
+                    <SidebarInset className="min-h-0">
+                        <PageHeader />
+                        <div className="min-h-0 flex-1 overflow-y-auto">{children}</div>
+                    </SidebarInset>
                 </SidebarProvider>
             </div>
         </div>

@@ -1,16 +1,6 @@
 'use client';
 
-import { Home, File, Users, Settings, ChevronDown, BookOpen, ShieldUser } from 'lucide-react';
 import { useAuth } from '@/lib/auth/auth-context';
-import Image from 'next/image';
-import useOnboardingState from '@/lib/hooks/useOnboardingState';
-import { useRouter } from 'next/navigation';
-import { cn } from '@/lib/utils/cn.utils';
-import * as React from 'react';
-import { Slot } from '@radix-ui/react-slot';
-import { cva, type VariantProps } from 'class-variance-authority';
-import { PanelLeftIcon } from 'lucide-react';
-import { useIsMobile } from '@/lib/hooks/useIsMobileShadcn';
 import { Button } from '@/lib/components/ui/Button';
 import { Input } from '@/lib/components/ui/Input';
 import { Separator } from '@/lib/components/ui/Separator';
@@ -28,6 +18,24 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from '@/lib/components/ui/Tooltip';
+import { useIsMobile } from '@/lib/hooks/useIsMobileShadcn';
+import useOnboardingState from '@/lib/hooks/useOnboardingState';
+import { cn } from '@/lib/utils/cn.utils';
+import { Slot } from '@radix-ui/react-slot';
+import { cva, type VariantProps } from 'class-variance-authority';
+import {
+    BookOpen,
+    ChevronDown,
+    File,
+    Home,
+    PanelLeftIcon,
+    Settings,
+    ShieldUser,
+    Users,
+} from 'lucide-react';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import * as React from 'react';
 const SIDEBAR_COOKIE_NAME = 'sidebar_state';
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 const SIDEBAR_WIDTH = '16rem';
@@ -678,7 +686,7 @@ export function SidebarMenuSubButton({
     );
 }
 
-const sidebarMenuItems = [
+export const sidebarMenuItems = [
     {
         title: 'Overview',
         url: '/crm/dashboard',
