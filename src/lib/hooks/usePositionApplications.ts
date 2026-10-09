@@ -1,17 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getCandidates } from '@/lib/api/positions';
-import { AssessmentStatus } from '@/generated/prisma';
 
 export type ReviewableApplication = {
     id: string;
     candidateName: string;
+    assessmentStatus: string;
 };
-
-const REVIEWABLE_STATUSES: AssessmentStatus[] = [
-    AssessmentStatus.SUBMITTED,
-    AssessmentStatus.GRADED,
-];
 
 export default function usePositionApplications(
     positionId: string | null,
@@ -34,14 +29,11 @@ export default function usePositionApplications(
                 setLoading(true);
                 setError(null);
                 const all = await getCandidates(positionId as string);
-                const reviewable = all
-                    .filter((application) =>
-                        REVIEWABLE_STATUSES.includes(application.assessmentStatus)
-                    )
-                    .map((application) => ({
-                        id: application.id,
-                        candidateName: application.candidate.name,
-                    }));
+                const reviewable = all.map((application) => ({
+                    id: application.id,
+                    candidateName: application.candidate.name,
+                    assessmentStatus: application.assessmentStatus,
+                }));
                 setApplications(reviewable);
             } catch (err) {
                 setError((err as Error).message);
