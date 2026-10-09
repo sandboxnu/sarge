@@ -6,6 +6,7 @@ import usePositionApplications from '@/lib/hooks/usePositionApplications';
 import ReviewNavbar from '@/lib/components/reviewing/ReviewNavbar';
 import TaskReviewMain from '@/lib/components/reviewing/TaskReviewMain';
 import TaskReviewSidebar from '@/lib/components/reviewing/TaskReviewSidebar';
+import { Button } from '@/lib/components/ui/Button';
 
 export default function ReviewApplication({
     params,
@@ -60,15 +61,42 @@ export default function ReviewApplication({
             />
 
             <div className="flex min-h-0 flex-1 px-4 py-4">
-                <TaskReviewMain task={currentTaskData} />
-                <TaskReviewSidebar
-                    task={currentTaskData}
-                    currentTask={currentTask}
-                    totalTasks={totalTasks}
-                    onPrev={goPrevTask}
-                    onNext={goNextTask}
-                    onSelectTask={setCurrentTask}
-                />
+                {application?.assessmentStatus === 'GRADED' ||
+                application?.assessmentStatus === 'SUBMITTED' ? (
+                    <>
+                        <TaskReviewMain task={currentTaskData} />
+                        <TaskReviewSidebar
+                            task={currentTaskData}
+                            currentTask={currentTask}
+                            totalTasks={totalTasks}
+                            onPrev={goPrevTask}
+                            onNext={goNextTask}
+                            onSelectTask={setCurrentTask}
+                        />
+                    </>
+                ) : (
+                    <>
+                        <div className="flex min-h-0 flex-1 items-center justify-center">
+                            <div className="inline-flex h-[184px] min-h-0 w-[362px] flex-col items-center justify-center space-y-6">
+                                <div className="flex w-full justify-center">
+                                    <Image
+                                        src="/GreyWinstonLogoMark.svg"
+                                        alt="Sarge Logo"
+                                        width={137}
+                                        height={72.42}
+                                        priority
+                                    />
+                                </div>
+                                <p className="text-lg font-medium tracking-wide">
+                                    This candidate has not made a submission
+                                </p>
+                                <Button className="h-[40px] w-[210px] justify-start px-5 py-2">
+                                    Button
+                                </Button>
+                            </div>
+                        </div>
+                    </>
+                )}
             </div>
         </div>
     );
