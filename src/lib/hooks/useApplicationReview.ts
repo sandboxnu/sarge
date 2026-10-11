@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { getApplicationForReview } from '@/lib/api/applications';
 import { type ApplicationWithReviewData } from '@/lib/types/position.types';
 
@@ -32,6 +32,12 @@ export default function useApplicationReview(applicationId: string | null) {
         fetchApplicationReview();
     }, [applicationId]);
 
+    // Silent reload (no loading screen), e.g. after posting a comment
+    const refetch = useCallback(async () => {
+        if (!applicationId) return;
+        setApplication(await getApplicationForReview(applicationId));
+    }, [applicationId]);
+
     const tasks = (application?.assessment?.tasks ?? []).filter((t) => t.submittedAt !== null);
     const totalTasks = tasks.length;
     const currentTaskData = tasks[currentTask] ?? null;
@@ -51,5 +57,6 @@ export default function useApplicationReview(applicationId: string | null) {
         setCurrentTask,
         goPrevTask,
         goNextTask,
+        refetch,
     };
 }

@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react';
+import { toast } from 'sonner';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import {
     Select,
@@ -14,6 +16,7 @@ import { RemovableChip } from '@/lib/components/ui/RemovableChip';
 import { Button } from '@/lib/components/ui/Button';
 import { TestVisibility } from '@/generated/prisma';
 import type { TaskWithReviewData } from '@/lib/types/position.types';
+import { formatLineRange, type LineRange } from '@/lib/utils/comment.utils';
 
 type ReviewTasksOnSidebarProps = {
     task: TaskWithReviewData | null;
@@ -22,6 +25,9 @@ type ReviewTasksOnSidebarProps = {
     onPrev: () => void;
     onNext: () => void;
     onSelectTask: (index: number) => void;
+    selectedLines: LineRange | null;
+    onClearLines: () => void;
+    onAddComment: (content: string) => Promise<void>;
 };
 
 export default function ReviewTasksOnSidebar({
@@ -31,7 +37,13 @@ export default function ReviewTasksOnSidebar({
     onPrev,
     onNext,
     onSelectTask,
+    selectedLines,
+    onClearLines,
+    onAddComment,
 }: ReviewTasksOnSidebarProps) {
+    const [commentText, setCommentText] = useState('');
+    const [submitting, setSubmitting] = useState(false);
+
     const testResults = task?.testResults ?? [];
     const publicResults = testResults.filter((r) => r.visibility === TestVisibility.PUBLIC);
     const privateResults = testResults.filter((r) => r.visibility === TestVisibility.PRIVATE);
@@ -39,6 +51,19 @@ export default function ReviewTasksOnSidebar({
     const privatePassed = privateResults.filter((r) => r.passed).length;
     const comments = task?.reviews.flatMap((review) => review.comments) ?? [];
     const score = task?.reviews[0]?.score;
+
+    async function submitComment() {
+        if (!commentText.trim() || submitting) return;
+        setSubmitting(true);
+        try {
+            await onAddComment(commentText.trim());
+            setCommentText('');
+        } catch (err) {
+            toast.error((err as Error).message || 'Failed to post comment');
+        } finally {
+            setSubmitting(false);
+        }
+    }
 
     return (
         <div className="mt-5 flex min-h-0 flex-1 flex-col gap-5">
@@ -125,14 +150,17 @@ export default function ReviewTasksOnSidebar({
                         comments.map((comment) => (
                             <div key={comment.id} className="flex flex-col gap-1.5">
                                 <p className="text-sarge-gray-600 text-sm">{comment.content}</p>
-                                <Chip
-                                    variant="neutral"
-                                    className="text-sarge-gray-600 w-fit rounded-md text-xs"
-                                >
-                                    {comment.startLine === comment.endLine
-                                        ? `Line ${comment.startLine}`
-                                        : `Lines ${comment.startLine}-${comment.endLine}`}
-                                </Chip>
+                                {comment.startLine !== null && comment.endLine !== null && (
+                                    <Chip
+                                        variant="neutral"
+                                        className="text-sarge-gray-600 w-fit rounded-md text-xs"
+                                    >
+                                        {formatLineRange({
+                                            startLine: comment.startLine,
+                                            endLine: comment.endLine,
+                                        })}
+                                    </Chip>
+                                )}
                             </div>
                         ))
                     )}
@@ -141,16 +169,34 @@ export default function ReviewTasksOnSidebar({
 
             <div className="border-sarge-gray-200 flex flex-col gap-3 rounded-lg border p-3">
                 <textarea
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+                            e.preventDefault();
+                            submitComment();
+                        }
+                    }}
                     placeholder="Add a comment or note"
+                    aria-label="Add a comment or note"
                     rows={2}
                     className="text-sarge-gray-800 placeholder:text-sarge-gray-500 resize-none text-sm outline-none"
                 />
                 <div className="flex items-center justify-between">
-                    <RemovableChip label="Lines 3-4" onRemove={() => {}} />
+                    {selectedLines ? (
+                        <RemovableChip
+                            label={formatLineRange(selectedLines)}
+                            onRemove={onClearLines}
+                        />
+                    ) : (
+                        <span />
+                    )}
                     <Button
                         variant="icon"
                         className="border-sarge-gray-200 rounded-md border border-solid"
                         aria-label="Add comment"
+                        disabled={!commentText.trim() || submitting}
+                        onClick={submitComment}
                     >
                         <ChevronRight className="size-4" />
                     </Button>

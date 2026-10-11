@@ -1,11 +1,13 @@
 'use client';
-import { use } from 'react';
+import { use, useState } from 'react';
 import Image from 'next/image';
 import useApplicationReview from '@/lib/hooks/useApplicationReview';
 import usePositionApplications from '@/lib/hooks/usePositionApplications';
 import ReviewNavbar from '@/lib/components/reviewing/ReviewNavbar';
 import TaskReviewMain from '@/lib/components/reviewing/TaskReviewMain';
 import TaskReviewSidebar from '@/lib/components/reviewing/TaskReviewSidebar';
+import { createComment } from '@/lib/api/tasks';
+import type { LineRange } from '@/lib/utils/comment.utils';
 
 export default function ReviewApplication({
     params,
@@ -26,10 +28,20 @@ export default function ReviewApplication({
         currentTaskData,
         goPrevTask,
         goNextTask,
+        refetch,
     } = useApplicationReview(applicationId);
 
     const { applications, goToApplication, goPrevApplication, goNextApplication } =
         usePositionApplications(positionId, applicationId);
+
+    const [selectedLines, setSelectedLines] = useState<LineRange | null>(null);
+
+    async function handleAddComment(content: string) {
+        if (!currentTaskData) return;
+        await createComment(currentTaskData.id, { content, ...selectedLines });
+        setSelectedLines(null);
+        await refetch();
+    }
 
     if (loading) {
         return (
@@ -60,7 +72,7 @@ export default function ReviewApplication({
             />
 
             <div className="flex min-h-0 flex-1 px-4 py-4">
-                <TaskReviewMain task={currentTaskData} />
+                <TaskReviewMain task={currentTaskData} onSelectLines={setSelectedLines} />
                 <TaskReviewSidebar
                     task={currentTaskData}
                     currentTask={currentTask}
@@ -68,6 +80,9 @@ export default function ReviewApplication({
                     onPrev={goPrevTask}
                     onNext={goNextTask}
                     onSelectTask={setCurrentTask}
+                    selectedLines={selectedLines}
+                    onClearLines={() => setSelectedLines(null)}
+                    onAddComment={handleAddComment}
                 />
             </div>
         </div>

@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils/cn.utils';
 import ReviewTasksOnSidebar from '@/lib/components/reviewing/ReviewTasksOnSidebar';
 import ReviewDecisionOnSidebar from '@/lib/components/reviewing/ReviewDecisionOnSidebar';
 import type { TaskWithReviewData } from '@/lib/types/position.types';
+import type { LineRange } from '@/lib/utils/comment.utils';
 
 const TABS = ['Review Tasks', 'Decision'];
 
@@ -16,6 +17,9 @@ type TaskReviewSidebarProps = {
     onPrev: () => void;
     onNext: () => void;
     onSelectTask: (index: number) => void;
+    selectedLines: LineRange | null;
+    onClearLines: () => void;
+    onAddComment: (content: string) => Promise<void>;
 };
 
 export default function TaskReviewSidebar({
@@ -25,6 +29,9 @@ export default function TaskReviewSidebar({
     onPrev,
     onNext,
     onSelectTask,
+    selectedLines,
+    onClearLines,
+    onAddComment,
 }: TaskReviewSidebarProps) {
     const [activeTab, setActiveTab] = useState('Review Tasks');
 
@@ -56,6 +63,9 @@ export default function TaskReviewSidebar({
                     onPrev={onPrev}
                     onNext={onNext}
                     onSelectTask={onSelectTask}
+                    selectedLines={selectedLines}
+                    onClearLines={onClearLines}
+                    onAddComment={onAddComment}
                 />
             )}
             {activeTab === 'Decision' && <ReviewDecisionOnSidebar task={task} />}
