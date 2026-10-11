@@ -49,6 +49,7 @@ export interface ApplicationDisplayInfo {
 
 export type ReviewWithComments = Review & {
     comments: Comment[];
+    reviewer: { name: string };
 };
 
 export type TaskWithReviewData = Task & {

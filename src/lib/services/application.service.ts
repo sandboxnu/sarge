@@ -334,7 +334,10 @@ async function getApplicationForReview(
                     tasks: {
                         include: {
                             reviews: {
-                                include: { comments: true },
+                                include: {
+                                    comments: { orderBy: { reviewedAt: 'asc' } },
+                                    reviewer: { select: { name: true } },
+                                },
                             },
                             snapshots: true,
                             testResults: true,
