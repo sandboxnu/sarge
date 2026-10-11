@@ -275,7 +275,7 @@ model Review {
   id         String   @id @unique @default(cuid())
   taskId     String
   reviewerId String
-  score      Int
+  score      Int?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
@@ -288,8 +288,8 @@ model Review {
 model Comment {
   id         String   @id @unique @default(cuid())
   reviewId   String
-  startLine  Int
-  endLine    Int
+  startLine  Int?
+  endLine    Int?
   content    String   @db.Text
   reviewedAt DateTime @default(now())
 
