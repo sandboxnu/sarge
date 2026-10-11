@@ -10,10 +10,11 @@ import {
 } from '@/lib/components/ui/Select';
 import { Input } from '@/lib/components/ui/Input';
 import { Chip } from '@/lib/components/ui/Chip';
-import { RemovableChip } from '@/lib/components/ui/RemovableChip';
 import { Button } from '@/lib/components/ui/Button';
 import { TestVisibility } from '@/generated/prisma';
 import type { TaskWithReviewData } from '@/lib/types/position.types';
+import CommentInput from '@/lib/components/reviewing/CommentInput';
+import { formatLineRange, type LineRange } from '@/lib/utils/comment.utils';
 
 type ReviewTasksOnSidebarProps = {
     task: TaskWithReviewData | null;
@@ -22,6 +23,7 @@ type ReviewTasksOnSidebarProps = {
     onPrev: () => void;
     onNext: () => void;
     onSelectTask: (index: number) => void;
+    onAddComment: (content: string, lines?: LineRange) => Promise<void>;
 };
 
 export default function ReviewTasksOnSidebar({
@@ -31,13 +33,18 @@ export default function ReviewTasksOnSidebar({
     onPrev,
     onNext,
     onSelectTask,
+    onAddComment,
 }: ReviewTasksOnSidebarProps) {
     const testResults = task?.testResults ?? [];
     const publicResults = testResults.filter((r) => r.visibility === TestVisibility.PUBLIC);
     const privateResults = testResults.filter((r) => r.visibility === TestVisibility.PRIVATE);
     const publicPassed = publicResults.filter((r) => r.passed).length;
     const privatePassed = privateResults.filter((r) => r.passed).length;
-    const comments = task?.reviews.flatMap((review) => review.comments) ?? [];
+    const comments = (
+        task?.reviews.flatMap((review) =>
+            review.comments.map((comment) => ({ ...comment, reviewerName: review.reviewer.name }))
+        ) ?? []
+    ).sort((a, b) => new Date(a.reviewedAt).getTime() - new Date(b.reviewedAt).getTime());
     const score = task?.reviews[0]?.score;
 
     return (
@@ -116,45 +123,42 @@ export default function ReviewTasksOnSidebar({
                 </div>
             </div>
 
-            <div className="flex min-h-0 flex-1 flex-col gap-1.5">
-                <span className="text-sarge-gray-500 text-xs font-medium">Comments</span>
-                <div className="border-sarge-gray-200 flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto rounded-lg border p-4">
-                    {comments.length === 0 ? (
-                        <span className="text-sarge-gray-400 text-sm">No comments yet</span>
-                    ) : (
-                        comments.map((comment) => (
-                            <div key={comment.id} className="flex flex-col gap-1.5">
-                                <p className="text-sarge-gray-600 text-sm">{comment.content}</p>
-                                <Chip
-                                    variant="neutral"
-                                    className="text-sarge-gray-600 w-fit rounded-md text-xs"
-                                >
-                                    {comment.startLine === comment.endLine
-                                        ? `Line ${comment.startLine}`
-                                        : `Lines ${comment.startLine}-${comment.endLine}`}
-                                </Chip>
-                            </div>
-                        ))
-                    )}
+            <div className="flex min-h-0 flex-1 flex-col gap-3">
+                <div className="flex items-center gap-2">
+                    <span className="text-sarge-gray-800 text-sm font-medium">Comments</span>
+                    <Chip variant="neutral" className="rounded-md">
+                        {comments.length}
+                    </Chip>
                 </div>
-            </div>
-
-            <div className="border-sarge-gray-200 flex flex-col gap-3 rounded-lg border p-3">
-                <textarea
-                    placeholder="Add a comment or note"
-                    rows={2}
-                    className="text-sarge-gray-800 placeholder:text-sarge-gray-500 resize-none text-sm outline-none"
+                <CommentInput
+                    key={task?.id}
+                    placeholder="Add a comment or note for this task"
+                    onSubmit={(content) => onAddComment(content)}
                 />
-                <div className="flex items-center justify-between">
-                    <RemovableChip label="Lines 3-4" onRemove={() => {}} />
-                    <Button
-                        variant="icon"
-                        className="border-sarge-gray-200 rounded-md border border-solid"
-                        aria-label="Add comment"
-                    >
-                        <ChevronRight className="size-4" />
-                    </Button>
-                </div>
+                {comments.length > 0 && (
+                    <div className="border-sarge-gray-200 flex min-h-0 flex-col gap-4 overflow-y-auto rounded-lg border p-4">
+                        {comments.map((comment) => (
+                            <div key={comment.id} className="flex flex-col gap-1">
+                                <div className="flex items-center justify-between gap-2">
+                                    <span className="text-sarge-gray-500 text-xs">
+                                        {comment.reviewerName}
+                                    </span>
+                                    {comment.startLine !== null && comment.endLine !== null && (
+                                        <Chip variant="neutral" className="rounded-md">
+                                            {formatLineRange({
+                                                startLine: comment.startLine,
+                                                endLine: comment.endLine,
+                                            })}
+                                        </Chip>
+                                    )}
+                                </div>
+                                <p className="text-sarge-gray-800 text-sm whitespace-pre-wrap">
+                                    {comment.content}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
         </div>
     );

@@ -8,14 +8,16 @@ import InstructionsTaskSubmission from '@/lib/components/reviewing/InstructionsT
 import TestCasesTaskSubmission from '@/lib/components/reviewing/TestCasesTaskSubmission';
 import ActivityLogTaskSubmission from '@/lib/components/reviewing/ActivityLogTaskSubmission';
 import type { TaskWithReviewData } from '@/lib/types/position.types';
+import type { LineRange } from '@/lib/utils/comment.utils';
 
 const TABS = ['Submission', 'Instructions', 'Test Cases', 'Activity Log'];
 
 type TaskReviewMainProps = {
     task: TaskWithReviewData | null;
+    onAddComment: (content: string, lines?: LineRange) => Promise<void>;
 };
 
-export default function TaskReviewMain({ task }: TaskReviewMainProps) {
+export default function TaskReviewMain({ task, onAddComment }: TaskReviewMainProps) {
     const [activeTab, setActiveTab] = useState('Submission');
 
     return (
@@ -38,7 +40,9 @@ export default function TaskReviewMain({ task }: TaskReviewMainProps) {
                 ))}
             </div>
 
-            {activeTab === 'Submission' && <ReviewTaskSubmission task={task} />}
+            {activeTab === 'Submission' && (
+                <ReviewTaskSubmission task={task} onAddComment={onAddComment} />
+            )}
             {activeTab === 'Instructions' && <InstructionsTaskSubmission task={task} />}
             {activeTab === 'Test Cases' && <TestCasesTaskSubmission task={task} />}
             {activeTab === 'Activity Log' && <ActivityLogTaskSubmission task={task} />}
