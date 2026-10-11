@@ -17,7 +17,9 @@ type TaskReviewSidebarProps = {
     onPrev: () => void;
     onNext: () => void;
     onSelectTask: (index: number) => void;
-    onAddComment: (content: string, lines?: LineRange) => Promise<void>;
+    selectedLines: LineRange | null;
+    onClearLines: () => void;
+    onAddComment: (content: string) => Promise<void>;
 };
 
 export default function TaskReviewSidebar({
@@ -27,6 +29,8 @@ export default function TaskReviewSidebar({
     onPrev,
     onNext,
     onSelectTask,
+    selectedLines,
+    onClearLines,
     onAddComment,
 }: TaskReviewSidebarProps) {
     const [activeTab, setActiveTab] = useState('Review Tasks');
@@ -59,6 +63,8 @@ export default function TaskReviewSidebar({
                     onPrev={onPrev}
                     onNext={onNext}
                     onSelectTask={onSelectTask}
+                    selectedLines={selectedLines}
+                    onClearLines={onClearLines}
                     onAddComment={onAddComment}
                 />
             )}

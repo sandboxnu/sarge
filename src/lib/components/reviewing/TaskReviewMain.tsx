@@ -14,10 +14,10 @@ const TABS = ['Submission', 'Instructions', 'Test Cases', 'Activity Log'];
 
 type TaskReviewMainProps = {
     task: TaskWithReviewData | null;
-    onAddComment: (content: string, lines?: LineRange) => Promise<void>;
+    onSelectLines: (lines: LineRange | null) => void;
 };
 
-export default function TaskReviewMain({ task, onAddComment }: TaskReviewMainProps) {
+export default function TaskReviewMain({ task, onSelectLines }: TaskReviewMainProps) {
     const [activeTab, setActiveTab] = useState('Submission');
 
     return (
@@ -41,7 +41,7 @@ export default function TaskReviewMain({ task, onAddComment }: TaskReviewMainPro
             </div>
 
             {activeTab === 'Submission' && (
-                <ReviewTaskSubmission task={task} onAddComment={onAddComment} />
+                <ReviewTaskSubmission task={task} onSelectLines={onSelectLines} />
             )}
             {activeTab === 'Instructions' && <InstructionsTaskSubmission task={task} />}
             {activeTab === 'Test Cases' && <TestCasesTaskSubmission task={task} />}

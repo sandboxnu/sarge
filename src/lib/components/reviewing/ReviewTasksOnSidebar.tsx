@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react';
+import { toast } from 'sonner';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import {
     Select,
@@ -10,10 +12,10 @@ import {
 } from '@/lib/components/ui/Select';
 import { Input } from '@/lib/components/ui/Input';
 import { Chip } from '@/lib/components/ui/Chip';
+import { RemovableChip } from '@/lib/components/ui/RemovableChip';
 import { Button } from '@/lib/components/ui/Button';
 import { TestVisibility } from '@/generated/prisma';
 import type { TaskWithReviewData } from '@/lib/types/position.types';
-import CommentInput from '@/lib/components/reviewing/CommentInput';
 import { formatLineRange, type LineRange } from '@/lib/utils/comment.utils';
 
 type ReviewTasksOnSidebarProps = {
@@ -23,7 +25,9 @@ type ReviewTasksOnSidebarProps = {
     onPrev: () => void;
     onNext: () => void;
     onSelectTask: (index: number) => void;
-    onAddComment: (content: string, lines?: LineRange) => Promise<void>;
+    selectedLines: LineRange | null;
+    onClearLines: () => void;
+    onAddComment: (content: string) => Promise<void>;
 };
 
 export default function ReviewTasksOnSidebar({
@@ -33,19 +37,33 @@ export default function ReviewTasksOnSidebar({
     onPrev,
     onNext,
     onSelectTask,
+    selectedLines,
+    onClearLines,
     onAddComment,
 }: ReviewTasksOnSidebarProps) {
+    const [commentText, setCommentText] = useState('');
+    const [submitting, setSubmitting] = useState(false);
+
     const testResults = task?.testResults ?? [];
     const publicResults = testResults.filter((r) => r.visibility === TestVisibility.PUBLIC);
     const privateResults = testResults.filter((r) => r.visibility === TestVisibility.PRIVATE);
     const publicPassed = publicResults.filter((r) => r.passed).length;
     const privatePassed = privateResults.filter((r) => r.passed).length;
-    const comments = (
-        task?.reviews.flatMap((review) =>
-            review.comments.map((comment) => ({ ...comment, reviewerName: review.reviewer.name }))
-        ) ?? []
-    ).sort((a, b) => new Date(a.reviewedAt).getTime() - new Date(b.reviewedAt).getTime());
+    const comments = task?.reviews.flatMap((review) => review.comments) ?? [];
     const score = task?.reviews[0]?.score;
+
+    async function submitComment() {
+        if (!commentText.trim() || submitting) return;
+        setSubmitting(true);
+        try {
+            await onAddComment(commentText.trim());
+            setCommentText('');
+        } catch (err) {
+            toast.error((err as Error).message || 'Failed to post comment');
+        } finally {
+            setSubmitting(false);
+        }
+    }
 
     return (
         <div className="mt-5 flex min-h-0 flex-1 flex-col gap-5">
@@ -123,42 +141,66 @@ export default function ReviewTasksOnSidebar({
                 </div>
             </div>
 
-            <div className="flex min-h-0 flex-1 flex-col gap-3">
-                <div className="flex items-center gap-2">
-                    <span className="text-sarge-gray-800 text-sm font-medium">Comments</span>
-                    <Chip variant="neutral" className="rounded-md">
-                        {comments.length}
-                    </Chip>
-                </div>
-                <CommentInput
-                    key={task?.id}
-                    placeholder="Add a comment or note for this task"
-                    onSubmit={(content) => onAddComment(content)}
-                />
-                {comments.length > 0 && (
-                    <div className="border-sarge-gray-200 flex min-h-0 flex-col gap-4 overflow-y-auto rounded-lg border p-4">
-                        {comments.map((comment) => (
-                            <div key={comment.id} className="flex flex-col gap-1">
-                                <div className="flex items-center justify-between gap-2">
-                                    <span className="text-sarge-gray-500 text-xs">
-                                        {comment.reviewerName}
-                                    </span>
-                                    {comment.startLine !== null && comment.endLine !== null && (
-                                        <Chip variant="neutral" className="rounded-md">
-                                            {formatLineRange({
-                                                startLine: comment.startLine,
-                                                endLine: comment.endLine,
-                                            })}
-                                        </Chip>
-                                    )}
-                                </div>
-                                <p className="text-sarge-gray-800 text-sm whitespace-pre-wrap">
-                                    {comment.content}
-                                </p>
+            <div className="flex min-h-0 flex-1 flex-col gap-1.5">
+                <span className="text-sarge-gray-500 text-xs font-medium">Comments</span>
+                <div className="border-sarge-gray-200 flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto rounded-lg border p-4">
+                    {comments.length === 0 ? (
+                        <span className="text-sarge-gray-400 text-sm">No comments yet</span>
+                    ) : (
+                        comments.map((comment) => (
+                            <div key={comment.id} className="flex flex-col gap-1.5">
+                                <p className="text-sarge-gray-600 text-sm">{comment.content}</p>
+                                {comment.startLine !== null && comment.endLine !== null && (
+                                    <Chip
+                                        variant="neutral"
+                                        className="text-sarge-gray-600 w-fit rounded-md text-xs"
+                                    >
+                                        {formatLineRange({
+                                            startLine: comment.startLine,
+                                            endLine: comment.endLine,
+                                        })}
+                                    </Chip>
+                                )}
                             </div>
-                        ))}
-                    </div>
-                )}
+                        ))
+                    )}
+                </div>
+            </div>
+
+            <div className="border-sarge-gray-200 flex flex-col gap-3 rounded-lg border p-3">
+                <textarea
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+                            e.preventDefault();
+                            submitComment();
+                        }
+                    }}
+                    placeholder="Add a comment or note"
+                    aria-label="Add a comment or note"
+                    rows={2}
+                    className="text-sarge-gray-800 placeholder:text-sarge-gray-500 resize-none text-sm outline-none"
+                />
+                <div className="flex items-center justify-between">
+                    {selectedLines ? (
+                        <RemovableChip
+                            label={formatLineRange(selectedLines)}
+                            onRemove={onClearLines}
+                        />
+                    ) : (
+                        <span />
+                    )}
+                    <Button
+                        variant="icon"
+                        className="border-sarge-gray-200 rounded-md border border-solid"
+                        aria-label="Add comment"
+                        disabled={!commentText.trim() || submitting}
+                        onClick={submitComment}
+                    >
+                        <ChevronRight className="size-4" />
+                    </Button>
+                </div>
             </div>
         </div>
     );
