@@ -4,9 +4,10 @@ import type {
     SubmitTaskForCandidateDTO,
     TaskDTO,
     UpdateTaskDTO,
+    CreateCommentDTO,
 } from '@/lib/schemas/task.schema';
 import { BadRequestException, NotFoundException } from '@/lib/utils/errors.utils';
-import { type Task, SnapshotType } from '@/generated/prisma';
+import { type Comment, type Task, SnapshotType } from '@/generated/prisma';
 
 async function getTask(id: string, orgId: string): Promise<TaskDTO> {
     const foundTask = await prisma.task.findFirst({
@@ -214,6 +215,29 @@ async function submitForCandidate(taskId: string, data: SubmitTaskForCandidateDT
     });
 }
 
+async function createComment(
+    taskId: string,
+    reviewerId: string,
+    comment: CreateCommentDTO,
+    orgId: string
+): Promise<Comment> {
+    await getTask(taskId, orgId);
+
+    // Comments hang off the reviewer's Review; create an unscored one on their first comment
+    const review =
+        (await prisma.review.findFirst({ where: { taskId, reviewerId } })) ??
+        (await prisma.review.create({ data: { taskId, reviewerId } }));
+
+    return prisma.comment.create({
+        data: {
+            reviewId: review.id,
+            content: comment.content,
+            startLine: comment.startLine ?? null,
+            endLine: comment.endLine ?? null,
+        },
+    });
+}
+
 const taskService = {
     getTask,
     createTask,
@@ -221,6 +245,7 @@ const taskService = {
     updateTask,
     createForCandidate,
     submitForCandidate,
+    createComment,
 };
 
 export default taskService;
