@@ -3,7 +3,11 @@ import {
     type ApplicationDisplayInfo,
 } from '@/lib/types/position.types';
 import { type AddApplicationWithCandidateDataDTO } from '@/lib/schemas/application.schema';
-import { type BatchAddResult, type PositionWithCounts } from '@/lib/types/position.types';
+import {
+    type BatchAddResult,
+    type BatchRemoveResult,
+    type PositionWithCounts,
+} from '@/lib/types/position.types';
 import { type Position } from '@/generated/prisma';
 
 /**
@@ -160,6 +164,30 @@ export async function batchCreateCandidates(
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({ applications: candidates }),
+    });
+
+    const json = await res.json();
+
+    if (!res.ok) {
+        throw new Error(json.message);
+    }
+
+    return json.data;
+}
+
+/**
+ * DELETE /api/positions/:positionId/applications/batch
+ */
+export async function batchDeleteCandidates(
+    positionId: string,
+    candidateIds: string[]
+): Promise<BatchRemoveResult> {
+    const res = await fetch(`/api/positions/${positionId}/applications/batch`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ candidateIds }),
     });
 
     const json = await res.json();

@@ -5,10 +5,11 @@ import { CandidateTable } from '@/lib/components/core/CandidateTable';
 import CreateCandidateModal from '@/lib/components/modal/CreateCandidateModal';
 import UploadCSVModal from '@/lib/components/modal/UploadCSVModal';
 import useCandidates from '@/lib/hooks/useCandidates';
+import useCandidateSelection from '@/lib/hooks/useCandidateSelection';
 import { Search } from '@/lib/components/core/Search';
 import { Tabs, TabsContent, TabsList, UnderlineTabsTrigger } from '@/lib/components/ui/Tabs';
 import { Plus, ArrowUpDown, SlidersHorizontal, Mail } from 'lucide-react';
-import { use, useState } from 'react';
+import { use, useMemo, useState } from 'react';
 import useSearch from '@/lib/hooks/useSearch';
 import Breadcrumbs from '@/lib/components/core/Breadcrumbs';
 
@@ -28,11 +29,16 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
     } = useCandidates(id);
     const { value: searchValue, onChange: onSearchChange } = useSearch('applications');
 
-    const displayedCandidates = searchValue.trim().length
-        ? candidates.filter((c) =>
-              c.candidate.name.toLowerCase().includes(searchValue.trim().toLowerCase())
-          )
-        : candidates;
+    const displayedCandidates = useMemo(
+        () =>
+            searchValue.trim().length
+                ? candidates.filter((c) =>
+                      c.candidate.name.toLowerCase().includes(searchValue.trim().toLowerCase())
+                  )
+                : candidates,
+        [candidates, searchValue]
+    );
+    const { rowSelection, setRowSelection } = useCandidateSelection(displayedCandidates);
 
     return (
         <>
@@ -95,7 +101,11 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                         </TabsList>
 
                         <TabsContent value="candidates">
-                            <CandidateTable candidates={displayedCandidates} />
+                            <CandidateTable
+                                candidates={displayedCandidates}
+                                rowSelection={rowSelection}
+                                onRowSelectionChange={setRowSelection}
+                            />
                             <br />
                         </TabsContent>
 
