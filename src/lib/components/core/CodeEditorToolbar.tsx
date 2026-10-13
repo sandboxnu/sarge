@@ -9,6 +9,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/lib/components/ui/Dropdown';
+import { Chip } from '@/lib/components/ui/Chip';
 import { getLanguageLabel } from '@/lib/utils/language.utils';
 import { type TaskTemplateLanguageDTO } from '@/lib/schemas/task-template-language.schema';
 
@@ -53,8 +54,8 @@ export default function CodeEditorToolbar({
                         <span className="tracking-design text-xs font-medium">Language</span>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild disabled={disabled}>
-                                <div
-                                    className={`bg-sarge-primary-500 tracking-design text-primary-foreground flex items-center gap-2.5 rounded-sm px-2.5 py-0.5 text-xs font-medium ${
+                                <Chip
+                                    className={`bg-sarge-primary-500 tracking-design text-primary-foreground gap-2.5 rounded-sm px-2.5 py-0.5 text-xs font-medium ${
                                         disabled
                                             ? 'cursor-not-allowed opacity-50'
                                             : 'cursor-pointer'
@@ -64,7 +65,7 @@ export default function CodeEditorToolbar({
                                         ? getLanguageLabel(currentLanguage.language)
                                         : ''}
                                     <ChevronDown className="size-2.5" />
-                                </div>
+                                </Chip>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent
                                 side="bottom"

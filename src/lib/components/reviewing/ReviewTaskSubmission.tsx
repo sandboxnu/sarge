@@ -3,6 +3,7 @@
 import dynamic from 'next/dynamic';
 import type { editor } from 'monaco-editor';
 import type { Monaco } from '@monaco-editor/react';
+import { Chip } from '@/lib/components/ui/Chip';
 import { applySargeDarkTheme } from '@/lib/utils/monaco.utils';
 import { getLanguageLabel, getLanguageFileExtension } from '@/lib/utils/language.utils';
 import type { TaskWithReviewData } from '@/lib/types/position.types';
@@ -32,9 +33,9 @@ export default function ReviewTaskSubmission({ task }: ReviewTaskSubmissionProps
                 </div>
                 <div className="border-sarge-gray-600 flex flex-1 items-center justify-end gap-1.5 border-b px-2.5">
                     <span className="tracking-design text-xs font-medium">Language</span>
-                    <span className="bg-sarge-primary-500 tracking-design text-primary-foreground rounded-sm px-2.5 py-0.5 text-xs font-medium">
+                    <Chip className="bg-sarge-primary-500 tracking-design text-primary-foreground rounded-sm px-2.5 py-0.5 text-xs font-medium">
                         {language ? getLanguageLabel(language) : 'txt'}
-                    </span>
+                    </Chip>
                 </div>
             </div>
             <div className="min-h-0 flex-1">

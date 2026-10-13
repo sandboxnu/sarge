@@ -19,6 +19,7 @@ export default function useMemberRoleCell({
 }: UseMemberRoleCellArgs) {
     const [updating, setUpdating] = useState(false);
     const [currentRole, setCurrentRole] = useState(member.role);
+    const [removeOpen, setRemoveOpen] = useState(false);
     const isOwner = currentRole === 'owner';
 
     const handleRoleChange = async (newRole: string) => {
@@ -50,6 +51,7 @@ export default function useMemberRoleCell({
                 organizationId,
             });
             toast.success(`${member.user.name ?? member.user.email} removed from organization`);
+            setRemoveOpen(false);
             onChanged();
         } catch {
             toast.error('Failed to remove member');
@@ -62,6 +64,8 @@ export default function useMemberRoleCell({
         updating,
         currentRole,
         isOwner,
+        removeOpen,
+        setRemoveOpen,
         handleRoleChange,
         handleRemoveMember,
     };

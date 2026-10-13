@@ -60,6 +60,11 @@ export default function useAssessment(assessmentId: string) {
     const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
     const monacoRef = useRef<Monaco | null>(null);
     const [token, setToken] = useState<string>();
+    const isExpired =
+        !!assessment &&
+        !assessment.submittedAt &&
+        (assessment.assessmentStatus === 'EXPIRED' ||
+            (!!assessment.deadline && new Date(assessment.deadline).getTime() < Date.now()));
 
     const currentSectionIndexRef = useRef(currentSectionIndex);
     useEffect(() => {
@@ -372,6 +377,7 @@ export default function useAssessment(assessmentId: string) {
         isLoading,
         isSubmitting,
         isTransitioning,
+        isExpired,
         error,
         testError,
         startAssessment,

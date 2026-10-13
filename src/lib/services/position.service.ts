@@ -113,6 +113,7 @@ async function getPositionsByOrgId(orgId: string): Promise<PositionWithCounts[]>
         select: {
             id: true,
             title: true,
+            tags: true,
             createdAt: true,
             archived: true,
             assessmentId: true,
@@ -133,6 +134,7 @@ async function getPositionsByOrgId(orgId: string): Promise<PositionWithCounts[]>
     return positions.map((p) => ({
         id: p.id,
         title: p.title,
+        tags: p.tags,
         archived: p.archived,
         numCandidates: p.applications.length,
         numAssigned: p.applications.length,
@@ -276,6 +278,7 @@ async function getPositionsByTitle(title: string, orgId: string): Promise<Positi
         select: {
             id: true,
             title: true,
+            tags: true,
             createdAt: true,
             archived: true,
             assessmentId: true,
@@ -296,6 +299,7 @@ async function getPositionsByTitle(title: string, orgId: string): Promise<Positi
     return positions.map((p) => ({
         id: p.id,
         title: p.title,
+        tags: p.tags,
         archived: p.archived,
         numCandidates: p.applications.length,
         numAssigned: p.applications.length,

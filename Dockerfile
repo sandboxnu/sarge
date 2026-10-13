@@ -1,7 +1,7 @@
 FROM public.ecr.aws/docker/library/node:22-slim AS builder
 WORKDIR /app
 
-RUN apt-get update -y && apt-get install -y openssl ca-certificates libssl3 && rm -rf /var/lib/apt/lists/*
+RUN apt-get update -y && apt-get install -y python3 build-essential openssl ca-certificates libssl3 && rm -rf /var/lib/apt/lists/*
 
 COPY package.json pnpm-lock.yaml* ./
 RUN corepack enable && pnpm install --frozen-lockfile

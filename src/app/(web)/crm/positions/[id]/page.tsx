@@ -6,11 +6,12 @@ import { CandidateSelectionMenu } from '@/lib/components/core/CandidateSelection
 import CreateCandidateModal from '@/lib/components/modal/CreateCandidateModal';
 import UploadCSVModal from '@/lib/components/modal/UploadCSVModal';
 import DeleteCandidatesModal from '@/lib/components/modal/DeleteCandidatesModal';
+import { PositionAssessmentEmpty } from '@/lib/components/core/PositionAssessmentEmpty';
 import useCandidates from '@/lib/hooks/useCandidates';
 import useCandidateSelection from '@/lib/hooks/useCandidateSelection';
 import { Search } from '@/lib/components/core/Search';
 import { Tabs, TabsContent, TabsList, UnderlineTabsTrigger } from '@/lib/components/ui/Tabs';
-import { Plus, ArrowUpDown, SlidersHorizontal, Mail } from 'lucide-react';
+import { Plus, ArrowUpDown, SlidersHorizontal } from 'lucide-react';
 import { use, useCallback, useMemo, useState } from 'react';
 import useSearch from '@/lib/hooks/useSearch';
 import { type ApplicationDisplayInfo } from '@/lib/types/position.types';
@@ -134,16 +135,10 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                         </TabsContent>
 
                         <TabsContent value="assessment">
-                            <div className="flex w-full justify-end">
-                                <Button
-                                    className="px-4 py-3"
-                                    onClick={handleSendAssessments}
-                                    disabled={isSendingAssessments}
-                                >
-                                    <Mail className="size-5" />
-                                    {isSendingAssessments ? 'Sending...' : 'Send to all candidates'}
-                                </Button>
-                            </div>
+                            <PositionAssessmentEmpty
+                                onSendAssessments={handleSendAssessments}
+                                isSending={isSendingAssessments}
+                            />
                         </TabsContent>
                     </Tabs>
                 )}

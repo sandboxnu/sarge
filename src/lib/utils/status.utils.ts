@@ -87,25 +87,3 @@ export function getSubmissionVariant(submitted: number, total: number): ChipVari
     if (ratio <= 2 / 3) return 'warning';
     return 'success';
 }
-
-/**
- * Get Tailwind CSS classes for status badge color
- */
-export function getStatusBadgeColor(status: AssessmentStatus | DecisionStatus | string): string {
-    if (status === 'ACCEPTED' || status === 'GRADED') {
-        return 'bg-sarge-success-100 text-sarge-success-800';
-    }
-    if (status === 'REJECTED' || status === 'EXPIRED') {
-        return 'bg-sarge-error-200 text-sarge-error-700';
-    }
-    if (status === 'NOT_SENT' || status === 'NOT_STARTED' || status === 'NOT_ASSIGNED') {
-        return 'bg-sarge-gray-200 text-sarge-gray-600'; // Gray per Figma design
-    }
-    if (status === 'SUBMITTED') {
-        return 'bg-sarge-primary-200 text-sarge-primary-600';
-    }
-    if (status === 'IN_PROGRESS') {
-        return 'bg-sarge-warning-100 text-sarge-warning-500';
-    }
-    return 'bg-sarge-gray-200 text-sarge-gray-600';
-}

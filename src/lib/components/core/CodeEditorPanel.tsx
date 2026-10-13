@@ -11,6 +11,7 @@ import {
     DropdownMenuItem,
 } from '@/lib/components/ui/Dropdown';
 import { ChevronDown } from 'lucide-react';
+import { Chip } from '@/lib/components/ui/Chip';
 import { applySargeDarkTheme } from '@/lib/utils/monaco.utils';
 import { getLanguageLabel } from '@/lib/utils/language.utils';
 import type { TaskLanguageOption } from '@/lib/types/candidate-assessment.types';
@@ -45,10 +46,10 @@ export default function CodeEditorPanel({
                     <span className="tracking-design text-xs font-medium">Language</span>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <div className="bg-sarge-primary-500 tracking-design text-primary-foreground flex cursor-pointer items-center gap-2.5 rounded-sm px-2.5 py-0.5 text-xs font-medium">
+                            <Chip className="bg-sarge-primary-500 tracking-design text-primary-foreground cursor-pointer gap-2.5 rounded-sm px-2.5 py-0.5 text-xs font-medium">
                                 {getLanguageLabel(language)}
                                 <ChevronDown className="size-2.5" />
-                            </div>
+                            </Chip>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent
                             side="bottom"

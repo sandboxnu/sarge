@@ -6,18 +6,21 @@ import { MoreVertical, Trash2 } from 'lucide-react';
 import { LinkButton } from '@/lib/components/ui/LinkButton';
 import { Button } from '@/lib/components/ui/Button';
 import { Checkbox } from '@/lib/components/ui/Checkbox';
+import { Chip } from '@/lib/components/ui/Chip';
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/lib/components/ui/Dropdown';
-
 import { DataTable } from '@/lib/components/ui/DataTable';
 import type { ApplicationDisplayInfo } from '@/lib/types/position.types';
 import { PositionAssessmentCard } from '@/lib/components/core/PositionAssessmentCard';
-import { cn } from '@/lib/utils/cn.utils';
-import { getStatusBadgeColor } from '@/lib/utils/status.utils';
+
+import { getAssessmentStatusLabel } from '@/lib/utils/status.utils';
+import { getAssessmentStatusVariant } from '@/lib/utils/status.utils';
+import { getDecisionStatusVariant } from '@/lib/utils/status.utils';
+import { getDecisionStatusLabel } from '@/lib/utils/status.utils';
 
 interface CandidateTableProps {
     candidates: ApplicationDisplayInfo[];
@@ -25,27 +28,6 @@ interface CandidateTableProps {
     onRowSelectionChange: OnChangeFn<RowSelectionState>;
     onDeleteRequest: (candidate: ApplicationDisplayInfo) => void;
 }
-
-const getAssessmentLabel = (status?: string) => {
-    const s = (status ?? '').toUpperCase();
-    if (s === 'GRADED') return 'Graded';
-    if (s === 'SUBMITTED') return 'Submitted';
-    if (s === 'IN_PROGRESS') return 'In progress';
-    if (s === 'NOT_SENT') return 'Not sent';
-    if (s === 'NOT_STARTED') return 'Not started';
-    if (s === 'NOT_ASSIGNED') return 'Not assigned';
-    if (s === 'EXPIRED') return 'Expired';
-    return status ?? 'N/A';
-};
-
-const formatDecisionLabel = (status?: string) => {
-    if (!status) return 'Pending';
-    return status
-        .toLowerCase()
-        .split('_')
-        .map((part) => (part ? part[0].toUpperCase() + part.slice(1) : part))
-        .join(' ');
-};
 
 const ensureAbsoluteUrl = (url: string) => {
     if (!url) return '';
@@ -69,8 +51,6 @@ const HeaderLabel = ({ children }: { children: string }) => (
         {children}
     </span>
 );
-
-const chipPaddingClass = 'px-2 py-1';
 
 export function CandidateTable({
     candidates,
@@ -135,21 +115,15 @@ export function CandidateTable({
                     }
 
                     const assessmentStatus = row.original.assessmentStatus;
-                    const label = getAssessmentLabel(assessmentStatus);
                     return (
                         <PositionAssessmentCard
                             onClick={() => undefined}
                             className="border-sarge-gray-200 bg-sarge-gray-0 h-9 gap-2 rounded-md p-2"
                             iconClassName="h-4 w-4"
                         >
-                            <span
-                                className={cn(
-                                    `inline-flex items-center rounded-md ${chipPaddingClass} text-xs font-medium`,
-                                    getStatusBadgeColor(assessmentStatus)
-                                )}
-                            >
-                                {label}
-                            </span>
+                            <Chip variant={getAssessmentStatusVariant(assessmentStatus)}>
+                                {getAssessmentStatusLabel(assessmentStatus)}
+                            </Chip>
                         </PositionAssessmentCard>
                     );
                 },
@@ -190,16 +164,10 @@ export function CandidateTable({
                 header: () => <HeaderLabel>DECISION</HeaderLabel>,
                 cell: ({ row }) => {
                     const decision = row.original.decisionStatus ?? 'Pending';
-                    const decisionLabel = formatDecisionLabel(decision);
                     return (
-                        <span
-                            className={cn(
-                                `inline-flex items-center gap-1 rounded-md ${chipPaddingClass} text-xs font-medium`,
-                                getStatusBadgeColor(decision)
-                            )}
-                        >
-                            {decisionLabel}
-                        </span>
+                        <Chip variant={getDecisionStatusVariant(decision)}>
+                            {getDecisionStatusLabel(decision)}
+                        </Chip>
                     );
                 },
             },
