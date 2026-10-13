@@ -2,21 +2,27 @@
 
 import { Button } from '@/lib/components/ui/Button';
 import { CandidateTable } from '@/lib/components/core/CandidateTable';
+import { CandidateSelectionMenu } from '@/lib/components/core/CandidateSelectionMenu';
 import CreateCandidateModal from '@/lib/components/modal/CreateCandidateModal';
 import UploadCSVModal from '@/lib/components/modal/UploadCSVModal';
+import DeleteCandidatesModal from '@/lib/components/modal/DeleteCandidatesModal';
 import useCandidates from '@/lib/hooks/useCandidates';
 import useCandidateSelection from '@/lib/hooks/useCandidateSelection';
 import { Search } from '@/lib/components/core/Search';
 import { Tabs, TabsContent, TabsList, UnderlineTabsTrigger } from '@/lib/components/ui/Tabs';
 import { Plus, ArrowUpDown, SlidersHorizontal, Mail } from 'lucide-react';
-import { use, useMemo, useState } from 'react';
+import { use, useCallback, useMemo, useState } from 'react';
 import useSearch from '@/lib/hooks/useSearch';
+import { type ApplicationDisplayInfo } from '@/lib/types/position.types';
 import Breadcrumbs from '@/lib/components/core/Breadcrumbs';
 
 export default function CandidatesPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
     const [isModalManualOpen, setIsModalManualOpen] = useState(false);
     const [isCSVModalOpen, setIsCSVModalOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    // Snapshot of the rows being deleted, so the modal text doesn't change if the selection does
+    const [pendingDelete, setPendingDelete] = useState<ApplicationDisplayInfo[]>([]);
     const {
         candidates,
         loading,
@@ -24,6 +30,7 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
         positionTitle,
         createCandidate,
         batchCreateCandidates,
+        deleteCandidates,
         isSendingAssessments,
         handleSendAssessments,
     } = useCandidates(id);
@@ -38,7 +45,18 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                 : candidates,
         [candidates, searchValue]
     );
-    const { rowSelection, setRowSelection } = useCandidateSelection(displayedCandidates);
+    const { rowSelection, setRowSelection, selectedCandidates, selectedCount, clearSelection } =
+        useCandidateSelection(displayedCandidates);
+
+    const requestDelete = useCallback((toDelete: ApplicationDisplayInfo[]) => {
+        setPendingDelete(toDelete);
+        setIsDeleteModalOpen(true);
+    }, []);
+    // Stable reference so CandidateTable's memoized columns aren't rebuilt every render
+    const handleRowDeleteRequest = useCallback(
+        (candidate: ApplicationDisplayInfo) => requestDelete([candidate]),
+        [requestDelete]
+    );
 
     return (
         <>
@@ -105,6 +123,12 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                                 candidates={displayedCandidates}
                                 rowSelection={rowSelection}
                                 onRowSelectionChange={setRowSelection}
+                                onDeleteRequest={handleRowDeleteRequest}
+                            />
+                            <CandidateSelectionMenu
+                                selectedCount={selectedCount}
+                                onDelete={() => requestDelete(selectedCandidates)}
+                                onDeselectAll={clearSelection}
                             />
                             <br />
                         </TabsContent>
@@ -139,6 +163,12 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                 positionId={id}
                 onOpenChange={setIsCSVModalOpen}
                 onCreate={batchCreateCandidates}
+            />
+            <DeleteCandidatesModal
+                open={isDeleteModalOpen}
+                onOpenChange={setIsDeleteModalOpen}
+                candidates={pendingDelete}
+                onConfirm={() => deleteCandidates(pendingDelete.map((c) => c.candidate.id))}
             />
         </>
     );

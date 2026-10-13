@@ -41,8 +41,14 @@ application from the database.
 | Dash SVG | **Inline in `Checkbox.tsx`**, the same way as the existing check mark: Figma path `M7 9.99967H13`, `stroke="currentColor"`, same `viewBox`. The box color comes from the existing `--sarge-primary-500` token classes, not hardcoded hex. How `Checkbox` switches between check and dash is still decided in Step 4. |
 | Batch ID validation | **`z.array(z.string())`**, matching the codebase convention (`UpdateAssessmentTemplateTasksSchema`; ~35 ID fields use `z.string()`). The `z.cuid()` schemas in `application.schema.ts` / `assessment.schema.ts` are unused, and seeded IDs like `cand_carter_herman_001` aren't cuids. |
 | Partial failure | **Delete what it can, report the rest.** Batch returns 200 with `BatchRemoveResult { totalDeleted, totalFailed, failedCandidateIds }`, mirroring `AssessmentInvitationResult`. Client shows the success toast if `totalDeleted > 0` and the error toast if `totalFailed > 0`; both can appear together (Figma "Toast" frame). Validation, auth, and DB errors still fail the whole request. |
-| After a partial failure | **Close the modal; failed rows stay in the table and stay selected**, so the floating menu remains and Delete retries just those. |
+| After a partial failure | **Close the modal and remove every requested row**, including the "failed" ones, while still showing the error toast. (Revised: a candidate only fails when its application no longer exists on the position, e.g. someone else deleted it, so keeping it selected for a retry would fail forever.) |
+| Delete modal Cancel button | **Gray text with 16px side padding, as in Figma**: `Button variant="icon" className="px-4"` (gray-600 = Figma's `#5B6274`), not the purple `link` variant other modals use. |
 | Single-row delete | **Uses the batch endpoint too** (a one-item list): one code path, identical toasts. The existing single endpoint is left unchanged; no `deleteCandidate` client wrapper is needed. |
+| ⋯ menu styling | **Keep as built.** Small differences from Figma (sizes, padding, font) are acceptable; the Figma files don't exactly match the app (e.g. typography). Prefer the app's existing components and tokens (e.g. `text-destructive` = `--sarge-error-700`) over Figma's raw values. |
+| Icons | **Prefer icons already in the codebase; fall back to the Figma SVG** (inlined with `currentColor`) only when none exists. Floating menu: lucide `Trash2` (the app's delete icon), `SquarePen` (template previews' edit icon), `X`. |
+| Animation | **Animate if the app does.** The only working entrance animation is `animate-section-enter` (used in `AssessmentContent`), so the floating menu uses it on appear. No exit animation (none works in the app). |
+| Floating menu position | **Always at the bottom of the content area**, centered over it (not the viewport/sidebar). Started as `sticky`, but that left it under short tables. Now `absolute inset-x-8 bottom-6 mx-auto max-w-[855px]`, anchored to the layout's `SidebarInset` (`relative`; nothing positioned between it and the menu), so it doesn't scroll with the page. If `SidebarInset` ever stops being `relative`, or a positioned wrapper is added around the table, the menu would anchor there instead. |
+| Button text color | `Button variant="icon"` default (gray-600) is fine; no override to Figma's gray-900. |
 | Row/page design differences | **Out of scope:** Grader column (header + avatar), decision chip ×, "Assigned Assessment" tab label, title-case headers. |
 
 ---
@@ -270,22 +276,28 @@ Each step ends at a **checkpoint**: show the result, then wait for approval.
 - [x] ✋ Checkpoint: shape approved; behavior gets tested in the browser at Step 4
 
 **Step 4: Wire `CandidateTable`**
-- [ ] Row checkboxes and header select-all hooked to state; ⋯ Delete calls `onDeleteRequest`
-- [ ] Indeterminate `Checkbox` style (if Q2 says so)
-- ✋ Checkpoint: select, select-all, and search pruning work in the browser
+- [x] Row checkboxes and header select-all hooked to state (⋯ Delete's `onDeleteRequest` moves to Step 6)
+- [x] `Checkbox` `indicator?: 'check' | 'dash'` with both paths from the Figma SVGs; header uses `dash`
+- [x] Page: memoized `displayedCandidates` + `useCandidateSelection` passed to the table (pulled forward from Step 7)
+- [x] ✋ Checkpoint: select, select-all, and search pruning work in the browser (approved)
 
 **Step 5: Floating menu**
-- [ ] Build to Figma using `Button` and `Dropdown`; Edit property stubbed per Q5
-- ✋ Checkpoint: compare against Figma side by side
+- [x] Build to Figma using `Button` and `Dropdown`; Edit property stubbed per Q5
+- [x] Rendered on the page with `selectedCount` / `clearSelection`; `onDelete` is a `TODO (Step 6)` no-op
+- [x] ✋ Checkpoint: compare against Figma side by side (approved, incl. always-at-bottom positioning)
 
 **Step 6: Delete modal**
-- [ ] Per Q1 and Q4 (generalize vs. new)
-- ✋ Checkpoint: compare against Figma
+- [x] `DeleteCandidatesModal` + `useDeleteCandidatesModal` (candidate-specific, per Q4), built from the
+  `Dialog` primitives and app conventions (default `DialogTitle`, `link` Cancel, `destructive` Delete)
+- (Steps 6 and 7 combined at your request)
 
 **Step 7: Hook + page wiring**
-- [ ] `useCandidates.deleteCandidates`
-- [ ] Page: memoized `displayedCandidates`, selection hook, menu, modal
-- ✋ Checkpoint: end-to-end in the browser
+- [x] `useCandidates.deleteCandidates` (batch endpoint; success/error toasts; returns false only when
+  the whole request fails, so the modal stays open)
+- [x] Page: ⋯ Delete (`onDeleteRequest`) and floating-menu Delete open the modal with a snapshot of
+  the rows; `onConfirm` calls `deleteCandidates`
+- [x] Tested by script: single delete, Cancel, bulk partial failure (2 deleted / 1 failed, both toasts)
+- [ ] ✋ Checkpoint: end-to-end in the browser (you)
 
 **Step 8: Verify** (together)
 - [ ] Single delete through the row dropdown → modal → row gone, and still gone after a refresh (DB)

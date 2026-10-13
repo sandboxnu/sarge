@@ -23,6 +23,7 @@ interface CandidateTableProps {
     candidates: ApplicationDisplayInfo[];
     rowSelection: RowSelectionState;
     onRowSelectionChange: OnChangeFn<RowSelectionState>;
+    onDeleteRequest: (candidate: ApplicationDisplayInfo) => void;
 }
 
 const getAssessmentLabel = (status?: string) => {
@@ -75,6 +76,7 @@ export function CandidateTable({
     candidates,
     rowSelection,
     onRowSelectionChange,
+    onDeleteRequest,
 }: CandidateTableProps) {
     const columns = useMemo<ColumnDef<ApplicationDisplayInfo>[]>(
         () => [
@@ -204,7 +206,7 @@ export function CandidateTable({
             {
                 id: 'actions',
                 header: () => null,
-                cell: () => (
+                cell: ({ row }) => (
                     <div className="flex justify-end">
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -220,8 +222,10 @@ export function CandidateTable({
                                 align="end"
                                 className="border-sarge-gray-200 w-48 border bg-white"
                             >
-                                {/* TODO: open delete confirmation modal */}
-                                <DropdownMenuItem className="text-destructive hover:text-destructive focus:text-destructive hover:bg-sarge-gray-50 focus:bg-sarge-gray-50 bg-white italic hover:cursor-pointer">
+                                <DropdownMenuItem
+                                    onSelect={() => onDeleteRequest(row.original)}
+                                    className="text-destructive hover:text-destructive focus:text-destructive hover:bg-sarge-gray-50 focus:bg-sarge-gray-50 bg-white italic hover:cursor-pointer"
+                                >
                                     <Trash2 className="text-destructive size-4" />
                                     Delete
                                 </DropdownMenuItem>
@@ -231,7 +235,7 @@ export function CandidateTable({
                 ),
             },
         ],
-        []
+        [onDeleteRequest]
     );
 
     return (
