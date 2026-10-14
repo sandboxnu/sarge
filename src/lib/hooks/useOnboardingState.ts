@@ -14,7 +14,7 @@ function useOnboardingState() {
     const isUserLoading = auth.sessionPending || member.isPending;
     const isSignedOut = !auth.isAuthenticated && !auth.sessionPending;
 
-    const hasOrganization = !!member.data?.organizationId;
+    const hasOrganization = member.data?.userId === userId && !!member.data?.organizationId;
     const isOnboarding =
         auth.isAuthenticated && !auth.hasActiveOrganization && !auth.isPending && !hasOrganization;
 
