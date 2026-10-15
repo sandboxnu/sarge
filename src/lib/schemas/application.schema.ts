@@ -33,6 +33,14 @@ export const batchAddApplicationsSchema = z.object({
         .max(1000, 'Cannot add more than 1000 applications at once'),
 });
 
+// for batch removing applications from a position
+export const batchRemoveApplicationsSchema = z.object({
+    candidateIds: z
+        .array(z.string())
+        .min(1, 'At least one candidate is required')
+        .max(1000, 'Cannot remove more than 1000 candidates at once'),
+});
+
 export const updateAssessmentStatusSchema = z.object({
     assessmentStatus: z.enum(AssessmentStatus),
 });
@@ -57,5 +65,6 @@ export type AddApplicationWithCandidateDataDTO = z.infer<
     typeof addApplicationWithCandidateDataSchema
 >;
 export type BatchAddApplicationsDTO = z.infer<typeof batchAddApplicationsSchema>;
+export type BatchRemoveApplicationsDTO = z.infer<typeof batchRemoveApplicationsSchema>;
 export type UpdateAssessmentStatusDTO = z.infer<typeof updateAssessmentStatusSchema>;
 export type UpdateDecisionStatusDTO = z.infer<typeof updateDecisionStatusSchema>;

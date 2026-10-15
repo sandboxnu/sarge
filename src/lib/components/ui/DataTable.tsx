@@ -1,23 +1,41 @@
 'use client';
 
-import { flexRender, getCoreRowModel, useReactTable, type ColumnDef } from '@tanstack/react-table';
+import {
+    flexRender,
+    getCoreRowModel,
+    useReactTable,
+    type ColumnDef,
+    type OnChangeFn,
+    type RowSelectionState,
+} from '@tanstack/react-table';
 import { cn } from '@/lib/utils/cn.utils';
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
     headerClassName?: string;
+    // Row selection is opt-in: tables that don't pass `rowSelection` behave as before
+    rowSelection?: RowSelectionState;
+    onRowSelectionChange?: OnChangeFn<RowSelectionState>;
+    getRowId?: (row: TData, index: number) => string;
 }
 
 export function DataTable<TData, TValue>({
     columns,
     data,
     headerClassName,
+    rowSelection,
+    onRowSelectionChange,
+    getRowId,
 }: DataTableProps<TData, TValue>) {
     const table = useReactTable({
         data,
         columns,
         getCoreRowModel: getCoreRowModel(),
+        getRowId,
+        enableRowSelection: rowSelection !== undefined,
+        onRowSelectionChange,
+        state: rowSelection !== undefined ? { rowSelection } : {},
     });
 
     return (

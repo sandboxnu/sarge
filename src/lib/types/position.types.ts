@@ -31,6 +31,7 @@ export interface ApplicationDisplayInfo {
     assessmentStatus: AssessmentStatus;
     decisionStatus: DecisionStatus;
     candidate: {
+        id: string;
         name: string;
         major: string | null;
         graduationDate: string | null;
@@ -72,6 +73,12 @@ export interface BatchAddResult {
     entriesCreated: number;
     totalProcessed: number;
     candidates: ApplicationDisplayInfo[];
+}
+
+export interface BatchRemoveResult {
+    totalDeleted: number;
+    totalFailed: number;
+    failedCandidateIds: string[];
 }
 
 export interface PositionPreviewCandidate {
