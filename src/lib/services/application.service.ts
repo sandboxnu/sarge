@@ -379,8 +379,13 @@ async function getApplicationForReview(
                     tasks: {
                         include: {
                             reviews: {
-                                include: { comments: true },
+                                include: {
+                                    comments: true,
+                                    reviewer: { select: { name: true } },
+                                },
                             },
+
+                            taskTemplate: { select: { title: true, description: true } },
                             snapshots: true,
                             testResults: true,
                         },

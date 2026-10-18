@@ -1,64 +1,76 @@
 'use client';
 
-import { useState } from 'react';
-import { Button } from '@/lib/components/ui/Button';
-import { cn } from '@/lib/utils/cn.utils';
-import ReviewTasksOnSidebar from '@/lib/components/reviewing/ReviewTasksOnSidebar';
-import ReviewDecisionOnSidebar from '@/lib/components/reviewing/ReviewDecisionOnSidebar';
-import type { TaskWithReviewData } from '@/lib/types/position.types';
+import { useState, useEffect } from 'react';
 
-const TABS = ['Review Tasks', 'Decision'];
+import type { TaskWithReviewData } from '@/lib/types/position.types';
+import { TestVisibility } from '@/generated/prisma';
+
+import ReviewerActions from '@/lib/components/reviewing/ReviewerActions';
+import TaskInfo from '@/lib/components/reviewing/TaskInfo';
+import InstructionsContent from '@/lib/components/reviewing/InstructionsContent';
+import Comments from '@/lib/components/reviewing/Comments';
+import ReviewerSummary from '@/lib/components/reviewing/ReviewerSummary';
+import { BlockNoteViewer } from '@/lib/components/core/BlockNoteViewer';
+import type { BlockNoteContent } from '@/lib/types/task-template.types';
 
 type TaskReviewSidebarProps = {
     task: TaskWithReviewData | null;
-    currentTask: number;
-    totalTasks: number;
+
     onPrev: () => void;
     onNext: () => void;
-    onSelectTask: (index: number) => void;
 };
 
-export default function TaskReviewSidebar({
-    task,
-    currentTask,
-    totalTasks,
-    onPrev,
-    onNext,
-    onSelectTask,
-}: TaskReviewSidebarProps) {
-    const [activeTab, setActiveTab] = useState('Review Tasks');
-
+export default function TaskReviewSidebar({ task, onPrev, onNext }: TaskReviewSidebarProps) {
+    const testResults = task?.testResults ?? [];
+    const initialScore = String(task?.reviews[0]?.score ?? '');
+    const [score, setScore] = useState(initialScore);
+    useEffect(() => setScore(initialScore), [initialScore]);
+    const publicResults = testResults.filter((r) => r.visibility === TestVisibility.PUBLIC);
+    const privateResults = testResults.filter((r) => r.visibility === TestVisibility.PRIVATE);
+    const publicPassed = publicResults.filter((r) => r.passed).length;
+    const privatePassed = privateResults.filter((r) => r.passed).length;
+    const comments = (task?.reviews ?? []).flatMap((review) =>
+        review.comments.map((comment) => ({
+            id: comment.id,
+            author: review.reviewer.name,
+            body: comment.content,
+            lineRange:
+                comment.startLine === comment.endLine
+                    ? `Line ${comment.startLine}`
+                    : `Lines ${comment.startLine}-${comment.endLine}`,
+        }))
+    );
     return (
-        <div className="ml-4 flex min-h-0 basis-[30%] flex-col">
-            <div className="flex items-center gap-2">
-                {TABS.map((tab) => (
-                    <Button
-                        key={tab}
-                        variant="icon"
-                        onClick={() => setActiveTab(tab)}
-                        className={cn(
-                            'rounded-md px-2 py-1 text-xs font-medium',
-                            activeTab === tab
-                                ? 'bg-sarge-gray-100 text-sarge-gray-600'
-                                : 'text-sarge-gray-500 hover:text-sarge-gray-600 bg-transparent'
-                        )}
-                    >
-                        {tab}
-                    </Button>
-                ))}
-            </div>
-
-            {activeTab === 'Review Tasks' && (
-                <ReviewTasksOnSidebar
-                    task={task}
-                    currentTask={currentTask}
-                    totalTasks={totalTasks}
-                    onPrev={onPrev}
-                    onNext={onNext}
-                    onSelectTask={onSelectTask}
+        <div className="ml-4 flex min-h-0 basis-[30%] flex-col overflow-y-auto">
+            <ReviewerActions
+                title={task?.taskTemplate.title ?? 'Task'}
+                onPrev={onPrev}
+                onNext={onNext}
+            >
+                <TaskInfo
+                    publicTestCases={`${publicPassed}/${publicResults.length} passed`}
+                    privateTestCases={`${privatePassed}/${privateResults.length} passed`}
+                    score={score}
+                    onScoreChange={setScore}
                 />
-            )}
-            {activeTab === 'Decision' && <ReviewDecisionOnSidebar task={task} />}
+            </ReviewerActions>
+            <ReviewerActions title="Instructions">
+                <InstructionsContent>
+                    {task && (
+                        <BlockNoteViewer
+                            content={task.taskTemplate.description as BlockNoteContent}
+                        />
+                    )}
+                </InstructionsContent>
+            </ReviewerActions>
+
+            <ReviewerActions title="Comments" count={comments.length}>
+                <Comments comments={comments} />
+            </ReviewerActions>
+
+            <ReviewerActions title="Reviewer Summary">
+                <ReviewerSummary decision="Pending" reviewers={[]} />
+            </ReviewerActions>
         </div>
     );
 }
