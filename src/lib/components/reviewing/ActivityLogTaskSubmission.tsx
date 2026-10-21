@@ -8,5 +8,5 @@ type ActivityLogTaskSubmissionProps = {
 
 // TODO(laith): waiting for designs
 export default function ActivityLogTaskSubmission(_props: ActivityLogTaskSubmissionProps) {
-    return <div>TODO</div>;
+    return <div>TODO</div>
 }
