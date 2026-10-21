@@ -1,30 +1,46 @@
+import fs from 'node:fs';
 import { WebSocketServer } from 'ws';
 import { jwtVerify } from 'jose';
 
 const HEARTBEAT_INTERVAL = 5000;
 const INTERNAL_API_URL = process.env.INTERNAL_API_URL ?? 'http://localhost:3000';
-const INTERNAL_API_SECRET = process.env.INTERNAL_API_SECRET;
+const CONFIG_PATH =
+    process.env.SARGE_CONFIG_PATH ?? new URL('../../data/sarge.config.json', import.meta.url);
+
+// env wins, otherwise data/sarge.config.json. read per call so config written after boot applies without a restart.
+function getConfig(key) {
+    if (process.env[key]) return process.env[key];
+    try {
+        return JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'))[key];
+    } catch {
+        return undefined;
+    }
+}
 
 const ws = new WebSocketServer({ port: 8080 });
-const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 
 // <candidateEmail, socket>
 const clients = new Map();
 
-if (!INTERNAL_API_SECRET) {
+if (!getConfig('INTERNAL_API_SECRET')) {
     console.warn('INTERNAL_API_SECRET is missing, this means disconnect snapshots will be skipped');
+}
+
+if (!getConfig('JWT_SECRET')) {
+    console.warn('JWT_SECRET is missing, candidate connections will be rejected until it is configured');
 }
 
 console.log('Sarge WS server listening on 8080');
 
 async function postDisconnectSnapshot(candidateEmail) {
-    if (!INTERNAL_API_SECRET) return;
+    const internalSecret = getConfig('INTERNAL_API_SECRET');
+    if (!internalSecret) return;
     try {
         const res = await fetch(`${INTERNAL_API_URL}/api/internal/snapshot`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-SARGE-INTERNAL-SECRET': INTERNAL_API_SECRET,
+                'X-SARGE-INTERNAL-SECRET': internalSecret,
             },
             body: JSON.stringify({ candidateEmail }),
         });
@@ -41,7 +57,9 @@ function getTokenFromRequest(request) {
 }
 
 async function verifyToken(token) {
-    const { payload } = await jwtVerify(token, secret);
+    const jwtSecret = getConfig('JWT_SECRET');
+    if (!jwtSecret) throw new Error('JWT_SECRET is not configured');
+    const { payload } = await jwtVerify(token, new TextEncoder().encode(jwtSecret));
     return payload;
 }
 
