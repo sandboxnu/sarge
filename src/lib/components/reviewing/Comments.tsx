@@ -29,7 +29,7 @@ export default function Comments({ comments, value, onChange, onSubmit }: Commen
                     className="text-body-xs text-sarge-gray-800 placeholder:text-sarge-gray-500 w-full resize-none outline-none"
                 />
                 <Button
-                    variant="secondary"
+                    variant="outline"
                     aria-label="Submit comment"
                     onClick={onSubmit}
                     className="size-9 self-end p-0"

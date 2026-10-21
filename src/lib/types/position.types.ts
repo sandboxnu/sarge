@@ -10,6 +10,7 @@ import type {
     Snapshot,
     TaskTestResult,
     PositionTag,
+    Prisma,
 } from '@/generated/prisma';
 
 export type PositionWithCounts = {
@@ -50,12 +51,15 @@ export interface ApplicationDisplayInfo {
 
 export type ReviewWithComments = Review & {
     comments: Comment[];
+    reviewer: { name: string };
 };
 
 export type TaskWithReviewData = Task & {
     reviews: ReviewWithComments[];
     snapshots: Snapshot[];
     testResults: TaskTestResult[];
+
+    taskTemplate: { title: string; description: Prisma.JsonValue };
 };
 
 export type ApplicationWithReviewData = Application & {

@@ -52,7 +52,7 @@ export default function ReviewerSummary({
                 ))}
             </div>
 
-            <Button variant="secondary" className="h-10 w-full" onClick={onViewSummary}>
+            <Button variant="outline" className="h-10 w-full" onClick={onViewSummary}>
                 View Summary
             </Button>
         </div>

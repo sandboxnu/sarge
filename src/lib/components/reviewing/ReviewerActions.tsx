@@ -45,7 +45,7 @@ export default function ReviewerActions({
                 {hasNav ? (
                     <div className="flex shrink-0 items-center gap-2">
                         <Button
-                            variant="secondary"
+                            variant="outline"
                             aria-label="Previous task"
                             onClick={onPrev}
                             className="size-9 p-0"
@@ -53,7 +53,7 @@ export default function ReviewerActions({
                             <ChevronLeft className="size-5" />
                         </Button>
                         <Button
-                            variant="secondary"
+                            variant="outline"
                             aria-label="Next task"
                             onClick={onNext}
                             className="size-9 p-0"
