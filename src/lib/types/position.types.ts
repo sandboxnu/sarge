@@ -10,6 +10,7 @@ import type {
     Snapshot,
     TaskTestResult,
     PositionTag,
+    Prisma,
 } from '@/generated/prisma';
 
 export type PositionWithCounts = {
@@ -31,6 +32,7 @@ export interface ApplicationDisplayInfo {
     assessmentStatus: AssessmentStatus;
     decisionStatus: DecisionStatus;
     candidate: {
+        id: string;
         name: string;
         major: string | null;
         graduationDate: string | null;
@@ -49,12 +51,15 @@ export interface ApplicationDisplayInfo {
 
 export type ReviewWithComments = Review & {
     comments: Comment[];
+    reviewer: { name: string };
 };
 
 export type TaskWithReviewData = Task & {
     reviews: ReviewWithComments[];
     snapshots: Snapshot[];
     testResults: TaskTestResult[];
+
+    taskTemplate: { title: string; description: Prisma.JsonValue };
 };
 
 export type ApplicationWithReviewData = Application & {
@@ -72,6 +77,12 @@ export interface BatchAddResult {
     entriesCreated: number;
     totalProcessed: number;
     candidates: ApplicationDisplayInfo[];
+}
+
+export interface BatchRemoveResult {
+    totalDeleted: number;
+    totalFailed: number;
+    failedCandidateIds: string[];
 }
 
 export interface PositionPreviewCandidate {

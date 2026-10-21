@@ -13,7 +13,7 @@ import {
 import { ChevronDown } from 'lucide-react';
 import { Chip } from '@/lib/components/ui/Chip';
 import { applySargeDarkTheme } from '@/lib/utils/monaco.utils';
-import { getLanguageLabel } from '@/lib/utils/language.utils';
+import { getLanguageLabel, getLanguageFileExtension } from '@/lib/utils/language.utils';
 import type { TaskLanguageOption } from '@/lib/types/candidate-assessment.types';
 
 type CodeEditorPanelProps = {
@@ -37,16 +37,18 @@ export default function CodeEditorPanel({
     }
 
     return (
-        <div className="bg-sarge-gray-700 flex h-full flex-col">
-            <div className="text-sarge-gray-0 flex flex-shrink-0 items-stretch text-xs">
-                <div className="border-sarge-gray-600 flex flex-shrink-0 items-center border-r px-2.5 py-2">
-                    <span className="tracking-design font-medium">Main</span>
+        <div className="bg-sarge-gray-800 flex h-full flex-col">
+            <div className="bg-sarge-gray-800 border-sarge-gray-700 flex flex-shrink-0 items-stretch border-b">
+                <div className="border-sarge-gray-700 flex flex-shrink-0 items-center border-r px-3 py-2">
+                    <span className="font-code text-sarge-gray-300 tracking-design text-xs leading-4 font-bold">
+                        {`main.${getLanguageFileExtension(language)}`}
+                    </span>
                 </div>
-                <div className="border-sarge-gray-600 flex flex-1 items-center justify-end gap-1.5 border-b px-2.5">
-                    <span className="tracking-design text-xs font-medium">Language</span>
+                <div className="bg-sarge-gray-750 flex flex-1 items-center justify-end gap-1.5 px-2.5">
+                    <span className="text-label-xs text-sarge-gray-500">Language</span>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Chip className="bg-sarge-primary-500 tracking-design text-primary-foreground cursor-pointer gap-2.5 rounded-sm px-2.5 py-0.5 text-xs font-medium">
+                            <Chip className="bg-sarge-gray-700 text-label-xs text-sarge-gray-50 h-[22px] cursor-pointer gap-1.5 rounded-sm px-3 py-0">
                                 {getLanguageLabel(language)}
                                 <ChevronDown className="size-2.5" />
                             </Chip>
@@ -79,12 +81,7 @@ export default function CodeEditorPanel({
                     defaultValue={defaultValue}
                     onMount={handleMount}
                     theme="sargeDark"
-                    options={{
-                        fontSize: 14,
-                        minimap: { enabled: false },
-                        scrollBeyondLastLine: false,
-                        wordWrap: 'on',
-                    }}
+                    options={{ wordWrap: 'on' }}
                 />
             </div>
         </div>

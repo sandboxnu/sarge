@@ -1,9 +1,18 @@
 'use client';
 
 import { useMemo } from 'react';
-import type { ColumnDef } from '@tanstack/react-table';
+import type { ColumnDef, OnChangeFn, RowSelectionState } from '@tanstack/react-table';
+import { MoreVertical, Trash2 } from 'lucide-react';
 import { LinkButton } from '@/lib/components/ui/LinkButton';
+import { Button } from '@/lib/components/ui/Button';
+import { Checkbox } from '@/lib/components/ui/Checkbox';
 import { Chip } from '@/lib/components/ui/Chip';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/lib/components/ui/Dropdown';
 import { DataTable } from '@/lib/components/ui/DataTable';
 import type { ApplicationDisplayInfo } from '@/lib/types/position.types';
 import { PositionAssessmentCard } from '@/lib/components/core/PositionAssessmentCard';
@@ -15,6 +24,9 @@ import { getDecisionStatusLabel } from '@/lib/utils/status.utils';
 
 interface CandidateTableProps {
     candidates: ApplicationDisplayInfo[];
+    rowSelection: RowSelectionState;
+    onRowSelectionChange: OnChangeFn<RowSelectionState>;
+    onDeleteRequest: (candidate: ApplicationDisplayInfo) => void;
 }
 
 const ensureAbsoluteUrl = (url: string) => {
@@ -40,9 +52,33 @@ const HeaderLabel = ({ children }: { children: string }) => (
     </span>
 );
 
-export function CandidateTable({ candidates }: CandidateTableProps) {
+export function CandidateTable({
+    candidates,
+    rowSelection,
+    onRowSelectionChange,
+    onDeleteRequest,
+}: CandidateTableProps) {
     const columns = useMemo<ColumnDef<ApplicationDisplayInfo>[]>(
         () => [
+            {
+                id: 'select',
+                // Per Figma: empty until every row is selected, then a dash that deselects all
+                header: ({ table }) => (
+                    <Checkbox
+                        aria-label="Select all candidates"
+                        indicator="dash"
+                        checked={table.getIsAllRowsSelected()}
+                        onCheckedChange={(value) => table.toggleAllRowsSelected(value === true)}
+                    />
+                ),
+                cell: ({ row }) => (
+                    <Checkbox
+                        aria-label={`Select ${row.original.candidate.name}`}
+                        checked={row.getIsSelected()}
+                        onCheckedChange={(value) => row.toggleSelected(value === true)}
+                    />
+                ),
+            },
             {
                 accessorKey: 'candidate.name',
                 header: () => <HeaderLabel>NAME/MAJOR</HeaderLabel>,
@@ -135,13 +171,51 @@ export function CandidateTable({ candidates }: CandidateTableProps) {
                     );
                 },
             },
+            {
+                id: 'actions',
+                header: () => null,
+                cell: ({ row }) => (
+                    <div className="flex justify-end">
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button
+                                    variant="icon"
+                                    className="h-8 w-8 p-0"
+                                    aria-label="More options"
+                                >
+                                    <MoreVertical className="size-5" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                                align="end"
+                                className="border-sarge-gray-200 w-48 border bg-white"
+                            >
+                                <DropdownMenuItem
+                                    onSelect={() => onDeleteRequest(row.original)}
+                                    className="text-destructive hover:text-destructive focus:text-destructive hover:bg-sarge-gray-50 focus:bg-sarge-gray-50 bg-white italic hover:cursor-pointer"
+                                >
+                                    <Trash2 className="text-destructive size-4" />
+                                    Delete
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
+                ),
+            },
         ],
-        []
+        [onDeleteRequest]
     );
 
     return (
         <div className="candidate-table border-sarge-gray-200 bg-sarge-gray-0 border">
-            <DataTable columns={columns} data={candidates} headerClassName="bg-sarge-gray-50" />
+            <DataTable
+                columns={columns}
+                data={candidates}
+                headerClassName="bg-sarge-gray-50"
+                rowSelection={rowSelection}
+                onRowSelectionChange={onRowSelectionChange}
+                getRowId={(row) => row.candidate.id}
+            />
         </div>
     );
 }

@@ -81,11 +81,10 @@ function CodeTabsTrigger({
             data-slot="code-tabs-trigger"
             className={cn(
                 'inline-flex items-center justify-center',
-                'rounded-none p-2.5 whitespace-nowrap',
-                'tracking-design text-sarge-gray-0 text-xs font-medium',
+                'rounded-none px-3 py-2 whitespace-nowrap',
+                'font-code tracking-design text-sarge-gray-300 text-xs leading-4 font-medium',
                 'data-[state=active]:font-bold',
-                'border-sarge-gray-600 border-r border-b',
-                'data-[state=active]:border-b-transparent',
+                'border-sarge-gray-700 border-r',
                 'focus-visible:outline-none',
                 'disabled:pointer-events-none disabled:opacity-50',
                 className

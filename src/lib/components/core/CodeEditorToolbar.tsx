@@ -1,6 +1,6 @@
 'use client';
 
-import { ChevronDown, EllipsisVertical } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { Tabs, TabsList, CodeTabsTrigger } from '@/lib/components/ui/Tabs';
 import {
     DropdownMenu,
@@ -33,7 +33,7 @@ export default function CodeEditorToolbar({
     const currentLanguage = languages[selectedLanguageIndex];
 
     return (
-        <div className="text-sarge-gray-0 flex w-full items-stretch">
+        <div className="bg-sarge-gray-800 border-sarge-gray-700 flex w-full items-stretch border-b">
             <Tabs
                 value={activeTab}
                 onValueChange={disabled ? undefined : (v) => onTabChange(v as 'task' | 'solution')}
@@ -48,48 +48,38 @@ export default function CodeEditorToolbar({
                 </TabsList>
             </Tabs>
 
-            <div className="border-sarge-gray-600 flex flex-1 items-center justify-end border-b px-2.5">
-                <div className="flex items-center gap-5">
-                    <div className="flex items-center gap-1.5">
-                        <span className="tracking-design text-xs font-medium">Language</span>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild disabled={disabled}>
-                                <Chip
-                                    className={`bg-sarge-primary-500 tracking-design text-primary-foreground gap-2.5 rounded-sm px-2.5 py-0.5 text-xs font-medium ${
-                                        disabled
-                                            ? 'cursor-not-allowed opacity-50'
-                                            : 'cursor-pointer'
-                                    }`}
+            <div className="bg-sarge-gray-750 flex flex-1 items-center justify-end gap-1.5 px-2.5">
+                <span className="text-label-xs text-sarge-gray-500">Language</span>
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild disabled={disabled}>
+                        <Chip
+                            className={`bg-sarge-gray-700 text-label-xs text-sarge-gray-50 h-[22px] gap-1.5 rounded-sm px-3 py-0 ${
+                                disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+                            }`}
+                        >
+                            {currentLanguage ? getLanguageLabel(currentLanguage.language) : ''}
+                            <ChevronDown className="size-2.5" />
+                        </Chip>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                        side="bottom"
+                        align="center"
+                        className="bg-sarge-primary-500 rounded-sm px-2.5"
+                    >
+                        <DropdownMenuGroup className="text-primary-foreground p-0">
+                            {languages.map((lang: TaskTemplateLanguageDTO) => (
+                                <DropdownMenuItem
+                                    key={lang.language}
+                                    variant="primary"
+                                    className="cursor-pointer"
+                                    onClick={() => handleLanguageChange(lang)}
                                 >
-                                    {currentLanguage
-                                        ? getLanguageLabel(currentLanguage.language)
-                                        : ''}
-                                    <ChevronDown className="size-2.5" />
-                                </Chip>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent
-                                side="bottom"
-                                align="center"
-                                className="bg-sarge-primary-500 rounded-sm px-2.5"
-                            >
-                                <DropdownMenuGroup className="text-primary-foreground p-0">
-                                    {languages.map((lang: TaskTemplateLanguageDTO) => (
-                                        <DropdownMenuItem
-                                            key={lang.language}
-                                            variant="primary"
-                                            className="cursor-pointer"
-                                            onClick={() => handleLanguageChange(lang)}
-                                        >
-                                            {getLanguageLabel(lang.language)}
-                                        </DropdownMenuItem>
-                                    ))}
-                                </DropdownMenuGroup>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </div>
-
-                    <EllipsisVertical className="size-3.5" />
-                </div>
+                                    {getLanguageLabel(lang.language)}
+                                </DropdownMenuItem>
+                            ))}
+                        </DropdownMenuGroup>
+                    </DropdownMenuContent>
+                </DropdownMenu>
             </div>
         </div>
     );

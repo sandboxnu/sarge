@@ -1,5 +1,5 @@
-import { Users } from 'lucide-react';
 import PositionsContent from '@/lib/components/core/PositionsContent';
+import { Users } from 'lucide-react';
 
 export default async function PositionsPage() {
     return (

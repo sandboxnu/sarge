@@ -17,17 +17,8 @@ export default function ReviewApplication({
 
     // NOTE(laith): tasks within this application are rotated by the sidebar and applications within
     // the position are rotated by the navbar
-    const {
-        application,
-        loading,
-        error,
-        totalTasks,
-        currentTask,
-        setCurrentTask,
-        currentTaskData,
-        goPrevTask,
-        goNextTask,
-    } = useApplicationReview(applicationId);
+    const { application, loading, error, currentTaskData, goPrevTask, goNextTask } =
+        useApplicationReview(applicationId);
 
     const { applications, goToApplication, goPrevApplication, goNextApplication } =
         usePositionApplications(positionId, applicationId);
@@ -67,11 +58,8 @@ export default function ReviewApplication({
                         <TaskReviewMain task={currentTaskData} />
                         <TaskReviewSidebar
                             task={currentTaskData}
-                            currentTask={currentTask}
-                            totalTasks={totalTasks}
                             onPrev={goPrevTask}
                             onNext={goNextTask}
-                            onSelectTask={setCurrentTask}
                         />
                     </>
                 ) : (

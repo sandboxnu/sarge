@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useMemo } from 'react';
+import React, { createContext, useContext, useMemo, useEffect } from 'react';
 import { useSession, useActiveOrganization, useActiveMember } from '@/lib/auth/auth-client';
 import { SUPER_USER_ROLE } from '@/lib/auth/permissions';
 
@@ -72,13 +72,33 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children }: AuthProviderProps) {
     const { data: session, isPending: sessionPending } = useSession();
-    const { data: activeOrganization, isPending: orgPending } = useActiveOrganization();
-    const { data: activeMember, isPending: memberPending } = useActiveMember();
+    const {
+        data: activeOrganization,
+        isPending: orgPending,
+        refetch: refetchOrganization,
+    } = useActiveOrganization();
+    const {
+        data: activeMember,
+        isPending: memberPending,
+        refetch: refetchMember,
+    } = useActiveMember();
+
+    const sessionUserId = session?.user?.id;
+    const sessionOrgId = session?.session?.activeOrganizationId;
+
+    useEffect(() => {
+        refetchOrganization();
+        refetchMember();
+    }, [sessionUserId, sessionOrgId, refetchOrganization, refetchMember]);
 
     const value = useMemo<AuthContextValue>(() => {
         const user = session?.user ?? null;
         const userId = user?.id ?? null;
-        const activeOrganizationId = activeOrganization?.id ?? null;
+        const currentOrganization =
+            activeOrganization?.id === session?.session?.activeOrganizationId
+                ? activeOrganization
+                : null;
+        const activeOrganizationId = currentOrganization?.id ?? null;
         const activeMemberId = activeMember?.id ?? null;
 
         return {
@@ -86,7 +106,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
             user,
             userId,
 
-            activeOrganization,
+            activeOrganization: currentOrganization,
             activeOrganizationId,
 
             activeMember,
