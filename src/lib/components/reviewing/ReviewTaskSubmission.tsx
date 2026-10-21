@@ -26,14 +26,16 @@ export default function ReviewTaskSubmission({ task }: ReviewTaskSubmissionProps
     }
 
     return (
-        <div className="bg-sarge-gray-700 flex min-h-0 flex-1 flex-col">
-            <div className="text-sarge-gray-0 flex flex-shrink-0 items-stretch text-xs">
-                <div className="border-sarge-gray-600 flex flex-shrink-0 items-center border-r px-2.5 py-2">
-                    <span className="tracking-design font-medium">{fileName}</span>
+        <div className="bg-sarge-gray-800 flex min-h-0 flex-1 flex-col overflow-hidden rounded-md">
+            <div className="bg-sarge-gray-800 border-sarge-gray-700 flex flex-shrink-0 items-stretch border-b">
+                <div className="border-sarge-gray-700 flex flex-shrink-0 items-center border-r px-3 py-2">
+                    <span className="font-code text-sarge-gray-300 tracking-design text-xs leading-4 font-bold">
+                        {fileName}
+                    </span>
                 </div>
-                <div className="border-sarge-gray-600 flex flex-1 items-center justify-end gap-1.5 border-b px-2.5">
-                    <span className="tracking-design text-xs font-medium">Language</span>
-                    <Chip className="bg-sarge-primary-500 tracking-design text-primary-foreground rounded-sm px-2.5 py-0.5 text-xs font-medium">
+                <div className="flex flex-1 items-center justify-end gap-1.5 bg-[#282C32] px-2.5">
+                    <span className="text-label-xs text-sarge-gray-500">Language</span>
+                    <Chip className="bg-sarge-gray-700 text-label-xs text-sarge-gray-50 h-[22px] rounded-sm px-3 py-0">
                         {language ? getLanguageLabel(language) : 'txt'}
                     </Chip>
                 </div>
@@ -45,13 +47,7 @@ export default function ReviewTaskSubmission({ task }: ReviewTaskSubmissionProps
                     value={submission}
                     onMount={handleEditorMount}
                     theme="sargeDark"
-                    options={{
-                        readOnly: true,
-                        fontSize: 14,
-                        minimap: { enabled: false },
-                        scrollBeyondLastLine: false,
-                        wordWrap: 'on',
-                    }}
+                    options={{ readOnly: true, wordWrap: 'on' }}
                 />
             </div>
         </div>

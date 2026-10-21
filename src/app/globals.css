@@ -172,6 +172,7 @@
 
     --font-sans: var(--font-satoshi);
     --font-inter: var(--font-inter);
+    --font-code: var(--font-jetbrains-mono);
 
     --tracking-design: var(--letter-spacing-design);
 
@@ -327,6 +328,24 @@
 
 .chip-overflow-enter {
     animation: chip-overflow-enter 0.2s ease both;
+}
+
+/* Monaco gutter overrides, see applySargeDarkTheme in monaco.utils.ts */
+.sarge-code-editor .monaco-editor .margin {
+    /* 1px divider 16px left of the code */
+    background-image: linear-gradient(
+        to left,
+        transparent 16px,
+        var(--sarge-gray-700) 16px,
+        var(--sarge-gray-700) 17px,
+        transparent 17px
+    );
+}
+
+.sarge-code-editor .monaco-editor .line-numbers {
+    /* 11.723px at the 13px code size, relative so it scales with mouse wheel zoom */
+    font-size: 0.9018em;
+    letter-spacing: 0.3965px;
 }
 
 /* shake used for char limit feedback */

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Inter, JetBrains_Mono } from 'next/font/google';
 import localFont from 'next/font/local';
 import '@blocknote/shadcn/style.css';
 import './globals.css';
@@ -10,6 +10,12 @@ const inter = Inter({
     variable: '--font-inter',
     subsets: ['latin'],
     weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+});
+
+const jetbrainsMono = JetBrains_Mono({
+    variable: '--font-jetbrains-mono',
+    subsets: ['latin'],
+    display: 'swap',
 });
 
 const satoshi = localFont({
@@ -43,7 +49,7 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body
-                className={`${inter.variable} ${satoshi.variable} flex h-dvh flex-col antialiased`}
+                className={`${inter.variable} ${satoshi.variable} ${jetbrainsMono.variable} flex h-dvh flex-col antialiased`}
             >
                 <AuthProvider>
                     <Toaster />

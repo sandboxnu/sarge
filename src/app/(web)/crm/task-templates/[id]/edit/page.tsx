@@ -109,7 +109,7 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
                     />
                 </div>
 
-                <div className="bg-sarge-gray-700 flex w-2/3 flex-col">
+                <div className="bg-sarge-gray-800 flex w-2/3 flex-col">
                     <div className="flex h-1/2 flex-col">
                         <CodeEditorToolbar
                             activeTab={activeFileTab}
@@ -118,7 +118,7 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
                             selectedLanguageIndex={selectedLanguage}
                             handleLanguageChange={handleLanguageChange}
                         />
-                        <div className="min-h-0 flex-1 p-2">
+                        <div className="min-h-0 flex-1">
                             <Editor
                                 className="h-full"
                                 defaultLanguage={
