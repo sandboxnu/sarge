@@ -8,7 +8,6 @@ type TaskReviewMainProps = {
 };
 
 export default function TaskReviewMain({ task }: TaskReviewMainProps) {
-
     return (
         <div className="flex min-w-0 basis-[70%] flex-col gap-4 overflow-hidden pr-4">
             <TestCasesTaskSubmission task={task} />
