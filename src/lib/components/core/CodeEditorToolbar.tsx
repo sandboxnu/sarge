@@ -48,7 +48,7 @@ export default function CodeEditorToolbar({
                 </TabsList>
             </Tabs>
 
-            <div className="flex flex-1 items-center justify-end gap-1.5 bg-[#282C32] px-2.5">
+            <div className="bg-sarge-gray-750 flex flex-1 items-center justify-end gap-1.5 px-2.5">
                 <span className="text-label-xs text-sarge-gray-500">Language</span>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild disabled={disabled}>
