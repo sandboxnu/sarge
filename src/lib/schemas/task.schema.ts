@@ -43,8 +43,26 @@ export const SubmitTaskForCandidateSchema = z.object({
     testResults: z.array(taskTestResultSchema),
 });
 
+// Reviewer comment on a task; line range is omitted for general comments
+export const CreateCommentSchema = z
+    .object({
+        content: z.string().trim().min(1),
+        startLine: z.number().int().positive().optional(),
+        endLine: z.number().int().positive().optional(),
+    })
+    .refine((c) => (c.startLine === undefined) === (c.endLine === undefined), {
+        message: 'startLine and endLine must be provided together',
+    })
+    .refine(
+        (c) => c.startLine === undefined || c.endLine === undefined || c.startLine <= c.endLine,
+        {
+            message: 'startLine must be <= endLine',
+        }
+    );
+
 export type TaskDTO = z.infer<typeof TaskSchema>;
 export type CreateTaskDTO = z.infer<typeof CreateTaskSchema>;
 export type UpdateTaskDTO = z.infer<typeof UpdateTaskSchema>;
 export type CreateTaskForCandidateDTO = z.infer<typeof CreateTaskForCandidateSchema>;
 export type SubmitTaskForCandidateDTO = z.infer<typeof SubmitTaskForCandidateSchema>;
+export type CreateCommentDTO = z.infer<typeof CreateCommentSchema>;

@@ -2,6 +2,8 @@
 
 import { ChevronRight } from 'lucide-react';
 import { Button } from '@/lib/components/ui/Button';
+import { RemovableChip } from '@/lib/components/ui/RemovableChip';
+import { formatLineRange, type LineRange } from '@/lib/utils/comment.utils';
 
 export interface ReviewComment {
     id: string;
@@ -15,27 +17,55 @@ export interface CommentsProps {
     value?: string;
     onChange?: (value: string) => void;
     onSubmit?: () => void;
+    submitDisabled?: boolean;
+    selectedLines?: LineRange | null;
+    onClearLines?: () => void;
 }
 
-export default function Comments({ comments, value, onChange, onSubmit }: CommentsProps) {
+export default function Comments({
+    comments,
+    value,
+    onChange,
+    onSubmit,
+    submitDisabled,
+    selectedLines,
+    onClearLines,
+}: CommentsProps) {
     return (
         <div className="flex w-full flex-col gap-3">
             <div className="border-sarge-gray-200 flex w-full flex-col gap-2 rounded-lg border p-4">
                 <textarea
                     value={value ?? ''}
                     onChange={(event) => onChange?.(event.target.value)}
+                    onKeyDown={(event) => {
+                        if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) {
+                            event.preventDefault();
+                            onSubmit?.();
+                        }
+                    }}
                     placeholder="Add a comment or note for this task"
                     rows={3}
                     className="text-body-xs text-sarge-gray-800 placeholder:text-sarge-gray-500 w-full resize-none outline-none"
                 />
-                <Button
-                    variant="outline"
-                    aria-label="Submit comment"
-                    onClick={onSubmit}
-                    className="size-9 self-end p-0"
-                >
-                    <ChevronRight className="size-5" />
-                </Button>
+                <div className="flex items-center justify-between gap-2">
+                    {selectedLines ? (
+                        <RemovableChip
+                            label={formatLineRange(selectedLines)}
+                            onRemove={() => onClearLines?.()}
+                        />
+                    ) : (
+                        <span />
+                    )}
+                    <Button
+                        variant="outline"
+                        aria-label="Submit comment"
+                        onClick={onSubmit}
+                        disabled={submitDisabled}
+                        className="size-9 shrink-0 p-0"
+                    >
+                        <ChevronRight className="size-5" />
+                    </Button>
+                </div>
             </div>
 
             {comments.length > 0 && (

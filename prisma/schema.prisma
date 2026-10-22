@@ -275,21 +275,23 @@ model Review {
   id         String   @id @unique @default(cuid())
   taskId     String
   reviewerId String
-  score      Int
+  score      Int?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
   comments Comment[]
   task     Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
   reviewer User      @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
+
+  @@unique([taskId, reviewerId])
 }
 
 // A comment left by a reviewer on a review of a specific task within an assessment.
 model Comment {
   id         String   @id @unique @default(cuid())
   reviewId   String
-  startLine  Int
-  endLine    Int
+  startLine  Int?
+  endLine    Int?
   content    String   @db.Text
   reviewedAt DateTime @default(now())
 
