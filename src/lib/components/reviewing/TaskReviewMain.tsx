@@ -6,8 +6,8 @@ import { Button } from '@/lib/components/ui/Button';
 import ReviewTaskSubmission from '@/lib/components/reviewing/ReviewTaskSubmission';
 import InstructionsTaskSubmission from '@/lib/components/reviewing/InstructionsTaskSubmission';
 import TestCasesTaskSubmission from '@/lib/components/reviewing/TestCasesTaskSubmission';
-import ActivityLogTaskSubmission from '@/lib/components/reviewing/ActivityLogTaskSubmission';
 import type { TaskWithReviewData } from '@/lib/types/position.types';
+import ActivityLogTaskSubmission from '@/lib/components/reviewing/ActivityLogTaskSubmission';
 import type { LineRange } from '@/lib/utils/comment.utils';
 
 const TABS = ['Submission', 'Instructions', 'Test Cases', 'Activity Log'];
