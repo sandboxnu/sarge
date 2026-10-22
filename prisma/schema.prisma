@@ -282,6 +282,8 @@ model Review {
   comments Comment[]
   task     Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
   reviewer User      @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
+
+  @@unique([taskId, reviewerId])
 }
 
 // A comment left by a reviewer on a review of a specific task within an assessment.

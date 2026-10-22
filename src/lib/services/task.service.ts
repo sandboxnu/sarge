@@ -224,16 +224,18 @@ async function createComment(
     await getTask(taskId, orgId);
 
     // Comments hang off the reviewer's Review; create an unscored one on their first comment
-    const review =
-        (await prisma.review.findFirst({ where: { taskId, reviewerId } })) ??
-        (await prisma.review.create({ data: { taskId, reviewerId } }));
+    const review = await prisma.review.upsert({
+        where: { taskId_reviewerId: { taskId, reviewerId } },
+        create: { taskId, reviewerId },
+        update: {},
+    });
 
     return prisma.comment.create({
         data: {
             reviewId: review.id,
             content: comment.content,
-            startLine: comment.startLine ?? null,
-            endLine: comment.endLine ?? null,
+            startLine: comment.startLine,
+            endLine: comment.endLine,
         },
     });
 }

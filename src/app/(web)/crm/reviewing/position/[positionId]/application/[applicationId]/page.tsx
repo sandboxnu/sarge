@@ -72,7 +72,11 @@ export default function ReviewApplication({
             />
 
             <div className="flex min-h-0 flex-1 px-4 py-4">
-                <TaskReviewMain task={currentTaskData} onSelectLines={setSelectedLines} />
+                <TaskReviewMain
+                    task={currentTaskData}
+                    selectedLines={selectedLines}
+                    onSelectLines={setSelectedLines}
+                />
                 <TaskReviewSidebar
                     task={currentTaskData}
                     currentTask={currentTask}
