@@ -380,7 +380,7 @@ async function getApplicationForReview(
                         include: {
                             reviews: {
                                 include: {
-                                    comments: true,
+                                    comments: { orderBy: { reviewedAt: 'desc' } },
                                     reviewer: { select: { name: true } },
                                 },
                             },

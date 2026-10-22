@@ -41,20 +41,23 @@ export default function TaskReviewSidebar({
     const privateResults = testResults.filter((r) => r.visibility === TestVisibility.PRIVATE);
     const publicPassed = publicResults.filter((r) => r.passed).length;
     const privatePassed = privateResults.filter((r) => r.passed).length;
-    const comments = (task?.reviews ?? []).flatMap((review) =>
-        review.comments.map((comment) => ({
-            id: comment.id,
-            author: review.reviewer.name,
-            body: comment.content,
-            lineRange:
-                comment.startLine !== null && comment.endLine !== null
-                    ? formatLineRange({
-                          startLine: comment.startLine,
-                          endLine: comment.endLine,
-                      })
-                    : undefined,
-        }))
-    );
+    const comments = (task?.reviews ?? [])
+        .flatMap((review) =>
+            review.comments.map((comment) => ({
+                id: comment.id,
+                author: review.reviewer.name,
+                body: comment.content,
+                reviewedAt: comment.reviewedAt,
+                lineRange:
+                    comment.startLine !== null && comment.endLine !== null
+                        ? formatLineRange({
+                              startLine: comment.startLine,
+                              endLine: comment.endLine,
+                          })
+                        : undefined,
+            }))
+        )
+        .sort((a, b) => new Date(b.reviewedAt).getTime() - new Date(a.reviewedAt).getTime());
 
     const [commentText, setCommentText] = useState('');
     const [submitting, setSubmitting] = useState(false);
