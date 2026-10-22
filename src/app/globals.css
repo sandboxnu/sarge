@@ -18,6 +18,7 @@
     /* Gray */
     --sarge-gray-900: #16181b;
     --sarge-gray-800: #212429;
+    --sarge-gray-750: #282c32;
     --sarge-gray-700: #384150;
     --sarge-gray-600: #5b6274;
     --sarge-gray-500: #858c9c;
@@ -102,6 +103,7 @@
     /* Gray */
     --color-sarge-gray-900: var(--sarge-gray-900);
     --color-sarge-gray-800: var(--sarge-gray-800);
+    --color-sarge-gray-750: var(--sarge-gray-750);
     --color-sarge-gray-700: var(--sarge-gray-700);
     --color-sarge-gray-600: var(--sarge-gray-600);
     --color-sarge-gray-500: var(--sarge-gray-500);
@@ -172,6 +174,7 @@
 
     --font-sans: var(--font-satoshi);
     --font-inter: var(--font-inter);
+    --font-code: var(--font-jetbrains-mono);
 
     --tracking-design: var(--letter-spacing-design);
 
@@ -327,6 +330,24 @@
 
 .chip-overflow-enter {
     animation: chip-overflow-enter 0.2s ease both;
+}
+
+/* Monaco gutter overrides, see applySargeDarkTheme in monaco.utils.ts */
+.sarge-code-editor .monaco-editor .margin {
+    /* 1px divider 16px left of the code */
+    background-image: linear-gradient(
+        to left,
+        transparent 16px,
+        var(--sarge-gray-700) 16px,
+        var(--sarge-gray-700) 17px,
+        transparent 17px
+    );
+}
+
+.sarge-code-editor .monaco-editor .line-numbers {
+    /* 11.723px at the 13px code size, relative so it scales with mouse wheel zoom */
+    font-size: 0.9018em;
+    letter-spacing: 0.3965px;
 }
 
 /* shake used for char limit feedback */

@@ -2,14 +2,21 @@
 
 import * as React from 'react';
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
-import { Check } from 'lucide-react';
 
 import { cn } from '@/lib/utils/cn.utils';
 
+// Paths from the Figma "Action/checkbox" SVGs
+const indicatorPaths = {
+    check: 'M7.5 9.99967L9.16667 11.6663C9.16667 11.6663 11.1983 9.63476 12.5 8.33301',
+    dash: 'M7 9.99967H13',
+};
+
 const Checkbox = React.forwardRef<
     React.ComponentRef<typeof CheckboxPrimitive.Root>,
-    React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>
->(({ className, ...props }, ref) => (
+    React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root> & {
+        indicator?: keyof typeof indicatorPaths;
+    }
+>(({ className, indicator = 'check', ...props }, ref) => (
     <CheckboxPrimitive.Root
         ref={ref}
         className={cn(
@@ -19,9 +26,17 @@ const Checkbox = React.forwardRef<
         {...props}
     >
         <CheckboxPrimitive.Indicator
-            className={cn('flex items-center justify-center text-current')}
+            className={cn('flex size-full items-center justify-center text-current')}
         >
-            <Check className="size-3.5" />
+            <svg viewBox="2.5 2.5 15 15" fill="none" className="size-full" aria-hidden="true">
+                <path
+                    d={indicatorPaths[indicator]}
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                />
+            </svg>
         </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>
 ));

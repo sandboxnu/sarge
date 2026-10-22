@@ -7,6 +7,7 @@ import {
     getPosition,
     createCandidate as createCandidateApi,
     batchCreateCandidates as batchCreateCandidatesApi,
+    batchDeleteCandidates as batchDeleteCandidatesApi,
 } from '@/lib/api/positions';
 import { sendAssessmentInvitation } from '@/lib/api/assessments';
 
@@ -17,6 +18,7 @@ interface UseCandidatesReturn {
     positionTitle: string | null;
     createCandidate: (candidate: AddApplicationWithCandidateDataDTO) => Promise<void>;
     batchCreateCandidates: (candidates: AddApplicationWithCandidateDataDTO[]) => Promise<void>;
+    deleteCandidates: (candidateIds: string[]) => Promise<boolean>;
     isSendingAssessments: boolean;
     handleSendAssessments: () => Promise<void>;
 }
@@ -93,6 +95,34 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
         }
     };
 
+    // Returns true when the request went through (even if some candidates failed), so the
+    // confirmation modal can close; false when the whole request failed, so it stays open for a retry
+    const deleteCandidates = async (candidateIds: string[]) => {
+        try {
+            const result = await batchDeleteCandidatesApi(positionId, candidateIds);
+
+            // Remove every requested row: a candidate only "fails" when its application no longer
+            // exists on this position (e.g. someone else already deleted it), so keeping it would be stale
+            const requestedIds = new Set(candidateIds);
+            setCandidates((prev) => prev.filter((c) => !requestedIds.has(c.candidate.id)));
+
+            if (result.totalDeleted > 0) {
+                toast.success(
+                    `${result.totalDeleted} candidate${result.totalDeleted !== 1 ? 's' : ''} deleted successfully.`
+                );
+            }
+
+            if (result.totalFailed > 0) {
+                toast.error('Failed to delete candidate(s). Please try again.');
+            }
+
+            return true;
+        } catch {
+            toast.error('Failed to delete candidate(s). Please try again.');
+            return false;
+        }
+    };
+
     const handleSendAssessments = async () => {
         try {
             setIsSendingAssessments(true);
@@ -132,6 +162,7 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
         positionTitle,
         createCandidate,
         batchCreateCandidates,
+        deleteCandidates,
         isSendingAssessments,
         handleSendAssessments,
     };

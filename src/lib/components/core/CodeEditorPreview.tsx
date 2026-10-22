@@ -50,7 +50,7 @@ export default function CodeEditorPreview({ languages, taskTemplateId }: CodeEdi
     );
 
     return (
-        <div className="bg-sarge-gray-700 flex flex-1 flex-col">
+        <div className="bg-sarge-gray-800 flex flex-1 flex-col">
             <CodeEditorToolbar
                 activeTab={activeFileTab}
                 onTabChange={setActiveFileTab}
@@ -59,7 +59,7 @@ export default function CodeEditorPreview({ languages, taskTemplateId }: CodeEdi
                 handleLanguageChange={handleLanguageChange}
             />
 
-            <div className="min-h-0 flex-1 p-2">
+            <div className="min-h-0 flex-1">
                 <Editor
                     className="h-full"
                     language={currentLanguage ? currentLanguage.language : undefined}

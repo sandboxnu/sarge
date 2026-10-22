@@ -3,6 +3,7 @@ import { NotFoundException, ForbiddenException } from '@/lib/utils/errors.utils'
 import { type AddApplicationWithCandidateDataDTO } from '@/lib/schemas/application.schema';
 import type {
     BatchAddResult,
+    BatchRemoveResult,
     ApplicationDisplayInfo,
     ApplicationWithReviewData,
 } from '@/lib/types/position.types';
@@ -85,6 +86,7 @@ async function addApplicationToPosition(
                 decisionStatus: true,
                 candidate: {
                     select: {
+                        id: true,
                         name: true,
                         major: true,
                         graduationDate: true,
@@ -207,6 +209,7 @@ async function batchAddApplicationsToPosition(
             decisionStatus: true,
             candidate: {
                 select: {
+                    id: true,
                     name: true,
                     major: true,
                     graduationDate: true,
@@ -254,6 +257,7 @@ async function getPositionApplications(
             decisionStatus: true,
             candidate: {
                 select: {
+                    id: true,
                     name: true,
                     major: true,
                     graduationDate: true,
@@ -301,6 +305,47 @@ async function removeApplicationFromPosition(
 }
 
 /**
+ * Batch remove applications from a position
+ * Deletes the applications that exist and reports the candidate IDs that could not be deleted
+ * This will cascade delete their assessments if they exist
+ */
+async function removeApplicationsFromPosition(
+    candidateIds: string[],
+    positionId: string,
+    orgId: string
+): Promise<BatchRemoveResult> {
+    await validatePositionAccess(positionId, orgId);
+
+    const uniqueCandidateIds = [...new Set(candidateIds)];
+
+    const existingApplications = await prisma.application.findMany({
+        where: {
+            positionId,
+            candidateId: { in: uniqueCandidateIds },
+        },
+        select: { candidateId: true },
+    });
+    const existingCandidateIds = new Set(
+        existingApplications.map((application) => application.candidateId)
+    );
+
+    const { count } = await prisma.application.deleteMany({
+        where: {
+            positionId,
+            candidateId: { in: [...existingCandidateIds] },
+        },
+    });
+
+    const failedCandidateIds = uniqueCandidateIds.filter((id) => !existingCandidateIds.has(id));
+
+    return {
+        totalDeleted: count,
+        totalFailed: failedCandidateIds.length,
+        failedCandidateIds,
+    };
+}
+
+/**
  * Remove all applications from a position
  */
 async function removeAllApplicationsFromPosition(positionId: string, orgId: string): Promise<void> {
@@ -334,8 +379,13 @@ async function getApplicationForReview(
                     tasks: {
                         include: {
                             reviews: {
-                                include: { comments: true },
+                                include: {
+                                    comments: true,
+                                    reviewer: { select: { name: true } },
+                                },
                             },
+
+                            taskTemplate: { select: { title: true, description: true } },
                             snapshots: true,
                             testResults: true,
                         },
@@ -414,6 +464,7 @@ const ApplicationService = {
     batchAddApplicationsToPosition,
     getPositionApplications,
     removeApplicationFromPosition,
+    removeApplicationsFromPosition,
     removeAllApplicationsFromPosition,
     getApplication,
     getApplicationForReview,
