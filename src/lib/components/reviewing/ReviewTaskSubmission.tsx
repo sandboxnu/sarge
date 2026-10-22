@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import type { editor } from 'monaco-editor';
 import type { Monaco } from '@monaco-editor/react';
@@ -8,7 +7,6 @@ import { Chip } from '@/lib/components/ui/Chip';
 import { applySargeDarkTheme } from '@/lib/utils/monaco.utils';
 import { getLanguageLabel, getLanguageFileExtension } from '@/lib/utils/language.utils';
 import type { TaskWithReviewData } from '@/lib/types/position.types';
-import { selectionToLineRange, type LineRange } from '@/lib/utils/comment.utils';
 
 const Editor = dynamic(() => import('@monaco-editor/react').then((mod) => mod.Editor), {
     ssr: false,
@@ -16,35 +14,15 @@ const Editor = dynamic(() => import('@monaco-editor/react').then((mod) => mod.Ed
 
 type ReviewTaskSubmissionProps = {
     task: TaskWithReviewData | null;
-    selectedLines: LineRange | null;
-    onSelectLines: (lines: LineRange | null) => void;
 };
 
-export default function ReviewTaskSubmission({
-    task,
-    selectedLines,
-    onSelectLines,
-}: ReviewTaskSubmissionProps) {
+export default function ReviewTaskSubmission({ task }: ReviewTaskSubmissionProps) {
     const language = task?.language ?? null;
     const fileName = `main.${getLanguageFileExtension(language ?? '')}`;
     const submission = task?.submission ?? '';
-    const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
-
-    // Clear the selection when switching tasks or leaving the tab
-    useEffect(() => () => onSelectLines(null), [task?.id, onSelectLines]);
-
-    // Remove the editor highlight once the lines are cleared (chip removed, comment posted)
-    useEffect(() => {
-        const position = editorRef.current?.getPosition();
-        if (!selectedLines && position) editorRef.current?.setPosition(position);
-    }, [selectedLines]);
 
     function handleEditorMount(editorInstance: editor.IStandaloneCodeEditor, monaco: Monaco) {
-        editorRef.current = editorInstance;
         applySargeDarkTheme(editorInstance, monaco);
-        editorInstance.onDidChangeCursorSelection(({ selection }) =>
-            onSelectLines(selection.isEmpty() ? null : selectionToLineRange(selection))
-        );
     }
 
     return (

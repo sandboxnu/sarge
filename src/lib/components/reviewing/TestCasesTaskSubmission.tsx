@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import type { editor } from 'monaco-editor';
 import type { Monaco } from '@monaco-editor/react';
@@ -9,6 +10,7 @@ import { getLanguageLabel, getLanguageFileExtension } from '@/lib/utils/language
 import type { TaskWithReviewData } from '@/lib/types/position.types';
 import type { TaskTestResult } from '@/generated/prisma';
 import type { TestCaseDTO } from '@/lib/schemas/task-template.schema';
+import { selectionToLineRange, type LineRange } from '@/lib/utils/comment.utils';
 import TestCasePanel from '@/lib/components/core/TestCasePanel';
 
 const Editor = dynamic(() => import('@monaco-editor/react').then((mod) => mod.Editor), {
@@ -17,13 +19,29 @@ const Editor = dynamic(() => import('@monaco-editor/react').then((mod) => mod.Ed
 
 type ReviewTaskSubmissionProps = {
     task: TaskWithReviewData | null;
+    selectedLines: LineRange | null;
+    onSelectLines: (lines: LineRange | null) => void;
 };
 
-export default function ReviewTaskSubmission({ task }: ReviewTaskSubmissionProps) {
+export default function ReviewTaskSubmission({
+    task,
+    selectedLines,
+    onSelectLines,
+}: ReviewTaskSubmissionProps) {
     const language = task?.language ?? null;
     const fileName = `main.${getLanguageFileExtension(language ?? '')}`;
     const submission = task?.submission ?? '';
     const testResults = task?.testResults ?? [];
+    const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
+
+    // Clear the selection when switching tasks
+    useEffect(() => () => onSelectLines(null), [task?.id, onSelectLines]);
+
+    // Remove the editor highlight once the lines are cleared (chip removed, comment posted)
+    useEffect(() => {
+        const position = editorRef.current?.getPosition();
+        if (!selectedLines && position) editorRef.current?.setPosition(position);
+    }, [selectedLines]);
 
     function toTestCase(result: TaskTestResult): TestCaseDTO {
         return { input: result.input, output: result.expectedOutput };
@@ -33,7 +51,11 @@ export default function ReviewTaskSubmission({ task }: ReviewTaskSubmissionProps
     const privateTestCases = testResults.filter((r) => r.visibility === 'PRIVATE').map(toTestCase);
 
     function handleEditorMount(editorInstance: editor.IStandaloneCodeEditor, monaco: Monaco) {
+        editorRef.current = editorInstance;
         applySargeDarkTheme(editorInstance, monaco);
+        editorInstance.onDidChangeCursorSelection(({ selection }) =>
+            onSelectLines(selection.isEmpty() ? null : selectionToLineRange(selection))
+        );
     }
 
     return (
