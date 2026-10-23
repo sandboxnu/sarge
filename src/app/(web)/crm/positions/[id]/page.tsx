@@ -134,6 +134,7 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
 
                         <TabsContent value="candidates">
                             <CandidateTable
+                                positionId={id}
                                 candidates={displayedCandidates}
                                 rowSelection={rowSelection}
                                 onRowSelectionChange={setRowSelection}
