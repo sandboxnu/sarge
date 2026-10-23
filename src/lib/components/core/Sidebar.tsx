@@ -24,10 +24,10 @@ import { cn } from '@/lib/utils/cn.utils';
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 import {
-    BookOpen,
+    //BookOpen,
     ChevronDown,
     File,
-    Home,
+    //Home,
     PanelLeftIcon,
     Settings,
     ShieldUser,
@@ -687,11 +687,11 @@ export function SidebarMenuSubButton({
 }
 
 export const sidebarMenuItems = [
-    {
-        title: 'Overview',
-        url: '/crm/dashboard',
-        icon: Home,
-    },
+    // {
+    //     title: 'Overview',
+    //     url: '/crm/dashboard',
+    //     icon: Home,
+    // },
     {
         title: 'Templates',
         url: '/crm/templates',
@@ -702,11 +702,11 @@ export const sidebarMenuItems = [
         url: '/crm/positions',
         icon: Users,
     },
-    {
-        title: 'Reviewing',
-        url: '/crm/reviewing',
-        icon: BookOpen,
-    },
+    // {
+    //     title: 'Reviewing',
+    //     url: '/crm/reviewing',
+    //     icon: BookOpen,
+    // },
 ];
 
 export function Sidebar() {
