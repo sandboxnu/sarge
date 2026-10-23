@@ -24,10 +24,10 @@ import { cn } from '@/lib/utils/cn.utils';
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 import {
-    BookOpen,
+    //BookOpen,
     ChevronDown,
     File,
-    Home,
+    //Home,
     PanelLeftIcon,
     Settings,
     ShieldUser,
