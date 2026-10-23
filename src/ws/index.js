@@ -27,7 +27,9 @@ if (!getConfig('INTERNAL_API_SECRET')) {
 }
 
 if (!getConfig('JWT_SECRET')) {
-    console.warn('JWT_SECRET is missing, candidate connections will be rejected until it is configured');
+    console.warn(
+        'JWT_SECRET is missing, candidate connections will be rejected until it is configured'
+    );
 }
 
 console.log('Sarge WS server listening on 8080');
