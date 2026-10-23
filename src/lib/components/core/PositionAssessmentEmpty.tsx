@@ -1,22 +1,28 @@
 'use client';
 
-import { ChevronDown, FileText, Mail } from 'lucide-react';
+import { Check, ChevronDown, FileText, Mail } from 'lucide-react';
 import { Button } from '@/lib/components/ui/Button';
 import { cn } from '@/lib/utils/cn.utils';
 
-type PositionAssessmentEmptyProps = {
+type PositionAssessmentProps = {
     onSelectAssessment?: () => void;
     onSendAssessments: () => void;
     isSending: boolean;
+    assignedTitle?: string | null;
+    hasSentAssessments?: boolean;
+    allSent?: boolean;
     className?: string;
 };
 
-export function PositionAssessmentEmpty({
+export function PositionAssessmentBox({
     onSelectAssessment,
     onSendAssessments,
     isSending,
+    assignedTitle,
+    hasSentAssessments = false,
+    allSent = false,
     className,
-}: PositionAssessmentEmptyProps) {
+}: PositionAssessmentProps) {
     return (
         <div
             className={cn(
@@ -27,17 +33,28 @@ export function PositionAssessmentEmpty({
         >
             <div className="flex items-center gap-2">
                 <FileText className="text-sarge-gray-600 size-5 shrink-0" />
-                <span className="text-body-m">No assessment assigned</span>
+                <span className="text-body-m">{assignedTitle ?? 'No assessment assigned'}</span>
             </div>
             <div className="flex items-center gap-3">
-                {/* Need to replace with the assessment dropdown */}
-                <Button variant="dropdown" onClick={onSelectAssessment}>
+                <Button
+                    variant="dropdown"
+                    onClick={onSelectAssessment}
+                    disabled={hasSentAssessments}
+                >
                     <ChevronDown className="size-4" />
                     <span className="text-label-s">Select Assessment</span>
                 </Button>
-                <Button className="px-4 py-3" onClick={onSendAssessments} disabled>
-                    <Mail className="size-5" />
-                    {isSending ? 'Sending...' : 'Send to all candidates'}
+                <Button
+                    className="px-4 py-3"
+                    onClick={onSendAssessments}
+                    disabled={!assignedTitle || isSending || allSent}
+                >
+                    {allSent ? <Check className="size-5" /> : <Mail className="size-5" />}
+                    {allSent
+                        ? 'Sent to all candidates'
+                        : isSending
+                          ? 'Sending...'
+                          : 'Send to all candidates'}
                 </Button>
             </div>
         </div>
