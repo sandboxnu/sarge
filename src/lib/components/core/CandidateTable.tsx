@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import type { ColumnDef, OnChangeFn, RowSelectionState } from '@tanstack/react-table';
 import { MoreVertical, Trash2 } from 'lucide-react';
 import { LinkButton } from '@/lib/components/ui/LinkButton';
@@ -23,6 +24,7 @@ import { getDecisionStatusVariant } from '@/lib/utils/status.utils';
 import { getDecisionStatusLabel } from '@/lib/utils/status.utils';
 
 interface CandidateTableProps {
+    positionId: string;
     candidates: ApplicationDisplayInfo[];
     rowSelection: RowSelectionState;
     onRowSelectionChange: OnChangeFn<RowSelectionState>;
@@ -53,11 +55,13 @@ const HeaderLabel = ({ children }: { children: string }) => (
 );
 
 export function CandidateTable({
+    positionId,
     candidates,
     rowSelection,
     onRowSelectionChange,
     onDeleteRequest,
 }: CandidateTableProps) {
+    const router = useRouter();
     const columns = useMemo<ColumnDef<ApplicationDisplayInfo>[]>(
         () => [
             {
@@ -117,7 +121,12 @@ export function CandidateTable({
                     const assessmentStatus = row.original.assessmentStatus;
                     return (
                         <PositionAssessmentCard
-                            onClick={() => undefined}
+                            onClick={() =>
+                                row.original.assessment &&
+                                router.push(
+                                    `/crm/reviewing/position/${positionId}/application/${row.original.id}`
+                                )
+                            }
                             className="border-sarge-gray-200 bg-sarge-gray-0 h-9 gap-2 rounded-md p-2"
                             iconClassName="h-4 w-4"
                         >
@@ -203,7 +212,7 @@ export function CandidateTable({
                 ),
             },
         ],
-        [onDeleteRequest]
+        [onDeleteRequest, positionId, router]
     );
 
     return (

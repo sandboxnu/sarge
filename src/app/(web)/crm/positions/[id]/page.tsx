@@ -5,8 +5,10 @@ import { CandidateTable } from '@/lib/components/core/CandidateTable';
 import { CandidateSelectionMenu } from '@/lib/components/core/CandidateSelectionMenu';
 import CreateCandidateModal from '@/lib/components/modal/CreateCandidateModal';
 import UploadCSVModal from '@/lib/components/modal/UploadCSVModal';
+import { PositionSubmissionsList } from '@/lib/components/core/PositionSubmissionsList';
+import SelectAssessmentModal from '@/lib/components/modal/SelectAssessmentModal';
 import DeleteCandidatesModal from '@/lib/components/modal/DeleteCandidatesModal';
-import { PositionAssessmentEmpty } from '@/lib/components/core/PositionAssessmentEmpty';
+import { PositionAssessmentBox } from '@/lib/components/core/PositionAssessmentBox';
 import useCandidates from '@/lib/hooks/useCandidates';
 import useCandidateSelection from '@/lib/hooks/useCandidateSelection';
 import { Search } from '@/lib/components/core/Search';
@@ -21,6 +23,7 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
     const { id } = use(params);
     const [isModalManualOpen, setIsModalManualOpen] = useState(false);
     const [isCSVModalOpen, setIsCSVModalOpen] = useState(false);
+    const [isSelectAssessmentOpen, setIsSelectAssessmentOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     // Snapshot of the rows being deleted, so the modal text doesn't change if the selection does
     const [pendingDelete, setPendingDelete] = useState<ApplicationDisplayInfo[]>([]);
@@ -34,7 +37,18 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
         deleteCandidates,
         isSendingAssessments,
         handleSendAssessments,
+        reviewerOptions,
+        loadReviewerOptions,
+        assignReviewers,
+        assignedAssessmentTitle,
+        assignAssessment,
     } = useCandidates(id);
+    const hasSentAssessments = candidates.some(
+        (c) => c.assessmentStatus !== 'NOT_ASSIGNED' && c.assessmentStatus !== 'NOT_SENT'
+    );
+    const allSent =
+        hasSentAssessments &&
+        !candidates.some((c) => c.assessment && c.assessmentStatus === 'NOT_SENT');
     const { value: searchValue, onChange: onSearchChange } = useSearch('applications');
 
     const displayedCandidates = useMemo(
@@ -121,6 +135,7 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
 
                         <TabsContent value="candidates">
                             <CandidateTable
+                                positionId={id}
                                 candidates={displayedCandidates}
                                 rowSelection={rowSelection}
                                 onRowSelectionChange={setRowSelection}
@@ -135,10 +150,25 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                         </TabsContent>
 
                         <TabsContent value="assessment">
-                            <PositionAssessmentEmpty
-                                onSendAssessments={handleSendAssessments}
-                                isSending={isSendingAssessments}
-                            />
+                            <div className="flex flex-col gap-5">
+                                <PositionAssessmentBox
+                                    onSendAssessments={handleSendAssessments}
+                                    isSending={isSendingAssessments}
+                                    assignedTitle={assignedAssessmentTitle}
+                                    hasSentAssessments={hasSentAssessments}
+                                    allSent={allSent}
+                                    onSelectAssessment={() => setIsSelectAssessmentOpen(true)}
+                                />
+                                {assignedAssessmentTitle && (
+                                    <PositionSubmissionsList
+                                        positionId={id}
+                                        candidates={candidates}
+                                        reviewerOptions={reviewerOptions}
+                                        onLoadReviewers={loadReviewerOptions}
+                                        onAssignReviewers={assignReviewers}
+                                    />
+                                )}
+                            </div>
                         </TabsContent>
                     </Tabs>
                 )}
@@ -158,6 +188,11 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                 positionId={id}
                 onOpenChange={setIsCSVModalOpen}
                 onCreate={batchCreateCandidates}
+            />
+            <SelectAssessmentModal
+                open={isSelectAssessmentOpen}
+                onOpenChange={setIsSelectAssessmentOpen}
+                onAssign={assignAssessment}
             />
             <DeleteCandidatesModal
                 open={isDeleteModalOpen}

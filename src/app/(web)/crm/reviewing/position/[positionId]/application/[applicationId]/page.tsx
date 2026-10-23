@@ -7,7 +7,6 @@ import ReviewNavbar from '@/lib/components/reviewing/ReviewNavbar';
 import TaskReviewMain from '@/lib/components/reviewing/TaskReviewMain';
 import TaskReviewSidebar from '@/lib/components/reviewing/TaskReviewSidebar';
 import { createComment } from '@/lib/api/tasks';
-import { Button } from '@/lib/components/ui/Button';
 import type { LineRange } from '@/lib/utils/comment.utils';
 
 export default function ReviewApplication({
@@ -96,9 +95,6 @@ export default function ReviewApplication({
                                 <p className="text-lg font-medium tracking-wide">
                                     This candidate has not made a submission
                                 </p>
-                                <Button className="h-[40px] w-[210px] justify-start px-5 py-2">
-                                    Button
-                                </Button>
                             </div>
                         </div>
                     </>

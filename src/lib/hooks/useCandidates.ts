@@ -1,15 +1,22 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { type ApplicationDisplayInfo } from '@/lib/types/position.types';
 import { type AddApplicationWithCandidateDataDTO } from '@/lib/schemas/application.schema';
 import { toast } from 'sonner';
 import {
     getCandidates,
     getPosition,
+    assignAssessmentTemplateToPosition,
     createCandidate as createCandidateApi,
     batchCreateCandidates as batchCreateCandidatesApi,
     batchDeleteCandidates as batchDeleteCandidatesApi,
 } from '@/lib/api/positions';
-import { sendAssessmentInvitation } from '@/lib/api/assessments';
+import {
+    getAssignableReviewers,
+    sendAssessmentInvitation,
+    updateAssessmentReviewers,
+} from '@/lib/api/assessments';
+import { getAssessmentTemplate } from '@/lib/api/assessment-templates';
+import { type AssessmentTemplateListItemDTO } from '@/lib/schemas/assessment-template.schema';
 
 interface UseCandidatesReturn {
     candidates: ApplicationDisplayInfo[];
@@ -21,6 +28,11 @@ interface UseCandidatesReturn {
     deleteCandidates: (candidateIds: string[]) => Promise<boolean>;
     isSendingAssessments: boolean;
     handleSendAssessments: () => Promise<void>;
+    reviewerOptions: { id: string; name: string }[];
+    loadReviewerOptions: () => Promise<void>;
+    assignReviewers: (assessmentId: string, reviewerIds: string[]) => void;
+    assignedAssessmentTitle: string | null;
+    assignAssessment: (template: AssessmentTemplateListItemDTO) => Promise<boolean>;
 }
 
 export default function useCandidates(positionId: string): UseCandidatesReturn {
@@ -29,6 +41,11 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
     const [error, setError] = useState<string | null>(null);
     const [positionTitle, setPositionTitle] = useState<string | null>(null);
     const [isSendingAssessments, setIsSendingAssessments] = useState(false);
+    const [reviewerOptions, setReviewerOptions] = useState<{ id: string; name: string }[]>([]);
+    const reviewerOptionsRequested = useRef(false);
+    // Reviewer saves run one at a time so a stale request can't overwrite a newer selection
+    const reviewerRequests = useRef<Promise<void>>(Promise.resolve());
+    const [assignedAssessmentTitle, setAssignedAssessmentTitle] = useState<string | null>(null);
 
     useEffect(() => {
         if (!positionId) return;
@@ -45,6 +62,15 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
 
                 setCandidates(candidatesData);
                 setPositionTitle(positionData.title);
+                if (positionData.assessmentId) {
+                    // The title is only a label, so a failed lookup shouldn't take the page down
+                    try {
+                        const template = await getAssessmentTemplate(positionData.assessmentId);
+                        setAssignedAssessmentTitle(template.title);
+                    } catch {
+                        setAssignedAssessmentTitle('Assigned assessment');
+                    }
+                }
             } catch (err) {
                 const message = (err as Error).message;
                 setError(message);
@@ -56,6 +82,18 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
 
         load();
     }, [positionId]);
+
+    // Fetched the first time a reviewer dropdown opens, not on page load
+    const loadReviewerOptions = async () => {
+        if (reviewerOptionsRequested.current) return;
+        reviewerOptionsRequested.current = true;
+        try {
+            setReviewerOptions(await getAssignableReviewers());
+        } catch {
+            reviewerOptionsRequested.current = false;
+            toast.error('Failed to load reviewers');
+        }
+    };
 
     const createCandidate = async (candidate: AddApplicationWithCandidateDataDTO) => {
         try {
@@ -123,6 +161,52 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
         }
     };
 
+    const refreshCandidates = async () => {
+        try {
+            setCandidates(await getCandidates(positionId));
+        } catch {
+            toast.error('Failed to refresh candidates');
+        }
+    };
+
+    // Returns true on success so the select modal can close; false keeps it open for a retry
+    const assignAssessment = async (template: AssessmentTemplateListItemDTO) => {
+        try {
+            await assignAssessmentTemplateToPosition(positionId, template.id);
+            setAssignedAssessmentTitle(template.title);
+            toast.success('Assessment assigned successfully');
+            // Assigning creates (or replaces) the per-candidate assessments server-side
+            await refreshCandidates();
+            return true;
+        } catch (err) {
+            toast.error((err as Error).message || 'Failed to assign assessment');
+            return false;
+        }
+    };
+
+    const assignReviewers = (assessmentId: string, reviewerIds: string[]) => {
+        // Update immediately so the next toggle builds on this selection
+        const reviewers = reviewerIds.flatMap(
+            (id) => reviewerOptions.find((r) => r.id === id) ?? []
+        );
+        setCandidates((prev) =>
+            prev.map((c) =>
+                c.assessment?.id === assessmentId
+                    ? { ...c, assessment: { ...c.assessment, reviewers } }
+                    : c
+            )
+        );
+
+        reviewerRequests.current = reviewerRequests.current.then(async () => {
+            try {
+                await updateAssessmentReviewers(assessmentId, reviewerIds);
+            } catch (err) {
+                toast.error((err as Error).message || 'Failed to update reviewers');
+                await refreshCandidates();
+            }
+        });
+    };
+
     const handleSendAssessments = async () => {
         try {
             setIsSendingAssessments(true);
@@ -165,5 +249,10 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
         deleteCandidates,
         isSendingAssessments,
         handleSendAssessments,
+        reviewerOptions,
+        loadReviewerOptions,
+        assignReviewers,
+        assignedAssessmentTitle,
+        assignAssessment,
     };
 }

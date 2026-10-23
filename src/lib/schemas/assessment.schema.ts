@@ -23,6 +23,11 @@ export const deleteAssessmentSchema = z.object({
     id: z.string(),
 });
 
+export const updateAssessmentReviewersSchema = z.object({
+    reviewerIds: z.array(z.string()),
+});
+
+export type UpdateAssessmentReviewersDTO = z.infer<typeof updateAssessmentReviewersSchema>;
 export type GetAssessmentDTO = z.infer<typeof getAssessmentSchema>;
 export type UpdateAssessmentDTO = z.infer<typeof updateAssessmentSchema>;
 export type DeleteAssessmentDTO = z.infer<typeof deleteAssessmentSchema>;

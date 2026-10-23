@@ -90,3 +90,44 @@ export async function sendAssessmentInvitation(
 
     return json.data;
 }
+
+/**
+ * GET /api/assessments/reviewers
+ * Members of the active organization that can be assigned as reviewers
+ */
+export async function getAssignableReviewers(): Promise<{ id: string; name: string }[]> {
+    const res = await fetch('/api/assessments/reviewers');
+
+    const json = await res.json();
+
+    if (!res.ok) {
+        throw new Error(json.message ?? 'Failed to load reviewers');
+    }
+
+    return json.data;
+}
+
+/**
+ * PUT /api/assessments/:assessmentId/reviewers
+ * Replaces the reviewers on an assessment
+ */
+export async function updateAssessmentReviewers(
+    assessmentId: string,
+    reviewerIds: string[]
+): Promise<{ id: string; name: string }[]> {
+    const res = await fetch(`/api/assessments/${assessmentId}/reviewers`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ reviewerIds }),
+    });
+
+    const json = await res.json();
+
+    if (!res.ok) {
+        throw new Error(json.message ?? 'Failed to update reviewers');
+    }
+
+    return json.data;
+}

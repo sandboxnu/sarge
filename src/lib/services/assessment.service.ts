@@ -100,6 +100,7 @@ async function assignTemplateToPosition(params: {
                 applications: {
                     select: {
                         id: true,
+                        assessmentStatus: true,
                         assessment: {
                             select: {
                                 id: true,
@@ -126,32 +127,48 @@ async function assignTemplateToPosition(params: {
 
     const isAlreadyAssignedToTemplate = position.assessmentId === assessmentTemplateId;
 
-    if (position.assessmentId && position.assessmentId !== assessmentTemplateId) {
-        throw new BadRequestException(
-            `${position.title} is already assigned to a different assessment template.`
-        );
-    }
-
-    const applicationsMissingAssessment = position.applications.filter(
-        (application) => !application.assessment
-    );
     const assessmentsWithDifferentTemplate = position.applications.filter(
         (application) =>
             application.assessment &&
             application.assessment.assessmentTemplateId !== assessmentTemplateId
     );
 
-    if (assessmentsWithDifferentTemplate.length > 0) {
+    // Switching templates is only safe while no invitation has gone out
+    const hasSentAssessments = position.applications.some(
+        (application) =>
+            application.assessmentStatus !== AssessmentStatus.NOT_ASSIGNED &&
+            application.assessmentStatus !== AssessmentStatus.NOT_SENT
+    );
+
+    if (!isAlreadyAssignedToTemplate && hasSentAssessments) {
         throw new BadRequestException(
-            `${position.title} already has assessments. Reassignment is not supported.`
+            `${position.title} already has sent assessments. Reassignment is not supported.`
         );
     }
+
+    const applicationsMissingAssessment = position.applications.filter(
+        (application) =>
+            !application.assessment ||
+            application.assessment.assessmentTemplateId !== assessmentTemplateId
+    );
 
     await prisma.$transaction(async (tx) => {
         if (!isAlreadyAssignedToTemplate) {
             await tx.position.update({
                 where: { id: positionId },
                 data: { assessmentId: assessmentTemplateId },
+            });
+        }
+
+        if (assessmentsWithDifferentTemplate.length > 0) {
+            await tx.assessment.deleteMany({
+                where: {
+                    id: {
+                        in: assessmentsWithDifferentTemplate.flatMap((a) =>
+                            a.assessment ? [a.assessment.id] : []
+                        ),
+                    },
+                },
             });
         }
 
@@ -227,6 +244,48 @@ async function updateAssessment(
         },
         data: assessment,
     });
+}
+
+async function listAssignableReviewers(orgId: string): Promise<{ id: string; name: string }[]> {
+    const members = await prisma.member.findMany({
+        where: { organizationId: orgId },
+        select: { user: { select: { id: true, name: true } } },
+        orderBy: { user: { name: 'asc' } },
+    });
+
+    return members.map((m) => m.user);
+}
+
+async function updateAssessmentReviewers(
+    assessmentId: string,
+    reviewerIds: string[],
+    orgId: string
+): Promise<{ id: string; name: string }[]> {
+    const existingAssessment = await prisma.assessment.findFirst({
+        where: { id: assessmentId, application: { position: { orgId } } },
+        select: { id: true },
+    });
+
+    if (!existingAssessment) {
+        throw new NotFoundException(`Assessment with id ${assessmentId} not found`);
+    }
+
+    const uniqueIds = [...new Set(reviewerIds)];
+    const validMembers = await prisma.member.count({
+        where: { organizationId: orgId, userId: { in: uniqueIds } },
+    });
+
+    if (validMembers !== uniqueIds.length) {
+        throw new BadRequestException('Reviewers must be members of your organization');
+    }
+
+    const updated = await prisma.assessment.update({
+        where: { id: assessmentId },
+        data: { reviewers: { set: uniqueIds.map((id) => ({ id })) } },
+        select: { reviewers: { select: { id: true, name: true } } },
+    });
+
+    return updated.reviewers;
 }
 
 async function getAssessmentForCandidate(assessmentId: string): Promise<CandidateAssessment> {
@@ -468,6 +527,8 @@ const AssessmentService = {
     deleteAssessment,
     updateAssessment,
     sendAssessmentInvitationsToPosition,
+    listAssignableReviewers,
+    updateAssessmentReviewers,
 };
 
 export default AssessmentService;
