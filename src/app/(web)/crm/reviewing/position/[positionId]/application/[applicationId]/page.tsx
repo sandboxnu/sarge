@@ -96,9 +96,6 @@ export default function ReviewApplication({
                                 <p className="text-lg font-medium tracking-wide">
                                     This candidate has not made a submission
                                 </p>
-                                <Button className="h-[40px] w-[210px] justify-start px-5 py-2">
-                                    Button
-                                </Button>
                             </div>
                         </div>
                     </>
