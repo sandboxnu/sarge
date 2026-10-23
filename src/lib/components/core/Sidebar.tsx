@@ -687,11 +687,11 @@ export function SidebarMenuSubButton({
 }
 
 export const sidebarMenuItems = [
-    {
-        title: 'Overview',
-        url: '/crm/dashboard',
-        icon: Home,
-    },
+    // {
+    //     title: 'Overview',
+    //     url: '/crm/dashboard',
+    //     icon: Home,
+    // },
     {
         title: 'Templates',
         url: '/crm/templates',
@@ -702,11 +702,11 @@ export const sidebarMenuItems = [
         url: '/crm/positions',
         icon: Users,
     },
-    {
-        title: 'Reviewing',
-        url: '/crm/reviewing',
-        icon: BookOpen,
-    },
+    // {
+    //     title: 'Reviewing',
+    //     url: '/crm/reviewing',
+    //     icon: BookOpen,
+    // },
 ];
 
 export function Sidebar() {
