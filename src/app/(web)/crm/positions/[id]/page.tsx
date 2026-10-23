@@ -8,7 +8,7 @@ import UploadCSVModal from '@/lib/components/modal/UploadCSVModal';
 import { PositionSubmissionsList } from '@/lib/components/core/PositionSubmissionsList';
 import SelectAssessmentModal from '@/lib/components/modal/SelectAssessmentModal';
 import DeleteCandidatesModal from '@/lib/components/modal/DeleteCandidatesModal';
-import { PositionAssessmentBox } from '@/lib/components/core/PositionAssessmentEmpty';
+import { PositionAssessmentBox } from '@/lib/components/core/PositionAssessmentBox';
 import useCandidates from '@/lib/hooks/useCandidates';
 import useCandidateSelection from '@/lib/hooks/useCandidateSelection';
 import { Search } from '@/lib/components/core/Search';
@@ -38,6 +38,7 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
         isSendingAssessments,
         handleSendAssessments,
         reviewerOptions,
+        loadReviewerOptions,
         assignReviewers,
         assignedAssessmentTitle,
         assignAssessment,
@@ -163,6 +164,7 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                                         positionId={id}
                                         candidates={candidates}
                                         reviewerOptions={reviewerOptions}
+                                        onLoadReviewers={loadReviewerOptions}
                                         onAssignReviewers={assignReviewers}
                                     />
                                 )}

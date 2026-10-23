@@ -11,6 +11,7 @@ type PositionSubmissionsListProps = {
     positionId: string;
     candidates: ApplicationDisplayInfo[];
     reviewerOptions: { id: string; name: string }[];
+    onLoadReviewers: () => void;
     onAssignReviewers: (assessmentId: string, reviewerIds: string[]) => void;
 };
 
@@ -25,6 +26,7 @@ export function PositionSubmissionsList({
     positionId,
     candidates,
     reviewerOptions,
+    onLoadReviewers,
     onAssignReviewers,
 }: PositionSubmissionsListProps) {
     const rows = candidates.filter((c) => c.assessment);
@@ -60,6 +62,7 @@ export function PositionSubmissionsList({
                             <div className="flex items-center gap-2">
                                 <ReviewerSelect
                                     options={reviewerOptions}
+                                    onOpen={onLoadReviewers}
                                     selected={reviewers}
                                     onChange={(ids) =>
                                         c.assessment && onAssignReviewers(c.assessment.id, ids)

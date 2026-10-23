@@ -10,9 +10,10 @@ type ReviewerSelectProps = {
     options: Reviewer[];
     selected: Reviewer[];
     onChange: (reviewerIds: string[]) => void;
+    onOpen?: () => void;
 };
 
-export function ReviewerSelect({ options, selected, onChange }: ReviewerSelectProps) {
+export function ReviewerSelect({ options, selected, onChange, onOpen }: ReviewerSelectProps) {
     const selectedIds = selected.map((r) => r.id);
     const label =
         selected.length === 0
@@ -27,7 +28,7 @@ export function ReviewerSelect({ options, selected, onChange }: ReviewerSelectPr
         );
 
     return (
-        <Popover>
+        <Popover onOpenChange={(open) => open && onOpen?.()}>
             <PopoverTrigger asChild>
                 <button
                     type="button"

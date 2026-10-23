@@ -1,5 +1,4 @@
 import crypto from 'node:crypto';
-import { isEmailSendingEnabled } from '@/lib/utils/email-guard.utils';
 import { prisma } from '@/lib/prisma';
 import type {
     UpdateAssessmentDTO,
@@ -455,13 +454,6 @@ async function sendAssessmentInvitationsToPosition(
     positionId: string,
     orgId: string
 ): Promise<AssessmentInvitationResult> {
-    // Checked first so nothing is mailed and no application status is advanced locally
-    if (!isEmailSendingEnabled()) {
-        throw new BadRequestException(
-            'Sending assessment emails is disabled in this environment. Set EMAIL_SENDING_ENABLED=true to enable it.'
-        );
-    }
-
     const position = await prisma.position.findUnique({
         where: { id: positionId },
         select: { assessmentId: true, orgId: true },
