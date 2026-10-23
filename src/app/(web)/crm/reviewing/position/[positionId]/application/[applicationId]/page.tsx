@@ -7,7 +7,6 @@ import ReviewNavbar from '@/lib/components/reviewing/ReviewNavbar';
 import TaskReviewMain from '@/lib/components/reviewing/TaskReviewMain';
 import TaskReviewSidebar from '@/lib/components/reviewing/TaskReviewSidebar';
 import { createComment } from '@/lib/api/tasks';
-import { Button } from '@/lib/components/ui/Button';
 import type { LineRange } from '@/lib/utils/comment.utils';
 
 export default function ReviewApplication({
