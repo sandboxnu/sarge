@@ -7,8 +7,11 @@ const WS_URL =
         ? `wss://ws.${window.location.hostname}`
         : 'ws://localhost:8080');
 
+const WS_DISABLED = process.env.NEXT_PUBLIC_WS_DISABLED === 'true';
+
 export function useHeartbeat(token: string | null) {
-    const ws = useWebSocket(token ? `${WS_URL}?token=${token}` : null, {
+    // a null url means react-use-websocket never connects
+    const ws = useWebSocket(!WS_DISABLED && token ? `${WS_URL}?token=${token}` : null, {
         // 1008 = Policy Violation (server sends this on bad token), don't retry
         shouldReconnect: (closeEvent) => closeEvent.code !== 1008,
         reconnectInterval: 5000, // 5 seconds
@@ -17,6 +20,6 @@ export function useHeartbeat(token: string | null) {
 
     return {
         ...ws,
-        isConnected: ws.readyState === ReadyState.OPEN,
+        isConnected: WS_DISABLED || ws.readyState === ReadyState.OPEN,
     };
 }
