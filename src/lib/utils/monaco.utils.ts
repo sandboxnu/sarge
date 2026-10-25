@@ -20,8 +20,18 @@ export function applySargeDarkTheme(
     monaco.editor.defineTheme('sargeDark', {
         base: 'vs-dark',
         // NOTE: inherit is off so vs-dark's syntax colors are dropped, the design is monochrome
+        // except for Python, whose rules are scoped by the .python token suffix
         inherit: false,
-        rules: [{ token: '', foreground: 'F9FAFE', background: '212429' }],
+        rules: [
+            { token: '', foreground: 'F9FAFE', background: '212429' },
+            { token: 'keyword.python', foreground: '569CD6' },
+            { token: 'string.python', foreground: 'CE9178' },
+            { token: 'string.escape.python', foreground: 'D7BA7D' },
+            { token: 'comment.python', foreground: '6A9955' },
+            { token: 'number.python', foreground: 'B5CEA8' },
+            { token: 'type.identifier.python', foreground: '4EC9B0' },
+            { token: 'tag.python', foreground: 'DCDCAA' },
+        ],
         colors: {
             'editor.background': '#212429',
             'editor.foreground': '#F9FAFE',
