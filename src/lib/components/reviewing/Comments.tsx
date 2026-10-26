@@ -2,8 +2,6 @@
 
 import { ChevronRight } from 'lucide-react';
 import { Button } from '@/lib/components/ui/Button';
-import { RemovableChip } from '@/lib/components/ui/RemovableChip';
-import { formatLineRange, type LineRange } from '@/lib/utils/comment.utils';
 
 export interface ReviewComment {
     id: string;
@@ -18,8 +16,6 @@ export interface CommentsProps {
     onChange?: (value: string) => void;
     onSubmit?: () => void;
     submitDisabled?: boolean;
-    selectedLines?: LineRange | null;
-    onClearLines?: () => void;
 }
 
 export default function Comments({
@@ -28,8 +24,6 @@ export default function Comments({
     onChange,
     onSubmit,
     submitDisabled,
-    selectedLines,
-    onClearLines,
 }: CommentsProps) {
     return (
         <div className="flex w-full flex-col gap-3">
@@ -47,15 +41,7 @@ export default function Comments({
                     rows={3}
                     className="text-body-xs text-sarge-gray-800 placeholder:text-sarge-gray-500 w-full resize-none outline-none"
                 />
-                <div className="flex items-center justify-between gap-2">
-                    {selectedLines ? (
-                        <RemovableChip
-                            label={formatLineRange(selectedLines)}
-                            onRemove={() => onClearLines?.()}
-                        />
-                    ) : (
-                        <span />
-                    )}
+                <div className="flex items-center justify-end gap-2">
                     <Button
                         variant="outline"
                         aria-label="Submit comment"

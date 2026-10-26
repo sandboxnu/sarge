@@ -26,6 +26,7 @@ export function PositionAssessmentCard({
                 'inline-flex items-center gap-2.5 rounded-lg border p-2',
                 'overflow-hidden',
                 'transition-colors',
+                onClick && 'cursor-pointer',
                 className
             )}
         >

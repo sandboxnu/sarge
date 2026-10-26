@@ -1,5 +1,6 @@
 'use client';
 import { use, useState } from 'react';
+import { toast } from 'sonner';
 import Image from 'next/image';
 import useApplicationReview from '@/lib/hooks/useApplicationReview';
 import usePositionApplications from '@/lib/hooks/usePositionApplications';
@@ -26,11 +27,23 @@ export default function ReviewApplication({
 
     const [selectedLines, setSelectedLines] = useState<LineRange | null>(null);
 
-    async function handleAddComment(content: string) {
-        if (!currentTaskData) return;
-        await createComment(currentTaskData.id, { content, ...selectedLines });
-        setSelectedLines(null);
-        await refetch();
+    const [commentText, setCommentText] = useState('');
+    const [submitting, setSubmitting] = useState(false);
+
+    async function submitComment() {
+        const content = commentText.trim();
+        if (!currentTaskData || !content || submitting) return;
+        setSubmitting(true);
+        try {
+            await createComment(currentTaskData.id, { content, ...selectedLines });
+            setCommentText('');
+            setSelectedLines(null);
+            await refetch();
+        } catch (err) {
+            toast.error((err as Error).message || 'Failed to post comment');
+        } finally {
+            setSubmitting(false);
+        }
     }
 
     if (loading) {
@@ -69,14 +82,19 @@ export default function ReviewApplication({
                             task={currentTaskData}
                             selectedLines={selectedLines}
                             onSelectLines={setSelectedLines}
+                            commentText={commentText}
+                            onCommentChange={setCommentText}
+                            onSubmitComment={submitComment}
+                            submitDisabled={!commentText.trim() || submitting}
                         />
                         <TaskReviewSidebar
                             task={currentTaskData}
                             onPrev={goPrevTask}
                             onNext={goNextTask}
-                            selectedLines={selectedLines}
-                            onClearLines={() => setSelectedLines(null)}
-                            onAddComment={handleAddComment}
+                            commentText={commentText}
+                            onCommentChange={setCommentText}
+                            onSubmitComment={submitComment}
+                            submitDisabled={!commentText.trim() || submitting}
                         />
                     </>
                 ) : (
