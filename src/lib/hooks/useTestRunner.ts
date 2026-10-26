@@ -22,6 +22,7 @@ export default function useTestRunner() {
     ) {
         try {
             setLoading(true);
+            setError(null);
             const result = await runEditorSubmission({
                 code,
                 language,
@@ -42,6 +43,7 @@ export default function useTestRunner() {
     ) {
         try {
             setLoading(true);
+            setError(null);
             const result = await runAssessmentSubmission(taskTemplateId, {
                 code,
                 language,

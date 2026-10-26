@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import type { editor } from 'monaco-editor';
 import type { Monaco } from '@monaco-editor/react';
@@ -12,6 +12,11 @@ import type { TaskTestResult } from '@/generated/prisma';
 import type { TestCaseDTO } from '@/lib/schemas/task-template.schema';
 import { selectionToLineRange, type LineRange } from '@/lib/utils/comment.utils';
 import TestCasePanel from '@/lib/components/core/TestCasePanel';
+import FloatingComment from '@/lib/components/reviewing/FloatingComment';
+import type { TestCaseResult } from '@/lib/types/candidate-assessment.types';
+
+// Matches the floating comment's rendered height, used to keep it inside the editor
+const FLOATING_COMMENT_HEIGHT = 140;
 
 const Editor = dynamic(() => import('@monaco-editor/react').then((mod) => mod.Editor), {
     ssr: false,
@@ -21,18 +26,51 @@ type ReviewTaskSubmissionProps = {
     task: TaskWithReviewData | null;
     selectedLines: LineRange | null;
     onSelectLines: (lines: LineRange | null) => void;
+    commentText: string;
+    onCommentChange: (value: string) => void;
+    onSubmitComment: () => void;
+    submitDisabled: boolean;
 };
 
 export default function ReviewTaskSubmission({
     task,
     selectedLines,
     onSelectLines,
+    commentText,
+    onCommentChange,
+    onSubmitComment,
+    submitDisabled,
 }: ReviewTaskSubmissionProps) {
     const language = task?.language ?? null;
     const fileName = `main.${getLanguageFileExtension(language ?? '')}`;
     const submission = task?.submission ?? '';
     const testResults = task?.testResults ?? [];
     const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
+
+    const selectedLinesRef = useRef(selectedLines);
+    const [popupPosition, setPopupPosition] = useState<{ top: number; left: number } | null>(null);
+
+    // Anchors the floating comment just under the last selected line, following editor scroll
+    const updatePopupPosition = useCallback(() => {
+        const editorInstance = editorRef.current;
+        const lines = selectedLinesRef.current;
+        if (!editorInstance || !lines) {
+            setPopupPosition(null);
+            return;
+        }
+        const { contentLeft, height } = editorInstance.getLayoutInfo();
+        const top =
+            editorInstance.getBottomForLineNumber(lines.endLine) - editorInstance.getScrollTop();
+        setPopupPosition({
+            top: Math.max(0, Math.min(top, height - FLOATING_COMMENT_HEIGHT)),
+            left: contentLeft,
+        });
+    }, []);
+
+    useEffect(() => {
+        selectedLinesRef.current = selectedLines;
+        updatePopupPosition();
+    }, [selectedLines, updatePopupPosition]);
 
     // Clear the selection when switching tasks
     useEffect(() => () => onSelectLines(null), [task?.id, onSelectLines]);
@@ -47,12 +85,22 @@ export default function ReviewTaskSubmission({
         return { input: result.input, output: result.expectedOutput };
     }
 
+    // Cards show what the candidate's submission actually produced
+    const results: TestCaseResult[] = [
+        ...testResults.filter((r) => r.visibility === 'PUBLIC'),
+        ...testResults.filter((r) => r.visibility === 'PRIVATE'),
+    ].map((r) => ({
+        status: r.passed ? 'passed' : 'failed',
+        actualOutput: r.actualOutput ?? '',
+    }));
+
     const publicTestCases = testResults.filter((r) => r.visibility === 'PUBLIC').map(toTestCase);
     const privateTestCases = testResults.filter((r) => r.visibility === 'PRIVATE').map(toTestCase);
 
     function handleEditorMount(editorInstance: editor.IStandaloneCodeEditor, monaco: Monaco) {
         editorRef.current = editorInstance;
         applySargeDarkTheme(editorInstance, monaco);
+        editorInstance.onDidScrollChange(updatePopupPosition);
         editorInstance.onDidChangeCursorSelection(({ selection }) =>
             onSelectLines(selection.isEmpty() ? null : selectionToLineRange(selection))
         );
@@ -72,7 +120,7 @@ export default function ReviewTaskSubmission({
                         </Chip>
                     </div>
                 </div>
-                <div className="min-h-0 flex-1">
+                <div className="relative min-h-0 flex-1">
                     <Editor
                         height="100%"
                         language={language ?? 'plaintext'}
@@ -87,11 +135,23 @@ export default function ReviewTaskSubmission({
                             wordWrap: 'on',
                         }}
                     />
+                    {selectedLines && popupPosition && (
+                        <FloatingComment
+                            selectedLines={selectedLines}
+                            value={commentText}
+                            onChange={onCommentChange}
+                            onSubmit={onSubmitComment}
+                            onClearLines={() => onSelectLines(null)}
+                            submitDisabled={submitDisabled}
+                            style={popupPosition}
+                        />
+                    )}
                 </div>
             </div>
             <TestCasePanel
                 publicTestCases={publicTestCases}
                 privateTestCases={privateTestCases}
+                results={results}
                 readOnly
             />
         </>

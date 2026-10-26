@@ -1,5 +1,6 @@
 import TestCasePanel from '@/lib/components/core/TestCasePanel';
 import { type TestCaseDTO } from '@/lib/schemas/task-template.schema';
+import type { TestCaseResult } from '@/lib/types/candidate-assessment.types';
 import useTestCaseEditor from '@/lib/hooks/useTestCaseEditor';
 
 interface TestCaseEditorProps {
@@ -9,6 +10,7 @@ interface TestCaseEditorProps {
     setPrivateTestCases: React.Dispatch<React.SetStateAction<TestCaseDTO[]>>;
     isSaving: boolean;
     runTests: (tests: TestCaseDTO[]) => void;
+    results?: TestCaseResult[];
 }
 
 export default function TestCaseEditor(props: TestCaseEditorProps) {
@@ -19,6 +21,7 @@ export default function TestCaseEditor(props: TestCaseEditorProps) {
         setPrivateTestCases,
         isSaving,
         runTests,
+        results,
     } = props;
     const {
         addTestCase,
@@ -44,6 +47,7 @@ export default function TestCaseEditor(props: TestCaseEditorProps) {
             onTestCaseUpdate={updateTestCase}
             onToggleTestCaseVisibility={toggleTestCaseVisibility}
             runTests={runTests}
+            results={results}
         />
     );
 }

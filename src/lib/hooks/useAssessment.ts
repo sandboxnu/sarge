@@ -20,9 +20,9 @@ import type {
     CandidateAssessment,
     OutroReason,
     SectionState,
-    TestCaseResultStatus,
 } from '@/lib/types/candidate-assessment.types';
 import { createToken } from '@/lib/api/token';
+import { resolveStatusId } from '@/lib/utils/test-result.utils';
 import { type ProgrammingLanguage, SnapshotType, TestVisibility } from '@/generated/prisma';
 
 // TODO(laith): this should become configurable in the org settings eventually
@@ -116,25 +116,6 @@ export default function useAssessment(assessmentId: string) {
             );
         }
     }, [testLoading, testError, testOutput, currentSectionIndex]);
-
-    function resolveStatusId(statusId: number): TestCaseResultStatus {
-        switch (statusId) {
-            case 3:
-                return 'passed';
-            case 5:
-            case 7:
-            case 8:
-            case 9:
-            case 10:
-            case 11:
-            case 12:
-                return 'runtime_error';
-            case 4:
-                return 'failed';
-            default:
-                return 'failed';
-        }
-    }
 
     // the timer is in seconds however our model is in minutes
     const totalEstimatedMinutes = sections.reduce(

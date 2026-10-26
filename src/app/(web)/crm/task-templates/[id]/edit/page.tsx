@@ -12,6 +12,8 @@ import Breadcrumbs from '@/lib/components/core/Breadcrumbs';
 import useTestRunner from '@/lib/hooks/useTestRunner';
 import { type TestCaseDTO } from '@/lib/schemas/task-template.schema';
 import { type ProgrammingLanguage } from '@/generated/prisma';
+import type { TestCaseResult } from '@/lib/types/candidate-assessment.types';
+import { toTestCaseResult } from '@/lib/utils/test-result.utils';
 
 export default function TaskTemplateEditPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
@@ -48,7 +50,7 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
         generateStubsForLanguages,
         getEditorContent,
     } = useTaskTemplateEditPage(id);
-    const { runEditPageTests } = useTestRunner();
+    const { runEditPageTests, loading: testsLoading, error: testsError, output } = useTestRunner();
 
     const handleRunTests = (tests: TestCaseDTO[]) => {
         const code = getEditorContent();
@@ -56,6 +58,19 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
         if (!language) return;
         runEditPageTests(tests, code, language as ProgrammingLanguage);
     };
+
+    const allTestCases = [...publicTestCases, ...privateTestCases];
+    let testResults: TestCaseResult[] | undefined;
+    if (testsLoading) {
+        testResults = allTestCases.map(() => ({ status: 'loading' }));
+    } else if (testsError) {
+        testResults = allTestCases.map(() => ({
+            status: 'runtime_error',
+            actualOutput: 'An error occurred while running tests.',
+        }));
+    } else if (output) {
+        testResults = allTestCases.map((_, i) => toTestCaseResult(output[i]));
+    }
 
     if (isLoading) {
         return (
@@ -146,6 +161,7 @@ export default function TaskTemplateEditPage({ params }: { params: Promise<{ id:
                             privateTestCases={privateTestCases}
                             setPrivateTestCases={setPrivateTestCases}
                             runTests={handleRunTests}
+                            results={testResults}
                             isSaving={isSaving}
                         />
                     </div>

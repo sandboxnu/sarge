@@ -7,10 +7,13 @@ import { Button } from '@/lib/components/ui/Button';
 import { PlusIcon } from 'lucide-react';
 import type { TestCaseDTO } from '@/lib/schemas/task-template.schema';
 import type { TestTab } from '@/lib/hooks/useTestCaseEditor';
+import type { TestCaseResult } from '@/lib/types/candidate-assessment.types';
 
 type TestCasePanelBaseProps = {
     publicTestCases: TestCaseDTO[];
     privateTestCases: TestCaseDTO[];
+    // Aligned with [...publicTestCases, ...privateTestCases]
+    results?: TestCaseResult[];
 };
 
 type EditablePanelProps = TestCasePanelBaseProps & {
@@ -78,11 +81,17 @@ export default function TestCasePanel(props: TestCasePanelProps) {
         });
     }
 
+    // Results are stored against the combined list, so private tab indices are offset
+    function getResultIndex(tab: TestTab, index: number) {
+        return tab === 'private' ? publicTestCases.length + index : index;
+    }
+
     function renderCard(test: TestCaseDTO, index: number, tab: TestTab, isPrivate: boolean) {
         const baseProps = {
             variant: 'editor' as const,
             test,
             index,
+            result: props.results?.[getResultIndex(tab, index)],
             selected: isSelected(tab, index),
             onSelect: () => toggleSelected(tab, index),
             isPrivate,
@@ -170,7 +179,7 @@ export default function TestCasePanel(props: TestCasePanelProps) {
                             <Button
                                 className="items-center rounded-md px-3 py-1 text-sm"
                                 variant="primary"
-                                onClick={() => props.runTests(activeTestCases)}
+                                onClick={() => props.runTests(allTestCases)}
                             >
                                 Run
                             </Button>
