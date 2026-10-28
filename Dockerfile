@@ -19,6 +19,7 @@ ENV NODE_ENV=production
 ENV PORT=3000
 # ENV HOST=0.0.0.0
 ENV HOSTNAME=0.0.0.0
+ENV SARGE_CONFIG_PATH=/app/data/sarge.config.json
 EXPOSE 3000
 
 RUN apt-get update -y && apt-get install -y openssl ca-certificates libssl3 && rm -rf /var/lib/apt/lists/*
@@ -28,11 +29,15 @@ COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 
 COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/scripts ./scripts
 
 COPY --from=builder /app/package.json /tmp/package.json
 RUN PRISMA_VERSION=$(node -p "require('/tmp/package.json').dependencies.prisma") && \
     npm install -g prisma@${PRISMA_VERSION} && \
     rm /tmp/package.json
+
+RUN mkdir -p /app/data
+VOLUME ["/app/data"]
 
 COPY docker-entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh

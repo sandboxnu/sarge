@@ -6,7 +6,7 @@ services:
         ports:
             - '3000:3000'
         environment:
-            DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
+            DATABASE_URL: postgresql://${DB_USER:-postgres}:${DB_PASSWORD:-password}@db:5432/${DB_NAME:-sarge}
         depends_on:
             - db
             - ws
@@ -18,9 +18,9 @@ services:
         container_name: sarge_dev_db
         restart: unless-stopped
         environment:
-            POSTGRES_USER: ${DB_USER}
-            POSTGRES_PASSWORD: ${DB_PASSWORD}
-            POSTGRES_DB: ${DB_NAME}
+            POSTGRES_USER: ${DB_USER:-postgres}
+            POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
+            POSTGRES_DB: ${DB_NAME:-sarge}
         ports:
             - '5432:5432'
         volumes:
@@ -31,12 +31,14 @@ services:
             context: ./src/ws/
             dockerfile: Dockerfile
         env_file:
-            - .env
+            - path: .env
+              required: false
         ports:
             - 8080:8080
         volumes:
             - ./src/ws:/src/ws
             - /src/ws/node_modules
+            - ./data:/data
 
 volumes:
     postgres_data:
