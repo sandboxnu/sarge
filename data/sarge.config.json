@@ -1,8 +1,0 @@
-{
-    "DATABASE_URL": "postgresql://postgres:password@localhost:5432/sarge",
-    "DIRECT_URL": "postgresql://postgres:password@localhost:5432/sarge",
-    "BETTER_AUTH_URL": "http://localhost:3000",
-    "BETTER_AUTH_SECRET": "iMWs+S0ZVf2N5cAT0GzCxX8Nr6KLW+pPqemvaTn9N3c=",
-    "JWT_SECRET": "qUYkHotXSJWgj+BUUpNwY8KFnac8FJh9bIlsoJMIdT8=",
-    "INTERNAL_API_SECRET": "miqdodX9M1jsXxG23O39YJB0a//4U7cgMP0NbBf5C9U="
-}
