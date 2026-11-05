@@ -15,6 +15,16 @@ function hasAuthCookie(request: NextRequest): boolean {
 export function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
+    if (pathname === '/') {
+        return NextResponse.redirect(
+            new URL(hasAuthCookie(request) ? '/crm/dashboard' : '/signin', request.url)
+        );
+    }
+
+    if (pathname === '/signin' && hasAuthCookie(request)) {
+        return NextResponse.redirect(new URL('/crm/dashboard', request.url));
+    }
+
     if (protectedRoutes.some((route) => pathname.startsWith(route))) {
         if (!hasAuthCookie(request)) {
             return NextResponse.redirect(new URL('/signin', request.url));
