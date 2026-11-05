@@ -15,7 +15,7 @@ export default function NotFound() {
                         Oops! Something went wrong!
                     </h1>
                     <div className="mt-12 flex flex-col items-center gap-4">
-                        <Image src="/404-dog.svg" alt="" width={191} height={101} />
+                        <Image src="/Winston Logomark.svg" alt="" width={191} height={101} />
                         <p className="tracking-design text-xl leading-7 font-medium whitespace-nowrap text-[#707070]">
                             404 Page not found
                         </p>
