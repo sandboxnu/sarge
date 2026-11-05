@@ -150,7 +150,7 @@ export const auth = betterAuth({
             maxAge: 60 * 60, // 1 hour - cache session data in cookie
         },
     },
-    trustedOrigins: [baseUrl],
+    trustedOrigins: [baseUrl, 'https://www.sargenu.com'],
     plugins: [
         organization({
             ac,
