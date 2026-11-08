@@ -55,11 +55,16 @@ export default function ActivityLogTaskSubmission({
                                 : POINT_EVENT_WIDTH_PX
                             : undefined;
 
+                        const label = isPointEvent(event.type)
+                            ? `${getEventLabel(event.type)} at ${formatTimestamp(event.startMs)}`
+                            : `${getEventLabel(event.type)} — ${formatTimestamp(event.endMs - event.startMs)}`;
+
                         return (
                             <button
                                 key={event.id}
                                 type="button"
-                                aria-label={`${getEventLabel(event.type)} at ${formatTimestamp(event.startMs)}`}
+                                aria-label={label}
+                                title={label}
                                 onClick={() => selectEvent(event.id)}
                                 className={cn(
                                     'absolute top-1/2 h-[10px] -translate-y-1/2 rounded-full transition-all',
@@ -73,12 +78,6 @@ export default function ActivityLogTaskSubmission({
                             />
                         );
                     })}
-                    {selectedEvent && (
-                        <div
-                            className="bg-sarge-gray-100 absolute top-1/2 h-[19px] w-[2px] -translate-y-1/2 rounded-full"
-                            style={{ left: `${toPercent(selectedEvent.startMs)}%` }}
-                        />
-                    )}
                 </div>
                 <span className="text-label-xs tracking-design text-sarge-gray-100">
                     {formatTimestamp(selectedEvent ? selectedEvent.startMs : durationMs)}
