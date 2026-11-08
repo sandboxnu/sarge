@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import type { TaskWithReviewData } from '@/lib/types/position.types';
 import { useActivityLog } from '@/lib/hooks/useActivityLog';
 import {
@@ -12,17 +13,26 @@ import { cn } from '@/lib/utils/cn.utils';
 
 type ActivityLogTaskSubmissionProps = {
     task: TaskWithReviewData | null;
+    onPreviewContentChange?: (content: string | null) => void;
 };
 
 const POINT_EVENT_WIDTH_PX = 14;
 const SELECTED_EVENT_WIDTH_PX = 22;
 
-export default function ActivityLogTaskSubmission({ task }: ActivityLogTaskSubmissionProps) {
-    const { events, durationMs, selectedEvent, selectEvent } = useActivityLog(
+export default function ActivityLogTaskSubmission({
+    task,
+    onPreviewContentChange,
+}: ActivityLogTaskSubmissionProps) {
+    const { events, durationMs, selectedEvent, selectEvent, previewContent } = useActivityLog(
         task?.snapshots ?? [],
         task?.startedAt ?? new Date(),
         task?.submittedAt ?? null
     );
+
+    // Lets the editor swap in the code as it looked at the scrubbed point in time
+    useEffect(() => {
+        onPreviewContentChange?.(previewContent);
+    }, [previewContent, onPreviewContentChange]);
 
     if (!task || durationMs === 0) return null;
 
@@ -71,7 +81,7 @@ export default function ActivityLogTaskSubmission({ task }: ActivityLogTaskSubmi
                     )}
                 </div>
                 <span className="text-label-xs tracking-design text-sarge-gray-100">
-                    {formatTimestamp(durationMs)}
+                    {formatTimestamp(selectedEvent ? selectedEvent.startMs : durationMs)}
                 </span>
             </div>
             {selectedEvent && (

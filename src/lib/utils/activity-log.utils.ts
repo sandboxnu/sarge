@@ -6,6 +6,7 @@ export type ActivityEvent = {
     startMs: number;
     endMs: number;
     createdAt: Date;
+    content: string | null;
 };
 
 const EVENT_LABELS: Record<SnapshotType, string> = {
@@ -77,6 +78,23 @@ export function buildActivityEvents(
             startMs: Math.min(Math.max(startMs, 0), durationMs),
             endMs: Math.min(Math.max(endMs, 0), durationMs),
             createdAt: snapshot.createdAt,
+            content: snapshot.content ?? null,
         };
     });
+}
+
+// Finds the code content in effect at a given point in time: the most recent
+// CONTENT snapshot at or before that moment, falling back to the first CONTENT
+// snapshot if the scrub position is before any edit has happened yet.
+export function getContentAtTime(events: ActivityEvent[], atMs: number): string | null {
+    const contentEvents = events.filter((event) => event.type === 'CONTENT' && event.content !== null);
+    let current: ActivityEvent | null = null;
+    for (const event of contentEvents) {
+        if (event.startMs <= atMs) {
+            current = event;
+        } else {
+            break;
+        }
+    }
+    return (current ?? contentEvents[0])?.content ?? null;
 }
