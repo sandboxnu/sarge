@@ -13,6 +13,7 @@ import type { TestCaseDTO } from '@/lib/schemas/task-template.schema';
 import { selectionToLineRange, type LineRange } from '@/lib/utils/comment.utils';
 import TestCasePanel from '@/lib/components/core/TestCasePanel';
 import FloatingComment from '@/lib/components/reviewing/FloatingComment';
+import ActivityLogTaskSubmission from '@/lib/components/reviewing/ActivityLogTaskSubmission';
 import type { TestCaseResult } from '@/lib/types/candidate-assessment.types';
 
 // Matches the floating comment's rendered height, used to keep it inside the editor
@@ -147,6 +148,7 @@ export default function ReviewTaskSubmission({
                         />
                     )}
                 </div>
+                <ActivityLogTaskSubmission task={task} />
             </div>
             <TestCasePanel
                 publicTestCases={publicTestCases}
