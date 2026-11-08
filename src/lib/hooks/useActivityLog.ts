@@ -9,9 +9,10 @@ import {
 export function useActivityLog(snapshots: Snapshot[], startedAt: Date, submittedAt: Date | null) {
     const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
 
-    const normalizedStartedAt = new Date(startedAt);
+    const normalizedStartedAt = useMemo(() => new Date(startedAt), [startedAt]);
     const normalizedSnapshots = useMemo(
-        () => snapshots.map((snapshot) => ({ ...snapshot, createdAt: new Date(snapshot.createdAt) })),
+        () =>
+            snapshots.map((snapshot) => ({ ...snapshot, createdAt: new Date(snapshot.createdAt) })),
         [snapshots]
     );
 

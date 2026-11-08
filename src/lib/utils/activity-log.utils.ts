@@ -70,7 +70,9 @@ export function buildActivityEvents(
         const next = sorted[i + 1];
         const endMs = isPointEvent(snapshot.type)
             ? startMs
-            : (next ? next.createdAt.getTime() - startedAt.getTime() : durationMs);
+            : next
+              ? next.createdAt.getTime() - startedAt.getTime()
+              : durationMs;
 
         return {
             id: snapshot.id,
@@ -87,7 +89,9 @@ export function buildActivityEvents(
 // CONTENT snapshot at or before that moment, falling back to the first CONTENT
 // snapshot if the scrub position is before any edit has happened yet.
 export function getContentAtTime(events: ActivityEvent[], atMs: number): string | null {
-    const contentEvents = events.filter((event) => event.type === 'CONTENT' && event.content !== null);
+    const contentEvents = events.filter(
+        (event) => event.type === 'CONTENT' && event.content !== null
+    );
     let current: ActivityEvent | null = null;
     for (const event of contentEvents) {
         if (event.startMs <= atMs) {

@@ -73,7 +73,9 @@ export default function ActivityLogTaskSubmission({
                                 )}
                                 style={{
                                     left: `${left}%`,
-                                    width: width ? `${width}px` : `${toPercent(event.endMs) - left}%`,
+                                    width: width
+                                        ? `${width}px`
+                                        : `${toPercent(event.endMs) - left}%`,
                                 }}
                             />
                         );
