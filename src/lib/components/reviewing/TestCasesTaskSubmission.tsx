@@ -13,6 +13,7 @@ import type { TestCaseDTO } from '@/lib/schemas/task-template.schema';
 import { selectionToLineRange, type LineRange } from '@/lib/utils/comment.utils';
 import TestCasePanel from '@/lib/components/core/TestCasePanel';
 import FloatingComment from '@/lib/components/reviewing/FloatingComment';
+import ActivityLogTaskSubmission from '@/lib/components/reviewing/ActivityLogTaskSubmission';
 import type { TestCaseResult } from '@/lib/types/candidate-assessment.types';
 
 // Matches the floating comment's rendered height, used to keep it inside the editor
@@ -47,6 +48,11 @@ export default function ReviewTaskSubmission({
     const testResults = task?.testResults ?? [];
     const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
 
+    // When the scrubber has a point selected, show the code as it looked then
+    // instead of the final submission
+    const [previewContent, setPreviewContent] = useState<string | null>(null);
+    const displayedCode = previewContent ?? submission;
+
     const selectedLinesRef = useRef(selectedLines);
     const [popupPosition, setPopupPosition] = useState<{ top: number; left: number } | null>(null);
 
@@ -74,6 +80,9 @@ export default function ReviewTaskSubmission({
 
     // Clear the selection when switching tasks
     useEffect(() => () => onSelectLines(null), [task?.id, onSelectLines]);
+
+    // Clear the scrubbed preview when switching tasks
+    useEffect(() => () => setPreviewContent(null), [task?.id]);
 
     // Remove the editor highlight once the lines are cleared (chip removed, comment posted)
     useEffect(() => {
@@ -124,7 +133,7 @@ export default function ReviewTaskSubmission({
                     <Editor
                         height="100%"
                         language={language ?? 'plaintext'}
-                        value={submission}
+                        value={displayedCode}
                         onMount={handleEditorMount}
                         theme="sargeDark"
                         options={{
@@ -147,6 +156,7 @@ export default function ReviewTaskSubmission({
                         />
                     )}
                 </div>
+                <ActivityLogTaskSubmission task={task} onPreviewContentChange={setPreviewContent} />
             </div>
             <TestCasePanel
                 publicTestCases={publicTestCases}

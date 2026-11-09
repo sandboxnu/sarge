@@ -234,6 +234,12 @@ export const snapshotsData: SeedSnapshot[] = [
         createdAt: new Date('2026-04-12T15:30:00Z'),
     },
     {
+        id: 'snap_carter_two_sum_008b',
+        taskId: 'task_carter_two_sum_001',
+        type: 'UNFOCUS',
+        createdAt: new Date('2026-04-12T15:33:00Z'),
+    },
+    {
         id: 'snap_carter_two_sum_009',
         taskId: 'task_carter_two_sum_001',
         type: 'DISCONNECT',
@@ -293,6 +299,12 @@ export const snapshotsData: SeedSnapshot[] = [
         taskId: 'task_carter_reverse_string_001',
         type: 'HIGHLIGHT',
         createdAt: new Date('2026-04-12T16:04:00Z'),
+    },
+    {
+        id: 'snap_carter_reverse_005b',
+        taskId: 'task_carter_reverse_string_001',
+        type: 'UNFOCUS',
+        createdAt: new Date('2026-04-12T16:06:00Z'),
     },
     {
         id: 'snap_carter_reverse_006',
