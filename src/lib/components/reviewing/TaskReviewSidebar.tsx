@@ -1,7 +1,5 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-
 import type { TaskWithReviewData } from '@/lib/types/position.types';
 import { TestVisibility } from '@/generated/prisma';
 
@@ -19,6 +17,8 @@ type TaskReviewSidebarProps = {
 
     onPrev: () => void;
     onNext: () => void;
+    score: string;
+    onScoreChange: (value: string) => void;
     commentText: string;
     onCommentChange: (value: string) => void;
     onSubmitComment: () => void;
@@ -29,15 +29,14 @@ export default function TaskReviewSidebar({
     task,
     onPrev,
     onNext,
+    score,
+    onScoreChange,
     commentText,
     onCommentChange,
     onSubmitComment,
     submitDisabled,
 }: TaskReviewSidebarProps) {
     const testResults = task?.testResults ?? [];
-    const initialScore = String(task?.reviews[0]?.score ?? '');
-    const [score, setScore] = useState(initialScore);
-    useEffect(() => setScore(initialScore), [initialScore]);
     const publicResults = testResults.filter((r) => r.visibility === TestVisibility.PUBLIC);
     const privateResults = testResults.filter((r) => r.visibility === TestVisibility.PRIVATE);
     const publicPassed = publicResults.filter((r) => r.passed).length;
@@ -71,7 +70,7 @@ export default function TaskReviewSidebar({
                     publicTestCases={`${publicPassed}/${publicResults.length} passed`}
                     privateTestCases={`${privatePassed}/${privateResults.length} passed`}
                     score={score}
-                    onScoreChange={setScore}
+                    onScoreChange={onScoreChange}
                 />
             </ReviewerActions>
             <ReviewerActions title="Instructions">

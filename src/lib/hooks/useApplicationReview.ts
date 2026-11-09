@@ -41,6 +41,16 @@ export default function useApplicationReview(applicationId: string | null) {
     const tasks = (application?.assessment?.tasks ?? []).filter((t) => t.submittedAt !== null);
     const totalTasks = tasks.length;
     const currentTaskData = tasks[currentTask] ?? null;
+
+    const [scoreDrafts, setScoreDrafts] = useState<Record<string, string>>({});
+
+    const score = currentTaskData
+        ? (scoreDrafts[currentTaskData.id] ?? String(currentTaskData.reviews[0]?.score ?? ''))
+        : '';
+    const setScore = (value: string) => {
+        if (!currentTaskData) return;
+        setScoreDrafts((prev) => ({ ...prev, [currentTaskData.id]: value }));
+    };
     // NOTE(laith): probably temporary, but basic ring buffer implementation
     const goPrevTask = () =>
         setCurrentTask((i) => (totalTasks === 0 ? 0 : (i - 1 + totalTasks) % totalTasks));
@@ -58,5 +68,7 @@ export default function useApplicationReview(applicationId: string | null) {
         goPrevTask,
         goNextTask,
         refetch,
+        score,
+        setScore,
     };
 }
