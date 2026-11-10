@@ -1,6 +1,6 @@
 'use client';
 
-import { sidebarMenuItems } from '@/lib/components/core/Sidebar';
+import { sidebarMenuItems, SidebarTrigger } from '@/lib/components/core/Sidebar';
 import { cn } from '@/lib/utils/cn.utils';
 import { usePathname } from 'next/navigation';
 
@@ -19,16 +19,26 @@ export function PageHeader({ pageName, className }: { pageName?: string; classNa
     const title = pageName ?? activeItem?.title;
 
     if (!title) {
-        return null;
+        return (
+            <header
+                className={cn(
+                    'flex h-(--navbar-height) shrink-0 items-center px-5 md:hidden',
+                    className
+                )}
+            >
+                <SidebarTrigger variant="icon" />
+            </header>
+        );
     }
 
     return (
         <header
             className={cn(
-                'flex h-(--navbar-height) shrink-0 items-center border-b px-5',
+                'flex h-(--navbar-height) shrink-0 items-center gap-2 border-b px-5',
                 className
             )}
         >
+            <SidebarTrigger variant="icon" className="md:hidden" />
             <h1 className="text-label-s">{title}</h1>
         </header>
     );

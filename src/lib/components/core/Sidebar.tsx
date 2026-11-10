@@ -24,23 +24,23 @@ import { cn } from '@/lib/utils/cn.utils';
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 import {
-    //BookOpen,
-    ChevronDown,
-    File,
-    //Home,
+    BookOpen,
+    FileText,
+    Home,
     PanelLeftIcon,
-    Settings,
     ShieldUser,
     Users,
+    type LucideIcon,
 } from 'lucide-react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import * as React from 'react';
 const SIDEBAR_COOKIE_NAME = 'sidebar_state';
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
-const SIDEBAR_WIDTH = '16rem';
+const SIDEBAR_WIDTH = '13.75rem';
 const SIDEBAR_WIDTH_MOBILE = '18rem';
-const SIDEBAR_WIDTH_ICON = '3rem';
+const SIDEBAR_WIDTH_ICON = '4.75rem';
 const SIDEBAR_KEYBOARD_SHORTCUT = 'b';
 
 type SidebarContextProps = {
@@ -471,16 +471,16 @@ function SidebarMenuItem({ className, ...props }: React.ComponentProps<'li'>) {
 }
 
 const sidebarMenuButtonVariants = cva(
-    'peer/menu-button ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-hidden transition-[width,height,padding] group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:font-medium [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0',
+    'peer/menu-button ring-sidebar-ring tracking-design text-sarge-gray-600 data-[active=true]:bg-sarge-gray-100 flex w-full items-center gap-2.5 overflow-hidden rounded-lg px-3 py-2.5 text-left text-sm font-medium outline-hidden transition-colors group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:w-11! group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0! hover:bg-[#f5f6f8] focus-visible:ring-2 active:bg-[#dfe2e7] disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-5 [&>svg]:shrink-0',
     {
         variants: {
             variant: {
-                default: 'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
+                default: 'hover:bg-[#f5f6f8]',
                 outline:
-                    'bg-background hover:bg-sidebar-accent hover:text-sidebar-accent-foreground shadow-[0_0_0_1px_hsl(var(--sidebar-border))] hover:shadow-[0_0_0_1px_hsl(var(--sidebar-accent))]',
+                    'bg-background shadow-[0_0_0_1px_hsl(var(--sidebar-border))] hover:shadow-[0_0_0_1px_hsl(var(--sidebar-accent))]',
             },
             size: {
-                default: 'h-8 text-sm',
+                default: 'h-10 text-sm',
                 sm: 'h-7 text-xs',
                 lg: 'h-12 text-sm group-data-[collapsible=icon]:p-0!',
             },
@@ -686,175 +686,202 @@ export function SidebarMenuSubButton({
     );
 }
 
-export const sidebarMenuItems = [
-    // {
-    //     title: 'Overview',
-    //     url: '/crm/dashboard',
-    //     icon: Home,
-    // },
+export const sidebarMenuItems: {
+    title: string;
+    url: string;
+    icon: LucideIcon;
+    fillWhenActive?: boolean;
+}[] = [
+    {
+        title: 'Home',
+        url: '/crm/dashboard',
+        icon: Home,
+        fillWhenActive: true,
+    },
     {
         title: 'Templates',
         url: '/crm/templates',
-        icon: File,
+        icon: FileText,
     },
     {
-        title: 'Positions',
+        title: 'Candidates',
         url: '/crm/positions',
         icon: Users,
     },
-    // {
-    //     title: 'Reviewing',
-    //     url: '/crm/reviewing',
-    //     icon: BookOpen,
-    // },
+    {
+        title: 'Live Assessments',
+        url: '/crm/reviewing',
+        icon: BookOpen,
+    },
 ];
+
+function isRouteActive(pathname: string, url: string) {
+    return pathname === url || pathname.startsWith(`${url}/`);
+}
+
+const navRowClassName =
+    'flex h-10 w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm font-medium tracking-design text-sarge-gray-600 group-data-[collapsible=icon]:w-11 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0';
 
 export function Sidebar() {
     const auth = useAuth();
-    const router = useRouter();
+    const pathname = usePathname();
+    const { toggleSidebar, isMobile, setOpenMobile } = useSidebar();
 
     const { isOnboarding } = useOnboardingState();
-    const memberRole = auth.activeMember?.role;
-    const canSeeSettings = auth.isSuperUser || memberRole === 'owner' || memberRole === 'admin';
+
+    React.useEffect(() => {
+        if (isMobile) {
+            setOpenMobile(false);
+        }
+    }, [pathname, isMobile, setOpenMobile]);
 
     return (
         <ShadSidebar
             className={cn(
-                'border-sarge-primary-100 bg-sarge-primary-100 border-r-4',
+                "[&_[data-slot='sidebar-inner']]:bg-[#f9f9f9]",
                 isOnboarding && 'opacity-0'
             )}
             collapsible="icon"
         >
-            <SidebarHeader className="group group-data-[collapsible=icon]:px-1 group-data-[collapsible=icon]:pb-2">
-                <Image
-                    src="/Sarge_logo.svg"
-                    alt="Sarge Logo"
-                    width={85}
-                    height={35}
-                    className="group-data-[collapsible=icon]:hidden"
-                />
-                <Image
-                    src="/Helmet_Logomark.svg"
-                    alt="Sarge Logo"
-                    width={67}
-                    height={28}
-                    className="hidden h-7 w-7 justify-center group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:inline"
-                />
-                <div className="flex items-center justify-between gap-3 group-data-[collapsible=icon]:w-full group-data-[collapsible=icon]:justify-center">
-                    <div className="flex flex-1 items-center gap-2">
-                        <div
-                            className={`h-7 w-7 overflow-hidden rounded group-data-[collapsible=icon]:mx-auto ${
-                                !auth.activeOrganization?.logo ? 'bg-sarge-gray-500' : ''
-                            }`}
-                        >
-                            {auth.activeOrganization?.logo ? (
-                                <Image
-                                    src={auth.activeOrganization.logo}
-                                    alt="Organization Logo"
-                                    width={60}
-                                    height={28}
-                                    className="h-full w-full object-cover object-center"
-                                />
-                            ) : (
-                                <Image
-                                    src="/Winston Logomark.svg"
-                                    alt="Winston Logo"
-                                    width={28}
-                                    height={28}
-                                    className="h-full w-full object-cover object-center brightness-0 invert"
-                                />
-                            )}
-                        </div>
-
-                        <p className="truncate text-xs font-semibold text-gray-900 group-data-[collapsible=icon]:hidden">
-                            {auth.activeOrganization?.name ?? 'Organization Name'}
-                        </p>
-
-                        <ChevronDown className="text-sarge-gray-600 ml-auto h-3 w-3 group-data-[collapsible=icon]:hidden" />
+            <SidebarHeader className="h-14 justify-center p-4">
+                <div className="flex h-6 w-full items-center justify-between group-data-[collapsible=icon]:hidden">
+                    <div className="pl-2">
+                        <Image src="/Sarge_logo.svg" alt="Sarge" width={80} height={24} priority />
                     </div>
-
-                    <SidebarTrigger className="bg-sarge-gray-100 hover:bg-sarge-primary-100 hidden items-center rounded-lg transition-all duration-200 group-hover:flex group-data-[collapsible=icon]:hidden" />
+                    <button
+                        type="button"
+                        onClick={toggleSidebar}
+                        aria-label="Collapse sidebar"
+                        className="ring-sidebar-ring text-sarge-gray-700 flex h-10 w-10 items-center justify-center rounded-lg outline-hidden transition-colors hover:bg-[#f5f6f8] focus-visible:ring-2 active:bg-[#dfe2e7]"
+                    >
+                        <PanelLeftIcon className="size-5" />
+                    </button>
                 </div>
+                <button
+                    type="button"
+                    onClick={toggleSidebar}
+                    aria-label="Expand sidebar"
+                    className="group/mark ring-sidebar-ring text-sarge-gray-600 hidden h-6 w-full items-center justify-center rounded-lg outline-hidden group-data-[collapsible=icon]:flex focus-visible:ring-2"
+                >
+                    <Image
+                        src="/Helmet_Logomark.svg"
+                        alt=""
+                        width={25}
+                        height={24}
+                        className="block group-hover/mark:hidden group-focus-visible/mark:hidden"
+                    />
+                    <PanelLeftIcon className="hidden size-5 group-hover/mark:block group-focus-visible/mark:block" />
+                </button>
             </SidebarHeader>
-            <SidebarContent>
-                <SidebarGroup className="group-data-[collapsible=icon]:p-0">
+            <SidebarContent className="gap-1 p-0">
+                <SidebarGroup className="px-4 pt-3 pb-3.5">
                     <SidebarGroupContent>
-                        <SidebarMenu className="space-y-1">
-                            {sidebarMenuItems.map((item) => (
-                                <SidebarMenuItem key={item.title}>
-                                    <SidebarMenuButton
-                                        tooltip={item.title}
-                                        className="hover:bg-sarge-primary-100 focus:bg-sarge-primary-200 gap-x-3 p-2.5 transition-colors duration-600 ease-out group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8 group-data-[collapsible=icon]:p-0 hover:cursor-pointer"
-                                        onClick={() => router.push(item.url)}
-                                    >
-                                        <item.icon className="text-sarge-gray-600 h-4 w-4" />
-                                        <span className="text-sarge-gray-800 text-xs font-medium">
-                                            {item.title}
-                                        </span>
-                                    </SidebarMenuButton>
-                                </SidebarMenuItem>
-                            ))}
+                        <SidebarMenu>
+                            {sidebarMenuItems.map((item) => {
+                                const active = isRouteActive(pathname, item.url);
+                                return (
+                                    <SidebarMenuItem key={item.title}>
+                                        <SidebarMenuButton
+                                            asChild
+                                            isActive={active}
+                                            tooltip={item.title}
+                                        >
+                                            <Link
+                                                href={item.url}
+                                                aria-current={active ? 'page' : undefined}
+                                            >
+                                                <item.icon
+                                                    className={cn(
+                                                        'size-5',
+                                                        active && item.fillWhenActive
+                                                            ? 'text-sarge-gray-700 fill-current'
+                                                            : 'text-sarge-gray-600'
+                                                    )}
+                                                />
+                                                <span className="group-data-[collapsible=icon]:hidden">
+                                                    {item.title}
+                                                </span>
+                                            </Link>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                );
+                            })}
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
-            <SidebarFooter>
-                {auth.isSuperUser && (
-                    <SidebarMenu>
-                        <SidebarMenuItem>
-                            <SidebarMenuButton
-                                tooltip="Admin"
-                                className="hover:!bg-sarge-primary-100 focus:!bg-sarge-primary-200 p-2.5 transition-colors duration-600 ease-out group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8 group-data-[collapsible=icon]:p-0 hover:cursor-pointer"
-                                onClick={() => router.push('/admin')}
-                            >
-                                <ShieldUser className="text-sarge-gray-600 !h-4 !w-4" />
-                                <span className="text-sarge-gray-800 text-xs font-medium group-data-[collapsible=icon]:hidden">
-                                    Admin
-                                </span>
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-                    </SidebarMenu>
-                )}
-                {canSeeSettings && (
-                    <SidebarMenu>
-                        <SidebarMenuItem>
-                            <SidebarMenuButton
-                                tooltip="Settings"
-                                className="hover:!bg-sarge-primary-100 focus:!bg-sarge-primary-200 p-2.5 transition-colors duration-600 ease-out group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8 group-data-[collapsible=icon]:p-0 hover:cursor-pointer"
-                                onClick={() => router.push('/crm/settings')}
-                            >
-                                <Settings className="text-sarge-gray-600 !h-4 !w-4" />
-                                <span className="text-sarge-gray-800 text-xs font-medium group-data-[collapsible=icon]:hidden">
-                                    Settings
-                                </span>
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-                    </SidebarMenu>
-                )}
+            <SidebarFooter className="gap-1 px-4 pt-3 pb-3.5">
                 <SidebarMenu>
+                    {auth.isSuperUser && (
+                        <SidebarMenuItem>
+                            <SidebarMenuButton asChild tooltip="Admin">
+                                <Link href="/admin">
+                                    <ShieldUser className="text-sarge-gray-600" />
+                                    <span className="group-data-[collapsible=icon]:hidden">
+                                        Admin
+                                    </span>
+                                </Link>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                    )}
                     <SidebarMenuItem>
                         <SidebarMenuButton
+                            asChild
+                            isActive={isRouteActive(pathname, '/crm/profile')}
                             tooltip="Profile"
-                            className="hover:!bg-sarge-primary-100 focus:!bg-sarge-primary-200 p-2.5 transition-colors duration-600 ease-out group-data-[collapsible=icon]:!mx-auto group-data-[collapsible=icon]:!h-8 group-data-[collapsible=icon]:!w-8 group-data-[collapsible=icon]:p-0 hover:cursor-pointer"
-                            onClick={() => router.push('/crm/profile')}
                         >
-                            {auth.user?.image ? (
-                                <Image
-                                    src={auth.user.image}
-                                    alt={'Profile Picture'}
-                                    height={20}
-                                    width={20}
-                                    className="group-data-[collapsible=icon]:mx-auto"
-                                />
-                            ) : (
-                                <div className="bg-sarge-gray-200 text-sarge-gray-600 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-medium group-data-[collapsible=icon]:mx-auto">
-                                    {auth.user?.name[0]}
-                                </div>
-                            )}
-                            <span className="text-sarge-gray-800 text-xs font-medium group-data-[collapsible=icon]:hidden">
-                                Profile
-                            </span>
+                            <Link
+                                href="/crm/profile"
+                                aria-current={
+                                    isRouteActive(pathname, '/crm/profile') ? 'page' : undefined
+                                }
+                            >
+                                {auth.user?.image ? (
+                                    <Image
+                                        src={auth.user.image}
+                                        alt=""
+                                        height={20}
+                                        width={20}
+                                        className="size-5 shrink-0 rounded-full object-cover"
+                                    />
+                                ) : (
+                                    <div className="bg-sarge-gray-200 text-sarge-gray-600 flex size-5 shrink-0 items-center justify-center rounded-full text-[10px] font-medium">
+                                        {auth.user?.name?.[0] ?? '?'}
+                                    </div>
+                                )}
+                                <span className="group-data-[collapsible=icon]:hidden">
+                                    Profile
+                                </span>
+                            </Link>
                         </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                        <div className={navRowClassName}>
+                            <div className="size-5 shrink-0 overflow-hidden rounded">
+                                {auth.activeOrganization?.logo ? (
+                                    <Image
+                                        src={auth.activeOrganization.logo}
+                                        alt=""
+                                        width={20}
+                                        height={20}
+                                        className="h-full w-full object-cover"
+                                    />
+                                ) : (
+                                    <div className="bg-sarge-gray-500 flex h-full w-full items-center justify-center">
+                                        <Image
+                                            src="/Winston Logomark.svg"
+                                            alt=""
+                                            width={20}
+                                            height={20}
+                                            className="h-full w-full object-cover brightness-0 invert"
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                            <span className="truncate group-data-[collapsible=icon]:hidden">
+                                {auth.activeOrganization?.name ?? 'Organization'}
+                            </span>
+                        </div>
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarFooter>
