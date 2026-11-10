@@ -23,7 +23,15 @@ import useOnboardingState from '@/lib/hooks/useOnboardingState';
 import { cn } from '@/lib/utils/cn.utils';
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { PanelLeftIcon, ShieldUser } from 'lucide-react';
+import {
+    BookOpen,
+    FileText,
+    Home,
+    PanelLeftIcon,
+    ShieldUser,
+    Users,
+    type LucideIcon,
+} from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -681,29 +689,29 @@ export function SidebarMenuSubButton({
 export const sidebarMenuItems: {
     title: string;
     url: string;
-    icon: string;
-    activeIcon?: string;
+    icon: LucideIcon;
+    fillWhenActive?: boolean;
 }[] = [
     {
         title: 'Home',
         url: '/crm/dashboard',
-        icon: '/NavIconHome.svg',
-        activeIcon: '/NavIconHomeFilled.svg',
+        icon: Home,
+        fillWhenActive: true,
     },
     {
         title: 'Templates',
         url: '/crm/templates',
-        icon: '/NavIconTemplate.svg',
+        icon: FileText,
     },
     {
         title: 'Candidates',
         url: '/crm/positions',
-        icon: '/NavIconUsers.svg',
+        icon: Users,
     },
     {
         title: 'Live Assessments',
         url: '/crm/reviewing',
-        icon: '/NavIconLiveAssessment.svg',
+        icon: BookOpen,
     },
 ];
 
@@ -738,28 +746,22 @@ export function Sidebar() {
             <SidebarHeader className="h-14 justify-center p-4">
                 <div className="flex h-6 w-full items-center justify-between group-data-[collapsible=icon]:hidden">
                     <div className="pl-2">
-                        <Image
-                            src="/Sarge_logo_compact.svg"
-                            alt="Sarge"
-                            width={80.416}
-                            height={24}
-                            priority
-                        />
+                        <Image src="/Sarge_logo.svg" alt="Sarge" width={80} height={24} priority />
                     </div>
                     <button
                         type="button"
                         onClick={toggleSidebar}
                         aria-label="Collapse sidebar"
-                        className="ring-sidebar-ring flex h-10 w-10 items-center justify-center rounded-lg outline-hidden transition-colors hover:bg-[#f5f6f8] focus-visible:ring-2 active:bg-[#dfe2e7]"
+                        className="ring-sidebar-ring text-sarge-gray-700 flex h-10 w-10 items-center justify-center rounded-lg outline-hidden transition-colors hover:bg-[#f5f6f8] focus-visible:ring-2 active:bg-[#dfe2e7]"
                     >
-                        <Image src="/NavIconCollapse.svg" alt="" width={20} height={20} />
+                        <PanelLeftIcon className="size-5" />
                     </button>
                 </div>
                 <button
                     type="button"
                     onClick={toggleSidebar}
                     aria-label="Expand sidebar"
-                    className="group/mark ring-sidebar-ring hidden h-6 w-full items-center justify-center rounded-lg outline-hidden group-data-[collapsible=icon]:flex focus-visible:ring-2"
+                    className="group/mark ring-sidebar-ring text-sarge-gray-600 hidden h-6 w-full items-center justify-center rounded-lg outline-hidden group-data-[collapsible=icon]:flex focus-visible:ring-2"
                 >
                     <Image
                         src="/Helmet_Logomark.svg"
@@ -768,13 +770,7 @@ export function Sidebar() {
                         height={24}
                         className="block group-hover/mark:hidden group-focus-visible/mark:hidden"
                     />
-                    <Image
-                        src="/NavIconExpand.svg"
-                        alt=""
-                        width={20}
-                        height={20}
-                        className="hidden group-hover/mark:block group-focus-visible/mark:block"
-                    />
+                    <PanelLeftIcon className="hidden size-5 group-hover/mark:block group-focus-visible/mark:block" />
                 </button>
             </SidebarHeader>
             <SidebarContent className="gap-1 p-0">
@@ -794,15 +790,13 @@ export function Sidebar() {
                                                 href={item.url}
                                                 aria-current={active ? 'page' : undefined}
                                             >
-                                                <Image
-                                                    src={
-                                                        active && item.activeIcon
-                                                            ? item.activeIcon
-                                                            : item.icon
-                                                    }
-                                                    alt=""
-                                                    width={20}
-                                                    height={20}
+                                                <item.icon
+                                                    className={cn(
+                                                        'size-5',
+                                                        active && item.fillWhenActive
+                                                            ? 'text-sarge-gray-700 fill-current'
+                                                            : 'text-sarge-gray-600'
+                                                    )}
                                                 />
                                                 <span className="group-data-[collapsible=icon]:hidden">
                                                     {item.title}
