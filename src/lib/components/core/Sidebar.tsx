@@ -463,7 +463,7 @@ function SidebarMenuItem({ className, ...props }: React.ComponentProps<'li'>) {
 }
 
 const sidebarMenuButtonVariants = cva(
-    'peer/menu-button ring-sidebar-ring flex w-full items-center gap-2.5 overflow-hidden rounded-lg px-3 py-2.5 text-left text-sm font-medium tracking-design text-sarge-gray-600 outline-hidden transition-colors hover:bg-[#f5f6f8] active:bg-[#dfe2e7] data-[active=true]:bg-sarge-gray-100 group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:w-11! group-data-[collapsible=icon]:p-0! group-data-[collapsible=icon]:justify-center focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-5 [&>svg]:shrink-0',
+    'peer/menu-button ring-sidebar-ring tracking-design text-sarge-gray-600 data-[active=true]:bg-sarge-gray-100 flex w-full items-center gap-2.5 overflow-hidden rounded-lg px-3 py-2.5 text-left text-sm font-medium outline-hidden transition-colors group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:w-11! group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0! hover:bg-[#f5f6f8] focus-visible:ring-2 active:bg-[#dfe2e7] disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-5 [&>svg]:shrink-0',
     {
         variants: {
             variant: {
@@ -759,7 +759,7 @@ export function Sidebar() {
                     type="button"
                     onClick={toggleSidebar}
                     aria-label="Expand sidebar"
-                    className="group/mark ring-sidebar-ring hidden h-6 w-full items-center justify-center rounded-lg outline-hidden focus-visible:ring-2 group-data-[collapsible=icon]:flex"
+                    className="group/mark ring-sidebar-ring hidden h-6 w-full items-center justify-center rounded-lg outline-hidden group-data-[collapsible=icon]:flex focus-visible:ring-2"
                 >
                     <Image
                         src="/Helmet_Logomark.svg"
@@ -855,7 +855,9 @@ export function Sidebar() {
                                         {auth.user?.name?.[0] ?? '?'}
                                     </div>
                                 )}
-                                <span className="group-data-[collapsible=icon]:hidden">Profile</span>
+                                <span className="group-data-[collapsible=icon]:hidden">
+                                    Profile
+                                </span>
                             </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
