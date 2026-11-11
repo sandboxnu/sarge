@@ -29,7 +29,7 @@ COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/scripts ./scripts
+COPY --from=builder /app/src/install/migrate.mjs ./src/install/migrate.mjs
 
 COPY --from=builder /app/package.json /tmp/package.json
 RUN PRISMA_VERSION=$(node -p "require('/tmp/package.json').dependencies.prisma") && \
