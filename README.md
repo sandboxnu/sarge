@@ -46,6 +46,7 @@ Environment variables can be edited in `/opt/sarge/.env`.
 - [Node](https://nodejs.org/en/download)
 - [PNPM](https://pnpm.io/installation)
 - [Docker](https://docs.docker.com/desktop/)
+- [Vercel CLI](https://vercel.com/docs/cli) (v54.14.2 or above) and access to the Sarge Vercel project
 
 Run the commands in the following order
 
@@ -66,10 +67,22 @@ curl -fsSL https://get.pnpm.io/install.sh | sh -
 
 ```sh
 pnpm install
-cd src/ws && pnpm install
 ```
 
-4. Setup the .env file
+4. Install the Vercel CLI and link the project
+
+```sh
+pnpm add -g vercel
+vc login
+vc link
+```
+
+When linking, choose the team's scope and the existing Sarge project. This creates `.vercel/` and `.env.local`, both of which are gitignored.
+
+> [!NOTE]
+> You must be added to the Sarge Vercel project by project leadership before you can link it
+
+5. Setup the .env file
 
 ```
 # in the project's root directory
@@ -79,7 +92,7 @@ mv .env.example .env
 > [!NOTE]
 > You must contact Sarge project leadership to retrieve project environment variables
 
-5. Run the application
+6. Run the application
 
 ```sh
 # with docker desktop open
@@ -88,4 +101,7 @@ mv .env.example .env
 
 Sarge Web will be available on http://localhost:3000/
 
-Sarge WS will be available on ws://localhost:8080/
+Sarge WS will be available on ws://localhost:3000/api/ws
+
+> [!NOTE]
+> The app runs with `vc dev` instead of `next dev` because the WebSocket route only works under the Vercel CLI. Port 3000 must be free, otherwise `vc dev` picks another port and sign-in fails with an "Invalid origin" error.
