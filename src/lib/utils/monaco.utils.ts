@@ -19,9 +19,8 @@ export function applySargeDarkTheme(
 ): void {
     monaco.editor.defineTheme('sargeDark', {
         base: 'vs-dark',
-        // NOTE: inherit is off so vs-dark's syntax colors are dropped, the design is monochrome
-        // except for Python, whose rules are scoped by the .python token suffix
-        inherit: false,
+        // Keep Monaco's built-in syntax colors alongside Sarge's editor styling.
+        inherit: true,
         rules: [{ token: '', foreground: 'F9FAFE', background: '212429' }],
         colors: {
             'editor.background': '#212429',
