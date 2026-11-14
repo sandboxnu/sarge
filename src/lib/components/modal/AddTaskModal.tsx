@@ -88,7 +88,7 @@ export default function AddTaskModal({
                 showCloseButton={true}
             >
                 <div className="px-7 pt-6 pb-0">
-                    <DialogTitle>Add a task</DialogTitle>
+                    <DialogTitle>Add a Task Template</DialogTitle>
                 </div>
 
                 <div className="flex items-center gap-4 px-7 pt-4">

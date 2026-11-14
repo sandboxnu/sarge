@@ -46,7 +46,9 @@ export function PositionAssessmentBox({
                 ) : (
                     <FileText className="text-sarge-gray-600 size-5 shrink-0" />
                 )}
-                <span className="text-body-m">{assignedTitle ?? 'No assessment assigned'}</span>
+                <span className="text-body-m">
+                    {assignedTitle ?? 'No assessment template assigned'}
+                </span>
             </div>
             <div className="flex items-center gap-3">
                 <Button
@@ -56,7 +58,7 @@ export function PositionAssessmentBox({
                 >
                     <ChevronDown className="size-4" />
                     <span className="text-label-s">
-                        {assignedTitle ? 'Change Assessment' : 'Select Assessment'}
+                        {assignedTitle ? 'Change Assessment Template' : 'Select Assessment Template'}
                     </span>
                 </Button>
                 <Button

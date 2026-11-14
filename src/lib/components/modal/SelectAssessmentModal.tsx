@@ -98,7 +98,7 @@ export default function SelectAssessmentModal({
             <DialogContent className="gap-6 px-9 py-8 sm:max-w-[778px]" showCloseButton={false}>
                 <div className="flex flex-col gap-2">
                     <div className="flex items-start justify-between">
-                        <DialogTitle className="text-label-l">Select Assessment</DialogTitle>
+                        <DialogTitle className="text-label-l">Select Assessment Template</DialogTitle>
                         <button
                             type="button"
                             aria-label="Close"
@@ -115,7 +115,7 @@ export default function SelectAssessmentModal({
                         </div>
                     )}
                     <DialogDescription className="sr-only">
-                        Choose an assessment and set when it opens and closes.
+                        Choose an assessment template and set when it opens and closes.
                     </DialogDescription>
                 </div>
 
@@ -146,7 +146,7 @@ export default function SelectAssessmentModal({
                                 <Search
                                     value={m.search}
                                     onChange={(e) => m.setSearch(e.target.value)}
-                                    placeholder="Type to search for an assessment"
+                                    placeholder="Type to search for an assessment template"
                                     className="h-10"
                                 />
                             </div>
@@ -187,7 +187,7 @@ export default function SelectAssessmentModal({
                             )}
                             {!m.loading && !m.loadError && m.visibleTemplates.length === 0 && (
                                 <p className="text-body-s text-sarge-gray-600 p-4">
-                                    No assessments found
+                                    No assessment templates found
                                 </p>
                             )}
                             {m.visibleTemplates.map((template) => {

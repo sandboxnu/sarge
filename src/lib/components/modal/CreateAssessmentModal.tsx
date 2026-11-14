@@ -50,7 +50,7 @@ export default function CreateAssessmentTemplateModal({
                     <div className="text-sarge-gray-800 flex min-w-0 flex-col gap-6">
                         <div className="text-lg font-medium">Create new assessment template</div>
                         <div className="flex w-full min-w-0 flex-col gap-2">
-                            <h3 className="text-md font-medium">Assessment name</h3>
+                            <h3 className="text-md font-medium">Assessment Template name</h3>
                             <Input
                                 className={`w-full p-3 ${localError ? 'border-red-500' : ''}`}
                                 placeholder="Software Engineering"
