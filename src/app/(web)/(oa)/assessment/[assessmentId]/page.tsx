@@ -42,20 +42,20 @@ export default function AssessmentPage({ params }: { params: Promise<{ assessmen
 
     if (assessment.isLoading)
         return (
-            <div className="text-sarge-gray-500 flex h-screen items-center justify-center">
+            <div className="text-sarge-gray-500 flex h-full items-center justify-center">
                 Loading...
             </div>
         );
     if (assessment.error)
         return (
-            <div className="text-sarge-error-400 flex h-screen items-center justify-center">
+            <div className="text-sarge-error-400 flex h-full items-center justify-center">
                 {assessment.error.message}
             </div>
         );
 
     if (assessment.phase === 'intro' && assessment.assessment && assessment.isExpired) {
         return (
-            <div className="flex h-screen w-full flex-col overflow-hidden">
+            <div className="flex h-full w-full flex-col overflow-hidden">
                 <AssessmentNavbar candidateName={assessment.candidateName} />
                 <div className="flex-1 overflow-y-auto">
                     <AssessmentExpiration assessment={assessment.assessment} />
@@ -66,7 +66,7 @@ export default function AssessmentPage({ params }: { params: Promise<{ assessmen
 
     if (assessment.phase === 'intro' && assessment.assessment) {
         return (
-            <div className="flex h-screen w-full flex-col overflow-hidden">
+            <div className="flex h-full w-full flex-col overflow-hidden">
                 <AssessmentNavbar candidateName={assessment.candidateName} />
                 <div className="flex-1 overflow-y-auto">
                     <AssessmentIntro
@@ -81,7 +81,7 @@ export default function AssessmentPage({ params }: { params: Promise<{ assessmen
 
     if (assessment.phase === 'outro' && assessment.assessment) {
         return (
-            <div className="flex h-screen w-full flex-col overflow-hidden">
+            <div className="flex h-full w-full flex-col overflow-hidden">
                 <AssessmentNavbar candidateName={assessment.candidateName} />
                 <div className="flex-1 overflow-y-auto">
                     <AssessmentOutro assessment={assessment.assessment} />
@@ -91,7 +91,7 @@ export default function AssessmentPage({ params }: { params: Promise<{ assessmen
     }
 
     return (
-        <div className="flex h-screen w-full flex-col overflow-hidden">
+        <div className="flex h-full w-full flex-col overflow-hidden">
             {/* onOpenChange is returning nothing as we don't have recovery implemented just yet  */}
             <LostConnectionModal open={!isConnected} onOpenChange={() => {}} />
             <WindowUnfocusedModal
