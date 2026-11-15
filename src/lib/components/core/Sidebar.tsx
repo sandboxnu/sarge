@@ -719,12 +719,45 @@ function isRouteActive(pathname: string, url: string) {
     return pathname === url || pathname.startsWith(`${url}/`);
 }
 
+const navRowClassName =
+    'flex h-10 w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm font-medium tracking-design text-sarge-gray-600 group-data-[collapsible=icon]:w-11 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:p-0';
+
 export function Sidebar() {
     const auth = useAuth();
     const pathname = usePathname();
     const { toggleSidebar, isMobile, setOpenMobile } = useSidebar();
 
     const { isOnboarding } = useOnboardingState();
+    const memberRole = auth.activeMember?.role;
+    const canSeeSettings = auth.isSuperUser || memberRole === 'owner' || memberRole === 'admin';
+
+    const orgName = auth.activeOrganization?.name ?? 'Organization';
+    const orgIdentity = (
+        <>
+            <div className="size-5 shrink-0 overflow-hidden rounded">
+                {auth.activeOrganization?.logo ? (
+                    <Image
+                        src={auth.activeOrganization.logo}
+                        alt=""
+                        width={20}
+                        height={20}
+                        className="h-full w-full object-cover"
+                    />
+                ) : (
+                    <div className="bg-sarge-gray-500 flex h-full w-full items-center justify-center">
+                        <Image
+                            src="/Winston Logomark.svg"
+                            alt=""
+                            width={20}
+                            height={20}
+                            className="h-full w-full object-cover brightness-0 invert"
+                        />
+                    </div>
+                )}
+            </div>
+            <span className="truncate group-data-[collapsible=icon]:hidden">{orgName}</span>
+        </>
+    );
 
     React.useEffect(() => {
         if (isMobile) {
@@ -853,43 +886,26 @@ export function Sidebar() {
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                     <SidebarMenuItem>
-                        <SidebarMenuButton
-                            asChild
-                            isActive={isRouteActive(pathname, '/crm/settings')}
-                            tooltip={auth.activeOrganization?.name ?? 'Organization'}
-                        >
-                            <Link
-                                href="/crm/settings"
-                                aria-current={
-                                    isRouteActive(pathname, '/crm/settings') ? 'page' : undefined
-                                }
+                        {canSeeSettings ? (
+                            <SidebarMenuButton
+                                asChild
+                                isActive={isRouteActive(pathname, '/crm/settings')}
+                                tooltip={orgName}
                             >
-                                <div className="size-5 shrink-0 overflow-hidden rounded">
-                                    {auth.activeOrganization?.logo ? (
-                                        <Image
-                                            src={auth.activeOrganization.logo}
-                                            alt=""
-                                            width={20}
-                                            height={20}
-                                            className="h-full w-full object-cover"
-                                        />
-                                    ) : (
-                                        <div className="bg-sarge-gray-500 flex h-full w-full items-center justify-center">
-                                            <Image
-                                                src="/Winston Logomark.svg"
-                                                alt=""
-                                                width={20}
-                                                height={20}
-                                                className="h-full w-full object-cover brightness-0 invert"
-                                            />
-                                        </div>
-                                    )}
-                                </div>
-                                <span className="truncate group-data-[collapsible=icon]:hidden">
-                                    {auth.activeOrganization?.name ?? 'Organization'}
-                                </span>
-                            </Link>
-                        </SidebarMenuButton>
+                                <Link
+                                    href="/crm/settings"
+                                    aria-current={
+                                        isRouteActive(pathname, '/crm/settings')
+                                            ? 'page'
+                                            : undefined
+                                    }
+                                >
+                                    {orgIdentity}
+                                </Link>
+                            </SidebarMenuButton>
+                        ) : (
+                            <div className={navRowClassName}>{orgIdentity}</div>
+                        )}
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarFooter>
