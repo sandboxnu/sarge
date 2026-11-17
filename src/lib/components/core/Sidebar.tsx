@@ -728,6 +728,36 @@ export function Sidebar() {
     const { toggleSidebar, isMobile, setOpenMobile } = useSidebar();
 
     const { isOnboarding } = useOnboardingState();
+    const memberRole = auth.activeMember?.role;
+    const canSeeSettings = auth.isSuperUser || memberRole === 'owner' || memberRole === 'admin';
+
+    const orgName = auth.activeOrganization?.name ?? 'Organization';
+    const orgIdentity = (
+        <>
+            <div className="size-5 shrink-0 overflow-hidden rounded">
+                {auth.activeOrganization?.logo ? (
+                    <Image
+                        src={auth.activeOrganization.logo}
+                        alt=""
+                        width={20}
+                        height={20}
+                        className="h-full w-full object-cover"
+                    />
+                ) : (
+                    <div className="bg-sarge-gray-500 flex h-full w-full items-center justify-center">
+                        <Image
+                            src="/Winston Logomark.svg"
+                            alt=""
+                            width={20}
+                            height={20}
+                            className="h-full w-full object-cover brightness-0 invert"
+                        />
+                    </div>
+                )}
+            </div>
+            <span className="truncate group-data-[collapsible=icon]:hidden">{orgName}</span>
+        </>
+    );
 
     React.useEffect(() => {
         if (isMobile) {
@@ -856,32 +886,26 @@ export function Sidebar() {
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                     <SidebarMenuItem>
-                        <div className={navRowClassName}>
-                            <div className="size-5 shrink-0 overflow-hidden rounded">
-                                {auth.activeOrganization?.logo ? (
-                                    <Image
-                                        src={auth.activeOrganization.logo}
-                                        alt=""
-                                        width={20}
-                                        height={20}
-                                        className="h-full w-full object-cover"
-                                    />
-                                ) : (
-                                    <div className="bg-sarge-gray-500 flex h-full w-full items-center justify-center">
-                                        <Image
-                                            src="/Winston Logomark.svg"
-                                            alt=""
-                                            width={20}
-                                            height={20}
-                                            className="h-full w-full object-cover brightness-0 invert"
-                                        />
-                                    </div>
-                                )}
-                            </div>
-                            <span className="truncate group-data-[collapsible=icon]:hidden">
-                                {auth.activeOrganization?.name ?? 'Organization'}
-                            </span>
-                        </div>
+                        {canSeeSettings ? (
+                            <SidebarMenuButton
+                                asChild
+                                isActive={isRouteActive(pathname, '/crm/settings')}
+                                tooltip={orgName}
+                            >
+                                <Link
+                                    href="/crm/settings"
+                                    aria-current={
+                                        isRouteActive(pathname, '/crm/settings')
+                                            ? 'page'
+                                            : undefined
+                                    }
+                                >
+                                    {orgIdentity}
+                                </Link>
+                            </SidebarMenuButton>
+                        ) : (
+                            <div className={navRowClassName}>{orgIdentity}</div>
+                        )}
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarFooter>
