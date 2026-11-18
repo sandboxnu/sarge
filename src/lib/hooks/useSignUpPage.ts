@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { sendVerificationEmail, signIn, signUp } from '@/lib/auth/auth-client';
-import { createUserSchema, type CreateUserDTO } from '@/lib/schemas/user.schema';
+import { signUpFormSchema, type SignUpFormDTO } from '@/lib/schemas/user.schema';
 
 export default function useSignUpPage() {
     const router = useRouter();
@@ -13,16 +13,17 @@ export default function useSignUpPage() {
     const [resending, setResending] = useState(false);
     const [didResend, setDidResend] = useState(false);
 
-    const form = useForm<CreateUserDTO>({
-        resolver: zodResolver(createUserSchema),
+    const form = useForm<SignUpFormDTO>({
+        resolver: zodResolver(signUpFormSchema),
         defaultValues: {
             name: '',
             email: '',
             password: '',
+            confirmPassword: '',
         },
     });
 
-    const onSubmit = async (data: CreateUserDTO) => {
+    const onSubmit = async (data: SignUpFormDTO) => {
         const email = data.email.trim().toLowerCase();
         const result = await signUp.email({
             name: data.name.trim(),
