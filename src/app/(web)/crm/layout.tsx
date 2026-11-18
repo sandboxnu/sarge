@@ -11,7 +11,9 @@ export default function CRMLayout({
             <div className="flex flex-1 overflow-hidden">
                 <SidebarProvider>
                     <Sidebar />
-                    <SidebarInset className="min-h-0">
+                    {/* min-w-0 lets the inset shrink below its content's width; without it,
+                        wide page content (e.g. the Positions toolbar) stretches the header off-screen. */}
+                    <SidebarInset className="min-h-0 min-w-0">
                         <PageHeader />
                         <div className="min-h-0 flex-1 overflow-y-auto">{children}</div>
                     </SidebarInset>

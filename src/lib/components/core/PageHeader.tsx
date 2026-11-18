@@ -43,12 +43,12 @@ export function PageHeader({ pageName, className }: { pageName?: string; classNa
             )}
         >
             <SidebarTrigger variant="icon" className="md:hidden" />
-            <h1 className="text-label-s">{title}</h1>
+            <h1 className="text-label-s min-w-0 truncate">{title}</h1>
             <Button
                 type="button"
                 variant="link"
                 onClick={() => setFeedbackOpen(true)}
-                className="text-label-s ml-2 h-auto"
+                className="text-label-s ml-auto h-auto"
             >
                 Submit Feedback
             </Button>
