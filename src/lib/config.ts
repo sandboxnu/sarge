@@ -14,6 +14,7 @@ export const CONFIG_KEYS = [
     'JWT_SECRET',
     'INTERNAL_API_SECRET',
     'EMAIL_DOMAIN',
+    'FEEDBACK_EMAIL',
     'JUDGE_URL',
     'JUDGE_API_KEY',
     'AWS_ACCESS_KEY_ID',
