@@ -1,6 +1,9 @@
 'use client';
 
+import { useState } from 'react';
 import { sidebarMenuItems, SidebarTrigger } from '@/lib/components/core/Sidebar';
+import FeedbackModal from '@/lib/components/modal/FeedbackModal';
+import { Button } from '@/lib/components/ui/Button';
 import { cn } from '@/lib/utils/cn.utils';
 import { usePathname } from 'next/navigation';
 
@@ -11,6 +14,7 @@ import { usePathname } from 'next/navigation';
  */
 export function PageHeader({ pageName, className }: { pageName?: string; className?: string }) {
     const pathname = usePathname();
+    const [feedbackOpen, setFeedbackOpen] = useState(false);
 
     const activeItem = sidebarMenuItems
         .filter((item) => pathname === item.url || pathname.startsWith(`${item.url}/`))
@@ -39,7 +43,16 @@ export function PageHeader({ pageName, className }: { pageName?: string; classNa
             )}
         >
             <SidebarTrigger variant="icon" className="md:hidden" />
-            <h1 className="text-label-s">{title}</h1>
+            <h1 className="text-label-s min-w-0 truncate">{title}</h1>
+            <Button
+                type="button"
+                variant="link"
+                onClick={() => setFeedbackOpen(true)}
+                className="text-label-s ml-auto h-auto"
+            >
+                Submit Feedback
+            </Button>
+            <FeedbackModal open={feedbackOpen} onOpenChange={setFeedbackOpen} />
         </header>
     );
 }
