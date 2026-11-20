@@ -3,6 +3,12 @@ import { type CreatePositionDTO, type UpdatePositionDTO } from '@/lib/schemas/po
 import { type Position, AssessmentStatus } from '@/generated/prisma';
 import { NotFoundException, ConflictException } from '@/lib/utils/errors.utils';
 import { type PositionWithCounts, type PositionPreviewData } from '@/lib/types/position.types';
+import {
+    type AwaitingYourReviewItem,
+    type ContinueGradingItem,
+    type LiveAssessmentSummary,
+} from '@/lib/types/reviewing.types';
+import { getLiveAssessmentStatus, getReviewCounts } from '@/lib/utils/reviewing.utils';
 
 async function createPosition(
     positionRequest: CreatePositionDTO,
@@ -317,6 +323,163 @@ async function getPositionsByTitle(title: string, orgId: string): Promise<Positi
     }));
 }
 
+/**
+ * Positions that have an assessment template attached, rolled up into review progress for the
+ * Live Assessments dashboard. Includes archived positions so the client can split them by tab.
+ * Also counts the submissions `userId` is partway through grading or has been assigned to review.
+ */
+async function getLiveAssessmentsByOrgId(
+    orgId: string,
+    userId: string
+): Promise<LiveAssessmentSummary[]> {
+    const positions = await prisma.position.findMany({
+        where: { orgId, assessmentId: { not: null } },
+        select: {
+            id: true,
+            title: true,
+            archived: true,
+            updatedAt: true,
+            assessmentTemplate: { select: { id: true, title: true } },
+            applications: {
+                orderBy: { createdAt: 'asc' },
+                select: {
+                    id: true,
+                    assessmentStatus: true,
+                    updatedAt: true,
+                    assessment: {
+                        select: {
+                            submittedAt: true,
+                            reviewers: { select: { id: true } },
+                            tasks: {
+                                select: {
+                                    reviews: {
+                                        select: {
+                                            reviewerId: true,
+                                            updatedAt: true,
+                                            reviewer: { select: { name: true } },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    });
+
+    return positions.flatMap((position) => {
+        // filtered by the where clause, but the relation is still typed as nullable
+        if (!position.assessmentTemplate) return [];
+
+        const { applications } = position;
+        const { reviewedCount, remainingCount, awaitingReviewCount } = getReviewCounts(
+            applications.map((application) => application.assessmentStatus)
+        );
+
+        let lastActivity = position.updatedAt.getTime();
+        const continueGrading: ContinueGradingItem[] = [];
+        const awaitingYourReview: AwaitingYourReviewItem[] = [];
+
+        for (const application of applications) {
+            lastActivity = Math.max(lastActivity, application.updatedAt.getTime());
+            const assessment = application.assessment;
+            if (!assessment) continue;
+
+            const reviews = assessment.tasks.flatMap((task) => task.reviews);
+            for (const review of reviews) {
+                lastActivity = Math.max(lastActivity, review.updatedAt.getTime());
+            }
+
+            if (application.assessmentStatus !== AssessmentStatus.SUBMITTED) continue;
+            if (assessment.tasks.length === 0) continue;
+
+            const progress = getReviewerProgress(assessment.tasks);
+            const mine = progress.get(userId);
+
+            if (mine) {
+                // started grading this submission but has tasks left
+                if (mine.tasksReviewed < assessment.tasks.length) {
+                    continueGrading.push({
+                        positionId: position.id,
+                        positionTitle: position.title,
+                        applicationId: application.id,
+                        taskCount: assessment.tasks.length,
+                        tasksLeft: assessment.tasks.length - mine.tasksReviewed,
+                        lastEditedAt: new Date(mine.lastReviewedAt).toISOString(),
+                    });
+                }
+            } else if (assessment.reviewers.some((reviewer) => reviewer.id === userId)) {
+                // assigned but untouched; credit the other reviewers who already finished it
+                const finished = [...progress.entries()]
+                    .filter(([, p]) => p.tasksReviewed >= assessment.tasks.length)
+                    .sort(([, a], [, b]) => b.lastReviewedAt - a.lastReviewedAt);
+
+                awaitingYourReview.push({
+                    positionId: position.id,
+                    positionTitle: position.title,
+                    applicationId: application.id,
+                    finishedReviewerNames: finished.map(([, p]) => p.name),
+                    lastFinishedAt: finished[0]
+                        ? new Date(finished[0][1].lastReviewedAt).toISOString()
+                        : null,
+                    submittedAt: assessment.submittedAt?.toISOString() ?? null,
+                });
+            }
+        }
+
+        // open the first submission that still needs a reviewer, falling back to anything
+        // already graded, then to any candidate that has an assessment at all
+        const reviewTarget =
+            applications.find((a) => a.assessmentStatus === AssessmentStatus.SUBMITTED) ??
+            applications.find((a) => a.assessmentStatus === AssessmentStatus.GRADED) ??
+            applications.find((a) => a.assessment !== null) ??
+            applications[0];
+
+        return [
+            {
+                positionId: position.id,
+                positionTitle: position.title,
+                archived: position.archived,
+                assessmentTemplateId: position.assessmentTemplate.id,
+                assessmentTemplateTitle: position.assessmentTemplate.title,
+                candidateCount: applications.length,
+                reviewedCount,
+                remainingCount,
+                awaitingReviewCount,
+                status: getLiveAssessmentStatus(reviewedCount, remainingCount),
+                lastActivityAt: new Date(lastActivity).toISOString(),
+                reviewTargetApplicationId: reviewTarget?.id ?? null,
+                continueGrading,
+                awaitingYourReview,
+            },
+        ];
+    });
+}
+
+/** Per reviewer on one submission: how many of its tasks they've reviewed and when they last did. */
+function getReviewerProgress(
+    tasks: { reviews: { reviewerId: string; updatedAt: Date; reviewer: { name: string } }[] }[]
+) {
+    const progress = new Map<
+        string,
+        { name: string; tasksReviewed: number; lastReviewedAt: number }
+    >();
+    for (const task of tasks) {
+        for (const review of task.reviews) {
+            const entry = progress.get(review.reviewerId) ?? {
+                name: review.reviewer.name,
+                tasksReviewed: 0,
+                lastReviewedAt: 0,
+            };
+            entry.tasksReviewed++;
+            entry.lastReviewedAt = Math.max(entry.lastReviewedAt, review.updatedAt.getTime());
+            progress.set(review.reviewerId, entry);
+        }
+    }
+    return progress;
+}
+
 const PositionService = {
     createPosition,
     deletePosition,
@@ -327,6 +490,7 @@ const PositionService = {
     getPositionPreview,
     updatePosition,
     getPositionsByTitle,
+    getLiveAssessmentsByOrgId,
 };
 
 export default PositionService;
