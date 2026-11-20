@@ -33,6 +33,7 @@ export type CandidateAssessment = {
     candidateName: string;
     organizationName: string;
     candidateEmail: string;
+    administratorEmail: string;
     assessmentTemplate: {
         title: string;
         tasks: AssessmentQuestion[];
