@@ -364,7 +364,7 @@ async function getLiveAssessmentsByOrgId(
     });
 
     return positions.flatMap((position) => {
-        if (!position.assessmentTemplate) return [];
+        if (!position.assessmentTemplate || position.applications.length === 0) return [];
 
         const { applications } = position;
         const { reviewedCount, remainingCount, awaitingReviewCount } = getReviewCounts(
@@ -439,7 +439,7 @@ async function getLiveAssessmentsByOrgId(
                 awaitingReviewCount,
                 status: getLiveAssessmentStatus(reviewedCount, remainingCount),
                 lastActivityAt: new Date(lastActivity).toISOString(),
-                reviewTargetApplicationId: reviewTarget?.id ?? null,
+                reviewTargetApplicationId: reviewTarget.id,
                 continueGrading,
                 awaitingYourReview,
             },

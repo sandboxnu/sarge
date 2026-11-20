@@ -6,19 +6,12 @@ import { cn } from '@/lib/utils/cn.utils';
 import { getReviewProgress } from '@/lib/utils/reviewing.utils';
 import { type LiveAssessmentStatus, type LiveAssessmentSummary } from '@/lib/types/reviewing.types';
 
-export function getLiveAssessmentHref(item: LiveAssessmentSummary) {
-    const positionPath = `/crm/reviewing/position/${item.positionId}`;
-    return item.reviewTargetApplicationId
-        ? `${positionPath}/application/${item.reviewTargetApplicationId}`
-        : positionPath;
-}
-
 export default function LiveAssessmentCard({ item }: { item: LiveAssessmentSummary }) {
     const { candidateCount } = item;
 
     return (
         <Link
-            href={getLiveAssessmentHref(item)}
+            href={`/crm/reviewing/position/${item.positionId}/application/${item.reviewTargetApplicationId}`}
             aria-label={`Review ${item.positionTitle}: ${item.assessmentTemplateTitle}`}
             className="focus-visible:ring-sarge-primary-500 flex flex-col rounded-lg transition-shadow hover:shadow-md focus-visible:ring-2 focus-visible:outline-none"
         >

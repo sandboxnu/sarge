@@ -12,7 +12,7 @@ export interface LiveAssessmentSummary {
     awaitingReviewCount: number;
     status: LiveAssessmentStatus;
     lastActivityAt: string;
-    reviewTargetApplicationId: string | null;
+    reviewTargetApplicationId: string;
     continueGrading: ContinueGradingItem[];
     awaitingYourReview: AwaitingYourReviewItem[];
 }
