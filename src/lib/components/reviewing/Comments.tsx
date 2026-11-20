@@ -8,6 +8,7 @@ export interface ReviewComment {
     author: string;
     body: string;
     lineRange?: string;
+    createdAt: Date;
 }
 
 export interface CommentsProps {
@@ -59,8 +60,16 @@ export default function Comments({
                     {comments.map((comment) => (
                         <div key={comment.id} className="flex w-full flex-col gap-1">
                             <div className="flex w-full items-center justify-between gap-2">
-                                <span className="text-sarge-gray-500 text-[10px] leading-4 font-medium">
+                                <span className="text-sarge-gray-500 flex items-center gap-1.5 text-[10px] leading-4 font-medium">
                                     {comment.author}
+                                    <span className="text-sarge-gray-400 font-normal">
+                                        {comment.createdAt.toLocaleString(undefined, {
+                                            month: 'short',
+                                            day: 'numeric',
+                                            hour: 'numeric',
+                                            minute: '2-digit',
+                                        })}
+                                    </span>
                                 </span>
                                 {comment.lineRange && (
                                     <span className="bg-sarge-gray-100 text-sarge-gray-700 text-label-xs rounded-lg px-2 py-1">

@@ -309,6 +309,9 @@ async function getAssessmentForCandidate(assessmentId: string): Promise<Candidat
                             organization: {
                                 select: { name: true },
                             },
+                            creator: {
+                                select: { email: true },
+                            },
                         },
                     },
                 },
@@ -358,6 +361,7 @@ async function getAssessmentForCandidate(assessmentId: string): Promise<Candidat
         candidateName: assessment.application.candidate.name,
         organizationName: assessment.application.position.organization.name,
         candidateEmail: assessment.application.candidate.email,
+        administratorEmail: assessment.application.position.creator.email,
         assessmentTemplate: {
             title: assessment.assessmentTemplate.title,
             tasks: assessment.assessmentTemplate.tasks.map((task) => ({

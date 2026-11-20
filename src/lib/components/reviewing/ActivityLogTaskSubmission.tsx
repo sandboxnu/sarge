@@ -17,7 +17,6 @@ type ActivityLogTaskSubmissionProps = {
 };
 
 const POINT_EVENT_WIDTH_PX = 14;
-const SELECTED_EVENT_WIDTH_PX = 22;
 
 export default function ActivityLogTaskSubmission({
     task,
@@ -49,11 +48,7 @@ export default function ActivityLogTaskSubmission({
                     {events.map((event) => {
                         const isSelected = selectedEvent?.id === event.id;
                         const left = toPercent(event.startMs);
-                        const width = isPointEvent(event.type)
-                            ? isSelected
-                                ? SELECTED_EVENT_WIDTH_PX
-                                : POINT_EVENT_WIDTH_PX
-                            : undefined;
+                        const width = isPointEvent(event.type) ? POINT_EVENT_WIDTH_PX : undefined;
 
                         const label = isPointEvent(event.type)
                             ? `${getEventLabel(event.type)} at ${formatTimestamp(event.startMs)}`

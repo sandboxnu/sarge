@@ -47,6 +47,7 @@ export default function TaskReviewSidebar({
                 id: comment.id,
                 author: review.reviewer.name,
                 body: comment.content,
+                createdAt: new Date(comment.reviewedAt),
                 reviewedAt: comment.reviewedAt,
                 lineRange:
                     comment.startLine !== null && comment.endLine !== null

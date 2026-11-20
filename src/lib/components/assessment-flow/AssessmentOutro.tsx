@@ -35,7 +35,8 @@ export default function AssessmentOutro({ assessment }: AssessmentOutroProps) {
                     </Button>
                 </div>
                 <p className="text-sm">
-                    For any questions, please reach out to the exam administrator at [email].
+                    For any questions, please reach out to the exam administrator at{' '}
+                    {assessment.administratorEmail}.
                 </p>
                 <div className="m-50"></div>
             </div>
