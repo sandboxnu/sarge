@@ -12,13 +12,16 @@ type UseSelectAssessmentModalArgs = {
 
 export type SortDirection = 'asc' | 'desc';
 
+const DEFAULT_TIME = '12:00 PM';
+
+// 00:00 (12:00 AM) is intentionally excluded: midnight is not a valid open/close time
 export const TIME_OPTIONS = Array.from({ length: 48 }, (_, i) => {
     const hours = Math.floor(i / 2);
     const minutes = i % 2 === 0 ? '00' : '30';
     const period = hours < 12 ? 'AM' : 'PM';
     const displayHours = hours % 12 === 0 ? 12 : hours % 12;
     return `${displayHours}:${minutes} ${period}`;
-});
+}).filter((t) => t !== '12:00 AM');
 
 function toDateTime(date: string, time: string): Date | null {
     if (!date || !time) return null;
@@ -54,9 +57,9 @@ export default function useSelectAssessmentModal({
         setSearch('');
         setSelectedId(null);
         setOpenDate('');
-        setOpenTime('');
+        setOpenTime(DEFAULT_TIME);
         setCloseDate('');
-        setCloseTime('');
+        setCloseTime(DEFAULT_TIME);
         setSubmitted(false);
 
         async function load() {
