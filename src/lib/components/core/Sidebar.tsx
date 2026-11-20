@@ -686,54 +686,34 @@ export function SidebarMenuSubButton({
     );
 }
 
-export const sidebarMenuGroups: {
-    label: string;
-    items: {
-        title: string;
-        url: string;
-        icon: LucideIcon;
-        fillWhenActive?: boolean;
-    }[];
+export const sidebarMenuItems: {
+    title: string;
+    url: string;
+    icon: LucideIcon;
+    fillWhenActive?: boolean;
 }[] = [
     {
-        label: 'Overview',
-        items: [
-            {
-                title: 'Home',
-                url: '/crm/dashboard',
-                icon: Home,
-                fillWhenActive: true,
-            },
-        ],
+        title: 'Home',
+        url: '/crm/dashboard',
+        icon: Home,
+        fillWhenActive: true,
     },
     {
-        label: 'Hiring',
-        items: [
-            {
-                title: 'Templates',
-                url: '/crm/templates',
-                icon: FileText,
-            },
-            {
-                title: 'Candidates',
-                url: '/crm/positions',
-                icon: Users,
-            },
-        ],
+        title: 'Templates',
+        url: '/crm/templates',
+        icon: FileText,
     },
     {
-        label: 'Assessments',
-        items: [
-            {
-                title: 'Live Assessments',
-                url: '/crm/reviewing',
-                icon: BookOpen,
-            },
-        ],
+        title: 'Candidates',
+        url: '/crm/positions',
+        icon: Users,
+    },
+    {
+        title: 'Live Assessments',
+        url: '/crm/reviewing',
+        icon: BookOpen,
     },
 ];
-
-export const sidebarMenuItems = sidebarMenuGroups.flatMap((group) => group.items);
 
 function isRouteActive(pathname: string, url: string) {
     return pathname === url || pathname.startsWith(`${url}/`);
@@ -825,42 +805,39 @@ export function Sidebar() {
             </SidebarHeader>
             <SidebarContent className="gap-1 p-0">
                 <SidebarGroup className="px-4 pt-3 pb-3.5">
-                    {sidebarMenuGroups.map((group) => (
-                        <SidebarGroupContent key={group.label}>
-                            <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
-                            <SidebarMenu>
-                                {group.items.map((item) => {
-                                    const active = isRouteActive(pathname, item.url);
-                                    return (
-                                        <SidebarMenuItem key={item.title}>
-                                            <SidebarMenuButton
-                                                asChild
-                                                isActive={active}
-                                                tooltip={item.title}
+                    <SidebarGroupContent>
+                        <SidebarMenu>
+                            {sidebarMenuItems.map((item) => {
+                                const active = isRouteActive(pathname, item.url);
+                                return (
+                                    <SidebarMenuItem key={item.title}>
+                                        <SidebarMenuButton
+                                            asChild
+                                            isActive={active}
+                                            tooltip={item.title}
+                                        >
+                                            <Link
+                                                href={item.url}
+                                                aria-current={active ? 'page' : undefined}
                                             >
-                                                <Link
-                                                    href={item.url}
-                                                    aria-current={active ? 'page' : undefined}
-                                                >
-                                                    <item.icon
-                                                        className={cn(
-                                                            'size-5',
-                                                            active && item.fillWhenActive
-                                                                ? 'text-sarge-gray-700 fill-current'
-                                                                : 'text-sarge-gray-600'
-                                                        )}
-                                                    />
-                                                    <span className="group-data-[collapsible=icon]:hidden">
-                                                        {item.title}
-                                                    </span>
-                                                </Link>
-                                            </SidebarMenuButton>
-                                        </SidebarMenuItem>
-                                    );
-                                })}
-                            </SidebarMenu>
-                        </SidebarGroupContent>
-                    ))}
+                                                <item.icon
+                                                    className={cn(
+                                                        'size-5',
+                                                        active && item.fillWhenActive
+                                                            ? 'text-sarge-gray-700 fill-current'
+                                                            : 'text-sarge-gray-600'
+                                                    )}
+                                                />
+                                                <span className="group-data-[collapsible=icon]:hidden">
+                                                    {item.title}
+                                                </span>
+                                            </Link>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                );
+                            })}
+                        </SidebarMenu>
+                    </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
             <SidebarFooter className="gap-1 px-4 pt-3 pb-3.5">
