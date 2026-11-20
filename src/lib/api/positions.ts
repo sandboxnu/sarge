@@ -9,6 +9,19 @@ import {
     type PositionWithCounts,
 } from '@/lib/types/position.types';
 import { type Position } from '@/generated/prisma';
+import { type LiveAssessmentSummary } from '@/lib/types/reviewing.types';
+
+export async function getLiveAssessments(): Promise<LiveAssessmentSummary[]> {
+    const res = await fetch('/api/positions/live-assessments');
+
+    const json = await res.json();
+
+    if (!res.ok) {
+        throw new Error(json.message);
+    }
+
+    return json.data;
+}
 
 /**
  * POST /api/positions

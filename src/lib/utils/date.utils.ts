@@ -39,3 +39,14 @@ export function formatDuration(totalSeconds: number): string {
     const remaining = minutes % 60;
     return remaining > 0 ? `${hours}h ${remaining}m` : `${hours} hour${hours > 1 ? 's' : ''}`;
 }
+
+export function formatTimeAgo(value: Date | number | string, now: number = Date.now()): string {
+    const date = typeof value === 'string' || typeof value === 'number' ? new Date(value) : value;
+    const minutes = Math.floor((now - date.getTime()) / 60_000);
+    if (minutes < 1) return 'just now';
+    if (minutes < 60) return `${minutes} ${minutes === 1 ? 'min' : 'mins'} ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    return `${days} ${days === 1 ? 'day' : 'days'} ago`;
+}
