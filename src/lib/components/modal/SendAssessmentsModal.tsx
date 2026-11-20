@@ -34,8 +34,8 @@ export default function SendAssessmentsModal({
                         Are you sure you want to send{' '}
                         <span className="font-medium">{assessmentTitle ?? 'this assessment'}</span>{' '}
                         to <span className="font-medium">{candidateCount}</span>{' '}
-                        {candidateCount === 1 ? 'candidate' : 'candidates'}? Candidates will
-                        receive an email invitation.
+                        {candidateCount === 1 ? 'candidate' : 'candidates'}? Candidates will receive
+                        an email invitation.
                     </DialogDescription>
 
                     <div className="flex items-center justify-end gap-2">
