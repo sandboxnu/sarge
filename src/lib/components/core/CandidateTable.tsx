@@ -17,6 +17,7 @@ import {
 import { DataTable } from '@/lib/components/ui/DataTable';
 import type { ApplicationDisplayInfo } from '@/lib/types/position.types';
 import { PositionAssessmentCard } from '@/lib/components/core/PositionAssessmentCard';
+import { ReviewerSelect } from '@/lib/components/core/ReviewerSelect';
 
 import { getAssessmentStatusLabel } from '@/lib/utils/status.utils';
 import { getAssessmentStatusVariant } from '@/lib/utils/status.utils';
@@ -29,6 +30,9 @@ interface CandidateTableProps {
     rowSelection: RowSelectionState;
     onRowSelectionChange: OnChangeFn<RowSelectionState>;
     onDeleteRequest: (candidate: ApplicationDisplayInfo) => void;
+    reviewerOptions: { id: string; name: string }[];
+    onLoadReviewers: () => void;
+    onAssignReviewers: (assessmentId: string, reviewerIds: string[]) => void;
 }
 
 const ensureAbsoluteUrl = (url: string) => {
@@ -60,6 +64,9 @@ export function CandidateTable({
     rowSelection,
     onRowSelectionChange,
     onDeleteRequest,
+    reviewerOptions,
+    onLoadReviewers,
+    onAssignReviewers,
 }: CandidateTableProps) {
     const router = useRouter();
     const columns = useMemo<ColumnDef<ApplicationDisplayInfo>[]>(
@@ -154,17 +161,17 @@ export function CandidateTable({
                 id: 'reviewers',
                 header: () => <HeaderLabel>REVIEWER(S)</HeaderLabel>,
                 cell: ({ row }) => {
-                    const reviewers = row.original.assessment?.reviewers ?? [];
-                    if (reviewers.length === 0) {
+                    const assessment = row.original.assessment;
+                    if (!assessment) {
                         return <span className="text-body-s text-sarge-gray-600">—</span>;
                     }
-                    const shown = reviewers.slice(0, 2).map((r) => r.name);
-                    const label =
-                        reviewers.length > 2 ? `${shown.join(', ')}, ...` : shown.join(', ');
                     return (
-                        <span className="text-sarge-gray-800 inline-flex items-center gap-1.5 text-sm">
-                            {label}
-                        </span>
+                        <ReviewerSelect
+                            options={reviewerOptions}
+                            onOpen={onLoadReviewers}
+                            selected={assessment.reviewers ?? []}
+                            onChange={(ids) => onAssignReviewers(assessment.id, ids)}
+                        />
                     );
                 },
             },
@@ -212,7 +219,7 @@ export function CandidateTable({
                 ),
             },
         ],
-        [onDeleteRequest, positionId, router]
+        [onDeleteRequest, positionId, router, reviewerOptions, onLoadReviewers, onAssignReviewers]
     );
 
     return (

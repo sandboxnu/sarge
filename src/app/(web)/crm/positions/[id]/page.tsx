@@ -5,14 +5,13 @@ import { CandidateTable } from '@/lib/components/core/CandidateTable';
 import { CandidateSelectionMenu } from '@/lib/components/core/CandidateSelectionMenu';
 import CreateCandidateModal from '@/lib/components/modal/CreateCandidateModal';
 import UploadCSVModal from '@/lib/components/modal/UploadCSVModal';
-import { PositionSubmissionsList } from '@/lib/components/core/PositionSubmissionsList';
 import SelectAssessmentModal from '@/lib/components/modal/SelectAssessmentModal';
 import DeleteCandidatesModal from '@/lib/components/modal/DeleteCandidatesModal';
+import SendAssessmentsModal from '@/lib/components/modal/SendAssessmentsModal';
 import { PositionAssessmentBox } from '@/lib/components/core/PositionAssessmentBox';
 import useCandidates from '@/lib/hooks/useCandidates';
 import useCandidateSelection from '@/lib/hooks/useCandidateSelection';
 import { Search } from '@/lib/components/core/Search';
-import { Tabs, TabsContent, TabsList, UnderlineTabsTrigger } from '@/lib/components/ui/Tabs';
 import { Plus, ArrowUpDown, SlidersHorizontal } from 'lucide-react';
 import { use, useCallback, useMemo, useState } from 'react';
 import useSearch from '@/lib/hooks/useSearch';
@@ -25,6 +24,7 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
     const [isCSVModalOpen, setIsCSVModalOpen] = useState(false);
     const [isSelectAssessmentOpen, setIsSelectAssessmentOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [isSendAssessmentsOpen, setIsSendAssessmentsOpen] = useState(false);
     // Snapshot of the rows being deleted, so the modal text doesn't change if the selection does
     const [pendingDelete, setPendingDelete] = useState<ApplicationDisplayInfo[]>([]);
     const {
@@ -62,6 +62,10 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
     );
     const { rowSelection, setRowSelection, selectedCandidates, selectedCount, clearSelection } =
         useCandidateSelection(displayedCandidates);
+
+    const pendingSendCount = candidates.filter(
+        (c) => c.assessment && c.assessmentStatus === 'NOT_SENT'
+    ).length;
 
     const requestDelete = useCallback((toDelete: ApplicationDisplayInfo[]) => {
         setPendingDelete(toDelete);
@@ -123,54 +127,31 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                 {loading && <p>Loading candidates...</p>}
                 {error && <p className="text-sarge-error-700">Error: {error}</p>}
                 {!loading && !error && (
-                    <Tabs defaultValue="candidates" className="flex flex-col gap-3">
-                        <TabsList className="h-auto gap-5 rounded-none bg-transparent p-0">
-                            <UnderlineTabsTrigger value="candidates">
-                                Candidates ({displayedCandidates.length})
-                            </UnderlineTabsTrigger>
-                            <UnderlineTabsTrigger value="assessment">
-                                Assessment
-                            </UnderlineTabsTrigger>
-                        </TabsList>
-
-                        <TabsContent value="candidates">
-                            <CandidateTable
-                                positionId={id}
-                                candidates={displayedCandidates}
-                                rowSelection={rowSelection}
-                                onRowSelectionChange={setRowSelection}
-                                onDeleteRequest={handleRowDeleteRequest}
-                            />
-                            <CandidateSelectionMenu
-                                selectedCount={selectedCount}
-                                onDelete={() => requestDelete(selectedCandidates)}
-                                onDeselectAll={clearSelection}
-                            />
-                            <br />
-                        </TabsContent>
-
-                        <TabsContent value="assessment">
-                            <div className="flex flex-col gap-5">
-                                <PositionAssessmentBox
-                                    onSendAssessments={handleSendAssessments}
-                                    isSending={isSendingAssessments}
-                                    assignedTitle={assignedAssessmentTitle}
-                                    hasSentAssessments={hasSentAssessments}
-                                    allSent={allSent}
-                                    onSelectAssessment={() => setIsSelectAssessmentOpen(true)}
-                                />
-                                {assignedAssessmentTitle && (
-                                    <PositionSubmissionsList
-                                        positionId={id}
-                                        candidates={candidates}
-                                        reviewerOptions={reviewerOptions}
-                                        onLoadReviewers={loadReviewerOptions}
-                                        onAssignReviewers={assignReviewers}
-                                    />
-                                )}
-                            </div>
-                        </TabsContent>
-                    </Tabs>
+                    <div className="flex flex-col gap-3">
+                        <PositionAssessmentBox
+                            onSendAssessments={() => setIsSendAssessmentsOpen(true)}
+                            isSending={isSendingAssessments}
+                            assignedTitle={assignedAssessmentTitle}
+                            hasSentAssessments={hasSentAssessments}
+                            allSent={allSent}
+                            onSelectAssessment={() => setIsSelectAssessmentOpen(true)}
+                        />
+                        <CandidateTable
+                            positionId={id}
+                            candidates={displayedCandidates}
+                            rowSelection={rowSelection}
+                            onRowSelectionChange={setRowSelection}
+                            onDeleteRequest={handleRowDeleteRequest}
+                            reviewerOptions={reviewerOptions}
+                            onLoadReviewers={loadReviewerOptions}
+                            onAssignReviewers={assignReviewers}
+                        />
+                        <CandidateSelectionMenu
+                            selectedCount={selectedCount}
+                            onDelete={() => requestDelete(selectedCandidates)}
+                            onDeselectAll={clearSelection}
+                        />
+                    </div>
                 )}
             </div>
 
@@ -199,6 +180,13 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                 onOpenChange={setIsDeleteModalOpen}
                 candidates={pendingDelete}
                 onConfirm={() => deleteCandidates(pendingDelete.map((c) => c.candidate.id))}
+            />
+            <SendAssessmentsModal
+                open={isSendAssessmentsOpen}
+                onOpenChange={setIsSendAssessmentsOpen}
+                candidateCount={pendingSendCount}
+                assessmentTitle={assignedAssessmentTitle}
+                onConfirm={handleSendAssessments}
             />
         </>
     );
