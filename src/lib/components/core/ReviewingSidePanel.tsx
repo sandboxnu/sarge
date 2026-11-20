@@ -122,7 +122,6 @@ export function ContinueGradingSection({ liveAssessments, loading }: SidePanelSe
 }
 
 export function AwaitingReviewSection({ liveAssessments, loading }: SidePanelSectionProps) {
-    // most recent activity (someone finishing, else the candidate submitting) first
     const activityAt = (item: AwaitingYourReviewItem) =>
         item.lastFinishedAt ?? item.submittedAt ?? '';
     const items = activePositions(liveAssessments)

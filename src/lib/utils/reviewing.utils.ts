@@ -1,8 +1,6 @@
 import { type AssessmentStatus } from '@/generated/prisma';
 import { type LiveAssessmentStatus } from '@/lib/types/reviewing.types';
 
-// Candidates in these states will (or already do) need a review. NOT_ASSIGNED and EXPIRED are
-// excluded since nothing will ever come in to review for them.
 const PENDING_REVIEW_STATUSES: AssessmentStatus[] = [
     'NOT_SENT',
     'NOT_STARTED',
@@ -33,20 +31,17 @@ export function getLiveAssessmentStatus(
     return 'IN_PROGRESS';
 }
 
-/** Fraction (0–1) of the progress bar to fill on a live assessment card. */
 export function getReviewProgress(reviewedCount: number, remainingCount: number): number {
     const total = reviewedCount + remainingCount;
     return total === 0 ? 0 : reviewedCount / total;
 }
 
-/** "John Doe" → "John D.", for crediting reviewers in compact lists. */
 export function formatShortName(name: string): string {
     const [first, ...rest] = name.trim().split(/\s+/);
     const last = rest.at(-1);
     return last ? `${first} ${last[0].toUpperCase()}.` : (first ?? '');
 }
 
-/** "John D. & 2 others finished reviewing" style credit line for the Awaiting Your Review panel. */
 export function formatFinishedReviewers(names: string[]): string {
     if (names.length === 0) return '';
     const lead = formatShortName(names[0]);

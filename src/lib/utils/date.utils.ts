@@ -40,7 +40,6 @@ export function formatDuration(totalSeconds: number): string {
     return remaining > 0 ? `${hours}h ${remaining}m` : `${hours} hour${hours > 1 ? 's' : ''}`;
 }
 
-/** Compact relative time for activity feeds, e.g. "just now", "30 mins ago", "2h ago", "4 days ago". */
 export function formatTimeAgo(value: Date | number | string, now: number = Date.now()): string {
     const date = typeof value === 'string' || typeof value === 'number' ? new Date(value) : value;
     const minutes = Math.floor((now - date.getTime()) / 60_000);

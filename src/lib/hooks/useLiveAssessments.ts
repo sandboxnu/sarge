@@ -5,10 +5,6 @@ import { getLiveAssessments } from '@/lib/api/positions';
 import { useSession } from '@/lib/auth/auth-client';
 import { type LiveAssessmentSummary } from '@/lib/types/reviewing.types';
 
-/**
- * Fetches every position in the active org that has an assessment attached, with its review
- * progress rolled up, for the Live Assessments dashboard.
- */
 export default function useLiveAssessments() {
     const { data: session } = useSession();
     const activeOrganizationId = session?.session.activeOrganizationId;

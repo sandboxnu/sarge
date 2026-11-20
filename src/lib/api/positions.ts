@@ -11,9 +11,6 @@ import {
 import { type Position } from '@/generated/prisma';
 import { type LiveAssessmentSummary } from '@/lib/types/reviewing.types';
 
-/**
- * GET /api/positions/live-assessments
- */
 export async function getLiveAssessments(): Promise<LiveAssessmentSummary[]> {
     const res = await fetch('/api/positions/live-assessments');
 

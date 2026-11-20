@@ -323,11 +323,6 @@ async function getPositionsByTitle(title: string, orgId: string): Promise<Positi
     }));
 }
 
-/**
- * Positions that have an assessment template attached, rolled up into review progress for the
- * Live Assessments dashboard. Includes archived positions so the client can split them by tab.
- * Also counts the submissions `userId` is partway through grading or has been assigned to review.
- */
 async function getLiveAssessmentsByOrgId(
     orgId: string,
     userId: string
@@ -369,7 +364,6 @@ async function getLiveAssessmentsByOrgId(
     });
 
     return positions.flatMap((position) => {
-        // filtered by the where clause, but the relation is still typed as nullable
         if (!position.assessmentTemplate) return [];
 
         const { applications } = position;
@@ -398,7 +392,6 @@ async function getLiveAssessmentsByOrgId(
             const mine = progress.get(userId);
 
             if (mine) {
-                // started grading this submission but has tasks left
                 if (mine.tasksReviewed < assessment.tasks.length) {
                     continueGrading.push({
                         positionId: position.id,
@@ -410,7 +403,6 @@ async function getLiveAssessmentsByOrgId(
                     });
                 }
             } else if (assessment.reviewers.some((reviewer) => reviewer.id === userId)) {
-                // assigned but untouched; credit the other reviewers who already finished it
                 const finished = [...progress.entries()]
                     .filter(([, p]) => p.tasksReviewed >= assessment.tasks.length)
                     .sort(([, a], [, b]) => b.lastReviewedAt - a.lastReviewedAt);
@@ -428,8 +420,6 @@ async function getLiveAssessmentsByOrgId(
             }
         }
 
-        // open the first submission that still needs a reviewer, falling back to anything
-        // already graded, then to any candidate that has an assessment at all
         const reviewTarget =
             applications.find((a) => a.assessmentStatus === AssessmentStatus.SUBMITTED) ??
             applications.find((a) => a.assessmentStatus === AssessmentStatus.GRADED) ??
@@ -457,7 +447,6 @@ async function getLiveAssessmentsByOrgId(
     });
 }
 
-/** Per reviewer on one submission: how many of its tasks they've reviewed and when they last did. */
 function getReviewerProgress(
     tasks: { reviews: { reviewerId: string; updatedAt: Date; reviewer: { name: string } }[] }[]
 ) {

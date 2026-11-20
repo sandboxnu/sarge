@@ -31,7 +31,6 @@ function lastEdited(item: LiveAssessmentSummary) {
 function compare(sortBy: LiveAssessmentSortBy, a: LiveAssessmentSummary, b: LiveAssessmentSummary) {
     switch (sortBy) {
         case 'last-edited':
-            // completed assessments sink to the bottom; most recently touched first otherwise
             if ((a.status === 'COMPLETED') !== (b.status === 'COMPLETED')) {
                 return a.status === 'COMPLETED' ? 1 : -1;
             }
@@ -47,10 +46,6 @@ function compare(sortBy: LiveAssessmentSortBy, a: LiveAssessmentSummary, b: Live
     }
 }
 
-/**
- * Client-side search, status filter, sort, and active/archived split for the Live Assessments
- * dashboard cards.
- */
 export default function useLiveAssessmentFilters(liveAssessments: LiveAssessmentSummary[]) {
     const [search, setSearch] = useState('');
     const [sortBy, setSortBy] = useState<LiveAssessmentSortBy>('last-edited');
