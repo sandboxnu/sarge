@@ -122,13 +122,15 @@ export default function TemplatesPage() {
     };
     const onViewAssessments = () => {
         if (assessmentTemplateList.error) {
-            toast.error(`Could not load assessments: ${assessmentTemplateList.error.message}`);
+            toast.error(
+                `Could not load assessment templates: ${assessmentTemplateList.error.message}`
+            );
             return;
         }
 
         const topAssessment = displayedAssessmentTemplates[0];
         if (!topAssessment) {
-            toast.error('No assessments found.');
+            toast.error('No assessment templates found.');
             return;
         }
         setSelectedTaskTemplate(null);
@@ -157,11 +159,11 @@ export default function TemplatesPage() {
 
     const handleCreateAssessmentTemplate = async () => {
         if (!selected || selected.length === 0) {
-            toast.error('No Tasks Selected');
+            toast.error('No Task Templates Selected');
             return;
         }
         if (!userId) {
-            toast.error('You need to be logged in to create an assessment');
+            toast.error('You need to be logged in to create an assessment template');
             return;
         }
         setIsCreating(true);
@@ -177,7 +179,7 @@ export default function TemplatesPage() {
             );
             router.push(`/crm/assessment-templates/${created.id}/edit`);
         } catch (err) {
-            toast.error(`Failed to create assessment: ${(err as Error).message}`);
+            toast.error(`Failed to create assessment template: ${(err as Error).message}`);
         } finally {
             setIsCreating(false);
         }
@@ -218,10 +220,10 @@ export default function TemplatesPage() {
                 <div className="flex flex-row items-center justify-between">
                     <TabsList className="h-auto gap-5 rounded-none bg-transparent p-0">
                         <UnderlineTabsTrigger value="tasks">
-                            Tasks ({displayedTaskTemplates.length ?? 0})
+                            Task Templates ({displayedTaskTemplates.length ?? 0})
                         </UnderlineTabsTrigger>
                         <UnderlineTabsTrigger value="assessments">
-                            Assessments ({displayedAssessmentTemplates.length ?? 0})
+                            Assessment Templates ({displayedAssessmentTemplates.length ?? 0})
                         </UnderlineTabsTrigger>
                     </TabsList>
                     <div className="flex items-center gap-4">
@@ -231,14 +233,14 @@ export default function TemplatesPage() {
                                 onClick={handleCreateTask}
                                 disabled={isCreating}
                             >
-                                <Plus /> New Task
+                                <Plus /> New Task Template
                             </Button>
                         ) : (
                             <Button
                                 className="px-4 py-2"
                                 onClick={() => setCreateAssessmentTemplateOpen(true)}
                             >
-                                <Plus /> New Assessment
+                                <Plus /> New Assessment Template
                             </Button>
                         )}
                     </div>
@@ -314,8 +316,8 @@ export default function TemplatesPage() {
                                     alt="Winston Logo"
                                 />
                                 {isSearchingForTaskTemplate
-                                    ? 'Could not find task'
-                                    : 'You currently have no tasks'}
+                                    ? 'Could not find task template'
+                                    : 'You currently have no task templates'}
                             </div>
                         ) : (
                             displayedTaskTemplates.map((task: TaskTemplateListItemDTO) => (
@@ -455,8 +457,8 @@ export default function TemplatesPage() {
                                     alt="Winston Logo"
                                 />
                                 {isSearchingForAssessmentTemplate
-                                    ? 'Could not find assessment'
-                                    : 'You currently have no assessments'}
+                                    ? 'Could not find assessment template'
+                                    : 'You currently have no assessment templates'}
                             </div>
                         ) : (
                             displayedAssessmentTemplates.map(

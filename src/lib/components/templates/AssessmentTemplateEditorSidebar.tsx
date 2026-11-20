@@ -73,7 +73,7 @@ export default function AssessmentTemplateEditorSidebar({
                         onClick={onOpenAddTaskModal}
                     >
                         <Plus className="size-5" />
-                        Task
+                        Task Template
                     </Button>
                     <Button
                         variant="secondary"

@@ -27,7 +27,7 @@ export default function AssessmentTaskTemplatePreviewPanel({
                     className="opacity-40"
                 />
                 <p className="text-body-m text-muted-foreground">
-                    You currently have no sections in this assessment.
+                    You currently have no sections in this assessment template.
                 </p>
             </div>
         );

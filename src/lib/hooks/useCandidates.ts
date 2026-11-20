@@ -71,7 +71,7 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
                         const template = await getAssessmentTemplate(positionData.assessmentId);
                         setAssignedAssessmentTitle(template.title);
                     } catch {
-                        setAssignedAssessmentTitle('Assigned assessment');
+                        setAssignedAssessmentTitle('Assigned assessment template');
                     }
                 }
             } catch (err) {

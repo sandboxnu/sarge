@@ -152,7 +152,7 @@ export function TaskTemplatePreview({
                         onClick={() => onViewAssessments?.(taskTemplatePreview.id)}
                         className="text-body-s text-sarge-primary-500 hover:text-sarge-primary-600 mt-1 inline-block underline underline-offset-4"
                     >
-                        Used in {taskTemplatePreview.assessmentTemplatesCount} assessment
+                        Used in {taskTemplatePreview.assessmentTemplatesCount} assessment templates
                         {taskTemplatePreview.assessmentTemplatesCount !== 1 ? 's' : ''}
                     </button>
                 </section>
