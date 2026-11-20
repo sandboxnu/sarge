@@ -58,7 +58,9 @@ export function PositionAssessmentBox({
                 >
                     <ChevronDown className="size-4" />
                     <span className="text-label-s">
-                        {assignedTitle ? 'Change Assessment Template' : 'Select Assessment Template'}
+                        {assignedTitle
+                            ? 'Change Assessment Template'
+                            : 'Select Assessment Template'}
                     </span>
                 </Button>
                 <Button

@@ -122,7 +122,9 @@ export default function TemplatesPage() {
     };
     const onViewAssessments = () => {
         if (assessmentTemplateList.error) {
-            toast.error(`Could not load assessment templates: ${assessmentTemplateList.error.message}`);
+            toast.error(
+                `Could not load assessment templates: ${assessmentTemplateList.error.message}`
+            );
             return;
         }
 

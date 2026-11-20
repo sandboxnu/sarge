@@ -98,7 +98,9 @@ export default function SelectAssessmentModal({
             <DialogContent className="gap-6 px-9 py-8 sm:max-w-[778px]" showCloseButton={false}>
                 <div className="flex flex-col gap-2">
                     <div className="flex items-start justify-between">
-                        <DialogTitle className="text-label-l">Select Assessment Template</DialogTitle>
+                        <DialogTitle className="text-label-l">
+                            Select Assessment Template
+                        </DialogTitle>
                         <button
                             type="button"
                             aria-label="Close"
