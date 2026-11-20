@@ -9,6 +9,7 @@ type PositionAssessmentProps = {
     onSendAssessments: () => void;
     isSending: boolean;
     assignedTitle?: string | null;
+    assignedAssessmentId?: string | null;
     hasSentAssessments?: boolean;
     allSent?: boolean;
     className?: string;
@@ -19,6 +20,7 @@ export function PositionAssessmentBox({
     onSendAssessments,
     isSending,
     assignedTitle,
+    assignedAssessmentId,
     hasSentAssessments = false,
     allSent = false,
     className,
@@ -32,7 +34,18 @@ export function PositionAssessmentBox({
             )}
         >
             <div className="flex items-center gap-2">
-                <FileText className="text-sarge-gray-600 size-5 shrink-0" />
+                {assignedAssessmentId ? (
+                    <a
+                        href={`/crm/assessment-templates/${assignedAssessmentId}/edit`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title="Open assessment in a new tab"
+                    >
+                        <FileText className="text-sarge-gray-600 hover:text-sarge-gray-900 size-5 shrink-0" />
+                    </a>
+                ) : (
+                    <FileText className="text-sarge-gray-600 size-5 shrink-0" />
+                )}
                 <span className="text-body-m">{assignedTitle ?? 'No assessment assigned'}</span>
             </div>
             <div className="flex items-center gap-3">
@@ -42,7 +55,9 @@ export function PositionAssessmentBox({
                     disabled={hasSentAssessments}
                 >
                     <ChevronDown className="size-4" />
-                    <span className="text-label-s">Select Assessment</span>
+                    <span className="text-label-s">
+                        {assignedTitle ? 'Change Assessment' : 'Select Assessment'}
+                    </span>
                 </Button>
                 <Button
                     className="px-4 py-3"

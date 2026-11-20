@@ -32,6 +32,7 @@ interface UseCandidatesReturn {
     loadReviewerOptions: () => Promise<void>;
     assignReviewers: (assessmentId: string, reviewerIds: string[]) => void;
     assignedAssessmentTitle: string | null;
+    assignedAssessmentId: string | null;
     assignAssessment: (template: AssessmentTemplateListItemDTO) => Promise<boolean>;
 }
 
@@ -46,6 +47,7 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
     // Reviewer saves run one at a time so a stale request can't overwrite a newer selection
     const reviewerRequests = useRef<Promise<void>>(Promise.resolve());
     const [assignedAssessmentTitle, setAssignedAssessmentTitle] = useState<string | null>(null);
+    const [assignedAssessmentId, setAssignedAssessmentId] = useState<string | null>(null);
 
     useEffect(() => {
         if (!positionId) return;
@@ -63,6 +65,7 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
                 setCandidates(candidatesData);
                 setPositionTitle(positionData.title);
                 if (positionData.assessmentId) {
+                    setAssignedAssessmentId(positionData.assessmentId);
                     // The title is only a label, so a failed lookup shouldn't take the page down
                     try {
                         const template = await getAssessmentTemplate(positionData.assessmentId);
@@ -174,6 +177,7 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
         try {
             await assignAssessmentTemplateToPosition(positionId, template.id);
             setAssignedAssessmentTitle(template.title);
+            setAssignedAssessmentId(template.id);
             toast.success('Assessment assigned successfully');
             // Assigning creates (or replaces) the per-candidate assessments server-side
             await refreshCandidates();
@@ -253,6 +257,7 @@ export default function useCandidates(positionId: string): UseCandidatesReturn {
         loadReviewerOptions,
         assignReviewers,
         assignedAssessmentTitle,
+        assignedAssessmentId,
         assignAssessment,
     };
 }

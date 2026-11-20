@@ -41,6 +41,7 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
         loadReviewerOptions,
         assignReviewers,
         assignedAssessmentTitle,
+        assignedAssessmentId,
         assignAssessment,
     } = useCandidates(id);
     const hasSentAssessments = candidates.some(
@@ -132,6 +133,7 @@ export default function CandidatesPage({ params }: { params: Promise<{ id: strin
                             onSendAssessments={() => setIsSendAssessmentsOpen(true)}
                             isSending={isSendingAssessments}
                             assignedTitle={assignedAssessmentTitle}
+                            assignedAssessmentId={assignedAssessmentId}
                             hasSentAssessments={hasSentAssessments}
                             allSent={allSent}
                             onSelectAssessment={() => setIsSelectAssessmentOpen(true)}
