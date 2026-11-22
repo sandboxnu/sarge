@@ -11,6 +11,7 @@ import {
     FieldDescription,
 } from '@/lib/components/ui/Field';
 import { Input } from '@/lib/components/ui/Input';
+import { PasswordInput } from '@/lib/components/ui/PasswordInput';
 import useSignUpPage from '@/lib/hooks/useSignUpPage';
 
 export default function SignupPage() {
@@ -132,10 +133,9 @@ export default function SignupPage() {
                                 <FieldLabel htmlFor="password" className="text-label-s">
                                     Password
                                 </FieldLabel>
-                                <Input
+                                <PasswordInput
                                     {...field}
                                     id="password"
-                                    type="password"
                                     placeholder="Your Password"
                                     aria-invalid={fieldState.invalid}
                                     disabled={form.formState.isSubmitting}
@@ -146,6 +146,29 @@ export default function SignupPage() {
                                         Password must be at least 8 characters
                                     </FieldDescription>
                                 )}
+                                <FieldError
+                                    errors={fieldState.error ? [fieldState.error] : undefined}
+                                />
+                            </Field>
+                        )}
+                    />
+
+                    <Controller
+                        name="confirmPassword"
+                        control={form.control}
+                        render={({ field, fieldState }) => (
+                            <Field className="gap-2">
+                                <FieldLabel htmlFor="confirmPassword" className="text-label-s">
+                                    Confirm Password
+                                </FieldLabel>
+                                <PasswordInput
+                                    {...field}
+                                    id="confirmPassword"
+                                    placeholder="Re-enter Your Password"
+                                    aria-invalid={fieldState.invalid}
+                                    disabled={form.formState.isSubmitting}
+                                    className="text-body-s h-11"
+                                />
                                 <FieldError
                                     errors={fieldState.error ? [fieldState.error] : undefined}
                                 />
