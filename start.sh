@@ -1,6 +1,6 @@
 #!/bin/bash
 # start.sh
-# This script is for developers to use during local development
+# This script is for deveopers to use during local development
 cleanup() {
     docker compose down
     exit 0
@@ -13,5 +13,6 @@ if ! command -v vc >/dev/null 2>&1; then
     exit 1
 fi
 
+node src/install/setup.mjs
 # vc dev (not next dev) is required for the /api/ws WebSocket route
 docker compose up -d db && pnpm install && pnpm run dev:migrate && vc dev --listen 3000
