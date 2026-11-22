@@ -4,14 +4,12 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { sendVerificationEmail, signIn, signUp } from '@/lib/auth/auth-client';
+import { signIn, signUp } from '@/lib/auth/auth-client';
 import { createUserSchema, type CreateUserDTO } from '@/lib/schemas/user.schema';
 
 export default function useSignUpPage() {
     const router = useRouter();
     const [verificationPendingEmail, setVerificationPendingEmail] = useState<string | null>(null);
-    const [resending, setResending] = useState(false);
-    const [didResend, setDidResend] = useState(false);
 
     const form = useForm<CreateUserDTO>({
         resolver: zodResolver(createUserSchema),
@@ -75,25 +73,9 @@ export default function useSignUpPage() {
         router.refresh();
     };
 
-    const handleResendVerification = async () => {
-        if (!verificationPendingEmail) return;
-        setResending(true);
-        const result = await sendVerificationEmail({
-            email: verificationPendingEmail,
-            callbackURL: '/verify-email',
-        });
-        if (!result.error) {
-            setDidResend(true);
-        }
-        setResending(false);
-    };
-
     return {
         form,
         verificationPendingEmail,
-        resending,
-        didResend,
         onSubmit,
-        handleResendVerification,
     };
 }

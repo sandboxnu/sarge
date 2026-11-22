@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import sesConnector from '@/lib/connectors/ses.connector';
 import { generateAssessmentInvitationHTML } from '@/lib/templates/invitation';
+import { generateVerificationCodeHTML } from '@/lib/templates/verificationCode';
 
 interface SendAssessmentInvitationResult {
     success: boolean;
@@ -102,8 +103,22 @@ export async function sendAssessmentInvitationEmail(
     };
 }
 
+export async function sendVerificationCodeEmail(email: string, code: string): Promise<void> {
+    const emailSent = await sesConnector.sendEmail(
+        email,
+        'Your Sarge verification code',
+        `Your Sarge verification code is ${code}. It expires in 5 minutes. If you didn't sign up for Sarge, you can ignore this email.`,
+        { html: generateVerificationCodeHTML({ code, email }) }
+    );
+
+    if (!emailSent) {
+        throw new Error('Failed to send verification code email');
+    }
+}
+
 const emailService = {
     sendAssessmentInvitationEmail,
+    sendVerificationCodeEmail,
 };
 
 export default emailService;
