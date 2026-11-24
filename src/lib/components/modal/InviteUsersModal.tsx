@@ -72,11 +72,17 @@ export default function InviteUsersModal({
                 )
             );
 
-            const successfulCount = results.filter((r) => r.status === 'fulfilled').length;
-            const failedCount = results.filter((r) => r.status === 'rejected').length;
-            const failedEmails = normalizedEmails.filter(
-                (_, i) => results[i].status === 'rejected'
+            // authClient resolves with { error } instead of rejecting, so check both
+            const errors = results.map((r) =>
+                r.status === 'rejected'
+                    ? String(r.reason)
+                    : r.value.error
+                      ? (r.value.error.message ?? r.value.error.statusText ?? 'Unknown error')
+                      : null
             );
+            const successfulCount = errors.filter((e) => e === null).length;
+            const failedCount = errors.length - successfulCount;
+            const failedEmails = normalizedEmails.filter((_, i) => errors[i] !== null);
 
             if (failedEmails.length > 0) {
                 setEmails(failedEmails);
@@ -95,7 +101,8 @@ export default function InviteUsersModal({
             if (failedCount === 0) {
                 onOpenChange(false);
             } else {
-                toast.error('An error occurred... please try again');
+                const reasons = [...new Set(errors.filter(Boolean))].join('; ');
+                toast.error(`Failed to invite ${failedEmails.join(', ')}: ${reasons}`);
             }
         } catch (err) {
             toast.error(`Users failed to get invited: ${err}`);

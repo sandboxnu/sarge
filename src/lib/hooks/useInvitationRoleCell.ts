@@ -62,12 +62,13 @@ export default function useInvitationRoleCell({
             if (isExpired) {
                 await deleteOrganizationInvitation(organizationId, invitation.id);
             }
-            await authClient.organization.inviteMember({
+            const result = await authClient.organization.inviteMember({
                 email: invitation.email,
                 role: currentRole as OrgRole,
                 organizationId,
                 resend: !isExpired,
             });
+            if (result.error) throw new Error(result.error.message);
             toast.success('Invitation resent');
             onChanged();
         } catch {

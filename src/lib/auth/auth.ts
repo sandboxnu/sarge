@@ -15,12 +15,12 @@ import {
 } from '@/lib/auth/permissions';
 import sesConnector from '@/lib/connectors/ses.connector';
 import { generateEmailVerificationHTML } from '@/lib/templates/emailVerification';
+import InvitationService, {
+    baseUrl,
+    INVITATION_TTL_SECONDS,
+} from '@/lib/services/invitation.service';
 
 let hasExistingUsers = false;
-
-const baseUrl =
-    process.env.BETTER_AUTH_URL ??
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
 
 const requireSignupEmailVerification = process.env.REQUIRE_EMAIL_VERIFICATION === 'true';
 
@@ -166,24 +166,23 @@ export const auth = betterAuth({
             creatorRole: 'owner',
             organizationLimit: 10,
             membershipLimit: 100,
-            invitationExpiresIn: 60 * 60 * 48,
+            invitationExpiresIn: INVITATION_TTL_SECONDS,
             invitationLimit: 100,
             cancelPendingInvitationsOnReInvite: false,
 
             async sendInvitationEmail(data) {
-                const inviteLink = `${baseUrl}/accept-invitation?id=${data.invitation.id}`;
-                try {
-                    const emailSent = await sesConnector.sendEmail(
-                        data.invitation.email,
-                        `You're invited to join ${data.organization.name} on Sarge!`,
-                        `Hello!\n\nYou've been invited to join the organization "${data.organization.name}" on Sarge.\n\nPlease click the following link to accept the invitation:\n\n${inviteLink}`
-                    );
-                    if (!emailSent) {
-                        console.error('SES reported failure to send invitation email');
-                    }
-                } catch (error) {
-                    console.error('Failed to send invitation email:', error);
-                }
+                await InvitationService.sendInvitationEmail(data.invitation.id);
+            },
+            organizationHooks: {
+                // live invites were already rejected; clear stale ones so @@unique([email, organizationId]) doesn't 500
+                beforeCreateInvitation: async ({ invitation }) => {
+                    await prisma.invitation.deleteMany({
+                        where: {
+                            email: invitation.email,
+                            organizationId: invitation.organizationId,
+                        },
+                    });
+                },
             },
         }),
         adminPlugin({

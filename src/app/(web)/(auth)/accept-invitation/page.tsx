@@ -1,4 +1,5 @@
 import AcceptInvitation from '@/lib/components/core/AcceptInvitation';
+import InvitationService from '@/lib/services/invitation.service';
 
 export default async function AcceptInvitationPage({
     searchParams,
@@ -6,5 +7,6 @@ export default async function AcceptInvitationPage({
     searchParams: Promise<{ id?: string }>;
 }) {
     const { id } = await searchParams;
-    return <AcceptInvitation id={id ?? null} />;
+    const expired = id ? await InvitationService.isInvitationExpired(id) : false;
+    return <AcceptInvitation id={id ?? null} expired={expired} />;
 }

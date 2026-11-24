@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { getRedirectParam } from '@/lib/utils/utils';
 import { sendVerificationEmail, signIn, signUp } from '@/lib/auth/auth-client';
 import { signUpFormSchema, type SignUpFormDTO } from '@/lib/schemas/user.schema';
 
@@ -62,7 +63,7 @@ export default function useSignUpPage() {
             if (result.data?.user?.emailVerified) {
                 const signInResult = await signIn.email({ email, password: data.password });
                 if (!signInResult.error) {
-                    router.push('/crm/dashboard');
+                    router.push(getRedirectParam());
                     router.refresh();
                     return;
                 }
@@ -72,7 +73,7 @@ export default function useSignUpPage() {
             return;
         }
 
-        router.push('/crm/dashboard');
+        router.push(getRedirectParam());
         router.refresh();
     };
 

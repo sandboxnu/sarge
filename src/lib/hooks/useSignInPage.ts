@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { getRedirectParam } from '@/lib/utils/utils';
 import { sendVerificationEmail, signIn } from '@/lib/auth/auth-client';
 import { loginUserSchema, type LoginUserDTO } from '@/lib/schemas/user.schema';
 
@@ -52,7 +53,7 @@ export default function useSignInPage() {
             return;
         }
 
-        router.push('/crm/dashboard');
+        router.push(getRedirectParam());
         router.refresh();
     };
 
