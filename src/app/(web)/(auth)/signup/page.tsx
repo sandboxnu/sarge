@@ -13,60 +13,13 @@ import {
 import { Input } from '@/lib/components/ui/Input';
 import { PasswordInput } from '@/lib/components/ui/PasswordInput';
 import useSignUpPage from '@/lib/hooks/useSignUpPage';
+import VerifyEmailCode from '@/lib/components/auth/VerifyEmailCode';
 
 export default function SignupPage() {
-    const {
-        form,
-        verificationPendingEmail,
-        resending,
-        didResend,
-        onSubmit,
-        handleResendVerification,
-    } = useSignUpPage();
+    const { form, verificationPendingEmail, onSubmit } = useSignUpPage();
 
     if (verificationPendingEmail) {
-        return (
-            <div>
-                <div className="mb-6 flex flex-col items-center gap-2 text-center">
-                    <h1 className="text-display-xs">Check your email</h1>
-                    {/* TODO(brad) - this email eventually will be customizable in the admin panel */}
-                    <p className="text-body-s text-sarge-gray-600">
-                        We've sent a verification link to{' '}
-                        <span className="text-sarge-gray-800 font-medium">
-                            {verificationPendingEmail}
-                        </span>
-                        . Click it to finish creating your account. The link expires in 1 hour.
-                    </p>
-                </div>
-
-                {didResend ? (
-                    <div className="border-sarge-primary-200 bg-sarge-primary-100 mb-4 rounded-lg border p-4">
-                        <p className="text-body-s text-sarge-gray-800">
-                            New verification link sent.
-                        </p>
-                    </div>
-                ) : (
-                    <Button
-                        type="button"
-                        variant="primary"
-                        onClick={handleResendVerification}
-                        disabled={resending}
-                        className="text-label-s text-sarge-gray-50 h-11 w-full px-4"
-                    >
-                        {resending ? 'Sending...' : 'Resend verification link'}
-                    </Button>
-                )}
-
-                <div className="mt-4 flex items-center justify-center gap-1 py-1">
-                    <Link
-                        href="/signin"
-                        className="text-label-xs text-sarge-primary-500 hover:underline"
-                    >
-                        Back to sign in
-                    </Link>
-                </div>
-            </div>
-        );
+        return <VerifyEmailCode email={verificationPendingEmail} />;
     }
 
     return (

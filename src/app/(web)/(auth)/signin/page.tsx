@@ -6,50 +6,17 @@ import { Button } from '@/lib/components/ui/Button';
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/lib/components/ui/Field';
 import { Input } from '@/lib/components/ui/Input';
 import useSignInPage from '@/lib/hooks/useSignInPage';
+import VerifyEmailCode from '@/lib/components/auth/VerifyEmailCode';
 
 export default function SignInPage() {
-    const {
-        form,
-        unverifiedEmail,
-        resending,
-        didResend,
-        onSubmit,
-        handleResendVerification,
-        handleBackToSignIn,
-    } = useSignInPage();
+    const { form, unverifiedEmail, onSubmit, handleBackToSignIn } = useSignInPage();
 
     if (unverifiedEmail) {
         return (
             <div>
-                <div className="mb-6 flex flex-col items-center gap-2 text-center">
-                    <h1 className="text-display-xs">Verify your email</h1>
-                    <p className="text-body-s text-sarge-gray-600">
-                        You haven't verified{' '}
-                        <span className="text-sarge-gray-800 font-medium">{unverifiedEmail}</span>{' '}
-                        yet. Check your inbox for the link we sent when you signed up, or resend it
-                        below.
-                    </p>
-                </div>
+                <VerifyEmailCode email={unverifiedEmail} />
 
-                {didResend ? (
-                    <div className="border-sarge-primary-200 bg-sarge-primary-100 mb-4 rounded-lg border p-4">
-                        <p className="text-body-s text-sarge-gray-800">
-                            New verification link sent.
-                        </p>
-                    </div>
-                ) : (
-                    <Button
-                        type="button"
-                        variant="primary"
-                        onClick={handleResendVerification}
-                        disabled={resending}
-                        className="text-label-s text-sarge-gray-50 h-11 w-full px-4"
-                    >
-                        {resending ? 'Sending...' : 'Resend verification link'}
-                    </Button>
-                )}
-
-                <div className="mt-4 flex items-center justify-center gap-1 py-1">
+                <div className="mt-2 flex items-center gap-1 py-1">
                     <Button
                         type="button"
                         variant="link"

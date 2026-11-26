@@ -1,7 +1,7 @@
 'use client';
 
 import { createAuthClient } from 'better-auth/react';
-import { organizationClient, adminClient } from 'better-auth/client/plugins';
+import { organizationClient, adminClient, emailOTPClient } from 'better-auth/client/plugins';
 import {
     ac,
     owner,
@@ -29,6 +29,7 @@ export const authClient = createAuthClient({
             ac: adminAccessControl,
             roles: { superuser },
         }),
+        emailOTPClient(),
     ],
 });
 
@@ -45,4 +46,5 @@ export const {
     changeEmail,
     sendVerificationEmail,
     verifyEmail,
+    emailOtp,
 } = authClient;

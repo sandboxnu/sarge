@@ -4,14 +4,12 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { sendVerificationEmail, signIn } from '@/lib/auth/auth-client';
+import { emailOtp, signIn } from '@/lib/auth/auth-client';
 import { loginUserSchema, type LoginUserDTO } from '@/lib/schemas/user.schema';
 
 export default function useSignInPage() {
     const router = useRouter();
     const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null);
-    const [resending, setResending] = useState(false);
-    const [didResend, setDidResend] = useState(false);
 
     const form = useForm<LoginUserDTO>({
         resolver: zodResolver(loginUserSchema),
@@ -30,8 +28,9 @@ export default function useSignInPage() {
 
         if (result.error) {
             if (result.error.code === 'EMAIL_NOT_VERIFIED') {
+                // the code from signup has likely expired (5 min), so send a fresh one
+                await emailOtp.sendVerificationOtp({ email, type: 'email-verification' });
                 setUnverifiedEmail(email);
-                setDidResend(false);
                 return;
             }
 
@@ -56,31 +55,14 @@ export default function useSignInPage() {
         router.refresh();
     };
 
-    const handleResendVerification = async () => {
-        if (!unverifiedEmail) return;
-        setResending(true);
-        const result = await sendVerificationEmail({
-            email: unverifiedEmail,
-            callbackURL: '/verify-email',
-        });
-        if (!result.error) {
-            setDidResend(true);
-        }
-        setResending(false);
-    };
-
     const handleBackToSignIn = () => {
         setUnverifiedEmail(null);
-        setDidResend(false);
     };
 
     return {
         form,
         unverifiedEmail,
-        resending,
-        didResend,
         onSubmit,
-        handleResendVerification,
         handleBackToSignIn,
     };
 }

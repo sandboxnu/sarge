@@ -1,6 +1,6 @@
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
-import { admin as adminPlugin, organization } from 'better-auth/plugins';
+import { admin as adminPlugin, emailOTP, organization } from 'better-auth/plugins';
 import { prisma } from '@/lib/prisma';
 import {
     ac,
@@ -15,6 +15,7 @@ import {
 } from '@/lib/auth/permissions';
 import sesConnector from '@/lib/connectors/ses.connector';
 import { generateEmailVerificationHTML } from '@/lib/templates/emailVerification';
+import { sendVerificationCodeEmail } from '@/lib/services/email.service';
 
 let hasExistingUsers = false;
 
@@ -54,30 +55,6 @@ export const auth = betterAuth({
     emailVerification: {
         sendOnSignUp: requireSignupEmailVerification,
         autoSignInAfterVerification: true,
-        expiresIn: 60 * 60,
-        sendVerificationEmail: async ({ user, url }) => {
-            // this check is required since the self-hosted superuser is pre-verified
-            if (user.emailVerified) return;
-
-            try {
-                const emailSent = await sesConnector.sendEmail(
-                    user.email,
-                    'Verify your email for Sarge',
-                    `Hello,\n\nClick the link below to verify your email address (${user.email}) on Sarge:\n\n${url}\n\nThis link expires in 1 hour.`,
-                    {
-                        html: generateEmailVerificationHTML({
-                            verifyUrl: url,
-                            email: user.email,
-                        }),
-                    }
-                );
-                if (!emailSent) {
-                    console.error('SES reported failure to send verification email');
-                }
-            } catch (error) {
-                console.error('Failed to send verification email:', error);
-            }
-        },
     },
     database: prismaAdapter(prisma, {
         provider: 'postgresql',
@@ -190,6 +167,33 @@ export const auth = betterAuth({
             ac: adminAccessControl,
             roles: { superuser },
             adminRoles: [SUPER_USER_ROLE],
+        }),
+        emailOTP({
+            overrideDefaultEmailVerification: true,
+            otpLength: 6,
+            expiresIn: 60 * 5,
+            allowedAttempts: 3,
+            storeOTP: 'hashed',
+            async sendVerificationOTP({ email, otp, type }) {
+                if (type !== 'email-verification') return;
+
+                // the self-hosted superuser is pre-verified, so don't email them a code
+                const existing = await prisma.user.findUnique({
+                    where: { email },
+                    select: { emailVerified: true },
+                });
+                if (existing?.emailVerified) return;
+
+                if (process.env.NODE_ENV !== 'production') {
+                    console.warn(`[dev] verification code for ${email}: ${otp}`);
+                }
+
+                try {
+                    await sendVerificationCodeEmail(email, otp);
+                } catch (error) {
+                    console.error('Failed to send verification code email:', error);
+                }
+            },
         }),
     ],
 });
