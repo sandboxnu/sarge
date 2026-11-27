@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogTitle } from '@/lib/components/ui/Modal';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { type RefObject } from 'react';
 import { Button } from '@/lib/components/ui/Button';
+import { Input } from '@/lib/components/ui/Input';
 import Image from 'next/image';
 import { AlertCircle } from 'lucide-react';
 import useOnboardingModal from '@/lib/hooks/useOnboardingModal';
@@ -20,6 +21,12 @@ export default function OnboardingModal() {
         createOrganization,
         loading,
         error,
+
+        joinCode,
+        setJoinCode,
+        joinError,
+        joining,
+        joinOrganization,
 
         preview,
         fileInputRef,
@@ -41,7 +48,20 @@ export default function OnboardingModal() {
                     event.preventDefault();
                 }}
             >
-                {step === 'welcome' && <WelcomeContent onCreate={() => goTo('create')} />}
+                {step === 'welcome' && (
+                    <WelcomeContent onCreate={() => goTo('create')} onJoin={() => goTo('join')} />
+                )}
+
+                {step === 'join' && (
+                    <JoinOrganizationContent
+                        code={joinCode}
+                        setCode={setJoinCode}
+                        error={joinError}
+                        loading={joining}
+                        onBack={() => goTo('welcome')}
+                        onSubmit={joinOrganization}
+                    />
+                )}
 
                 {step === 'create' && (
                     <CreateOrganizationContent
@@ -62,7 +82,7 @@ export default function OnboardingModal() {
     );
 }
 
-function WelcomeContent({ onCreate }: { onCreate: () => void }) {
+function WelcomeContent({ onCreate, onJoin }: { onCreate: () => void; onJoin: () => void }) {
     return (
         <div className="flex flex-col items-center justify-center text-center">
             <h2 className="mb-3 text-center text-xl font-bold">Welcome!</h2>
@@ -81,6 +101,7 @@ function WelcomeContent({ onCreate }: { onCreate: () => void }) {
                 <Button
                     className="flex h-[36px] w-full justify-center px-4 py-2"
                     variant="tertiary"
+                    onClick={onJoin}
                 >
                     Join Organization
                 </Button>
@@ -196,6 +217,72 @@ function CreateOrganizationContent({
                 </Button>
             </div>
         </div>
+    );
+}
+
+function JoinOrganizationContent({
+    code,
+    setCode,
+    error,
+    loading,
+    onBack,
+    onSubmit,
+}: {
+    code: string;
+    setCode: (code: string) => void;
+    error: string | null;
+    loading: boolean;
+    onBack: () => void;
+    onSubmit: () => void;
+}) {
+    return (
+        <form
+            className="flex flex-col justify-center"
+            onSubmit={(e) => {
+                e.preventDefault();
+                onSubmit();
+            }}
+        >
+            <h1 className="font-bold">Join an organization</h1>
+            <p className="text-body-s text-sarge-gray-600 mt-1">
+                Check your email for the invitation code we sent you and enter the code below.
+            </p>
+
+            <div className="mt-4 flex flex-col gap-2">
+                <label htmlFor="join-code" className="font-medium">
+                    Enter code
+                </label>
+                <Input
+                    type="text"
+                    id="join-code"
+                    autoComplete="off"
+                    className="h-[44px] uppercase placeholder:normal-case"
+                    placeholder="Enter your code"
+                    value={code}
+                    onChange={(e) => setCode(e.target.value)}
+                    disabled={loading}
+                    aria-invalid={!!error}
+                />
+                {error && <p className="text-sarge-error-700 text-body-xs">{error}</p>}
+            </div>
+
+            <div className="mt-4 flex items-center justify-between">
+                <p
+                    className="text-sarge-primary-500 hover:text-sarge-primary-600 hover:cursor-pointer"
+                    onClick={onBack}
+                >
+                    Back
+                </p>
+                <Button
+                    type="submit"
+                    variant="primary"
+                    className="w-[125px]"
+                    disabled={loading || !code.trim()}
+                >
+                    {loading ? 'Joining...' : 'Continue'}
+                </Button>
+            </div>
+        </form>
     );
 }
 

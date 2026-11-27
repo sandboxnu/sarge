@@ -416,6 +416,8 @@ model Invitation {
   acceptedAt     DateTime?
   createdAt      DateTime         @default(now())
   inviterId      String
+  // join code, expires with the invitation
+  code           String?          @unique
 
   inviter User @relation("Inviter", fields: [inviterId], references: [id], onDelete: Cascade)
 

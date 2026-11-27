@@ -2,24 +2,24 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
 import Link from 'next/link';
 import { authClient } from '@/lib/auth/auth-client';
 import { useAuthSession } from '@/lib/auth/auth-context';
 import { Button } from '@/lib/components/ui/Button';
 import type { AcceptInvitation as AcceptInvitationData } from '@/lib/types/invitation.types';
 import { getRoleLabel } from '@/lib/utils/roles.utils';
-import { Mail, CheckCircle, XCircle, Clock, Loader2 } from 'lucide-react';
+import { acceptInvitationAndActivate } from '@/lib/api/organizations';
 
-export default function AcceptInvitation({ id }: { id: string | null }) {
+export default function AcceptInvitation({ id, expired }: { id: string | null; expired: boolean }) {
     const router = useRouter();
 
-    const { isAuthenticated, isPending: sessionPending } = useAuthSession();
+    const { user, isAuthenticated, isPending: sessionPending } = useAuthSession();
 
     const [invitation, setInvitation] = useState<AcceptInvitationData | null>(null);
     const [loading, setLoading] = useState(true);
     const [accepting, setAccepting] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [loadError, setLoadError] = useState<string | null>(null);
 
     useEffect(() => {
         if (sessionPending) return;
@@ -29,12 +29,15 @@ export default function AcceptInvitation({ id }: { id: string | null }) {
         }
 
         async function fetchInvitation() {
+            setLoadError(null);
             try {
                 const result = await authClient.organization.getInvitation({
                     query: { id: id ?? '' },
                 });
 
-                if (result.data) {
+                if (result.error) {
+                    setLoadError(result.error.message ?? 'Could not load invitation');
+                } else if (result.data) {
                     const data = result.data;
                     setInvitation({
                         id: data.id,
@@ -48,7 +51,7 @@ export default function AcceptInvitation({ id }: { id: string | null }) {
                     });
                 }
             } catch {
-                setError('Could not load invitation');
+                setLoadError('Could not load invitation');
             } finally {
                 setLoading(false);
             }
@@ -58,17 +61,12 @@ export default function AcceptInvitation({ id }: { id: string | null }) {
     }, [id, isAuthenticated, sessionPending]);
 
     async function handleAccept() {
-        if (!id) return;
+        if (!id || !invitation) return;
         setAccepting(true);
         setError(null);
 
         try {
-            await authClient.organization.acceptInvitation({ invitationId: id });
-            if (invitation?.organizationId) {
-                await authClient.organization.setActive({
-                    organizationId: invitation.organizationId,
-                });
-            }
+            await acceptInvitationAndActivate(id, invitation.organizationId);
             setInvitation((prev) => (prev ? { ...prev, status: 'accepted' } : prev));
         } catch (err) {
             const message = err instanceof Error ? err.message : 'Failed to accept invitation';
@@ -78,180 +76,130 @@ export default function AcceptInvitation({ id }: { id: string | null }) {
         }
     }
 
-    const isExpired = invitation ? invitation.expiresAt.getTime() < Date.now() : false;
+    async function handleSwitchAccount() {
+        await authClient.signOut();
+        router.refresh();
+    }
 
-    // Loading
     if (sessionPending || loading) {
+        return <div className="text-body-s text-sarge-gray-600 text-center">Loading...</div>;
+    }
+
+    if (!isAuthenticated) {
+        const redirect = id ? `?redirect=${encodeURIComponent(`/accept-invitation?id=${id}`)}` : '';
+
         return (
-            <CenteredCard>
-                <Loader2 className="text-sarge-primary-500 size-8 animate-spin" />
-                <p className="text-body-s text-sarge-gray-500">Loading invitation...</p>
-            </CenteredCard>
+            <>
+                <Heading title="You've been invited">
+                    Sign in or create an account to accept this invitation.
+                </Heading>
+                <Button asChild variant="primary" className={PRIMARY_BUTTON}>
+                    <Link href={`/signin${redirect}`}>Sign in</Link>
+                </Button>
+                <div className="mt-4 flex items-center justify-center gap-1 py-1">
+                    <p className="text-label-xs text-sarge-gray-600">Don&apos;t have an account?</p>
+                    <Link href={`/signup${redirect}`} className={TEXT_LINK}>
+                        Sign up
+                    </Link>
+                </div>
+            </>
         );
     }
 
-    // Not signed in
-    if (!isAuthenticated) {
-        const redirectUrl = id
-            ? `/signin?redirect=${encodeURIComponent(`/accept-invitation?id=${id}`)}`
-            : '/signin';
-
+    if (!id) {
         return (
-            <CenteredCard>
-                <StatusIcon variant="info" />
-                <h1 className="text-display-xs text-sarge-gray-800">Sign in required</h1>
-                <p className="text-body-s text-sarge-gray-600 text-center">
-                    You need to sign in to accept this invitation. If you don't have an account, you
-                    can create one first.
-                </p>
-                <div className="flex gap-3">
-                    <Button variant="primary" asChild>
-                        <Link href={redirectUrl} className="px-6 py-2">
-                            Sign In
-                        </Link>
-                    </Button>
-                    <Button variant="secondary" asChild>
-                        <Link href="/signup" className="px-6 py-2">
-                            Sign Up
-                        </Link>
+            <Heading title="Link is invalid">
+                This invitation link is missing information. Check the link in your email and try
+                again.
+            </Heading>
+        );
+    }
+
+    // better-auth returns an error for expired, canceled, and wrong-account invitations
+    if (!invitation) {
+        return (
+            <>
+                <Heading title={expired ? 'Invitation expired' : "Can't open this invitation"}>
+                    {expired
+                        ? 'This invitation link has expired. Links and codes are valid for 24 hours.'
+                        : `${loadError ?? 'Invitation not found'}.`}{' '}
+                    You&apos;re signed in as{' '}
+                    <span className="text-sarge-gray-800 font-medium">{user?.email}</span>.
+                </Heading>
+
+                <Button asChild variant="primary" className={PRIMARY_BUTTON}>
+                    <Link href={`/accept-invitation/new-link?id=${id}`}>Send a new link</Link>
+                </Button>
+
+                <div className="mt-4 flex items-center justify-center gap-1 py-1">
+                    <p className="text-label-xs text-sarge-gray-600">Invited with another email?</p>
+                    <Button
+                        type="button"
+                        variant="link"
+                        onClick={handleSwitchAccount}
+                        className={`${TEXT_LINK} h-auto p-0`}
+                    >
+                        Switch account
                     </Button>
                 </div>
-            </CenteredCard>
+            </>
         );
     }
 
-    // No ID or invitation not found
-    if (!id || !invitation) {
-        return (
-            <CenteredCard>
-                <StatusIcon variant="error" />
-                <h1 className="text-display-xs text-sarge-gray-800">
-                    {!id ? 'Invalid invitation link' : 'Invitation not found'}
-                </h1>
-                <p className="text-body-s text-sarge-gray-600 text-center">
-                    {!id
-                        ? 'This link is missing required information. Please check the link in your email and try again.'
-                        : 'This invitation could not be found. It may have been canceled or the link may be incorrect.'}
-                </p>
-            </CenteredCard>
-        );
-    }
-
-    // Expired
-    if (isExpired) {
-        return (
-            <CenteredCard>
-                <StatusIcon variant="expired" />
-                <h1 className="text-display-xs text-sarge-gray-800">Invitation expired</h1>
-                <p className="text-body-s text-sarge-gray-600 text-center">
-                    This invitation has expired. Please ask the organization administrator to send a
-                    new one.
-                </p>
-            </CenteredCard>
-        );
-    }
-
-    // Already accepted
     if (invitation.status === 'accepted') {
         return (
-            <CenteredCard>
-                <StatusIcon variant="success" />
-                <h1 className="text-display-xs text-sarge-gray-800">Invitation accepted</h1>
-                <p className="text-body-s text-sarge-gray-600 text-center">
-                    You've successfully joined the organization. Head to the dashboard to get
-                    started.
-                </p>
-                <Button
-                    variant="primary"
-                    onClick={() => router.push('/crm/dashboard')}
-                    className="px-6 py-2"
-                >
-                    Go to Dashboard
+            <>
+                <Heading title="You're in">
+                    You&apos;ve joined{' '}
+                    <span className="text-sarge-gray-800 font-medium">
+                        {invitation.organizationName}
+                    </span>
+                    .
+                </Heading>
+                <Button asChild variant="primary" className={PRIMARY_BUTTON}>
+                    <Link href="/crm/dashboard">Continue to Sarge</Link>
                 </Button>
-            </CenteredCard>
+            </>
         );
     }
 
-    // Pending — show accept UI
     return (
-        <CenteredCard>
-            <StatusIcon variant="info" />
-            <h1 className="text-display-xs text-sarge-gray-800">You've been invited</h1>
+        <>
+            <Heading title={`Join ${invitation.organizationName}`}>
+                You&apos;ve been invited to join{' '}
+                <span className="text-sarge-gray-800 font-medium">
+                    {invitation.organizationName}
+                </span>{' '}
+                as a{' '}
+                <span className="text-sarge-gray-800 font-medium">
+                    {getRoleLabel(invitation.role)}
+                </span>
+                .
+            </Heading>
 
-            <div className="bg-sarge-gray-50 border-sarge-gray-200 flex w-full flex-col gap-3 rounded-lg border p-4">
-                <DetailRow label="Organization" value={invitation.organizationName} />
-                <DetailRow label="Role" value={getRoleLabel(invitation.role)} />
-                <DetailRow label="Email" value={invitation.email} />
-            </div>
+            <Button
+                type="button"
+                variant="primary"
+                onClick={handleAccept}
+                disabled={accepting}
+                className={PRIMARY_BUTTON}
+            >
+                {accepting ? 'Accepting...' : 'Accept invitation'}
+            </Button>
 
-            {error && (
-                <div className="border-sarge-error-200 bg-sarge-error-200 w-full rounded-lg border p-3">
-                    <p className="text-sarge-error-700 text-body-xs">{error}</p>
-                </div>
-            )}
-
-            <div className="flex w-full gap-3">
-                <Button
-                    variant="primary"
-                    onClick={handleAccept}
-                    disabled={accepting}
-                    className="flex-1 px-6 py-2"
-                >
-                    {accepting ? (
-                        <>
-                            <Loader2 className="size-4 animate-spin" />
-                            Accepting...
-                        </>
-                    ) : (
-                        'Accept Invitation'
-                    )}
-                </Button>
-            </div>
-        </CenteredCard>
+            {error && <p className="text-sarge-error-700 text-body-xs mt-3 text-center">{error}</p>}
+        </>
     );
 }
 
-// TODO these are temporary until we have UI from designs
+const PRIMARY_BUTTON = 'text-label-s text-sarge-gray-50 h-11 w-full px-4';
+const TEXT_LINK = 'text-label-xs text-sarge-primary-500 hover:underline';
 
-function CenteredCard({ children }: { children: React.ReactNode }) {
+export function Heading({ title, children }: { title: string; children: React.ReactNode }) {
     return (
-        <div className="flex min-h-screen items-center justify-center bg-white px-4">
-            <div className="flex w-full max-w-sm flex-col items-center gap-4">
-                <Image
-                    src="/HelmetLogoFull.png"
-                    alt="Sarge"
-                    width={160}
-                    height={49}
-                    priority
-                    className="mb-2"
-                />
-                {children}
-            </div>
-        </div>
-    );
-}
-
-function StatusIcon({ variant }: { variant: 'info' | 'success' | 'error' | 'expired' }) {
-    const iconClass = 'size-10';
-
-    switch (variant) {
-        case 'success':
-            return <CheckCircle className={`${iconClass} text-sarge-success-500`} />;
-        case 'error':
-            return <XCircle className={`${iconClass} text-sarge-error-400`} />;
-        case 'expired':
-            return <Clock className={`${iconClass} text-sarge-warning-500`} />;
-        case 'info':
-        default:
-            return <Mail className={`${iconClass} text-sarge-primary-500`} />;
-    }
-}
-
-function DetailRow({ label, value }: { label: string; value: string }) {
-    return (
-        <div className="flex items-center justify-between">
-            <span className="text-label-s text-sarge-gray-600">{label}</span>
-            <span className="text-body-s text-sarge-gray-800">{value}</span>
+        <div className="mb-6 flex flex-col items-center gap-2 text-center">
+            <h1 className="text-display-xs">{title}</h1>
+            <p className="text-body-s text-sarge-gray-600">{children}</p>
         </div>
     );
 }

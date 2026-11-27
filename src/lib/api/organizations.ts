@@ -5,6 +5,7 @@ import {
 import type { UpdateInvitationRolePayload } from '@/lib/schemas/role.schema';
 import { type Organization } from '@/generated/prisma';
 import type { OrgMembersAndInvitations } from '@/lib/types/invitation.types';
+import { authClient } from '@/lib/auth/auth-client';
 
 /**
  * POST /api/organizations
@@ -124,4 +125,46 @@ export async function transferOwnership(
     if (!res.ok) {
         throw new Error(json.message ?? `Failed to transfer ownership (${res.status})`);
     }
+}
+
+/**
+ * POST /api/invitations/resolve-code
+ */
+export async function resolveInvitationCode(
+    code: string
+): Promise<{ invitationId: string; organizationId: string }> {
+    const res = await fetch('/api/invitations/resolve-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code }),
+    });
+
+    const json = await res.json();
+
+    if (!res.ok) {
+        throw new Error(json.message ?? 'That code is invalid or has expired.');
+    }
+
+    return json.data;
+}
+
+/**
+ * POST /api/invitations/:invitationId/resend
+ */
+export async function requestNewInvitationLink(invitationId: string): Promise<void> {
+    await fetch(`/api/invitations/${invitationId}/resend`, { method: 'POST' });
+}
+
+// authClient returns { error } instead of throwing; this throws so callers get one failure path
+export async function acceptInvitationAndActivate(
+    invitationId: string,
+    organizationId: string
+): Promise<void> {
+    const accepted = await authClient.organization.acceptInvitation({ invitationId });
+    if (accepted.error) {
+        throw new Error(accepted.error.message ?? 'Failed to accept invitation');
+    }
+
+    // errors ignored: accept already activated the org server-side, this only syncs the client
+    await authClient.organization.setActive({ organizationId });
 }
